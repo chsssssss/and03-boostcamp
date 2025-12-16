@@ -7,7 +7,6 @@ import com.boostcamp.and03.data.feature.booklist.datasource.paging.KakaoBookSear
 import com.boostcamp.and03.data.feature.booklist.datasource.remote.KakaoBookSearchRemoteDataSource
 import com.boostcamp.and03.data.feature.booklist.model.KakaoDocumentDTO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class KakaoBookSearchRepositoryImpl @Inject constructor(
