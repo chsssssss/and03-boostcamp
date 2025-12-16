@@ -7,7 +7,7 @@ import androidx.annotation.StringRes
 enum class MainBottomTab(
     @param:DrawableRes val selectedIconId: Int,
     @param:DrawableRes val unselectedIconId: Int,
-    @param:StringRes val titleTextId: Int,
+    @param:StringRes val tabTextId: Int,
     val route: MainTabRoute
 ) {
     BOOKLIST(

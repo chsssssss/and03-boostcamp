@@ -11,8 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.core.navigation.MainBottomTab
 import kotlinx.collections.immutable.ImmutableList
 
@@ -23,7 +23,7 @@ private object MainBottomBarDimens {
 @Composable
 fun MainBottomBar(
     visible: Boolean,
-    tabs: ImmutableList<MainBottomTab>,
+    bottomTabs: ImmutableList<MainBottomTab>,
     currentTab: MainBottomTab?,
     onTabSelected: (MainBottomTab) -> Unit,
     modifier: Modifier = Modifier,
@@ -42,21 +42,24 @@ fun MainBottomBar(
         NavigationBar(
             modifier = modifier
         ) {
-            tabs.forEach { tab ->
+            bottomTabs.forEach { tab ->
+                val isSelected = tab == currentTab
+                val iconId = if (isSelected) {
+                    tab.selectedIconId
+                } else {
+                    tab.unselectedIconId
+                }
+
                 NavigationBarItem(
-                    selected = tab == currentTab,
+                    selected = isSelected,
                     onClick = { onTabSelected(tab) },
-                    label = {
-                        Text(
-                            text = "테스트 라벨 텍스트"
-                        )
-                    },
                     icon = {
                         Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_android),
-                            contentDescription = null
+                            imageVector = ImageVector.vectorResource(iconId),
+                            contentDescription = stringResource(tab.tabTextId)
                         )
-                    }
+                    },
+                    label = { Text(text = stringResource(tab.tabTextId)) }
                 )
             }
         }
