@@ -16,14 +16,14 @@ import com.boostcamp.and03.R
 @Composable
 fun MainTopBar(
     titleText: String,
-    onBackCLick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         title = { Text(text = titleText) },
         modifier = modifier,
         navigationIcon = {
-            IconButton(onClick = onBackCLick) {
+            IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_filled),
                     contentDescription = stringResource(R.string.content_description_go_back)
