@@ -8,5 +8,5 @@ data class KakaoDocumentDTO(
     @SerialName("title") val title: String,
     @SerialName("authors") val authors: List<String>,
     @SerialName("publisher") val publisher: String,
-    @SerialName("thumbnail") val thumbnail: String?
+    @SerialName("thumbnail") val thumbnail: String
 )

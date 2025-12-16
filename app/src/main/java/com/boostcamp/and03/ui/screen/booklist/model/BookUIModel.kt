@@ -8,8 +8,11 @@ data class BookUIModel(
     val title: String,
     val authors: List<String>,
     val publisher: String,
-    val thumbnail: String?
-)
+    val thumbnail: String
+) {
+    val hasThumbnail: Boolean
+        get() = thumbnail.isNotEmpty()
+}
 
 fun KakaoDocumentDTO.toUiModel() = BookUIModel(
     title = title,
