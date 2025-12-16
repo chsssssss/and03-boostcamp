@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class KakaoDocumentDTO(
-    @SerialName("title") val bookTitle: String,
-    @SerialName("authors") val bookAuthors: List<String>,
-    @SerialName("publisher") val bookPublisher: String,
-    @SerialName("thumbnail") val bookThumbnailURL: String
+    @SerialName("title") val title: String,
+    @SerialName("authors") val authors: List<String>,
+    @SerialName("publisher") val publisher: String,
+    @SerialName("thumbnail") val thumbnail: String
 )
