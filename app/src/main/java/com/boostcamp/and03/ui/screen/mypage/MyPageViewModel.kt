@@ -1,10 +1,10 @@
-package com.boostcamp.and03.ui.addbook
+package com.boostcamp.and03.ui.screen.mypage
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AddBookViewModel @Inject constructor(): ViewModel() {
+class MyPageViewModel @Inject constructor(): ViewModel() {
 
 }

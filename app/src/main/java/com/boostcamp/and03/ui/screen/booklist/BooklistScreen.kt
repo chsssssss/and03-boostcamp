@@ -1,9 +1,9 @@
-package com.boostcamp.and03.ui.booklist
+package com.boostcamp.and03.ui.screen.booklist
 
 import androidx.compose.runtime.Composable
 
 @Composable
-fun BookListScreen(
+fun BooklistScreen(
     
 ) {
 

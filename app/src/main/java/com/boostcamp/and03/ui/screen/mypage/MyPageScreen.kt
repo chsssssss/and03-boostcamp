@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.mypage
+package com.boostcamp.and03.ui.screen.mypage
 
 import androidx.compose.runtime.Composable
 
@@ -6,5 +6,5 @@ import androidx.compose.runtime.Composable
 fun MyPageScreen(
 
 ) {
-    
+
 }
