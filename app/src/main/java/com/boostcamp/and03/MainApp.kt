@@ -3,9 +3,9 @@ package com.boostcamp.and03
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.boostcamp.and03.ui.core.component.MainBottomBar
-import com.boostcamp.and03.ui.core.navigation.MainNavHost
-import com.boostcamp.and03.ui.core.navigation.MainNavigator
+import com.boostcamp.and03.ui.component.MainBottomBar
+import com.boostcamp.and03.ui.navigation.MainNavHost
+import com.boostcamp.and03.ui.navigation.MainNavigator
 
 @Composable
 fun MainApp(

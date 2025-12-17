@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.core.component
+package com.boostcamp.and03.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.core.navigation.MainBottomTab
+import com.boostcamp.and03.ui.navigation.MainBottomTab
 import kotlinx.collections.immutable.ImmutableList
 
 private object MainBottomBarDimens {

@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.core.navigation
+package com.boostcamp.and03.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding

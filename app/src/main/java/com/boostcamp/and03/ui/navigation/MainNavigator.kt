@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.core.navigation
+package com.boostcamp.and03.ui.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
