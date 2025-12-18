@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.prototype.model
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 
@@ -24,28 +25,66 @@ data class Edge(
     val name: String,
 )
 
-class MemoGraph {
-    private val _nodes = mutableMapOf<String, MemoNode>()
-    val nodes: Map<String, MemoNode> get() = _nodes
+data class MemoGraph(
+    val nodes: Map<String, MemoNode> = emptyMap(),
+    val edges: List<Edge> = emptyList()
+) {
+//    private val _nodes = mutableMapOf<String, MemoNode>()
+//    val nodes: Map<String, MemoNode> get() = _nodes
+//
+//    private val _edges = mutableListOf<Edge>()
+//    val edges: List<Edge> get() = _edges
 
-    private val _edges = mutableListOf<Edge>()
-    val edges: List<Edge> get() = _edges
-
-    fun addMemo(memo: MemoNode) {
-        _nodes[memo.id] = memo
+    fun addMemo(memo: MemoNode): MemoGraph {
+//        _nodes[memo.id] = memo
+        return copy(nodes = nodes + (memo.id to memo))
     }
 
-    fun removeMemo(memoId: String) {
-        _nodes.remove(memoId)
-        _edges.removeAll { it.toId == memoId || it.fromId == memoId }
+    fun removeMemo(memoId: String): MemoGraph {
+        return copy(
+            nodes = nodes - memoId,
+            edges = edges.filter { it.toId != memoId && it.fromId != memoId }
+        )
     }
 
-    fun connectMemo(fromId: String, toId: String, name: String) {
-        _edges.add(Edge(toId, fromId, name))
+    fun connectMemo(fromId: String, toId: String, name: String): MemoGraph {
+        return copy(edges = edges + Edge(toId, fromId, name))
     }
 
-    fun disconnectMemo(fromId: String, toId: String) {
-        _edges.removeAll { it.toId == toId && it.fromId == fromId }
-        _edges.removeAll { it.toId == toId && it.fromId == fromId }
+    fun disconnectMemo(fromId: String, toId: String): MemoGraph {
+        return copy(
+            edges = edges.filterNot { it.fromId == fromId && it.toId == toId }
+        )
+    }
+
+    fun updateNodePosition(nodeId: String, newOffset: Offset): MemoGraph {
+//        val node = nodes[nodeId] ?: return this
+//        return copy(
+//            nodes = nodes + (nodeId to node.copy(offset = newOffset))
+//        )
+
+//        return copy(
+//            nodes = nodes.mapValues { (id, node) ->
+//                if (id == nodeId) {
+//                    Log.d("CanvasScreen", "updateNodePosition: $newOffset")
+//                    Log.d("CanvasScreen", "updateNodePosition: ${node.offset}")
+//                    node.copy(offset = newOffset)
+//                }
+//                else
+//                    node
+//            }
+//        )
+
+        return copy(
+            nodes = nodes.mapValues { (id, node) ->
+                if (id == nodeId) {
+                    Log.d("CanvasScreen", "updateNodePosition: $newOffset")
+                    Log.d("CanvasScreen", "updateNodePosition: ${node.offset}")
+                    node.copy(offset = node.offset + newOffset)
+                } else node
+            }
+        )
+
+
     }
 }

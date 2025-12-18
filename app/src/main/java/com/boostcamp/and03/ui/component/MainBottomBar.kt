@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.core.component
+package com.boostcamp.and03.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -11,8 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.navigation.MainBottomTab
 import kotlinx.collections.immutable.ImmutableList
 
@@ -23,7 +23,7 @@ private object MainBottomBarDimens {
 @Composable
 fun MainBottomBar(
     visible: Boolean,
-    bottomTabs: ImmutableList<MainBottomTab>,
+    tabs: ImmutableList<MainBottomTab>,
     currentTab: MainBottomTab?,
     onTabSelected: (MainBottomTab) -> Unit,
     modifier: Modifier = Modifier,
@@ -42,24 +42,21 @@ fun MainBottomBar(
         NavigationBar(
             modifier = modifier
         ) {
-            bottomTabs.forEach { tab ->
-                val isSelected = tab == currentTab
-                val iconId = if (isSelected) {
-                    tab.selectedIconId
-                } else {
-                    tab.unselectedIconId
-                }
-
+            tabs.forEach { tab ->
                 NavigationBarItem(
-                    selected = isSelected,
+                    selected = tab == currentTab,
                     onClick = { onTabSelected(tab) },
-                    icon = {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(iconId),
-                            contentDescription = stringResource(tab.tabTextId)
+                    label = {
+                        Text(
+                            text = "테스트 라벨 텍스트"
                         )
                     },
-                    label = { Text(text = stringResource(tab.tabTextId)) }
+                    icon = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_android),
+                            contentDescription = null
+                        )
+                    }
                 )
             }
         }

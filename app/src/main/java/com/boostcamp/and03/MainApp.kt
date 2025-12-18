@@ -17,7 +17,7 @@ fun MainApp(
         bottomBar = {
             MainBottomBar(
                 visible = navigator.isShowBottomBar,
-                bottomTabs = navigator.mainBottomTabs,
+                tabs = navigator.mainBottomTabs,
                 currentTab = navigator.currentTab,
                 onTabSelected = { tab -> navigator.navigate(tab.route) }
             )
