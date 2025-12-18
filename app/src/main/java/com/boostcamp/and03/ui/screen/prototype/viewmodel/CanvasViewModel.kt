@@ -31,7 +31,7 @@ class CanvasViewModel: ViewModel() {
             id = newId,
             title = title,
             content = content,
-            offset = Offset(0f, 0f) // 일단 임시 위치
+            offset = Offset(400f, 400f) // 임시 생성 위치 설정
         )
 
         val newGraph = MemoGraph().apply {

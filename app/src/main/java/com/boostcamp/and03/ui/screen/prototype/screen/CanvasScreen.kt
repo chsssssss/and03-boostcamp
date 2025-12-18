@@ -59,6 +59,8 @@ fun CanvasScreen(
     var scale = viewModel.scale
 
     var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) } // 아이템들의 실시간 크기를 저장
+
+//    // 화면 중앙 정렬용 로직
 //    var canvasSize by remember { mutableStateOf(IntSize.Zero) } // 캔버스 크기
 
 //    LaunchedEffect(canvasSize, nodeSizes) {
