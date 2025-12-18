@@ -59,7 +59,7 @@ fun CanvasScreen(
     var scale = viewModel.scale
 
     var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) } // 아이템들의 실시간 크기를 저장
-    var canvasSize by remember { mutableStateOf(IntSize.Zero) } // 캔버스 크기
+//    var canvasSize by remember { mutableStateOf(IntSize.Zero) } // 캔버스 크기
 
 //    LaunchedEffect(canvasSize, nodeSizes) {
 //        val allSized = items.nodes.keys.all { id ->
@@ -120,9 +120,9 @@ fun CanvasScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .onGloballyPositioned { coordinates ->
-                        canvasSize = coordinates.size
-                    }
+//                    .onGloballyPositioned { coordinates ->
+//                        canvasSize = coordinates.size
+//                    }
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
