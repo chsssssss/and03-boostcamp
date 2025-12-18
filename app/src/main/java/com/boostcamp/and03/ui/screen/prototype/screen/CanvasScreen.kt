@@ -132,8 +132,7 @@ fun CanvasScreen(
                     }
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
-                            scale = (scale * zoom).coerceIn(0.5f, 2.0f)
-                            panOffset += pan
+                            viewModel.updateViewport(pan, zoom)
                         }
                 }
             ) {

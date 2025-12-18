@@ -23,4 +23,11 @@ class CanvasViewModel: ViewModel() {
     var scale by mutableStateOf(1f)
     val minScale = 0.5f
     val maxScale = 2.0f
+
+    fun updateViewport(pan: Offset, zoom: Float) {
+        panOffset += pan
+        scale = (scale * zoom).coerceIn(minScale, maxScale)
+    }
+
+
 }
