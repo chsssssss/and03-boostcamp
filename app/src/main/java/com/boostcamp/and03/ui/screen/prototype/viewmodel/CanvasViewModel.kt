@@ -24,6 +24,25 @@ class CanvasViewModel: ViewModel() {
     val minScale = 0.5f
     val maxScale = 2.0f
 
+    fun addMemo(title: String, content: String) {
+        val newId = (graph.nodes.size + 1).toString()
+
+        val newNode = MemoNode(
+            id = newId,
+            title = title,
+            content = content,
+            offset = Offset(0f, 0f) // 일단 임시 위치
+        )
+
+        val newGraph = MemoGraph().apply {
+            graph.nodes.values.forEach { addMemo(it) }
+            graph.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
+            addMemo(newNode)
+        }
+
+        graph = newGraph
+    }
+
     fun updateViewport(pan: Offset, zoom: Float) {
         panOffset += pan
         scale = (scale * zoom).coerceIn(minScale, maxScale)

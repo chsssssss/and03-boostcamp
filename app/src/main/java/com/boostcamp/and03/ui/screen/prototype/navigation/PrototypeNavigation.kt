@@ -32,11 +32,15 @@ fun PrototypeNavHost() {
         }
 
         composable<PrototypeRoute.MemoEdit> {
+            val canvasBackStackEntry = navController.getBackStackEntry(PrototypeRoute.Canvas)
+            val canvasViewModel: CanvasViewModel = viewModel(canvasBackStackEntry)
+
             MemoEditScreen(
                 onBack = {
                     navController.popBackStack()
                 },
                 onSave = { title, content ->
+                    canvasViewModel.addMemo(title, content)
                     navController.popBackStack()
                 }
             )
@@ -47,8 +51,8 @@ fun PrototypeNavHost() {
 sealed interface PrototypeRoute {
 
     @Serializable
-    data object Canvas: PrototypeRoute
+    data object Canvas : PrototypeRoute
 
     @Serializable
-    data object MemoEdit: PrototypeRoute
+    data object MemoEdit : PrototypeRoute
 }
