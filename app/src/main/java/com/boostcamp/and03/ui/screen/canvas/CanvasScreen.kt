@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,34 +34,32 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.screen.canvas.model.Arrow
-import com.boostcamp.and03.ui.screen.canvas.model.Node
-import com.boostcamp.and03.ui.screen.canvas.model.leftCenter
-import com.boostcamp.and03.ui.screen.canvas.model.rightCenter
+import com.boostcamp.and03.ui.screen.canvas.model.Edge
+import com.boostcamp.and03.ui.screen.canvas.model.MemoGraph
+import com.boostcamp.and03.ui.screen.canvas.model.MemoNode
 
 @Composable
 fun CanvasScreen() {
-    // 노드 목록
-    var nodes by remember {
-        mutableStateOf(
-            listOf(
-                Node("1", "인물 A", "설명 A", Offset(100f, 200f)),
-                Node("2", "인물 B", "설명 B", Offset(700f, 200f)),
-                Node("3", "인물 C", "설명 C", Offset(100f, 600f)),
-                Node("4", "인물 D", "설명 D", Offset(700f, 600f)),
-                Node("5", "인물 E", "설명 E", Offset(100f, 1000f)),
-                Node("6", "인물 F", "설명 F", Offset(700f, 1000f)),
-            )
-        )
+
+    var items by remember {
+        mutableStateOf(MemoGraph().apply {
+            addMemo(MemoNode("1", "인물 A", "설명 A", Offset(100f, 200f)))
+            addMemo(MemoNode("2", "인물 B", "설명 B", Offset(700f, 200f)))
+            addMemo(MemoNode("3", "인물 C", "설명 C", Offset(100f, 600f)))
+            addMemo(MemoNode("4", "인물 D", "설명 D", Offset(700f, 600f)))
+            addMemo(MemoNode("5", "인물 E", "설명 E", Offset(100f, 1000f)))
+            addMemo(MemoNode("6", "인물 F", "설명 F", Offset(700f, 1000f)))
+        })
     }
 
-    var arrows by remember { mutableStateOf<List<Arrow>>(emptyList()) }         // 관계 목록
+    var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) }      // 아이템들의 실시간 크기를 저장
     var selectedIds by remember { mutableStateOf<List<String>>(emptyList()) }   // 선택된 아이템 아이디 목록
     var connectMode by remember { mutableStateOf(false) }                       // 관계 연결 모드 상태
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }      // 캔버스 드래그
-    var scale by remember { mutableStateOf(1f) }                                // 1.0 = 100%
-    val minScale = 0.001f
-    val maxScale = 2.0f
+
+    var scale by remember { mutableStateOf(1f) } // 현재 배율, 1.0 = 100%
+    val minScale = 0.1f                                  // 최소 배율
+    val maxScale = 2.0f                                  // 최대 배율
 
     Scaffold { innerPadding ->
         Column(
@@ -80,62 +77,64 @@ fun CanvasScreen() {
                     }
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        panOffset += dragAmount
                     }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
-                            scale = (scale * zoom).coerceIn(minScale, maxScale)
-                            panOffset += pan
-                        }
-                    }
+                }
             ) {
                 ArrowCanvas(
-                    arrows = arrows,
-                    nodes = nodes,
+                    arrows = items.edges,
+                    items = items.nodes,
+                    nodeSizes = nodeSizes,
                     panOffset = panOffset
                 )
 
-                nodes.forEach { item ->
-                    DraggableNode(
-                        node = item,
-                        scale = scale,
+                items.nodes.values.forEach { item ->
+                    DraggableItem(
+                        item = item,
                         isSelected = selectedIds.contains(item.id),
                         panOffset = panOffset,
                         onClick = {
                             if (connectMode) {
-                                selectedIds = if (selectedIds.contains(item.id)) { // 이미 선택된 아이템이면
-                                    selectedIds - item.id
-                                } else {
-                                    (selectedIds + item.id).takeLast(2)
-                                }
+                                selectedIds =
+                                    if (selectedIds.contains(item.id))  // 이미 선택된 아이템이면
+                                        selectedIds - item.id
+                                    else
+                                        (selectedIds + item.id).takeLast(2)
 
                                 // 연결
                                 if (selectedIds.size == 2) {
-                                    arrows = arrows + Arrow(
-                                        selectedIds[0],
-                                        selectedIds[1]
-                                    )
+                                    val newGraph = MemoGraph().apply {
+                                        items.nodes.values.forEach { addMemo(it) }
+                                        items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
+                                        connectMemo(selectedIds[0], selectedIds[1], "연결")
+                                    }
+                                    items = newGraph
                                     selectedIds = emptyList()
                                     connectMode = false
                                 }
                             }
                         },
                         onMove = { newOffset ->
-                            nodes = nodes.map {
-                                if (it.id == item.id) it.copy(offset = newOffset)
-                                else it
+                            val newGraph = MemoGraph().apply {
+                                items.nodes.values.forEach { node ->
+                                    if (node.id == item.id) addMemo(node.copy(offset = newOffset))
+                                    else addMemo(node)
+                                }
+                                items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
                             }
+                            items = newGraph
                         },
                         onSizeChanged = { newSize ->
-                            nodes = nodes.map {
-                                if (it.id == item.id) it.copy(size = newSize)
-                                else it
-                            }
+                            nodeSizes = nodeSizes + (item.id to newSize)
                         }
                     )
                 }
@@ -145,38 +144,36 @@ fun CanvasScreen() {
 }
 
 @Composable
-fun DraggableNode(
-    node: Node,
-    scale: Float,
+fun DraggableItem(
+    item: MemoNode,
     isSelected: Boolean,
     panOffset: Offset,
     onClick: () -> Unit,
     onMove: (Offset) -> Unit,
     onSizeChanged: (IntSize) -> Unit
 ) {
-    val latestOffset by rememberUpdatedState(node.offset)
+    val latestOffset by rememberUpdatedState(item.offset)
 
     Box(
         modifier = Modifier
             // offset으로 이동, 캔버스 오프셋이랑 아이템 오프셋을 같이 적용
             .graphicsLayer {
-                translationX = node.offset.x + panOffset.x
-                translationY = node.offset.y + panOffset.y
+                translationX = item.offset.x + panOffset.x
+                translationY = item.offset.y + panOffset.y
             }
             // 아이템 이동하면서 선도 같이 움직이도록
             .onGloballyPositioned { coords ->
-                Log.d("TAG", "onGloballyPositioned: $coords")
                 onSizeChanged(coords.size)
             }
             // 클릭
             .combinedClickable(onClick = onClick)
             // 드래그 제스처
-            .pointerInput(node.id) {
+            .pointerInput(item.id) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
                     Log.d("TAG", "dragAmount: $dragAmount")
-                    Log.d("TAG", "item.offset: ${node.offset}")
-                    Log.d("TAG", "item.offset + dragAmount: ${node.offset + dragAmount}")
+                    Log.d("TAG", "item.offset: ${item.offset}")
+                    Log.d("TAG", "item.offset + dragAmount: ${item.offset + dragAmount}")
 
                     onMove(latestOffset + dragAmount)
                 }
@@ -195,9 +192,9 @@ fun DraggableNode(
                     contentDescription = null
                 )
                 Spacer(Modifier.width(4.dp))
-                Text(text = node.text)
+                Text(text = item.title)
             }
-            Text(text = node.description)
+            Text(text = item.content)
         }
     }
 }
@@ -205,23 +202,34 @@ fun DraggableNode(
 // 화살표 캔버스
 @Composable
 fun ArrowCanvas(
-    arrows: List<Arrow>,
-    nodes: List<Node>,
+    arrows: List<Edge>,
+    items: Map<String, MemoNode>,
+    nodeSizes: Map<String, IntSize>,
     panOffset: Offset
 ) {
     Canvas(modifier = Modifier.fillMaxSize()) {
-        arrows.forEach { arrow ->
-            val from = nodes.firstOrNull { it.id == arrow.fromId }
-            val to = nodes.firstOrNull { it.id == arrow.toId }
+        arrows.forEach { edge ->
+//            val from = items.firstOrNull { it.id == arrow.fromId }
+//            val to = items.firstOrNull { it.id == arrow.toId }
 
-            if (from != null && to != null) {
+            val fromNode = items[edge.fromId]
+            val toNode = items[edge.toId]
+
+            if (fromNode != null && toNode != null) {
                 drawLine(
                     color = Color.Black,
-                    start = from.rightCenter() + panOffset,
-                    end = to.leftCenter() + panOffset,
+                    start = fromNode.rightCenter() + panOffset,
+                    end = toNode.leftCenter() + panOffset,
                     strokeWidth = 4f
                 )
             }
         }
     }
 }
+
+// 화살표 연결 지점 계산
+fun MemoNode.rightCenter(): Offset =
+    offset + Offset(size.width.toFloat(), size.height / 2f)
+
+fun MemoNode.leftCenter(): Offset =
+    offset + Offset(0f, size.height / 2f)
