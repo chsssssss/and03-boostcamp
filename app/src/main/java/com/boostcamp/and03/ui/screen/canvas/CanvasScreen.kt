@@ -63,7 +63,7 @@ fun CanvasScreen() {
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }                 // 캔버스 크기
 
     var scale by remember { mutableStateOf(1f) } // 현재 배율, 1.0 = 100%
-    val minScale = 0.1f                                  // 최소 배율
+    val minScale = 0.5f                                  // 최소 배율
     val maxScale = 2.0f                                  // 최대 배율
 
     LaunchedEffect(canvasSize, nodeSizes) {
@@ -111,8 +111,8 @@ fun CanvasScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .onGloballyPositioned { coords ->
-                        canvasSize = coords.size
+                    .onGloballyPositioned { coordinates ->
+                        canvasSize = coordinates.size
                     }
                     .graphicsLayer {
                         scaleX = scale
