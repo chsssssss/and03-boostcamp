@@ -22,25 +22,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
-import com.boostcamp.and03.ui.screen.prototype.model.MemoGraph
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.model.leftCenter
 import com.boostcamp.and03.ui.screen.prototype.model.rightCenter
@@ -227,21 +228,60 @@ fun ArrowCanvas(
     nodeSizes: Map<String, IntSize>,
     panOffset: Offset
 ) {
+    val labelPositions = remember { mutableStateMapOf<String, Offset>() }
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         arrows.forEach { edge ->
-//            val from = items.firstOrNull { it.id == arrow.fromId }
-//            val to = items.firstOrNull { it.id == arrow.toId }
-
             val fromNode = items[edge.fromId]
             val toNode = items[edge.toId]
 
             if (fromNode != null && toNode != null) {
+                val start = fromNode.rightCenter() + panOffset
+                val end = toNode.leftCenter() + panOffset
+
+                // 1. 선 그리기
                 drawLine(
                     color = Color.Black,
-                    start = fromNode.rightCenter() + panOffset,
-                    end = toNode.leftCenter() + panOffset,
+                    start = start,
+                    end = end,
                     strokeWidth = 4f
                 )
+
+                // 2. 라벨 위치 계산 (중점)
+                val target = (start + end) / 2f
+                val key = "${edge.fromId}->${edge.toId}"
+
+                val prev = labelPositions[key] ?: target
+                val smooth = lerp(prev, target, 0.18f)
+                labelPositions[key] = smooth
+
+                // 3. 방향 벡터 & 각도 계산
+                val dir = end - start
+                val angleRad = kotlin.math.atan2(dir.y, dir.x)
+                var angleDeg = Math.toDegrees(angleRad.toDouble()).toFloat()
+
+                // 텍스트 뒤집힘 방지
+                if (angleDeg > 90f || angleDeg < -90f) {
+                    angleDeg += 180f
+                }
+
+                // 4. 텍스트 회전해서 그리기
+                drawContext.canvas.nativeCanvas.apply {
+                    save()
+                    rotate(angleDeg, smooth.x, smooth.y)
+                    drawText(
+                        edge.name,
+                        smooth.x,
+                        smooth.y,
+                        android.graphics.Paint().apply {
+                            color = android.graphics.Color.BLACK
+                            textSize = 32f
+                            textAlign = android.graphics.Paint.Align.CENTER
+                            isAntiAlias = true
+                        }
+                    )
+                    restore()
+                }
             }
         }
     }
