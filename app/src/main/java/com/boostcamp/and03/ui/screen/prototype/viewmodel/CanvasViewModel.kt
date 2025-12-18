@@ -44,4 +44,27 @@ class CanvasViewModel: ViewModel() {
         connectMode = !connectMode
         selectedIds = emptyList()
     }
+
+    fun selectNode(id: String) {
+        if (!connectMode) return
+
+        selectedIds =
+            if (selectedIds.contains(id)) selectedIds - id
+            else (selectedIds + id).takeLast(2)
+
+        if (selectedIds.size == 2) {
+            connect(selectedIds[0], selectedIds[1])
+            selectedIds = emptyList()
+            connectMode = false
+        }
+    }
+
+    private fun connect(fromId: String, toId: String) {
+        val newGraph = MemoGraph().apply {
+            graph.nodes.values.forEach { addMemo(it) }
+            graph.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
+            connectMemo(fromId, toId, "연결")
+        }
+        graph = newGraph
+    }
 }

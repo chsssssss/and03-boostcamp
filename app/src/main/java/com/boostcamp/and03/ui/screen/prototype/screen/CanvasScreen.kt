@@ -145,27 +145,7 @@ fun CanvasScreen(
                         item = item,
                         isSelected = selectedIds.contains(item.id),
                         panOffset = panOffset,
-                        onClick = {
-                            if (connectMode) {
-                                selectedIds =
-                                    if (selectedIds.contains(item.id))  // 이미 선택된 아이템이면
-                                        selectedIds - item.id
-                                    else
-                                        (selectedIds + item.id).takeLast(2)
-
-                                // 연결
-                                if (selectedIds.size == 2) {
-                                    val newGraph = MemoGraph().apply {
-                                        items.nodes.values.forEach { addMemo(it) }
-                                        items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
-                                        connectMemo(selectedIds[0], selectedIds[1], "연결")
-                                    }
-                                    items = newGraph
-                                    selectedIds = emptyList()
-                                    connectMode = false
-                                }
-                            }
-                        },
+                        onClick = { viewModel.selectNode(item.id) },
                         onMove = { newOffset ->
                             viewModel.moveNode(item.id, newOffset)
                         },
