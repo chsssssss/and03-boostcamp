@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.boostcamp.and03.ui.navigation.rememberMainNavigator
+import com.boostcamp.and03.ui.screen.canvas.CanvasScreen
 import com.boostcamp.and03.ui.theme.And03Theme
 
 class MainActivity : ComponentActivity() {
@@ -13,8 +14,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             And03Theme {
-                val navigator = rememberMainNavigator()
-                MainApp(navigator)
+//                val navigator = rememberMainNavigator()
+//                MainApp(navigator)
+                CanvasScreen()
             }
         }
     }
