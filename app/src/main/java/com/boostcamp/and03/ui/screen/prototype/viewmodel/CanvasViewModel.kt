@@ -78,6 +78,25 @@ class CanvasViewModel: ViewModel() {
         }
     }
 
+    fun snapToGrid(gridSize: Float = 300f) {
+        val newGraph = MemoGraph().apply {
+            graph.nodes.values.forEach { node ->
+                val snappedX =
+                    kotlin.math.round(node.offset.x / gridSize) * gridSize
+                val snappedY =
+                    kotlin.math.round(node.offset.y / gridSize) * gridSize
+
+                addMemo(
+                    node.copy(
+                        offset = Offset(snappedX, snappedY)
+                    )
+                )
+            }
+            graph.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
+        }
+        graph = newGraph
+    }
+
     private fun connect(fromId: String, toId: String) {
         val newGraph = MemoGraph().apply {
             graph.nodes.values.forEach { addMemo(it) }

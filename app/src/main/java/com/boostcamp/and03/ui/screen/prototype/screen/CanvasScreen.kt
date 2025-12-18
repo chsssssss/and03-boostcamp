@@ -113,6 +113,13 @@ fun CanvasScreen(
                 .padding(innerPadding)
         ) {
             Text(
+                text = "격자 정렬",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .combinedClickable { viewModel.snapToGrid() }
+            )
+
+            Text(
                 text = if (!connectMode) "연결하기" else "연결 취소",
                 modifier = Modifier
                     .padding(16.dp)
