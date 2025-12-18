@@ -11,7 +11,6 @@ object Dimensions {
     val PADDING_2XL = 24.dp
     val PADDING_3XL = 28.dp
     val PADDING_4XL = 32.dp
-
     val PADDING_5XL = 36.dp
     val PADDING_6XL = 40.dp
     val PADDING_7XL = 44.dp
