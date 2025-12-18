@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -112,19 +113,13 @@ fun CanvasScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Text(
-                text = "격자 정렬",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .combinedClickable { viewModel.snapToGrid() }
-            )
+            Button(onClick = { viewModel.toggleConnectMode() }) {
+                Text(if (connectMode) "연결 모드 취소" else "연결 모드로 전환")
+            }
 
-            Text(
-                text = if (!connectMode) "연결하기" else "연결 취소",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .combinedClickable { viewModel.toggleConnectMode() }
-            )
+            Button(onClick = { viewModel.snapToGrid()}) {
+                Text("격자 정렬")
+            }
 
             Box(
                 modifier = Modifier
