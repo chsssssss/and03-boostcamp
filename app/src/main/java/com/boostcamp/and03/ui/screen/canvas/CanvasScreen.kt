@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,6 +60,9 @@ fun CanvasScreen() {
     var selectedIds by remember { mutableStateOf<List<String>>(emptyList()) }   // 선택된 아이템 아이디 목록
     var connectMode by remember { mutableStateOf(false) }                       // 관계 연결 모드 상태
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }      // 캔버스 드래그
+    var scale by remember { mutableStateOf(1f) }                                // 1.0 = 100%
+    val minScale = 0.001f
+    val maxScale = 2.0f
 
     Scaffold { innerPadding ->
         Column(
@@ -79,10 +83,14 @@ fun CanvasScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    }
                     .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            panOffset += dragAmount
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            scale = (scale * zoom).coerceIn(minScale, maxScale)
+                            panOffset += pan
                         }
                     }
             ) {
@@ -95,6 +103,7 @@ fun CanvasScreen() {
                 nodes.forEach { item ->
                     DraggableNode(
                         node = item,
+                        scale = scale,
                         isSelected = selectedIds.contains(item.id),
                         panOffset = panOffset,
                         onClick = {
@@ -138,6 +147,7 @@ fun CanvasScreen() {
 @Composable
 fun DraggableNode(
     node: Node,
+    scale: Float,
     isSelected: Boolean,
     panOffset: Offset,
     onClick: () -> Unit,
