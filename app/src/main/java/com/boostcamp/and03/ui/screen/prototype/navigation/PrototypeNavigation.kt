@@ -1,11 +1,13 @@
 package com.boostcamp.and03.ui.screen.prototype.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.boostcamp.and03.ui.screen.prototype.screen.CanvasScreen
 import com.boostcamp.and03.ui.screen.prototype.screen.MemoEditScreen
+import com.boostcamp.and03.ui.screen.prototype.viewmodel.CanvasViewModel
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -16,12 +18,16 @@ fun PrototypeNavHost() {
         navController = navController,
         startDestination = PrototypeRoute.Canvas
     ) {
-        composable<PrototypeRoute.Canvas> {
+        composable<PrototypeRoute.Canvas> { backStackEntry ->
+            val canvasViewModel: CanvasViewModel =
+                viewModel(backStackEntry)
+
             CanvasScreen(
                 navController = navController,
                 onEditMemoClick = {
                     navController.navigate(PrototypeRoute.MemoEdit)
-                }
+                },
+                viewModel = canvasViewModel
             )
         }
 

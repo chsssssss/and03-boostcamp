@@ -50,7 +50,7 @@ import com.boostcamp.and03.ui.screen.prototype.viewmodel.CanvasViewModel
 fun CanvasScreen(
     navController: NavController,
     onEditMemoClick: () -> Unit,
-    viewModel: CanvasViewModel = viewModel()
+    viewModel: CanvasViewModel
 ) {
     var items = viewModel.graph // 노드와 엣지가 있는 그래프
     var selectedIds = viewModel.selectedIds // 선택된 아이템 아이디 목록
