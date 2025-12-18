@@ -7,11 +7,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -113,13 +115,21 @@ fun CanvasScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(top = 24.dp)
         ) {
-            Button(onClick = { viewModel.toggleConnectMode() }) {
-                Text(if (connectMode) "연결 모드 취소" else "연결 모드로 전환")
-            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(onClick = { viewModel.toggleConnectMode() }) {
+                    Text(if (connectMode) "연결 모드 취소" else "연결 모드로 전환")
+                }
 
-            Button(onClick = { viewModel.snapToGrid()}) {
-                Text("격자 정렬")
+                Button(onClick = { viewModel.snapToGrid()}) {
+                    Text("격자 정렬")
+                }
             }
 
             Box(
