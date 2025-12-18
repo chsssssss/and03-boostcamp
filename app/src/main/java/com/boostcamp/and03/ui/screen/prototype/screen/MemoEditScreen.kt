@@ -68,7 +68,8 @@ fun MemoEditScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                modifier = Modifier.padding(bottom = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 label = { Text("제목") },
                 singleLine = true
             )
