@@ -29,5 +29,14 @@ class CanvasViewModel: ViewModel() {
         scale = (scale * zoom).coerceIn(minScale, maxScale)
     }
 
-
+    fun moveNode(id: String, newOffset: Offset) {
+        val newGraph = MemoGraph().apply {
+            graph.nodes.values.forEach { node ->
+                if (node.id == id) addMemo(node.copy(offset = newOffset))
+                else addMemo(node)
+            }
+            graph.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
+        }
+        graph = newGraph
+    }
 }

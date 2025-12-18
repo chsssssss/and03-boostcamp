@@ -170,14 +170,7 @@ fun CanvasScreen(
                             }
                         },
                         onMove = { newOffset ->
-                            val newGraph = MemoGraph().apply {
-                                items.nodes.values.forEach { node ->
-                                    if (node.id == item.id) addMemo(node.copy(offset = newOffset))
-                                    else addMemo(node)
-                                }
-                                items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
-                            }
-                            items = newGraph
+                            viewModel.moveNode(item.id, newOffset)
                         },
                         onSizeChanged = { newSize ->
                             nodeSizes = nodeSizes + (item.id to newSize)
