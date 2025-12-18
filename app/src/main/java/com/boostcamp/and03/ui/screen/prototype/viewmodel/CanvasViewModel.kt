@@ -39,4 +39,9 @@ class CanvasViewModel: ViewModel() {
         }
         graph = newGraph
     }
+
+    fun toggleConnectMode() {
+        connectMode = !connectMode
+        selectedIds = emptyList()
+    }
 }

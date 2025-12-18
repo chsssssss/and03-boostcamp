@@ -114,10 +114,7 @@ fun CanvasScreen(
                 text = if (!connectMode) "연결하기" else "연결 취소",
                 modifier = Modifier
                     .padding(16.dp)
-                    .combinedClickable {
-                        connectMode = !connectMode
-                        selectedIds = emptyList()
-                    }
+                    .combinedClickable { viewModel.toggleConnectMode() }
             )
 
             Box(
