@@ -11,6 +11,13 @@ data class MemoNode(
     val size: IntSize = IntSize.Zero
 )
 
+// 화살표 연결 지점 계산
+fun MemoNode.rightCenter(): Offset =
+    offset + Offset(size.width.toFloat(), size.height / 2f)
+
+fun MemoNode.leftCenter(): Offset =
+    offset + Offset(0f, size.height / 2f)
+
 data class Edge(
     val toId: String,
     val fromId: String,

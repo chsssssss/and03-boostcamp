@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,8 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.canvas.model.Edge
 import com.boostcamp.and03.ui.screen.canvas.model.MemoGraph
 import com.boostcamp.and03.ui.screen.canvas.model.MemoNode
+import com.boostcamp.and03.ui.screen.canvas.model.leftCenter
+import com.boostcamp.and03.ui.screen.canvas.model.rightCenter
 
 @Composable
 fun CanvasScreen() {
@@ -56,10 +59,37 @@ fun CanvasScreen() {
     var selectedIds by remember { mutableStateOf<List<String>>(emptyList()) }   // 선택된 아이템 아이디 목록
     var connectMode by remember { mutableStateOf(false) }                       // 관계 연결 모드 상태
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }      // 캔버스 드래그
+    var canvasSize by remember { mutableStateOf(IntSize.Zero) }                 // 캔버스 크기
 
     var scale by remember { mutableStateOf(1f) } // 현재 배율, 1.0 = 100%
     val minScale = 0.1f                                  // 최소 배율
     val maxScale = 2.0f                                  // 최대 배율
+
+    LaunchedEffect(canvasSize, nodeSizes) {
+        val allSized = items.nodes.keys.all { id ->
+            nodeSizes[id]?.let { it != IntSize.Zero } == true
+        }
+
+        if (canvasSize != IntSize.Zero && allSized) {
+            val (min, max) = calculateGraphBounds(
+                items.nodes.values.map { node ->
+                    node.copy(size = nodeSizes[node.id]!!)
+                }
+            )
+
+            val graphCenter = Offset(
+                (min.x + max.x) / 2f,
+                (min.y + max.y) / 2f
+            )
+
+            val screenCenter = Offset(
+                canvasSize.width / 2f,
+                canvasSize.height / 2f
+            )
+
+            panOffset = screenCenter - graphCenter
+        }
+    }
 
     Scaffold { innerPadding ->
         Column(
@@ -77,17 +107,21 @@ fun CanvasScreen() {
                     }
             )
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
-                        panOffset += dragAmount
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onGloballyPositioned { coords ->
+                        canvasSize = coords.size
                     }
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    }
+                    .pointerInput(Unit) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            panOffset += dragAmount
+                        }
                 }
             ) {
                 ArrowCanvas(
@@ -227,9 +261,11 @@ fun ArrowCanvas(
     }
 }
 
-// 화살표 연결 지점 계산
-fun MemoNode.rightCenter(): Offset =
-    offset + Offset(size.width.toFloat(), size.height / 2f)
+fun calculateGraphBounds(nodes: Collection<MemoNode>): Pair<Offset, Offset> {
+    val minX = nodes.minOf { it.offset.x }
+    val minY = nodes.minOf { it.offset.y }
+    val maxX = nodes.maxOf { it.offset.x + it.size.width }
+    val maxY = nodes.maxOf { it.offset.y + it.size.height }
 
-fun MemoNode.leftCenter(): Offset =
-    offset + Offset(0f, size.height / 2f)
+    return Offset(minX, minY) to Offset(maxX, maxY)
+}
