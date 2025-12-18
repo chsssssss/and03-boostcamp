@@ -38,6 +38,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoGraph
@@ -50,19 +51,10 @@ import kotlin.apply
 @Composable
 fun CanvasScreen(
     navController: NavController,
+    items: MemoGraph,
+    onItemsChange: (MemoGraph) -> Unit,
     onEditMemoClick: () -> Unit
 ) {
-    var items by remember {
-        mutableStateOf(MemoGraph().apply {
-            addMemo(MemoNode("1", "인물 A", "설명 A", Offset(100f, 200f)))
-            addMemo(MemoNode("2", "인물 B", "설명 B", Offset(700f, 200f)))
-            addMemo(MemoNode("3", "인물 C", "설명 C", Offset(100f, 600f)))
-            addMemo(MemoNode("4", "인물 D", "설명 D", Offset(700f, 600f)))
-            addMemo(MemoNode("5", "인물 E", "설명 E", Offset(100f, 1000f)))
-            addMemo(MemoNode("6", "인물 F", "설명 F", Offset(700f, 1000f)))
-        })
-    }
-
     var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) }      // 아이템들의 실시간 크기를 저장
     var selectedIds by remember { mutableStateOf<List<String>>(emptyList()) }   // 선택된 아이템 아이디 목록
     var connectMode by remember { mutableStateOf(false) }                       // 관계 연결 모드 상태
@@ -73,10 +65,12 @@ fun CanvasScreen(
     val minScale = 0.5f                                  // 최소 배율
     val maxScale = 2.0f                                  // 최대 배율
 
-    val savedStateHandle = navController.currentBackStackEntry!!.savedStateHandle
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val savedStateHandle = backStackEntry?.savedStateHandle
     val newMemo by savedStateHandle
-        .getStateFlow<Pair<String, String>?>("new_memo", null)
-        .collectAsState(null)
+        ?.getStateFlow<Pair<String, String>?>("new_memo", null)
+        ?.collectAsState(null)
+        ?: remember { mutableStateOf(null) }
 
     LaunchedEffect(canvasSize, nodeSizes) {
         val allSized = items.nodes.keys.all { id ->
@@ -105,8 +99,10 @@ fun CanvasScreen(
     }
 
     LaunchedEffect(newMemo) {
+        val handle = savedStateHandle ?: return@LaunchedEffect
+
         newMemo?.let { (title, content) ->
-            savedStateHandle.remove<Pair<String, String>>("new_memo")
+            handle.remove<Pair<String, String>>("new_memo")
 
             val newId = (items.nodes.size + 1).toString()
 
@@ -126,7 +122,7 @@ fun CanvasScreen(
                 addMemo(newNode)
             }
 
-            items = newGraph
+            onItemsChange(newGraph)
         }
     }
 
@@ -207,7 +203,7 @@ fun CanvasScreen(
                                         items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
                                         connectMemo(selectedIds[0], selectedIds[1], "연결")
                                     }
-                                    items = newGraph
+                                    onItemsChange(newGraph)
                                     selectedIds = emptyList()
                                     connectMode = false
                                 }
@@ -221,7 +217,7 @@ fun CanvasScreen(
                                 }
                                 items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
                             }
-                            items = newGraph
+                            onItemsChange(newGraph)
                         },
                         onSizeChanged = { newSize ->
                             nodeSizes = nodeSizes + (item.id to newSize)
