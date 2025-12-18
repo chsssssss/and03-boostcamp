@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +45,13 @@ import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.model.leftCenter
 import com.boostcamp.and03.ui.screen.prototype.model.rightCenter
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
+import kotlin.apply
 
 @Composable
 fun CanvasScreen(
     navController: NavController,
     onEditMemoClick: () -> Unit
 ) {
-
     var items by remember {
         mutableStateOf(MemoGraph().apply {
             addMemo(MemoNode("1", "인물 A", "설명 A", Offset(100f, 200f)))
@@ -71,6 +72,11 @@ fun CanvasScreen(
     var scale by remember { mutableStateOf(1f) } // 현재 배율, 1.0 = 100%
     val minScale = 0.5f                                  // 최소 배율
     val maxScale = 2.0f                                  // 최대 배율
+
+    val savedStateHandle = navController.currentBackStackEntry!!.savedStateHandle
+    val newMemo by savedStateHandle
+        .getStateFlow<Pair<String, String>?>("new_memo", null)
+        .collectAsState(null)
 
     LaunchedEffect(canvasSize, nodeSizes) {
         val allSized = items.nodes.keys.all { id ->
@@ -95,6 +101,32 @@ fun CanvasScreen(
             )
 
             panOffset = screenCenter - graphCenter
+        }
+    }
+
+    LaunchedEffect(newMemo) {
+        newMemo?.let { (title, content) ->
+            savedStateHandle.remove<Pair<String, String>>("new_memo")
+
+            val newId = (items.nodes.size + 1).toString()
+
+            val newNode = MemoNode(
+                id = newId,
+                title = title,
+                content = content,
+                offset = -panOffset + Offset(
+                    canvasSize.width / 2f,
+                    canvasSize.height / 2f
+                )
+            )
+
+            val newGraph = MemoGraph().apply {
+                items.nodes.values.forEach { addMemo(it) }
+                items.edges.forEach { connectMemo(it.fromId, it.toId, it.name) }
+                addMemo(newNode)
+            }
+
+            items = newGraph
         }
     }
 
