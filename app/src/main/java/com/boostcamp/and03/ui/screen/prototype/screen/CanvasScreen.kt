@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +35,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
@@ -44,59 +44,48 @@ import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.model.leftCenter
 import com.boostcamp.and03.ui.screen.prototype.model.rightCenter
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
+import com.boostcamp.and03.ui.screen.prototype.viewmodel.CanvasViewModel
 
 @Composable
 fun CanvasScreen(
     navController: NavController,
-    onEditMemoClick: () -> Unit
+    onEditMemoClick: () -> Unit,
+    viewModel: CanvasViewModel = viewModel()
 ) {
+    var items = viewModel.graph // 노드와 엣지가 있는 그래프
+    var selectedIds = viewModel.selectedIds // 선택된 아이템 아이디 목록
+    var connectMode = viewModel.connectMode  // 관계 연결 모드 상태
+    var panOffset = viewModel.panOffset // 캔버스 드래그
+    var scale = viewModel.scale
 
-    var items by remember {
-        mutableStateOf(MemoGraph().apply {
-            addMemo(MemoNode("1", "인물 A", "설명 A", Offset(100f, 200f)))
-            addMemo(MemoNode("2", "인물 B", "설명 B", Offset(700f, 200f)))
-            addMemo(MemoNode("3", "인물 C", "설명 C", Offset(100f, 600f)))
-            addMemo(MemoNode("4", "인물 D", "설명 D", Offset(700f, 600f)))
-            addMemo(MemoNode("5", "인물 E", "설명 E", Offset(100f, 1000f)))
-            addMemo(MemoNode("6", "인물 F", "설명 F", Offset(700f, 1000f)))
-        })
-    }
+    var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) } // 아이템들의 실시간 크기를 저장
+    var canvasSize by remember { mutableStateOf(IntSize.Zero) } // 캔버스 크기
 
-    var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) }      // 아이템들의 실시간 크기를 저장
-    var selectedIds by remember { mutableStateOf<List<String>>(emptyList()) }   // 선택된 아이템 아이디 목록
-    var connectMode by remember { mutableStateOf(false) }                       // 관계 연결 모드 상태
-    var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }      // 캔버스 드래그
-    var canvasSize by remember { mutableStateOf(IntSize.Zero) }                 // 캔버스 크기
-
-    var scale by remember { mutableStateOf(1f) } // 현재 배율, 1.0 = 100%
-    val minScale = 0.5f                                  // 최소 배율
-    val maxScale = 2.0f                                  // 최대 배율
-
-    LaunchedEffect(canvasSize, nodeSizes) {
-        val allSized = items.nodes.keys.all { id ->
-            nodeSizes[id]?.let { it != IntSize.Zero } == true
-        }
-
-        if (canvasSize != IntSize.Zero && allSized) {
-            val (min, max) = calculateGraphBounds(
-                items.nodes.values.map { node ->
-                    node.copy(size = nodeSizes[node.id]!!)
-                }
-            )
-
-            val graphCenter = Offset(
-                (min.x + max.x) / 2f,
-                (min.y + max.y) / 2f
-            )
-
-            val screenCenter = Offset(
-                canvasSize.width / 2f,
-                canvasSize.height / 2f
-            )
-
-            panOffset = screenCenter - graphCenter
-        }
-    }
+//    LaunchedEffect(canvasSize, nodeSizes) {
+//        val allSized = items.nodes.keys.all { id ->
+//            nodeSizes[id]?.let { it != IntSize.Zero } == true
+//        }
+//
+//        if (canvasSize != IntSize.Zero && allSized) {
+//            val (min, max) = calculateGraphBounds(
+//                items.nodes.values.map { node ->
+//                    node.copy(size = nodeSizes[node.id]!!)
+//                }
+//            )
+//
+//            val graphCenter = Offset(
+//                (min.x + max.x) / 2f,
+//                (min.y + max.y) / 2f
+//            )
+//
+//            val screenCenter = Offset(
+//                canvasSize.width / 2f,
+//                canvasSize.height / 2f
+//            )
+//
+//            panOffset = screenCenter - graphCenter
+//        }
+//    }
 
     Scaffold(
         floatingActionButton = {
@@ -143,7 +132,7 @@ fun CanvasScreen(
                     }
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
-                            scale = (scale * zoom).coerceIn(minScale, maxScale)
+                            scale = (scale * zoom).coerceIn(0.5f, 2.0f)
                             panOffset += pan
                         }
                 }
