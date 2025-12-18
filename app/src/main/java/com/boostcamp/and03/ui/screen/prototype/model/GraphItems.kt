@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.canvas.model
+package com.boostcamp.and03.ui.screen.prototype.model
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize

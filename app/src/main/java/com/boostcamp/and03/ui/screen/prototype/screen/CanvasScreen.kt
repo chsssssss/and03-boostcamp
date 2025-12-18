@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.canvas
+package com.boostcamp.and03.ui.screen.prototype.screen
 
 import android.util.Log
 import androidx.compose.foundation.Canvas
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,15 +36,20 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.screen.canvas.model.Edge
-import com.boostcamp.and03.ui.screen.canvas.model.MemoGraph
-import com.boostcamp.and03.ui.screen.canvas.model.MemoNode
-import com.boostcamp.and03.ui.screen.canvas.model.leftCenter
-import com.boostcamp.and03.ui.screen.canvas.model.rightCenter
+import com.boostcamp.and03.ui.screen.prototype.model.Edge
+import com.boostcamp.and03.ui.screen.prototype.model.MemoGraph
+import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
+import com.boostcamp.and03.ui.screen.prototype.model.leftCenter
+import com.boostcamp.and03.ui.screen.prototype.model.rightCenter
+import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
 
 @Composable
-fun CanvasScreen() {
+fun CanvasScreen(
+    navController: NavController,
+    onEditMemoClick: () -> Unit
+) {
 
     var items by remember {
         mutableStateOf(MemoGraph().apply {
@@ -92,7 +98,24 @@ fun CanvasScreen() {
         }
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    navController.navigate(PrototypeRoute.MemoEdit)
+                },
+                icon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(text = "메모 작성")
+                }
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
