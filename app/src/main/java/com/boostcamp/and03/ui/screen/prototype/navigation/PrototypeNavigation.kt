@@ -27,7 +27,10 @@ fun PrototypeNavHost() {
 
         composable<PrototypeRoute.MemoEdit> {
             MemoEditScreen(
-                onClose = {
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSave = { title, content ->
                     navController.popBackStack()
                 }
             )
