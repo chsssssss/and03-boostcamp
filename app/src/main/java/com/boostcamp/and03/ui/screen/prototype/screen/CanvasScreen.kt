@@ -235,73 +235,51 @@ fun DraggableItem(
 fun ArrowCanvas(
     arrows: List<Edge>,
     items: Map<String, MemoNode>,
+    panOffset: Offset,
     nodeSizes: Map<String, IntSize>,
-    panOffset: Offset
 ) {
-    val labelPositions = remember { mutableStateMapOf<String, Offset>() }
-
     Canvas(modifier = Modifier.fillMaxSize()) {
         arrows.forEach { edge ->
+
             val fromNode = items[edge.fromId]
             val toNode = items[edge.toId]
+            val fromSize = nodeSizes[edge.fromId] ?: IntSize.Zero
+            val toSize = nodeSizes[edge.toId] ?: IntSize.Zero
 
             if (fromNode != null && toNode != null) {
-                val start = fromNode.rightCenter() + panOffset
-                val end = toNode.leftCenter() + panOffset
+                // 시작점 (출발 노드의 우측 중앙)
+                val start = fromNode.offset + Offset(fromSize.width.toFloat(), fromSize.height / 2f) + panOffset
+                // 끝점 (도착 노드의 좌측 중앙)
+                val end = toNode.offset + Offset(0f, toSize.height / 2f) + panOffset
 
-                // 1. 선 그리기
-                drawLine(
+                // 꺾임 포인트 계산 (중간 지점)
+                val midX = (start.x + end.x) / 2
+
+                val path = androidx.compose.ui.graphics.Path().apply {
+                    moveTo(start.x, start.y)
+                    // 1. 중간 지점까지 수평 이동
+                    lineTo(midX, start.y)
+                    // 2. 도착 노드의 Y 높이까지 수직 이동
+                    lineTo(midX, end.y)
+                    // 3. 도착 지점까지 수평 이동
+                    lineTo(end.x, end.y)
+                }
+
+                drawPath(
+                    path = path,
                     color = Color.Black,
-                    start = start,
-                    end = end,
-                    strokeWidth = 4f
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4f)
                 )
-
-                // 2. 라벨 위치 계산 (중점)
-                val target = (start + end) / 2f
-                val key = "${edge.fromId}->${edge.toId}"
-
-                val prev = labelPositions[key] ?: target
-                val smooth = lerp(prev, target, 0.18f)
-                labelPositions[key] = smooth
-
-                // 3. 방향 벡터 & 각도 계산
-                val dir = end - start
-                val angleRad = kotlin.math.atan2(dir.y, dir.x)
-                var angleDeg = Math.toDegrees(angleRad.toDouble()).toFloat()
-
-                // 텍스트 뒤집힘 방지
-                if (angleDeg > 90f || angleDeg < -90f) {
-                    angleDeg += 180f
-                }
-
-                // 4. 텍스트 회전해서 그리기
-                drawContext.canvas.nativeCanvas.apply {
-                    save()
-                    rotate(angleDeg, smooth.x, smooth.y)
-                    drawText(
-                        edge.name,
-                        smooth.x,
-                        smooth.y,
-                        android.graphics.Paint().apply {
-                            color = android.graphics.Color.BLACK
-                            textSize = 32f
-                            textAlign = android.graphics.Paint.Align.CENTER
-                            isAntiAlias = true
-                        }
-                    )
-                    restore()
-                }
             }
         }
     }
 }
 
-fun calculateGraphBounds(nodes: Collection<MemoNode>): Pair<Offset, Offset> {
-    val minX = nodes.minOf { it.offset.x }
-    val minY = nodes.minOf { it.offset.y }
-    val maxX = nodes.maxOf { it.offset.x + it.size.width }
-    val maxY = nodes.maxOf { it.offset.y + it.size.height }
-
-    return Offset(minX, minY) to Offset(maxX, maxY)
-}
+//fun calculateGraphBounds(nodes: Collection<MemoNode>): Pair<Offset, Offset> {
+//    val minX = nodes.minOf { it.offset.x }
+//    val minY = nodes.minOf { it.offset.y }
+//    val maxX = nodes.maxOf { it.offset.x + it.size.width }
+//    val maxY = nodes.maxOf { it.offset.y + it.size.height }
+//
+//    return Offset(minX, minY) to Offset(maxX, maxY)
+//}

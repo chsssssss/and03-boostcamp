@@ -21,7 +21,7 @@ fun MemoNode.leftCenter(): Offset =
 data class Edge(
     val toId: String,
     val fromId: String,
-    val name: String,
+    val name: String
 )
 
 class MemoGraph {
