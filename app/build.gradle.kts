@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -25,6 +27,16 @@ android {
         versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        var properties = Properties()
+        properties.load(FileInputStream("local.properties"))
+        val kakaoRestApiKey = properties.getProperty("KAKAO_REST_API_KEY")
+
+        buildConfigField (
+            "String",
+            "KAKAO_REST_API_KEY",
+            "\"$kakaoRestApiKey\""
+        )
     }
 
     buildTypes {
@@ -53,6 +65,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">and03</string>
+
+    <!-- 바텀 탭 문자열 -->
+    <string name="bottom_tab_booklist">책 목록</string>
+    <string name="bottom_tab_add_book">책 추가</string>
+    <string name="bottom_tab_my_page">마이페이지</string>
+
+    <!-- Content Description -->
+    <string name="content_description_go_back">뒤로 가기</string>
 </resources>

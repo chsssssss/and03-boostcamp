@@ -1,13 +1,18 @@
 package com.boostcamp.and03.ui.screen.prototype.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.boostcamp.and03.ui.screen.prototype.model.MemoGraph
+import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.screen.CanvasScreen
 import com.boostcamp.and03.ui.screen.prototype.screen.MemoEditScreen
-import com.boostcamp.and03.ui.screen.prototype.viewmodel.CanvasViewModel
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -18,29 +23,24 @@ fun PrototypeNavHost() {
         navController = navController,
         startDestination = PrototypeRoute.Canvas
     ) {
-        composable<PrototypeRoute.Canvas> { backStackEntry ->
-            val canvasViewModel: CanvasViewModel =
-                viewModel(backStackEntry)
-
+        composable<PrototypeRoute.Canvas> {
             CanvasScreen(
                 navController = navController,
-                onEditMemoClick = {
-                    navController.navigate(PrototypeRoute.MemoEdit)
-                },
-                viewModel = canvasViewModel
+//                items = items,
+//                onItemsChange = { items = it },
+//                onEditMemoClick = {
+//                    navController.navigate(PrototypeRoute.MemoEdit)
+//                }
             )
         }
 
         composable<PrototypeRoute.MemoEdit> {
-            val canvasBackStackEntry = navController.getBackStackEntry(PrototypeRoute.Canvas)
-            val canvasViewModel: CanvasViewModel = viewModel(canvasBackStackEntry)
-
             MemoEditScreen(
-                onBack = {
-                    navController.popBackStack()
-                },
+                onBack = { navController.popBackStack() },
                 onSave = { title, content ->
-                    canvasViewModel.addMemo(title, content)
+                    navController.previousBackStackEntry!!
+                        .savedStateHandle["new_memo"] = Pair(title, content)
+
                     navController.popBackStack()
                 }
             )
@@ -51,8 +51,8 @@ fun PrototypeNavHost() {
 sealed interface PrototypeRoute {
 
     @Serializable
-    data object Canvas : PrototypeRoute
+    data object Canvas: PrototypeRoute
 
     @Serializable
-    data object MemoEdit : PrototypeRoute
+    data object MemoEdit: PrototypeRoute
 }

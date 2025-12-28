@@ -7,13 +7,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,75 +22,46 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
-import com.boostcamp.and03.ui.screen.prototype.model.leftCenter
-import com.boostcamp.and03.ui.screen.prototype.model.rightCenter
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
-import com.boostcamp.and03.ui.screen.prototype.viewmodel.CanvasViewModel
+import kotlin.div
+import kotlin.plus
 
 @Composable
 fun CanvasScreen(
     navController: NavController,
-    onEditMemoClick: () -> Unit,
-    viewModel: CanvasViewModel
+    viewModel: CanvasViewModel = viewModel()
 ) {
-    var items = viewModel.graph // 노드와 엣지가 있는 그래프
-    var selectedIds = viewModel.selectedIds // 선택된 아이템 아이디 목록
-    var connectMode = viewModel.connectMode  // 관계 연결 모드 상태
-    var panOffset = viewModel.panOffset // 캔버스 드래그
-    var scale = viewModel.scale
+    val items by viewModel.graph.collectAsState()
 
-    var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) } // 아이템들의 실시간 크기를 저장
+    var nodeSizes by remember { mutableStateOf(mapOf<String, IntSize>()) }
+    var selectedIds by remember { mutableStateOf<List<String>>(emptyList()) }
+    var connectMode by remember { mutableStateOf(false) }
 
-//    // 화면 중앙 정렬용 로직
-//    var canvasSize by remember { mutableStateOf(IntSize.Zero) } // 캔버스 크기
+    var panOffset by remember { mutableStateOf(Offset.Zero) }
 
-//    LaunchedEffect(canvasSize, nodeSizes) {
-//        val allSized = items.nodes.keys.all { id ->
-//            nodeSizes[id]?.let { it != IntSize.Zero } == true
-//        }
-//
-//        if (canvasSize != IntSize.Zero && allSized) {
-//            val (min, max) = calculateGraphBounds(
-//                items.nodes.values.map { node ->
-//                    node.copy(size = nodeSizes[node.id]!!)
-//                }
-//            )
-//
-//            val graphCenter = Offset(
-//                (min.x + max.x) / 2f,
-//                (min.y + max.y) / 2f
-//            )
-//
-//            val screenCenter = Offset(
-//                canvasSize.width / 2f,
-//                canvasSize.height / 2f
-//            )
-//
-//            panOffset = screenCenter - graphCenter
-//        }
-//    }
+    var scale by remember { mutableStateOf(1f) }
+    val minScale = 0.5f
+    val maxScale = 2f
 
     Scaffold(
         floatingActionButton = {
@@ -110,62 +80,77 @@ fun CanvasScreen(
                 }
             )
         }
-    ) { innerPadding ->
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(top = 24.dp)
+                .padding(padding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(onClick = { viewModel.toggleConnectMode() }) {
-                    Text(if (connectMode) "연결 모드 취소" else "연결 모드로 전환")
-                }
 
-                Button(onClick = { viewModel.snapToGrid()}) {
-                    Text("격자 정렬")
-                }
+            Button(onClick = {
+                connectMode = !connectMode
+                selectedIds = emptyList()
+            }) {
+                Text(if (connectMode) "연결 취소" else "연결하기")
+            }
+
+            Button(onClick = {
+                viewModel.snapToGrid(300f)
+            }) {
+                Text("격자 정렬")
             }
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-//                    .onGloballyPositioned { coordinates ->
-//                        canvasSize = coordinates.size
-//                    }
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                     }
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
-                            viewModel.updateViewport(pan, zoom)
+                            scale = (scale * zoom).coerceIn(minScale, maxScale)
+                            panOffset += pan
                         }
-                }
+                    }
             ) {
                 ArrowCanvas(
                     arrows = items.edges,
                     items = items.nodes,
-                    nodeSizes = nodeSizes,
-                    panOffset = panOffset
+                    panOffset = panOffset,
+                    nodeSizes = nodeSizes
                 )
 
                 items.nodes.values.forEach { item ->
                     DraggableItem(
                         item = item,
-                        isSelected = selectedIds.contains(item.id),
                         panOffset = panOffset,
-                        onClick = { viewModel.selectNode(item.id) },
-                        onMove = { newOffset ->
-                            viewModel.moveNode(item.id, newOffset)
+                        isSelected = selectedIds.contains(item.id),
+                        onClick = {
+                            if (connectMode) {
+
+                                selectedIds =
+                                    if (selectedIds.contains(item.id))
+                                        selectedIds - item.id
+                                    else
+                                        (selectedIds + item.id).takeLast(2)
+
+                                if (selectedIds.size == 2) {
+                                    viewModel.connect(
+                                        selectedIds[0],
+                                        selectedIds[1],
+                                        "연결"
+                                    )
+                                    selectedIds = emptyList()
+                                    connectMode = false
+                                }
+                            }
                         },
-                        onSizeChanged = { newSize ->
-                            nodeSizes = nodeSizes + (item.id to newSize)
+                        onMove = { delta ->
+                            viewModel.moveNode(item.id, delta)
+                        },
+                        onSizeChanged = { size ->
+                            nodeSizes = nodeSizes + (item.id to size)
                         }
                     )
                 }
@@ -183,8 +168,6 @@ fun DraggableItem(
     onMove: (Offset) -> Unit,
     onSizeChanged: (IntSize) -> Unit
 ) {
-    val latestOffset by rememberUpdatedState(item.offset)
-
     Box(
         modifier = Modifier
             // offset으로 이동, 캔버스 오프셋이랑 아이템 오프셋을 같이 적용
@@ -202,11 +185,7 @@ fun DraggableItem(
             .pointerInput(item.id) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
-                    Log.d("TAG", "dragAmount: $dragAmount")
-                    Log.d("TAG", "item.offset: ${item.offset}")
-                    Log.d("TAG", "item.offset + dragAmount: ${item.offset + dragAmount}")
-
-                    onMove(latestOffset + dragAmount)
+                    onMove(dragAmount)
                 }
             }
             .background(
@@ -248,7 +227,10 @@ fun ArrowCanvas(
 
             if (fromNode != null && toNode != null) {
                 // 시작점 (출발 노드의 우측 중앙)
-                val start = fromNode.offset + Offset(fromSize.width.toFloat(), fromSize.height / 2f) + panOffset
+                val start = fromNode.offset + Offset(
+                    fromSize.width.toFloat(),
+                    fromSize.height / 2f
+                ) + panOffset
                 // 끝점 (도착 노드의 좌측 중앙)
                 val end = toNode.offset + Offset(0f, toSize.height / 2f) + panOffset
 
@@ -275,11 +257,13 @@ fun ArrowCanvas(
     }
 }
 
-//fun calculateGraphBounds(nodes: Collection<MemoNode>): Pair<Offset, Offset> {
-//    val minX = nodes.minOf { it.offset.x }
-//    val minY = nodes.minOf { it.offset.y }
-//    val maxX = nodes.maxOf { it.offset.x + it.size.width }
-//    val maxY = nodes.maxOf { it.offset.y + it.size.height }
-//
-//    return Offset(minX, minY) to Offset(maxX, maxY)
-//}
+fun snapNodesToGrid(
+    nodes: List<MemoNode>,
+    gridSize: Float = 100f
+): List<MemoNode> {
+    return nodes.map { node ->
+        val snappedX = (node.offset.x / gridSize).let { kotlin.math.round(it) } * gridSize
+        val snappedY = (node.offset.y / gridSize).let { kotlin.math.round(it) } * gridSize
+        node.copy(offset = Offset(snappedX, snappedY))
+    }
+}
