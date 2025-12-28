@@ -42,8 +42,6 @@ import androidx.navigation.NavController
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
-import com.boostcamp.and03.ui.screen.prototype.model.leftCenter
-import com.boostcamp.and03.ui.screen.prototype.model.rightCenter
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
 import kotlin.div
 import kotlin.plus
@@ -161,7 +159,6 @@ fun CanvasScreen(
     }
 }
 
-
 @Composable
 fun DraggableItem(
     item: MemoNode,
@@ -230,7 +227,10 @@ fun ArrowCanvas(
 
             if (fromNode != null && toNode != null) {
                 // 시작점 (출발 노드의 우측 중앙)
-                val start = fromNode.offset + Offset(fromSize.width.toFloat(), fromSize.height / 2f) + panOffset
+                val start = fromNode.offset + Offset(
+                    fromSize.width.toFloat(),
+                    fromSize.height / 2f
+                ) + panOffset
                 // 끝점 (도착 노드의 좌측 중앙)
                 val end = toNode.offset + Offset(0f, toSize.height / 2f) + panOffset
 
