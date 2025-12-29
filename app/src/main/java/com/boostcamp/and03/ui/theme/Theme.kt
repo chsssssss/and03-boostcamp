@@ -18,6 +18,7 @@ fun MainTheme(
 
     CompositionLocalProvider(
         LocalMainColors provides mainColorScheme,
+        LocalMainTypography provides mainTypography,
         LocalMainShapes provides mainShapes
     ) {
         MaterialTheme(
@@ -32,6 +33,10 @@ object MainTheme {
     val colors: MainColors
         @Composable
         get() = LocalMainColors.current
+
+    val typography: MainTypography
+        @Composable
+        get() = LocalMainTypography.current
 
     val shapes: MainShapes
         @Composable
