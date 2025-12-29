@@ -5,15 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeNavHost
-import com.boostcamp.and03.ui.screen.prototype.screen.CanvasScreen
-import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.theme.MainTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            And03Theme {
+            MainTheme {
 //                val navigator = rememberMainNavigator()
 //                MainApp(navigator)
                 PrototypeNavHost()

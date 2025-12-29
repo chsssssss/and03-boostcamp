@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -89,7 +88,7 @@ val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun And03Theme(
+fun MainTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
