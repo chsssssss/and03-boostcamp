@@ -15,14 +15,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.jvm.java
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class NaverBookSearchRetrofit
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class NaverBookSearchOkHttpClient
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NaverBookSearchNetworkModule {
