@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di
 
 import com.boostcamp.and03.BuildConfig
-import com.boostcamp.and03.data.api.NaverBookSearchService
+import com.boostcamp.and03.data.api.NaverBookSearchApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -68,6 +68,6 @@ object NaverBookSearchNetworkModule {
     @Singleton
     fun provideNaverBookSearchService(
         @NaverBookSearchRetrofit retrofit: Retrofit
-    ): NaverBookSearchService =
-        retrofit.create(NaverBookSearchService::class.java)
+    ): NaverBookSearchApiService =
+        retrofit.create(NaverBookSearchApiService::class.java)
 }
