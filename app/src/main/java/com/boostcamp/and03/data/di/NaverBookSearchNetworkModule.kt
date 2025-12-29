@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.di
 
 import com.boostcamp.and03.BuildConfig
+import com.boostcamp.and03.data.api.NaverBookSearchService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
