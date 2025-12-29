@@ -15,11 +15,3 @@ data class NaverBookSearchResponse(
     val nextStart: Int
         get() = start + display
 }
-
-@Serializable
-data class NaverBookSearchItem(
-    val title: String,
-    val image: String,
-    val author: String,
-    val publisher: String,
-)
