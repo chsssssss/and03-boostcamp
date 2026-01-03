@@ -10,12 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.ui.theme.MainTheme
 
-enum class ButtonVariant {
-    Primary,
-    Secondary,
-    Transparent
-}
-
 @Composable
 fun MainButton(
     text: String,
@@ -53,6 +47,12 @@ fun MainButton(
             style = MainTheme.typography.labelLarge
         )
     }
+}
+
+enum class ButtonVariant {
+    Primary,
+    Secondary,
+    Transparent
 }
 
 @Preview
