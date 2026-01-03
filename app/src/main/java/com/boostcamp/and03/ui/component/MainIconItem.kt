@@ -21,7 +21,7 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.MainTheme
 
 @Composable
-fun CircleIconItem(
+fun MainIconItem(
     @DrawableRes iconResId: Int,
     iconColor: Color,
     modifier: Modifier = Modifier,
@@ -53,8 +53,8 @@ fun CircleIconItem(
 
 @Preview
 @Composable
-private fun CircleIconItemPreview() {
-    CircleIconItem(
+private fun MainIconItemPreview() {
+    MainIconItem(
         iconResId = R.drawable.ic_person_filled,
         iconColor = MainTheme.colors.primary
     )
