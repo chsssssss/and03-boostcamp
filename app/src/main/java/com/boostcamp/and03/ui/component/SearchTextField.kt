@@ -102,7 +102,7 @@ private fun ClearOrCameraIcon(
 
 @Preview(showBackground = true)
 @Composable
-fun SearchTextFieldPreview() {
+private fun SearchTextFieldPreview() {
     MainTheme {
         SearchTextField(
             state = TextFieldState(),
