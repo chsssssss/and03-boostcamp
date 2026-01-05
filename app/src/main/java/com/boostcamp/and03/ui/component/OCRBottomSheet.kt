@@ -118,7 +118,7 @@ private fun OCRBottomSheetButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M)
         ) {
-            MainIconItem(
+            IconBadge(
                 iconResId = iconResId,
                 iconColor = iconColor,
             )

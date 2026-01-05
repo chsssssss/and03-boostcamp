@@ -41,7 +41,7 @@ fun MainDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_L)
             ) {
-                MainIconItem(
+                IconBadge(
                     iconResId = iconResId,
                     iconColor = iconColor,
                 )

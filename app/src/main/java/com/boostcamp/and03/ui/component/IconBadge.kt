@@ -21,7 +21,7 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.MainTheme
 
 @Composable
-fun MainIconItem(
+fun IconBadge(
     @DrawableRes iconResId: Int,
     iconColor: Color,
     modifier: Modifier = Modifier,
@@ -54,8 +54,8 @@ fun MainIconItem(
 
 @Preview
 @Composable
-private fun MainIconItemPreview() {
-    MainIconItem(
+private fun IconBadgePreview() {
+    IconBadge(
         iconResId = R.drawable.ic_person_filled,
         iconColor = MainTheme.colors.primary
     )
