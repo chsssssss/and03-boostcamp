@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
@@ -27,9 +28,9 @@ import com.boostcamp.and03.R
 @Composable
 fun SearchTextField(
     state: TextFieldState,
-    onSearch: (() -> Unit),
+    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholderRes: Int = R.string.search_text_field_hint,
+    @StringRes placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
     onCameraClick: (() -> Unit)? = null,
 ) {
