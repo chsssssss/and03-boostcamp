@@ -29,14 +29,14 @@ import com.boostcamp.and03.ui.theme.Dimensions
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.MainTheme
 
-private object MainOCRBottomSheetValues {
+private object OCRBottomSheetValues {
     val GalleryIconColor = Color(0xFF16A34A)
     val RightArrowIconSize = 28.dp
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainOCRBottomSheet(
+fun OCRBottomSheet(
     onDismiss: () -> Unit,
     onCameraClick: () -> Unit,
     onGalleryClick: () -> Unit,
@@ -89,7 +89,7 @@ fun MainOCRBottomSheet(
 
             OCRBottomSheetButton(
                 iconResId = R.drawable.ic_photo_library_filled,
-                iconColor = MainOCRBottomSheetValues.GalleryIconColor,
+                iconColor = OCRBottomSheetValues.GalleryIconColor,
                 title = stringResource(R.string.ocr_bottom_sheet_select_image),
                 description = stringResource(R.string.ocr_bottom_sheet_select_image_description),
                 onClick = onGalleryClick
@@ -141,7 +141,7 @@ private fun OCRBottomSheetButton(
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right_filled),
                 contentDescription = null,
-                modifier = Modifier.size(MainOCRBottomSheetValues.RightArrowIconSize),
+                modifier = Modifier.size(OCRBottomSheetValues.RightArrowIconSize),
                 tint = MainTheme.colors.onSurfaceVariant
             )
         }
@@ -150,9 +150,9 @@ private fun OCRBottomSheetButton(
 
 @Preview
 @Composable
-private fun MainOCRBottomSheetPreview() {
+private fun OCRBottomSheetPreview() {
     MainTheme {
-        MainOCRBottomSheet(
+        OCRBottomSheet(
             onDismiss = {},
             onCameraClick = {},
             onGalleryClick = {}
