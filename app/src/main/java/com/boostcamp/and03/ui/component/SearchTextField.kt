@@ -36,9 +36,7 @@ fun SearchTextField(
     TextField(
         state = state,
         modifier = modifier,
-        placeholder = {
-            Text(text = stringResource(id = placeholderRes))
-        },
+        placeholder = { Text(text = stringResource(id = placeholderRes)) },
         leadingIcon = {
             Icon(
                 ImageVector.vectorResource(R.drawable.ic_rounded_search),
@@ -53,7 +51,7 @@ fun SearchTextField(
                 onCameraClick = onCameraClick
             )
         },
-        inputTransformation = InputTransformation.maxLength(10),
+        inputTransformation = InputTransformation.maxLength(20),
         keyboardOptions = KeyboardOptions(
             autoCorrectEnabled = true,  // 키보드 자동 수정 기능
             keyboardType = KeyboardType.Text,
