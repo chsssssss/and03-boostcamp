@@ -32,7 +32,6 @@ fun SearchTextField(
     placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
     onCameraClick: (() -> Unit)? = null,
-    lineLimits: Int = 1,
 ) {
     TextField(
         state = state,
@@ -63,7 +62,7 @@ fun SearchTextField(
         onKeyboardAction = {
             onSearch()
         },
-        lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = lineLimits),
+        lineLimits = TextFieldLineLimits.SingleLine,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
