@@ -64,9 +64,6 @@ fun CanvasScreen(
     val minScale = 0.5f
     val maxScale = 2f
 
-    val searchState = rememberTextFieldState()
-    val searchState2 = rememberTextFieldState()
-
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = {
@@ -85,26 +82,6 @@ fun CanvasScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            SearchTextField(
-                state = searchState,
-                modifier = Modifier.fillMaxWidth()
-                    .padding(12.dp),
-                onSearch = {
-                    println("검색어: ${searchState.text}")
-                },
-            )
-            SearchTextField(
-                state = searchState2,
-                modifier = Modifier.fillMaxWidth()
-                    .padding(12.dp),
-                enableCameraSearch = true,
-                onCameraClick = {
-                    Log.d("CanvasScreen", "카메라 검색")
-                },
-                onSearch = {
-                    println("검색어: ${searchState.text}")
-                },
-            )
             Button(onClick = {
                 connectMode = !connectMode
                 selectedIds = emptyList()
