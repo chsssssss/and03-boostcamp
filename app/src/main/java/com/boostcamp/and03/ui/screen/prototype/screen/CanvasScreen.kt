@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,16 +43,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
-import kotlin.div
-import kotlin.plus
 
 @Composable
 fun CanvasScreen(
-    navController: NavController,
-    viewModel: CanvasViewModel = viewModel()
+    navController: NavController, viewModel: CanvasViewModel = viewModel()
 ) {
     val items by viewModel.graph.collectAsState()
 
@@ -59,34 +60,51 @@ fun CanvasScreen(
 
     var panOffset by remember { mutableStateOf(Offset.Zero) }
 
-    var scale by remember { mutableStateOf(1f) }
+    var scale by remember { mutableFloatStateOf(1f) }
     val minScale = 0.5f
     val maxScale = 2f
 
+    val searchState = rememberTextFieldState()
+    val searchState2 = rememberTextFieldState()
+
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    navController.navigate(PrototypeRoute.MemoEdit)
-                },
-                icon = {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
-                        contentDescription = null
-                    )
-                },
-                text = {
-                    Text(text = "메모 작성")
-                }
-            )
-        }
-    ) { padding ->
+            ExtendedFloatingActionButton(onClick = {
+                navController.navigate(PrototypeRoute.MemoEdit)
+            }, icon = {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
+                    contentDescription = null
+                )
+            }, text = {
+                Text(text = "메모 작성")
+            })
+        }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
+            SearchTextField(
+                state = searchState,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(12.dp),
+                onSearch = {
+                    println("검색어: ${searchState.text}")
+                },
+            )
+            SearchTextField(
+                state = searchState2,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(12.dp),
+                enableCameraSearch = true,
+                onCameraClick = {
+                    Log.d("CanvasScreen", "카메라 검색")
+                },
+                onSearch = {
+                    println("검색어: ${searchState.text}")
+                },
+            )
             Button(onClick = {
                 connectMode = !connectMode
                 selectedIds = emptyList()
@@ -100,20 +118,18 @@ fun CanvasScreen(
                 Text("격자 정렬")
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        scale = (scale * zoom).coerceIn(minScale, maxScale)
+                        panOffset += pan
                     }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
-                            scale = (scale * zoom).coerceIn(minScale, maxScale)
-                            panOffset += pan
-                        }
-                    }
-            ) {
+                }) {
                 ArrowCanvas(
                     arrows = items.edges,
                     items = items.nodes,
@@ -130,16 +146,12 @@ fun CanvasScreen(
                             if (connectMode) {
 
                                 selectedIds =
-                                    if (selectedIds.contains(item.id))
-                                        selectedIds - item.id
-                                    else
-                                        (selectedIds + item.id).takeLast(2)
+                                    if (selectedIds.contains(item.id)) selectedIds - item.id
+                                    else (selectedIds + item.id).takeLast(2)
 
                                 if (selectedIds.size == 2) {
                                     viewModel.connect(
-                                        selectedIds[0],
-                                        selectedIds[1],
-                                        "연결"
+                                        selectedIds[0], selectedIds[1], "연결"
                                     )
                                     selectedIds = emptyList()
                                     connectMode = false
@@ -151,8 +163,7 @@ fun CanvasScreen(
                         },
                         onSizeChanged = { size ->
                             nodeSizes = nodeSizes + (item.id to size)
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -171,30 +182,28 @@ fun DraggableItem(
     Box(
         modifier = Modifier
             // offset으로 이동, 캔버스 오프셋이랑 아이템 오프셋을 같이 적용
-            .graphicsLayer {
-                translationX = item.offset.x + panOffset.x
-                translationY = item.offset.y + panOffset.y
-            }
+        .graphicsLayer {
+            translationX = item.offset.x + panOffset.x
+            translationY = item.offset.y + panOffset.y
+        }
             // 아이템 이동하면서 선도 같이 움직이도록
-            .onGloballyPositioned { coords ->
-                onSizeChanged(coords.size)
-            }
+        .onGloballyPositioned { coords ->
+            onSizeChanged(coords.size)
+        }
             // 클릭
-            .combinedClickable(onClick = onClick)
+        .combinedClickable(onClick = onClick)
             // 드래그 제스처
-            .pointerInput(item.id) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    onMove(dragAmount)
-                }
+        .pointerInput(item.id) {
+            detectDragGestures { change, dragAmount ->
+                change.consume()
+                onMove(dragAmount)
             }
+        }
             .background(
-                if (isSelected) Color(0xFFBBDEFB) else Color.White,
-                RoundedCornerShape(8.dp)
+                if (isSelected) Color(0xFFBBDEFB) else Color.White, RoundedCornerShape(8.dp)
             )
             .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
-            .padding(12.dp)
-    ) {
+            .padding(12.dp)) {
         Column {
             Row {
                 Icon(
@@ -228,8 +237,7 @@ fun ArrowCanvas(
             if (fromNode != null && toNode != null) {
                 // 시작점 (출발 노드의 우측 중앙)
                 val start = fromNode.offset + Offset(
-                    fromSize.width.toFloat(),
-                    fromSize.height / 2f
+                    fromSize.width.toFloat(), fromSize.height / 2f
                 ) + panOffset
                 // 끝점 (도착 노드의 좌측 중앙)
                 val end = toNode.offset + Offset(0f, toSize.height / 2f) + panOffset
@@ -258,8 +266,7 @@ fun ArrowCanvas(
 }
 
 fun snapNodesToGrid(
-    nodes: List<MemoNode>,
-    gridSize: Float = 100f
+    nodes: List<MemoNode>, gridSize: Float = 100f
 ): List<MemoNode> {
     return nodes.map { node ->
         val snappedX = (node.offset.x / gridSize).let { kotlin.math.round(it) } * gridSize
