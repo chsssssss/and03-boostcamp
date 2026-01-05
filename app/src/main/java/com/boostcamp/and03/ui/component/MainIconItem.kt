@@ -25,7 +25,8 @@ fun MainIconItem(
     @DrawableRes iconResId: Int,
     iconColor: Color,
     modifier: Modifier = Modifier,
-    size: Dp = 48.dp
+    size: Dp = 48.dp,
+    contentDescription: String = ""
 ) {
     val isBright = iconColor.luminance() > 0.5f
     val backgroundColor = if (isBright) {
@@ -44,7 +45,7 @@ fun MainIconItem(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(iconResId),
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = iconColor,
             modifier = Modifier.align(Alignment.Center)
         )
