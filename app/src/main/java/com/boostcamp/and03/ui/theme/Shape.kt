@@ -8,12 +8,14 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class MainShapes(
     val defaultCorner: RoundedCornerShape,
-    val dialogCorner: RoundedCornerShape
+    val dialogCorner: RoundedCornerShape,
+    val searchTextFieldCorner: RoundedCornerShape
 )
 
 internal val mainShapes = MainShapes(
     defaultCorner = RoundedCornerShape(8.dp),
-    dialogCorner = RoundedCornerShape(16.dp)
+    dialogCorner = RoundedCornerShape(16.dp),
+    searchTextFieldCorner = RoundedCornerShape(12.dp)
 )
 
 internal val LocalMainShapes = staticCompositionLocalOf {

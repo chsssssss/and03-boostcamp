@@ -1,29 +1,26 @@
 package com.boostcamp.and03.ui.component
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
-import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.MainTheme
 
 @Composable
 fun SearchTextField(
@@ -57,22 +54,20 @@ fun SearchTextField(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
         ),
-        onKeyboardAction = {
-            onSearch()
-        },
+        onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.SingleLine,
-        shape = RoundedCornerShape(12.dp),
+        shape = MainTheme.shapes.searchTextFieldCorner,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            disabledIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-        ),
+            focusedTextColor = MainTheme.colors.onSurface,
+            unfocusedTextColor = MainTheme.colors.onSurface,
+            focusedContainerColor = MainTheme.colors.surfaceVariant,
+            unfocusedContainerColor = MainTheme.colors.surfaceVariant,
+            focusedLeadingIconColor = MainTheme.colors.onSurfaceVariant,
+            unfocusedLeadingIconColor = MainTheme.colors.onSurfaceVariant,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
     )
 }
 
@@ -108,9 +103,11 @@ private fun ClearOrCameraIcon(
 @Preview(showBackground = true)
 @Composable
 fun SearchTextFieldPreview() {
-    SearchTextField(
-        state = TextFieldState(),
-        onSearch = {},
-        modifier = Modifier,
-    )
+    MainTheme {
+        SearchTextField(
+            state = TextFieldState(),
+            onSearch = {},
+            modifier = Modifier,
+        )
+    }
 }
