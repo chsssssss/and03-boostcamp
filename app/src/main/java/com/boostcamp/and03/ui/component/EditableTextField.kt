@@ -63,5 +63,4 @@ fun EditableTextFieldPreview() {
         onSearch = {},
         modifier = Modifier,
     )
-
 }
