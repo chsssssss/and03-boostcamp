@@ -9,6 +9,12 @@
     <string name="bottom_tab_add_book">책 추가</string>
     <string name="bottom_tab_my_page">마이페이지</string>
 
+    <!-- book list -->
+    <string name="book_count_text">총 %1$d권의 책</string>
+
+
+
+
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
 </resources>
