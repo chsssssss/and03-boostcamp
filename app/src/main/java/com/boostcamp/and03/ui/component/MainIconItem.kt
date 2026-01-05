@@ -25,13 +25,13 @@ fun MainIconItem(
     @DrawableRes iconResId: Int,
     iconColor: Color,
     modifier: Modifier = Modifier,
-    size: Dp = 40.dp
+    size: Dp = 48.dp
 ) {
     val isBright = iconColor.luminance() > 0.5f
     val backgroundColor = if (isBright) {
-        lerp(iconColor, Color.Black, 0.3f)
+        lerp(iconColor, Color.Black, 0.1f)
     } else {
-        lerp(iconColor, Color.White, 0.7f)
+        lerp(iconColor, Color.White, 0.9f)
     }
 
     Box(
