@@ -27,7 +27,7 @@ import com.boostcamp.and03.R
 @Composable
 fun SearchTextField(
     state: TextFieldState,
-    onSearch: (() -> Unit),
+    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
     placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
@@ -56,9 +56,7 @@ fun SearchTextField(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
         ),
-        onKeyboardAction = {
-            onSearch()
-        },
+        onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.SingleLine,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(

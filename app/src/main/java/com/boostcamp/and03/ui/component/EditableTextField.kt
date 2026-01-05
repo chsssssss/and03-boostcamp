@@ -22,7 +22,7 @@ import com.boostcamp.and03.R
 @Composable
 fun EditableTextField(
     state: TextFieldState,
-    onSearch: (() -> Unit),
+    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
     placeholderRes: Int = R.string.editable_text_field_hint,
     imeAction: ImeAction = ImeAction.Next,
@@ -33,18 +33,14 @@ fun EditableTextField(
     OutlinedTextField(
         state = state,
         modifier = modifier,
-        placeholder = {
-            Text(text = stringResource(placeholderRes))
-        },
+        placeholder = { Text(text = stringResource(placeholderRes)) },
         inputTransformation = InputTransformation.maxLength(maxCharacterCount),
         keyboardOptions = KeyboardOptions(
             autoCorrectEnabled = true,  // 키보드 자동 수정 기능
             keyboardType = keyboardType,
             imeAction = imeAction
         ),
-        onKeyboardAction = {
-            onSearch()
-        },
+        onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = lineLimits),
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
