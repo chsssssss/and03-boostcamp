@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.prototype.screen
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.EditableTextField
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
@@ -66,47 +65,54 @@ fun CanvasScreen(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {
-                navController.navigate(PrototypeRoute.MemoEdit)
-            }, icon = {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
-                    contentDescription = null
-                )
-            }, text = {
-                Text(text = "메모 작성")
-            })
-        }) { padding ->
+            ExtendedFloatingActionButton(
+                onClick = {
+                    navController.navigate(PrototypeRoute.MemoEdit)
+                }, icon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
+                        contentDescription = null
+                    )
+                }, text = {
+                    Text(text = "메모 작성")
+                })
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Button(onClick = {
-                connectMode = !connectMode
-                selectedIds = emptyList()
-            }) {
+            Button(
+                onClick = {
+                    connectMode = !connectMode
+                    selectedIds = emptyList()
+                }
+            ) {
                 Text(if (connectMode) "연결 취소" else "연결하기")
             }
 
-            Button(onClick = {
-                viewModel.snapToGrid(300f)
-            }) {
+            Button(
+                onClick = {
+                    viewModel.snapToGrid(300f)
+                }
+            ) {
                 Text("격자 정렬")
             }
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, pan, zoom, _ ->
-                        scale = (scale * zoom).coerceIn(minScale, maxScale)
-                        panOffset += pan
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
                     }
-                }) {
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            scale = (scale * zoom).coerceIn(minScale, maxScale)
+                            panOffset += pan
+                        }
+                    }) {
                 ArrowCanvas(
                     arrows = items.edges,
                     items = items.nodes,
@@ -159,23 +165,23 @@ fun DraggableItem(
     Box(
         modifier = Modifier
             // offset으로 이동, 캔버스 오프셋이랑 아이템 오프셋을 같이 적용
-        .graphicsLayer {
-            translationX = item.offset.x + panOffset.x
-            translationY = item.offset.y + panOffset.y
-        }
-            // 아이템 이동하면서 선도 같이 움직이도록
-        .onGloballyPositioned { coords ->
-            onSizeChanged(coords.size)
-        }
-            // 클릭
-        .combinedClickable(onClick = onClick)
-            // 드래그 제스처
-        .pointerInput(item.id) {
-            detectDragGestures { change, dragAmount ->
-                change.consume()
-                onMove(dragAmount)
+            .graphicsLayer {
+                translationX = item.offset.x + panOffset.x
+                translationY = item.offset.y + panOffset.y
             }
-        }
+            // 아이템 이동하면서 선도 같이 움직이도록
+            .onGloballyPositioned { coords ->
+                onSizeChanged(coords.size)
+            }
+            // 클릭
+            .combinedClickable(onClick = onClick)
+            // 드래그 제스처
+            .pointerInput(item.id) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    onMove(dragAmount)
+                }
+            }
             .background(
                 if (isSelected) Color(0xFFBBDEFB) else Color.White, RoundedCornerShape(8.dp)
             )
