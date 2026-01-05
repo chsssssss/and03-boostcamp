@@ -24,7 +24,7 @@ import com.boostcamp.and03.ui.theme.Dimensions
 import com.boostcamp.and03.ui.theme.MainTheme
 
 private object NodeItemValues {
-    val borderWidth = 3.dp
+    val borderWidth = 2.dp
     val moreIconSize = 20.dp
 }
 
