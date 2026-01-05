@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.EditableTextField
+import com.boostcamp.and03.ui.component.LabelAndEditableTextField
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
@@ -66,16 +67,16 @@ fun CanvasScreen(
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = {
-                    navController.navigate(PrototypeRoute.MemoEdit)
-                }, icon = {
+                onClick = { navController.navigate(PrototypeRoute.MemoEdit) },
+                icon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
                         contentDescription = null
                     )
                 }, text = {
                     Text(text = "메모 작성")
-                })
+                }
+            )
         }
     ) { padding ->
         Column(
@@ -112,7 +113,8 @@ fun CanvasScreen(
                             scale = (scale * zoom).coerceIn(minScale, maxScale)
                             panOffset += pan
                         }
-                    }) {
+                    }
+            ) {
                 ArrowCanvas(
                     arrows = items.edges,
                     items = items.nodes,
@@ -127,7 +129,6 @@ fun CanvasScreen(
                         isSelected = selectedIds.contains(item.id),
                         onClick = {
                             if (connectMode) {
-
                                 selectedIds =
                                     if (selectedIds.contains(item.id)) selectedIds - item.id
                                     else (selectedIds + item.id).takeLast(2)
@@ -146,7 +147,8 @@ fun CanvasScreen(
                         },
                         onSizeChanged = { size ->
                             nodeSizes = nodeSizes + (item.id to size)
-                        })
+                        }
+                    )
                 }
             }
         }
