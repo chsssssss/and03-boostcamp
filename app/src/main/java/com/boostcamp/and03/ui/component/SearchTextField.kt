@@ -29,7 +29,7 @@ fun SearchTextField(
     modifier: Modifier = Modifier,
     @StringRes placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
-    onCameraClick: (() -> Unit)? = null,
+    onCameraClick: () -> Unit = {},
 ) {
     TextField(
         state = state,
@@ -76,7 +76,7 @@ private fun ClearOrCameraIcon(
     hasText: Boolean,
     enableCameraSearch: Boolean,
     onClear: () -> Unit,
-    onCameraClick: (() -> Unit)?
+    onCameraClick: () -> Unit = {}
 ) {
     when {
         hasText -> {
@@ -89,7 +89,7 @@ private fun ClearOrCameraIcon(
         }
 
         enableCameraSearch -> {
-            IconButton(onClick = { onCameraClick?.invoke() }) {
+            IconButton(onClick = onCameraClick) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_round_camera_alt),
                     contentDescription = null
