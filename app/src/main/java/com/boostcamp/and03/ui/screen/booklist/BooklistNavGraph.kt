@@ -9,6 +9,6 @@ fun NavGraphBuilder.booklistNavGraph(
     modifier: Modifier = Modifier
 ) {
     composable<MainTabRoute.Booklist> {
-        BooklistScreen()
+        BooklistRoute()
     }
 }
