@@ -109,7 +109,10 @@ private fun OCRBottomSheetButton(
     Surface(
         onClick = onClick,
         shape = MainTheme.shapes.defaultCorner,
-        border = BorderStroke(1.dp, MainTheme.colors.outline),
+        border = BorderStroke(
+            1.dp,
+            MainTheme.colors.outline
+        ),
         color = MainTheme.colors.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
