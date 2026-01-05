@@ -1,8 +1,5 @@
 package com.boostcamp.and03.ui.component
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
@@ -19,6 +16,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,7 +29,7 @@ fun SearchTextField(
     state: TextFieldState,
     onSearch: (() -> Unit),
     modifier: Modifier = Modifier,
-    placeholder: String = "검색어를 입력하세요",
+    placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
     onCameraClick: (() -> Unit)? = null,
     lineLimits: Int = 1,
@@ -40,7 +38,7 @@ fun SearchTextField(
         state = state,
         modifier = modifier,
         placeholder = {
-            Text(text = placeholder)
+            Text(text = stringResource(id = placeholderRes))
         },
         leadingIcon = {
             Icon(
