@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -67,10 +66,13 @@ private fun BookSearchScreen(
     onManualAddClick: () -> Unit,
     modifier: Modifier= Modifier
 ) {
-    val searchTextState = rememberTextFieldState(uiState.query)
+    val searchTextState = remember { TextFieldState(uiState.query) }
 
-    LaunchedEffect(searchTextState.text) {
-        onQueryChange(searchTextState.text.toString())
+    LaunchedEffect(Unit) {
+        snapshotFlow { searchTextState.text.toString() }
+            .collect { text ->
+                onQueryChange(text)
+            }
     }
 
     Column(modifier = modifier.fillMaxSize()) {
