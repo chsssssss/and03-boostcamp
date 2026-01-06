@@ -1,12 +1,11 @@
 package com.boostcamp.and03.ui.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
-import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +14,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -27,9 +27,9 @@ import com.boostcamp.and03.R
 @Composable
 fun SearchTextField(
     state: TextFieldState,
-    onSearch: (() -> Unit),
+    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholderRes: Int = R.string.search_text_field_hint,
+    @StringRes placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
     onCameraClick: (() -> Unit)? = null,
 ) {
@@ -56,9 +56,7 @@ fun SearchTextField(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
         ),
-        onKeyboardAction = {
-            onSearch()
-        },
+        onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.SingleLine,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
@@ -68,9 +66,9 @@ fun SearchTextField(
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
             focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
             unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            disabledIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
         ),
     )
 }
