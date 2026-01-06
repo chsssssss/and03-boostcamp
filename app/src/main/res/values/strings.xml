@@ -11,6 +11,9 @@
     <string name="bottom_tab_add_book">책 추가</string>
     <string name="bottom_tab_my_page">마이페이지</string>
 
+    <!-- book list -->
+    <string name="book_count_text">총 %1$d권의 책</string>
+
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
     <string name="ocr_bottom_sheet_take_a_photo">촬영하기</string>
