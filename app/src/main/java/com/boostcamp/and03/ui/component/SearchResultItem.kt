@@ -20,7 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.boostcamp.and03.ui.theme.Dimensions
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 private object SearchResultItemValues {
@@ -61,7 +62,7 @@ fun SearchResultItem(
                 shape = And03Theme.shapes.defaultCorner
             )
             .clickable(onClick = onClick)
-            .padding(Dimensions.PADDING_M)
+            .padding(And03Padding.PADDING_M)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -73,17 +74,19 @@ fun SearchResultItem(
                 contentDescription = title,
                 modifier = Modifier
                     .height(SearchResultItemValues.thumbnailHeight)
-                    .aspectRatio(2f/3f)
+                    .aspectRatio(2f / 3f)
             )
 
             Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(start = And03Padding.PADDING_M),
+                verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
                     text = title,
                     style = And03Theme.typography.titleMedium,
-                    maxLines = 2,
+                    maxLines = SearchResultItemValues.TITLE_MAX_LINES,
                     overflow = TextOverflow.Ellipsis
                 )
 
@@ -91,7 +94,7 @@ fun SearchResultItem(
                     text = author,
                     style = And03Theme.typography.bodyMedium,
                     color = And03Theme.colors.onSurfaceVariant,
-                    maxLines = SearchResultItemValues.TITLE_MAX_LINES,
+                    maxLines = SearchResultItemValues.AUTHOR_PUBLISHER_MAX_LINES,
                     overflow = TextOverflow.Ellipsis
                 )
 
@@ -111,7 +114,7 @@ fun SearchResultItem(
 @Composable
 private fun SearchResultItemPreview() {
     Column(
-        verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SearchResultItem(
