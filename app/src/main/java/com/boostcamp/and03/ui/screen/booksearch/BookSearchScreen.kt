@@ -192,3 +192,28 @@ private fun BookSearchScreenPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun BookSearchScreenEmptyBeforeQueryPreview() {
+    val uiState = BookSearchUiState(
+        query = "",
+        selectedBookISBN = null
+    )
+
+    val pagingItems = flowOf(
+        PagingData.empty<BookUIModel>()
+    ).collectAsLazyPagingItems()
+
+    And03Theme {
+        BookSearchScreen(
+            uiState = uiState,
+            searchResults = pagingItems,
+            onQueryChange = {},
+            onBackClick = {},
+            onItemClick = {},
+            onSaveClick = {},
+            onManualAddClick = {}
+        )
+    }
+}
