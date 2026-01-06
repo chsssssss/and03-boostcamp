@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -29,6 +30,8 @@ import coil.compose.AsyncImage
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
@@ -99,29 +102,32 @@ private fun BookInfoSection(
     publisher: String
 ) {
     Row(
-        modifier = Modifier.padding(vertical = 24.dp)
+        modifier = Modifier.padding(And03Padding.PADDING_XL),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = thumbnail,
             contentDescription = null,
             modifier = Modifier
-                .width(100.dp)
+                .width(80.dp)
                 .aspectRatio(2f / 3f),
             contentScale = ContentScale.Crop
         )
+        Spacer(modifier = Modifier.width(And03Spacing.SPACE_M))
         Column(
-            modifier = Modifier.padding(vertical = 24.dp),
+            modifier = Modifier.padding(vertical = And03Padding.PADDING_2XL),
         ) {
             Text(
                 text = title,
                 style = And03Theme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
             Text(
                 text = author,
                 style = And03Theme.typography.bodyMedium,
                 color = And03Theme.colors.secondary
             )
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
             Text(
                 text = publisher,
                 style = And03Theme.typography.bodySmall,
