@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -101,20 +102,18 @@ fun CanvasScreen(
                 Text("격자 정렬")
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        scale = (scale * zoom).coerceIn(minScale, maxScale)
+                        panOffset += pan
                     }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
-                            scale = (scale * zoom).coerceIn(minScale, maxScale)
-                            panOffset += pan
-                        }
-                    }
-            ) {
+                }) {
                 ArrowCanvas(
                     arrows = items.edges,
                     items = items.nodes,
@@ -147,8 +146,7 @@ fun CanvasScreen(
                         },
                         onSizeChanged = { size ->
                             nodeSizes = nodeSizes + (item.id to size)
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -167,23 +165,23 @@ fun DraggableItem(
     Box(
         modifier = Modifier
             // offset으로 이동, 캔버스 오프셋이랑 아이템 오프셋을 같이 적용
-            .graphicsLayer {
-                translationX = item.offset.x + panOffset.x
-                translationY = item.offset.y + panOffset.y
-            }
+        .graphicsLayer {
+            translationX = item.offset.x + panOffset.x
+            translationY = item.offset.y + panOffset.y
+        }
             // 아이템 이동하면서 선도 같이 움직이도록
-            .onGloballyPositioned { coords ->
-                onSizeChanged(coords.size)
-            }
+        .onGloballyPositioned { coords ->
+            onSizeChanged(coords.size)
+        }
             // 클릭
-            .combinedClickable(onClick = onClick)
+        .combinedClickable(onClick = onClick)
             // 드래그 제스처
-            .pointerInput(item.id) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    onMove(dragAmount)
-                }
+        .pointerInput(item.id) {
+            detectDragGestures { change, dragAmount ->
+                change.consume()
+                onMove(dragAmount)
             }
+        }
             .background(
                 if (isSelected) Color(0xFFBBDEFB) else Color.White, RoundedCornerShape(8.dp)
             )
