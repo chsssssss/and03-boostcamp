@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.boostcamp.and03.ui.screen.addbook.addBookNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
+import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
 
 @Composable
@@ -20,6 +21,11 @@ fun MainNavHost(
         startDestination = navigator.startDestination
     ) {
         booklistNavGraph(modifier = modifier.padding(paddingValues))
+
+        bookSearchNavGraph(
+            navController = navigator.navController,
+            modifier = modifier.padding(paddingValues)
+        )
 
         addBookNavGraph(modifier = modifier.padding(paddingValues))
 
