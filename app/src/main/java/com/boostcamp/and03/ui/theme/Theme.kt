@@ -11,32 +11,32 @@ fun And03Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val mainColors = if(darkTheme) darkMainColors else lightMainColors
+    val and03Colors = if(darkTheme) darkMainColors else lightMainColors
 
     val mainColorScheme = lightColorScheme(
-        primary = mainColors.primary,
-        onPrimary = mainColors.onPrimary,
-        primaryContainer = mainColors.primaryContainer,
-        onPrimaryContainer = mainColors.onPrimaryContainer,
-        secondary = mainColors.secondary,
-        onSecondary = mainColors.onSecondary,
-        secondaryContainer = mainColors.secondaryContainer,
-        onSecondaryContainer = mainColors.onSecondaryContainer,
-        background = mainColors.background,
-        onBackground = mainColors.onBackground,
-        surface = mainColors.surface,
-        onSurface = mainColors.onSurface,
-        surfaceVariant = mainColors.surfaceVariant,
-        onSurfaceVariant = mainColors.onSurfaceVariant,
-        error = mainColors.error,
-        onError = mainColors.onError,
-        outline = mainColors.outline,
-        outlineVariant = mainColors.outlineVariant,
-        scrim = mainColors.scrim
+        primary = and03Colors.primary,
+        onPrimary = and03Colors.onPrimary,
+        primaryContainer = and03Colors.primaryContainer,
+        onPrimaryContainer = and03Colors.onPrimaryContainer,
+        secondary = and03Colors.secondary,
+        onSecondary = and03Colors.onSecondary,
+        secondaryContainer = and03Colors.secondaryContainer,
+        onSecondaryContainer = and03Colors.onSecondaryContainer,
+        background = and03Colors.background,
+        onBackground = and03Colors.onBackground,
+        surface = and03Colors.surface,
+        onSurface = and03Colors.onSurface,
+        surfaceVariant = and03Colors.surfaceVariant,
+        onSurfaceVariant = and03Colors.onSurfaceVariant,
+        error = and03Colors.error,
+        onError = and03Colors.onError,
+        outline = and03Colors.outline,
+        outlineVariant = and03Colors.outlineVariant,
+        scrim = and03Colors.scrim
     )
 
     CompositionLocalProvider(
-        LocalAnd03Colors provides mainColors,
+        LocalAnd03Colors provides and03Colors,
         LocalAnd03Typography provides and03Typography,
         LocalAnd03Shapes provides and03Shapes
     ) {
