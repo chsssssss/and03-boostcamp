@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BookUIModel(
     val title: String,
-    val authors: ImmutableList<String>,
+    val author: String,
     val publisher: String,
     val thumbnail: String,
     val isbn: String // 국제표준도서번호, 고유 id로 활용
