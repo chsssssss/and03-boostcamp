@@ -1,9 +1,5 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
-import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-
 data class BookSearchUiState(
     val query: String = "",
     val selectedBookISBN: String? = null,
