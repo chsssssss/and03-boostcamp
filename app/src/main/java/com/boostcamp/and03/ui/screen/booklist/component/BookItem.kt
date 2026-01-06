@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
-import com.boostcamp.and03.ui.theme.Dimensions
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -33,7 +33,7 @@ fun BookItem(
     Column(
         modifier = modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_XS)
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_XS)
     ) {
         BookThumbnail(thumbnail)
         BookTitle(title)

@@ -7,7 +7,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
-import com.boostcamp.and03.ui.theme.Dimensions
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 
 @Composable
 fun BookGrid(
@@ -16,10 +17,10 @@ fun BookGrid(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_L),
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
+        horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
         contentPadding = PaddingValues(
-            bottom = Dimensions.PADDING_L
+            bottom = And03Padding.PADDING_L
         )
     ) {
         items(books) { book ->

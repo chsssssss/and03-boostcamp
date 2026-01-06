@@ -16,8 +16,9 @@ import com.boostcamp.and03.ui.screen.booklist.component.BookGrid
 import com.boostcamp.and03.ui.screen.booklist.component.BooklistTitle
 import com.boostcamp.and03.ui.screen.booklist.model.BooklistUIState
 import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
-import com.boostcamp.and03.ui.theme.Dimensions
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -35,7 +36,7 @@ fun BooklistRoute(
 }
 
 @Composable
-fun BooklistScreen(
+private fun BooklistScreen(
     uiState: BooklistUIState,
     onSearch: (String) -> Unit,
     onBookClick: (BookUIModel) -> Unit = {}
@@ -49,9 +50,9 @@ fun BooklistScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = Dimensions.PADDING_L)
+            .padding(horizontal = And03Padding.PADDING_L)
     ) {
-        Spacer(Modifier.height(Dimensions.PADDING_M))
+        Spacer(Modifier.height(And03Spacing.SPACE_M))
 
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -60,7 +61,7 @@ fun BooklistScreen(
             BooklistTitle()
         }
 
-        Spacer(Modifier.height(Dimensions.PADDING_L))
+        Spacer(Modifier.height(And03Spacing.SPACE_L))
 
         SearchTextField(
             state = searchState,
@@ -68,7 +69,7 @@ fun BooklistScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(Dimensions.PADDING_L))
+        Spacer(Modifier.height(And03Spacing.SPACE_L))
 
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -76,11 +77,11 @@ fun BooklistScreen(
             color = DividerDefaults.color
         )
 
-        Spacer(Modifier.height(Dimensions.PADDING_M))
+        Spacer(Modifier.height(And03Spacing.SPACE_M))
 
         BookCountText(count = uiState.books.size)
 
-        Spacer(Modifier.height(Dimensions.PADDING_M))
+        Spacer(Modifier.height(And03Spacing.SPACE_M))
 
         BookGrid(
             books = uiState.books,
