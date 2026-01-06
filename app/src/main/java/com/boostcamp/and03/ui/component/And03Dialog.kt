@@ -23,6 +23,7 @@ import com.boostcamp.and03.R
 fun And03Dialog(
     @DrawableRes iconResId: Int,
     iconColor: Color,
+    iconContentDescription: String,
     title: String,
     dismissText: String,
     confirmText: String,
@@ -44,6 +45,7 @@ fun And03Dialog(
                 IconBadge(
                     iconResId = iconResId,
                     iconColor = iconColor,
+                    contentDescription = iconContentDescription
                 )
 
                 Text(
@@ -91,6 +93,7 @@ fun And03DialogPreview() {
     And03Dialog(
         iconResId = R.drawable.ic_warning_filled,
         iconColor = And03Theme.colors.error,
+        iconContentDescription = "아이콘 설명",
         title = "변경사항이 저장되지 않았어요",
         dismissText = "나가기",
         confirmText = "계속 편집",

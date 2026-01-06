@@ -82,6 +82,7 @@ fun OCRBottomSheet(
             OCRBottomSheetButton(
                 iconResId = R.drawable.ic_round_camera_alt,
                 iconColor = And03Theme.colors.primary,
+                contentDescription = "",
                 title = stringResource(R.string.ocr_bottom_sheet_take_a_photo),
                 description = stringResource(R.string.ocr_bottom_sheet_take_a_photo_description),
                 onClick = onCameraClick
@@ -90,6 +91,7 @@ fun OCRBottomSheet(
             OCRBottomSheetButton(
                 iconResId = R.drawable.ic_photo_library_filled,
                 iconColor = OCRBottomSheetValues.GalleryIconColor,
+                contentDescription = "",
                 title = stringResource(R.string.ocr_bottom_sheet_select_image),
                 description = stringResource(R.string.ocr_bottom_sheet_select_image_description),
                 onClick = onGalleryClick
@@ -102,6 +104,7 @@ fun OCRBottomSheet(
 private fun OCRBottomSheetButton(
     @DrawableRes iconResId: Int,
     iconColor: Color,
+    contentDescription: String,
     title: String,
     description: String,
     onClick: () -> Unit
@@ -124,6 +127,7 @@ private fun OCRBottomSheetButton(
             IconBadge(
                 iconResId = iconResId,
                 iconColor = iconColor,
+                contentDescription = contentDescription
             )
 
             Column(
