@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.component
 
+import android.R.attr.contentDescription
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,9 +25,9 @@ import com.boostcamp.and03.ui.theme.And03Theme
 fun IconBadge(
     @DrawableRes iconResId: Int,
     iconColor: Color,
+    contentDescription: String,
     modifier: Modifier = Modifier,
     size: Dp = 48.dp,
-    contentDescription: String = ""
 ) {
     val isBright = iconColor.luminance() > 0.5f
     val backgroundColor = if (isBright) {
@@ -57,6 +58,7 @@ fun IconBadge(
 private fun IconBadgePreview() {
     IconBadge(
         iconResId = R.drawable.ic_person_filled,
-        iconColor = And03Theme.colors.primary
+        iconColor = And03Theme.colors.primary,
+        contentDescription = "Preview Test"
     )
 }

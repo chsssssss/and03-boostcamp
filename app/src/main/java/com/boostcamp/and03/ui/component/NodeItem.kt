@@ -72,7 +72,8 @@ fun NodeItem(
         ) {
             IconBadge(
                 iconResId = R.drawable.ic_person_filled,
-                iconColor = And03Theme.colors.primary
+                iconColor = And03Theme.colors.primary,
+                contentDescription = stringResource(R.string.content_description_node_item_icon)
             )
 
             Text(
