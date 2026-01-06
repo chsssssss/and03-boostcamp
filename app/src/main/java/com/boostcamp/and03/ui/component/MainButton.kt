@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 
 enum class ButtonVariant {
     Primary,
@@ -26,39 +26,39 @@ fun MainButton(
 ) {
     val colors = when (variant) {
         ButtonVariant.Primary -> ButtonDefaults.buttonColors(
-            containerColor = MainTheme.colors.primary,
-            contentColor = MainTheme.colors.onPrimary
+            containerColor = And03Theme.colors.primary,
+            contentColor = And03Theme.colors.onPrimary
         )
 
         ButtonVariant.Secondary -> ButtonDefaults.buttonColors(
-            containerColor = MainTheme.colors.surface,
-            contentColor = MainTheme.colors.onSurface
+            containerColor = And03Theme.colors.surface,
+            contentColor = And03Theme.colors.onSurface
         )
 
         ButtonVariant.Transparent -> ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MainTheme.colors.onSurface
+            contentColor = And03Theme.colors.onSurface
         )
     }
 
     Button(
         onClick = onClick,
         colors = colors,
-        shape = MainTheme.shapes.defaultCorner,
+        shape = And03Theme.shapes.defaultCorner,
         contentPadding = contentPadding,
         modifier = modifier
     ) {
         Text(
             text = text,
-            style = MainTheme.typography.labelLarge
+            style = And03Theme.typography.labelLarge
         )
     }
 }
 
 @Preview
 @Composable
-private fun MainButtonPrimaryPreview() {
-    MainTheme {
+private fun And03ButtonPrimaryPreview() {
+    And03Theme {
         MainButton(
             text = "버튼",
             onClick = {}
@@ -68,8 +68,8 @@ private fun MainButtonPrimaryPreview() {
 
 @Preview
 @Composable
-private fun MainButtonSecondaryPreview() {
-    MainTheme {
+private fun And03ButtonSecondaryPreview() {
+    And03Theme {
         MainButton(
             text = "버튼",
             onClick = {},
@@ -80,8 +80,8 @@ private fun MainButtonSecondaryPreview() {
 
 @Preview
 @Composable
-private fun MainButtonTransparentPreview() {
-    MainTheme {
+private fun And03ButtonTransparentPreview() {
+    And03Theme {
         MainButton(
             text = "버튼",
             onClick = {},

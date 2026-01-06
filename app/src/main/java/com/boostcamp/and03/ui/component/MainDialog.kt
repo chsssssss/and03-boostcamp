@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import com.boostcamp.and03.ui.theme.Dimensions
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.R
 
 @Composable
@@ -33,8 +33,8 @@ fun MainDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = MainTheme.shapes.dialogCorner,
-            color = MainTheme.colors.surface
+            shape = And03Theme.shapes.dialogCorner,
+            color = And03Theme.colors.surface
         ) {
             Column(
                 modifier = modifier.padding(Dimensions.PADDING_L),
@@ -48,15 +48,15 @@ fun MainDialog(
 
                 Text(
                     text = title,
-                    style = MainTheme.typography.titleMedium,
-                    color = MainTheme.colors.onSurface
+                    style = And03Theme.typography.titleMedium,
+                    color = And03Theme.colors.onSurface
                 )
 
                 if(description.isNotBlank()) {
                     Text(
                         text = description,
-                        style = MainTheme.typography.bodyMedium,
-                        color = MainTheme.colors.onSurfaceVariant,
+                        style = And03Theme.typography.bodyMedium,
+                        color = And03Theme.colors.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -90,7 +90,7 @@ fun MainDialog(
 fun MainDialogPreview() {
     MainDialog(
         iconResId = R.drawable.ic_warning_filled,
-        iconColor = MainTheme.colors.error,
+        iconColor = And03Theme.colors.error,
         title = "변경사항이 저장되지 않았어요",
         dismissText = "나가기",
         confirmText = "계속 편집",

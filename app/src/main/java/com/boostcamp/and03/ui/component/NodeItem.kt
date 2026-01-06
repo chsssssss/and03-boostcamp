@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.Dimensions
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 
 private object NodeItemValues {
     val borderWidth = 2.dp
@@ -37,21 +37,21 @@ fun NodeItem(
     onMoreClick: () -> Unit = {}
 ) {
     val borderColor = if (isHighlighted) {
-        MainTheme.colors.primary
+        And03Theme.colors.primary
     } else {
-        MainTheme.colors.outline
+        And03Theme.colors.outline
     }
 
     Box(
         modifier = modifier
             .background(
-                MainTheme.colors.surface,
-                MainTheme.shapes.defaultCorner
+                And03Theme.colors.surface,
+                And03Theme.shapes.defaultCorner
             )
             .border(
                 NodeItemValues.borderWidth,
                 borderColor,
-                MainTheme.shapes.defaultCorner
+                And03Theme.shapes.defaultCorner
             )
     ) {
         IconButton(
@@ -72,18 +72,18 @@ fun NodeItem(
         ) {
             IconBadge(
                 iconResId = R.drawable.ic_person_filled,
-                iconColor = MainTheme.colors.primary
+                iconColor = And03Theme.colors.primary
             )
 
             Text(
                 text = title,
-                style = MainTheme.typography.titleMedium
+                style = And03Theme.typography.titleMedium
             )
 
             Text(
                 text = content,
-                style = MainTheme.typography.bodyMedium,
-                color = MainTheme.colors.onSurfaceVariant,
+                style = And03Theme.typography.bodyMedium,
+                color = And03Theme.colors.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }

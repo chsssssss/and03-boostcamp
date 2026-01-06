@@ -19,7 +19,7 @@ val Typography = Typography(
 )
 
 @Immutable
-data class MainTypography(
+data class And03Typography(
     val displayLarge: TextStyle,
     val displayMedium: TextStyle,
     val displaySmall: TextStyle,
@@ -42,7 +42,7 @@ data class MainTypography(
 )
 
 // Set of Material typography styles to start with
-internal val mainTypography = MainTypography(
+internal val and03Typography = And03Typography(
     displayLarge = TextStyle(
         fontSize = 48.sp,
         fontWeight = FontWeight.Bold
@@ -109,6 +109,6 @@ internal val mainTypography = MainTypography(
     )
 )
 
-internal val LocalMainTypography = staticCompositionLocalOf {
-    mainTypography
+internal val LocalAnd03Typography = staticCompositionLocalOf {
+    and03Typography
 }

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun SearchTextField(
@@ -56,14 +56,14 @@ fun SearchTextField(
         ),
         onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.SingleLine,
-        shape = MainTheme.shapes.searchTextFieldCorner,
+        shape = And03Theme.shapes.searchTextFieldCorner,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = MainTheme.colors.onSurface,
-            unfocusedTextColor = MainTheme.colors.onSurface,
-            focusedContainerColor = MainTheme.colors.surfaceVariant,
-            unfocusedContainerColor = MainTheme.colors.surfaceVariant,
-            focusedLeadingIconColor = MainTheme.colors.onSurfaceVariant,
-            unfocusedLeadingIconColor = MainTheme.colors.onSurfaceVariant,
+            focusedTextColor = And03Theme.colors.onSurface,
+            unfocusedTextColor = And03Theme.colors.onSurface,
+            focusedContainerColor = And03Theme.colors.surfaceVariant,
+            unfocusedContainerColor = And03Theme.colors.surfaceVariant,
+            focusedLeadingIconColor = And03Theme.colors.onSurfaceVariant,
+            unfocusedLeadingIconColor = And03Theme.colors.onSurfaceVariant,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
@@ -103,7 +103,7 @@ private fun ClearOrCameraIcon(
 @Preview(showBackground = true)
 @Composable
 private fun SearchTextFieldPreview() {
-    MainTheme {
+    And03Theme {
         SearchTextField(
             state = TextFieldState(),
             onSearch = {},

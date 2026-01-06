@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun IconBadge(
@@ -57,6 +57,6 @@ fun IconBadge(
 private fun IconBadgePreview() {
     IconBadge(
         iconResId = R.drawable.ic_person_filled,
-        iconColor = MainTheme.colors.primary
+        iconColor = And03Theme.colors.primary
     )
 }

@@ -6,18 +6,18 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 
 @Immutable
-data class MainShapes(
+data class And03Shapes(
     val defaultCorner: RoundedCornerShape,
     val dialogCorner: RoundedCornerShape,
     val searchTextFieldCorner: RoundedCornerShape
 )
 
-internal val mainShapes = MainShapes(
+internal val and03Shapes = And03Shapes(
     defaultCorner = RoundedCornerShape(8.dp),
     dialogCorner = RoundedCornerShape(16.dp),
     searchTextFieldCorner = RoundedCornerShape(12.dp)
 )
 
-internal val LocalMainShapes = staticCompositionLocalOf {
-    mainShapes
+internal val LocalAnd03Shapes = staticCompositionLocalOf {
+    and03Shapes
 }

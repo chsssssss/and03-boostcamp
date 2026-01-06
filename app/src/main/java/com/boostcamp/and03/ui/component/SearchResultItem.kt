@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.boostcamp.and03.ui.theme.Dimensions
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 
 private object SearchResultItemValues {
     val borderWidth = 2.dp
@@ -42,9 +42,9 @@ fun SearchResultItem(
     onClick: () -> Unit = {}
 ) {
     val borderColor = if (isSelected) {
-        MainTheme.colors.primary
+        And03Theme.colors.primary
     } else {
-        MainTheme.colors.outline
+        And03Theme.colors.outline
     }
 
     Box(
@@ -54,11 +54,11 @@ fun SearchResultItem(
             .border(
                 width = SearchResultItemValues.borderWidth,
                 color = borderColor,
-                shape = MainTheme.shapes.defaultCorner
+                shape = And03Theme.shapes.defaultCorner
             )
             .background(
-                color = MainTheme.colors.surface,
-                shape = MainTheme.shapes.defaultCorner
+                color = And03Theme.colors.surface,
+                shape = And03Theme.shapes.defaultCorner
             )
             .clickable(onClick = onClick)
             .padding(Dimensions.PADDING_M)
@@ -81,23 +81,23 @@ fun SearchResultItem(
             ) {
                 Text(
                     text = title,
-                    style = MainTheme.typography.titleMedium,
+                    style = And03Theme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = authors,
-                    style = MainTheme.typography.bodyMedium,
-                    color = MainTheme.colors.onSurfaceVariant,
+                    style = And03Theme.typography.bodyMedium,
+                    color = And03Theme.colors.onSurfaceVariant,
                     maxLines = SearchResultItemValues.TITLE_MAX_LINES,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = publisher,
-                    style = MainTheme.typography.bodyMedium,
-                    color = MainTheme.colors.onSurfaceVariant,
+                    style = And03Theme.typography.bodyMedium,
+                    color = And03Theme.colors.onSurfaceVariant,
                     maxLines = SearchResultItemValues.AUTHOR_PUBLISHER_MAX_LINES,
                     overflow = TextOverflow.Ellipsis
                 )

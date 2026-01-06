@@ -6,20 +6,20 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
-private val LightMainScheme = lightMainColors
-private val DarkMainScheme = darkMainColors
+private val LightAnd03Scheme = lightAnd03Colors
+private val DarkAnd03Scheme = darkMainColors
 
 @Composable
-fun MainTheme(
+fun And03Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val mainColorScheme = if(darkTheme) DarkMainScheme else LightMainScheme
+    val mainColorScheme = if(darkTheme) DarkAnd03Scheme else LightAnd03Scheme
 
     CompositionLocalProvider(
-        LocalMainColors provides mainColorScheme,
-        LocalMainTypography provides mainTypography,
-        LocalMainShapes provides mainShapes
+        LocalAnd03Colors provides mainColorScheme,
+        LocalAnd03Typography provides and03Typography,
+        LocalAnd03Shapes provides and03Shapes
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -29,16 +29,16 @@ fun MainTheme(
     }
 }
 
-object MainTheme {
-    val colors: MainColors
+object And03Theme {
+    val colors: And03Colors
         @Composable
-        get() = LocalMainColors.current
+        get() = LocalAnd03Colors.current
 
-    val typography: MainTypography
+    val typography: And03Typography
         @Composable
-        get() = LocalMainTypography.current
+        get() = LocalAnd03Typography.current
 
-    val shapes: MainShapes
+    val shapes: And03Shapes
         @Composable
-        get() = LocalMainShapes.current
+        get() = LocalAnd03Shapes.current
 }

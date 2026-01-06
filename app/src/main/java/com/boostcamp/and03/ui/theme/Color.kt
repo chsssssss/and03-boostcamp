@@ -79,7 +79,7 @@ val OnError = Color(0xFFFFFFFF)              // 에러 위 텍스트
 val Scrim = Color(0x99000000)
 
 @Immutable
-data class MainColors(
+data class And03Colors(
     val primary: Color,
     val onPrimary: Color,
 
@@ -110,7 +110,7 @@ data class MainColors(
     val scrim: Color
 )
 
-internal val lightMainColors = MainColors(
+internal val lightAnd03Colors = And03Colors(
     primary = Primary,
     onPrimary = OnPrimary,
 
@@ -141,7 +141,7 @@ internal val lightMainColors = MainColors(
     scrim = Scrim
 )
 
-internal val darkMainColors = MainColors(
+internal val darkMainColors = And03Colors(
     primary = Primary,
     onPrimary = OnPrimary,
 
@@ -172,6 +172,6 @@ internal val darkMainColors = MainColors(
     scrim = Scrim
 )
 
-internal val LocalMainColors = staticCompositionLocalOf {
-    lightMainColors
+internal val LocalAnd03Colors = staticCompositionLocalOf {
+    lightAnd03Colors
 }

@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.ui.theme.Dimensions
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.theme.MainTheme
+import com.boostcamp.and03.ui.theme.And03Theme
 
 private object OCRBottomSheetValues {
     val GalleryIconColor = Color(0xFF16A34A)
@@ -50,8 +50,8 @@ fun OCRBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         dragHandle = null,
-        containerColor = MainTheme.colors.surface,
-        scrimColor = MainTheme.colors.scrim
+        containerColor = And03Theme.colors.surface,
+        scrimColor = And03Theme.colors.scrim
     ) {
         Column(
             modifier = modifier
@@ -64,7 +64,7 @@ fun OCRBottomSheet(
             ) {
                 Text(
                     text = stringResource(R.string.ocr_bottom_sheet_import_text),
-                    style = MainTheme.typography.titleLarge,
+                    style = And03Theme.typography.titleLarge,
                     modifier = Modifier.align(Alignment.Center)
                 )
 
@@ -81,7 +81,7 @@ fun OCRBottomSheet(
 
             OCRBottomSheetButton(
                 iconResId = R.drawable.ic_round_camera_alt,
-                iconColor = MainTheme.colors.primary,
+                iconColor = And03Theme.colors.primary,
                 title = stringResource(R.string.ocr_bottom_sheet_take_a_photo),
                 description = stringResource(R.string.ocr_bottom_sheet_take_a_photo_description),
                 onClick = onCameraClick
@@ -108,12 +108,12 @@ private fun OCRBottomSheetButton(
 ) {
     Surface(
         onClick = onClick,
-        shape = MainTheme.shapes.defaultCorner,
+        shape = And03Theme.shapes.defaultCorner,
         border = BorderStroke(
             1.dp,
-            MainTheme.colors.outline
+            And03Theme.colors.outline
         ),
-        color = MainTheme.colors.surface,
+        color = And03Theme.colors.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -131,13 +131,13 @@ private fun OCRBottomSheetButton(
             ) {
                 Text(
                     text = title,
-                    style = MainTheme.typography.bodyLarge
+                    style = And03Theme.typography.bodyLarge
                 )
 
                 Text(
                     text = description,
-                    style = MainTheme.typography.bodySmall,
-                    color = MainTheme.colors.onSurfaceVariant
+                    style = And03Theme.typography.bodySmall,
+                    color = And03Theme.colors.onSurfaceVariant
                 )
             }
 
@@ -145,7 +145,7 @@ private fun OCRBottomSheetButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right_filled),
                 contentDescription = null,
                 modifier = Modifier.size(OCRBottomSheetValues.RightArrowIconSize),
-                tint = MainTheme.colors.onSurfaceVariant
+                tint = And03Theme.colors.onSurfaceVariant
             )
         }
     }
@@ -154,7 +154,7 @@ private fun OCRBottomSheetButton(
 @Preview
 @Composable
 private fun OCRBottomSheetPreview() {
-    MainTheme {
+    And03Theme {
         OCRBottomSheet(
             onDismiss = {},
             onCameraClick = {},
