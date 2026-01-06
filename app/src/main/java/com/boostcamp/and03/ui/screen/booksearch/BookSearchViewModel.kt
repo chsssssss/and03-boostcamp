@@ -1,7 +1,9 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
@@ -28,18 +30,17 @@ class BookSearchViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val pagingBooksFlow: Flow<PagingData<BookUIModel>> =
-        _uiState
-            .map { it.query }
-            .debounce(300)
-            .distinctUntilChanged()
-            .filter { it.isNotBlank() }
-            .flatMapLatest { query ->
-                bookRepository.loadBooksPagingFlow(query)
-                    .map { pagingData ->
-                        pagingData.map { it.toUiModel() }
-                    }
-            }
+    val pagingBooksFlow: Flow<PagingData<BookUIModel>> = _uiState
+        .map { it.query }
+        .debounce(300)
+        .distinctUntilChanged()
+        .filter { it.isNotBlank() }
+        .flatMapLatest { query ->
+            bookRepository.loadBooksPagingFlow(query)
+                .map { pagingData ->
+                    pagingData.map { it.toUiModel() }
+                }
+        }
 
     fun changeQuery(query: String) {
         _uiState.update { it.copy(query = query) }

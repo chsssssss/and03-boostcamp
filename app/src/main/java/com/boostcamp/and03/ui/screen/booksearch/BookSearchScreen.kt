@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.SearchResultItem
@@ -110,12 +112,9 @@ private fun BookSearchScreen(
                 ) {
                     items(
                         count = searchResults.itemCount,
-                        key = { index ->
-                            searchResults[index]?.isbn ?: index
-                        }
+                        key = searchResults.itemKey { it.isbn }
                     ) { index ->
                         val book = searchResults[index] ?: return@items
-
                         SearchResultItem(
                             thumbnail = book.thumbnail,
                             title = book.title,
