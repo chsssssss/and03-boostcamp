@@ -66,7 +66,7 @@ fun SearchResultItem(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M),
+            horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(

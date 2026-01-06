@@ -32,8 +32,9 @@ import com.boostcamp.and03.ui.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.component.SearchTopBar
 import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
-import com.boostcamp.and03.ui.theme.Dimensions
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -88,7 +89,7 @@ private fun BookSearchScreen(
             onSearch = { onQueryChange(searchTextState.text.toString()) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_M)
+                .padding(And03Padding.PADDING_M)
         )
 
         when {
@@ -109,8 +110,8 @@ private fun BookSearchScreen(
             else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = Dimensions.PADDING_L),
-                    verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M)
+                    contentPadding = PaddingValues(horizontal = And03Padding.PADDING_L),
+                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
                 ) {
                     items(
                         count = searchResults.itemCount,
@@ -149,7 +150,7 @@ private fun BookSearchEmptySection(
             color = And03Theme.colors.onSurfaceVariant
         )
 
-        Spacer(modifier = Modifier.height(Dimensions.PADDING_L))
+        Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
         And03Button(
             text = stringResource(R.string.book_search_button_text),
