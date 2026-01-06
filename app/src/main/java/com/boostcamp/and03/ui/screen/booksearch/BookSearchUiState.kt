@@ -7,7 +7,4 @@ data class BookSearchUiState(
 ) {
     val isSaveEnabled: Boolean
         get() = selectedBookISBN != null
-
-    val showManualAddButton: Boolean
-        get() = query.isBlank()
 }
