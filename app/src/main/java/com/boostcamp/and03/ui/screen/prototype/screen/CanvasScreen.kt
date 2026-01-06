@@ -18,8 +18,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -39,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.ActionSnackBarHost
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
@@ -59,7 +63,24 @@ fun CanvasScreen(
     val minScale = 0.5f
     val maxScale = 2f
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.snackbarEvent.collect { event ->
+            val result = snackbarHostState.showSnackbar(
+                message = navController.context.getString(event.messageRes),
+                actionLabel = event.actionLabelRes.let {
+                    navController.context.getString(it)
+                }
+            )
+        }
+    }
+
+
     Scaffold(
+        snackbarHost = {
+            ActionSnackBarHost(hostState = snackbarHostState)
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { navController.navigate(PrototypeRoute.MemoEdit) },
@@ -79,6 +100,12 @@ fun CanvasScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            Button(
+                onClick = viewModel::showSnackbar
+            ) {
+                Text("저장")
+            }
+
             Button(
                 onClick = {
                     connectMode = !connectMode
