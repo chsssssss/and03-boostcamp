@@ -35,6 +35,7 @@ import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -121,7 +122,7 @@ private fun BookSearchScreen(
                         SearchResultItem(
                             thumbnail = book.thumbnail,
                             title = book.title,
-                            author = book.author,
+                            authors = book.authors,
                             publisher = book.publisher,
                             isSelected = book.isbn == uiState.selectedBookISBN,
                             onClick = { onItemClick(book) }
@@ -171,14 +172,14 @@ private fun BookSearchScreenPreview() {
         BookUIModel(
             isbn = "111",
             title = "이펙티브 코틀린",
-            author = "마르친 모스칼라",
+            authors = persistentListOf("마르친 모스칼라"),
             publisher = "인사이트",
             thumbnail = ""
         ),
         BookUIModel(
             isbn = "222",
             title = "안드로이드 Compose 완벽 가이드",
-            author = "Compose 팀",
+            authors = persistentListOf("Compose 팀"),
             publisher = "구글",
             thumbnail = ""
         )

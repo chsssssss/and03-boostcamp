@@ -23,6 +23,8 @@ import coil.compose.AsyncImage
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 private object SearchResultItemValues {
     val borderWidth = 2.dp
@@ -36,7 +38,7 @@ private object SearchResultItemValues {
 fun SearchResultItem(
     thumbnail: String,
     title: String,
-    author: String,
+    authors: ImmutableList<String>,
     publisher: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
@@ -91,7 +93,7 @@ fun SearchResultItem(
                 )
 
                 Text(
-                    text = author,
+                    text = authors.joinToString(", "),
                     style = And03Theme.typography.bodyMedium,
                     color = And03Theme.colors.onSurfaceVariant,
                     maxLines = SearchResultItemValues.AUTHOR_PUBLISHER_MAX_LINES,
@@ -120,7 +122,7 @@ private fun SearchResultItemPreview() {
         SearchResultItem(
             thumbnail = "",
             title = "책 제목",
-            author = "책 저자",
+            authors = persistentListOf("김김김", "앤앤앤", "장장장"),
             publisher = "책 출판사",
             isSelected = false,
             onClick = {}
@@ -131,7 +133,7 @@ private fun SearchResultItemPreview() {
             title = """
                 선택된 책 제목. 테두리 색이 바뀌었습니다. 그런데 여기서 개행을 해야 한다면...........????????????
             """.trimIndent(),
-            author = "선택된 책 저자",
+            authors = persistentListOf("패트", "매트"),
             publisher = "선택된 책 출판사",
             isSelected = true,
             onClick = {}
