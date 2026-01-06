@@ -7,6 +7,9 @@ sealed interface Route {
     data object Booklist : Route
 
     @Serializable
+    data object BookSearch : Route
+
+    @Serializable
     data object AddBook : Route
 
     @Serializable
