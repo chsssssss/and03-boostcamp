@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeNavHost
-import com.boostcamp.and03.ui.screen.prototype.screen.CanvasScreen
 import com.boostcamp.and03.ui.theme.And03Theme
 
 class MainActivity : ComponentActivity() {

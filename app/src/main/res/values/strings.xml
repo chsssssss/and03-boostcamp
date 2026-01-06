@@ -11,6 +11,19 @@
     <string name="bottom_tab_add_book">책 추가</string>
     <string name="bottom_tab_my_page">마이페이지</string>
 
+    <!-- OCR 바텀 시트 문자열 -->
+    <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
+    <string name="ocr_bottom_sheet_take_a_photo">촬영하기</string>
+    <string name="ocr_bottom_sheet_take_a_photo_description">책 페이지를 직접 촬영합니다</string>
+    <string name="ocr_bottom_sheet_select_image">이미지에서 가져오기</string>
+    <string name="ocr_bottom_sheet_select_image_description">기기에 저장된 사진을 선택합니다</string>
+
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
+    <string name="content_description_close">닫기</string>
+    <string name="content_description_take_a_photo">책 페이지 사진을 촬영하여 텍스트를 가져옵니다</string>
+    <string name="content_description_open_gallery">갤러리에서 사진을 선택하여 텍스트를 가져옵니다</string>
+    <string name="content_description_more_button">더보기 버튼을 눌러 메뉴를 표시합니다</string>
+    <string name="content_description_node_item_icon">노드를 나타내는 아이콘입니다.</string>
+    <string name="content_description_"></string>
 </resources>

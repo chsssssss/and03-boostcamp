@@ -18,11 +18,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -36,15 +33,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.component.ActionSnackBarHost
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
@@ -65,25 +59,7 @@ fun CanvasScreen(
     val minScale = 0.5f
     val maxScale = 2f
 
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    val snackbarEvent by viewModel.snackbarEvent.collectAsStateWithLifecycle(initialValue = null)
-
-    snackbarEvent?.let { event ->
-        val context = LocalContext.current
-        LaunchedEffect(event) {
-            snackbarHostState.showSnackbar(
-                message = context.getString(event.messageRes),
-                actionLabel = context.getString(event.actionLabelRes),
-                duration = SnackbarDuration.Short
-            )
-        }
-    }
-
     Scaffold(
-        snackbarHost = {
-            ActionSnackBarHost(snackbarHostState)
-        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { navController.navigate(PrototypeRoute.MemoEdit) },
@@ -103,12 +79,6 @@ fun CanvasScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Button(
-                onClick = viewModel::showSnackbar
-            ) {
-                Text("저장")
-            }
-
             Button(
                 onClick = {
                     connectMode = !connectMode

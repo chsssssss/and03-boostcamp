@@ -2,17 +2,12 @@ package com.boostcamp.and03.ui.screen.prototype.screen
 
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.boostcamp.and03.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import com.boostcamp.and03.ui.screen.prototype.model.MemoGraph
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 
 class CanvasViewModel : ViewModel() {
 
@@ -26,9 +21,6 @@ class CanvasViewModel : ViewModel() {
             .addMemo(MemoNode("6", "인물 F", "설명 F", Offset(700f, 1000f)))
     )
     val graph: StateFlow<MemoGraph> = _graph.asStateFlow()
-
-    private val _snackbarEvent = MutableSharedFlow<SnackBarEvent>()
-    val snackbarEvent = _snackbarEvent.asSharedFlow()
 
     fun moveNode(nodeId: String, delta: Offset) {
         _graph.update { current ->
@@ -47,18 +39,6 @@ class CanvasViewModel : ViewModel() {
         _graph.update { current ->
             val snapped = snapNodesToGrid(current.nodes.values.toList(), gridSize)
             current.copy(nodes = snapped.associateBy { it.id })
-        }
-    }
-
-
-    fun showSnackbar() {
-        viewModelScope.launch {
-            _snackbarEvent.emit(
-                SnackBarEvent(
-                    messageRes = R.string.snackbar_save_book_success_message,
-                    actionLabelRes = R.string.snackbar_save_book_success_action
-                )
-            )
         }
     }
 }
