@@ -20,7 +20,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.R
 
 @Composable
-fun MainDialog(
+fun And03Dialog(
     @DrawableRes iconResId: Int,
     iconColor: Color,
     title: String,
@@ -66,14 +66,14 @@ fun MainDialog(
                     horizontalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    MainButton(
+                    And03Button(
                         text = dismissText,
                         onClick = onDismiss,
                         variant = ButtonVariant.Secondary,
                         modifier = Modifier.weight(1f)
                     )
 
-                    MainButton(
+                    And03Button(
                         text = confirmText,
                         onClick = onConfirm,
                         variant = ButtonVariant.Primary,
@@ -87,8 +87,8 @@ fun MainDialog(
 
 @Preview
 @Composable
-fun MainDialogPreview() {
-    MainDialog(
+fun And03DialogPreview() {
+    And03Dialog(
         iconResId = R.drawable.ic_warning_filled,
         iconColor = And03Theme.colors.error,
         title = "변경사항이 저장되지 않았어요",

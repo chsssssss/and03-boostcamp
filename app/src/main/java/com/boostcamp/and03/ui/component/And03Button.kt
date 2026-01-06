@@ -17,7 +17,7 @@ enum class ButtonVariant {
 }
 
 @Composable
-fun MainButton(
+fun And03Button(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,7 +59,7 @@ fun MainButton(
 @Composable
 private fun And03ButtonPrimaryPreview() {
     And03Theme {
-        MainButton(
+        And03Button(
             text = "버튼",
             onClick = {}
         )
@@ -70,7 +70,7 @@ private fun And03ButtonPrimaryPreview() {
 @Composable
 private fun And03ButtonSecondaryPreview() {
     And03Theme {
-        MainButton(
+        And03Button(
             text = "버튼",
             onClick = {},
             variant = ButtonVariant.Secondary
@@ -82,7 +82,7 @@ private fun And03ButtonSecondaryPreview() {
 @Composable
 private fun And03ButtonTransparentPreview() {
     And03Theme {
-        MainButton(
+        And03Button(
             text = "버튼",
             onClick = {},
             variant = ButtonVariant.Transparent
