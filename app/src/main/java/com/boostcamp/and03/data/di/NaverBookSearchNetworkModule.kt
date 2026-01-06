@@ -1,7 +1,7 @@
-package com.boostcamp.and03.data.core.network.di
+package com.boostcamp.and03.data.di
 
 import com.boostcamp.and03.BuildConfig
-import com.boostcamp.and03.data.feature.booklist.datasource.remote.KakaoBookSearchService
+import com.boostcamp.and03.data.api.NaverBookSearchApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -15,19 +15,12 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.jvm.java
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class KakaoBookSearchRetrofit
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class KakaoBookSearchOkHttpClient
-
 @Module
 @InstallIn(SingletonComponent::class)
-object KakaoBookSearchNetworkModule {
-    private const val BASE_URL = "https://dapi.kakao.com/"
-    private const val REST_API_KEY = BuildConfig.KAKAO_REST_API_KEY
+object NaverBookSearchNetworkModule {
+    private const val BASE_URL = "https://openapi.naver.com"
+    private const val CLIENT_ID = BuildConfig.NAVER_CLIENT_ID
+    private const val CLIENT_SECRET = BuildConfig.NAVER_CLIENT_SECRET
 
     @Provides
     @Singleton
@@ -37,24 +30,25 @@ object KakaoBookSearchNetworkModule {
 
     private val contentType = "application/json".toMediaType()
 
-    @KakaoBookSearchOkHttpClient
+    @NaverBookSearchOkHttpClient
     @Provides
     @Singleton
-    fun provideKakaoBookSearchOkHttpClient(): OkHttpClient =
+    fun provideNaverBookSearchOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", "KakaoAK ${REST_API_KEY}")
+                    .addHeader("X-Naver-Client-Id", CLIENT_ID)
+                    .addHeader("X-Naver-Client-Secret", CLIENT_SECRET)
                     .build()
                 chain.proceed(newRequest)
             }.build()
 
-    @KakaoBookSearchRetrofit
+    @NaverBookSearchRetrofit
     @Provides
     @Singleton
-    fun provideKakaoBookSearchRetrofit(
+    fun provideNaverBookSearchRetrofit(
         json: Json,
-        @KakaoBookSearchOkHttpClient okHttpClient: OkHttpClient
+        @NaverBookSearchOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -64,8 +58,8 @@ object KakaoBookSearchNetworkModule {
 
     @Provides
     @Singleton
-    fun provideKakaoBookSearchService(
-        @KakaoBookSearchRetrofit retrofit: Retrofit
-    ): KakaoBookSearchService =
-        retrofit.create(KakaoBookSearchService::class.java)
+    fun provideNaverBookSearchService(
+        @NaverBookSearchRetrofit retrofit: Retrofit
+    ): NaverBookSearchApiService =
+        retrofit.create(NaverBookSearchApiService::class.java)
 }

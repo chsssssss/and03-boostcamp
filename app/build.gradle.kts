@@ -30,12 +30,19 @@ android {
 
         var properties = Properties()
         properties.load(FileInputStream("local.properties"))
-        val kakaoRestApiKey = properties.getProperty("KAKAO_REST_API_KEY")
+        val naverClientId = properties.getProperty("NAVER_CLIENT_ID")
+        val naverClientSecret = properties.getProperty("NAVER_CLIENT_SECRET")
 
         buildConfigField (
             "String",
-            "KAKAO_REST_API_KEY",
-            "\"$kakaoRestApiKey\""
+            "NAVER_CLIENT_ID",
+            "\"$naverClientId\""
+        )
+
+        buildConfigField (
+            "String",
+            "NAVER_CLIENT_SECRET",
+            "\"$naverClientSecret\""
         )
     }
 
@@ -73,6 +80,7 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.compose.runtime)
     ksp(libs.hilt.compiler)
 
     // serialization
