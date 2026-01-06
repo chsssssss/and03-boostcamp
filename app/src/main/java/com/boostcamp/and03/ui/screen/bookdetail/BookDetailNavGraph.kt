@@ -8,7 +8,7 @@ import com.boostcamp.and03.ui.navigation.MainTabRoute
 fun NavGraphBuilder.bookDetailNavGraph(
     modifier: Modifier = Modifier
 ) {
-    composable<MainTabRoute.Booklist> {
+    composable<MainTabRoute.BookDetail> {
         BookDetailRoute()
     }
 }

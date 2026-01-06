@@ -23,14 +23,6 @@ fun MainApp(
 
     Scaffold(
         modifier = modifier,
-        bottomBar = {
-            MainBottomBar(
-                visible = navigator.isShowBottomBar,
-                tabs = navigator.mainBottomTabs,
-                currentTab = navigator.currentTab,
-                onTabSelected = { tab -> navigator.navigate(tab.route) }
-            )
-        },
         snackbarHost = { ActionSnackBarHost(hostState = snackBarHostState) },
         // contentWindowInsets = WindowInsets() // 최상위 Scaffold에서 WindowInset을 소비하지 않게 하여 Screen의 WindowInset만 소비할 수 있도록 함
     ) { innerPadding -> // 이 innerPadding은 탑바/바텀바의 영역만 갖고 옴

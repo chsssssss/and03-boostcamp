@@ -23,7 +23,7 @@ class MainNavigator(
         @Composable get() =
             navController.currentBackStackEntryAsState().value?.destination
 
-    val startDestination = MainTabRoute.AddBook
+    val startDestination = MainTabRoute.Booklist
 
     val mainBottomTabs = MainBottomTab.entries.toImmutableList()
 
