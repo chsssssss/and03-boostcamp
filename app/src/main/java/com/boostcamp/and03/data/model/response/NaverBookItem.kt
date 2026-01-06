@@ -8,4 +8,5 @@ data class NaverBookItem(
     val image: String,
     val author: String,
     val publisher: String,
+    val isbn: String
 )
