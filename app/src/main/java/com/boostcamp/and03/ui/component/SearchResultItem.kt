@@ -35,7 +35,7 @@ private object SearchResultItemValues {
 fun SearchResultItem(
     thumbnail: String,
     title: String,
-    authors: String,
+    author: String,
     publisher: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
@@ -87,7 +87,7 @@ fun SearchResultItem(
                 )
 
                 Text(
-                    text = authors,
+                    text = author,
                     style = And03Theme.typography.bodyMedium,
                     color = And03Theme.colors.onSurfaceVariant,
                     maxLines = SearchResultItemValues.TITLE_MAX_LINES,
@@ -116,7 +116,7 @@ private fun SearchResultItemPreview() {
         SearchResultItem(
             thumbnail = "",
             title = "책 제목",
-            authors = "책 저자",
+            author = "책 저자",
             publisher = "책 출판사",
             isSelected = false,
             onClick = {}
@@ -127,7 +127,7 @@ private fun SearchResultItemPreview() {
             title = """
                 선택된 책 제목. 테두리 색이 바뀌었습니다. 그런데 여기서 개행을 해야 한다면...........????????????
             """.trimIndent(),
-            authors = "선택된 책 저자",
+            author = "선택된 책 저자",
             publisher = "선택된 책 출판사",
             isSelected = true,
             onClick = {}
