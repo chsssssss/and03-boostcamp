@@ -68,8 +68,8 @@ fun SearchResultItem(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
         ) {
             AsyncImage(
                 model = thumbnail,
@@ -80,9 +80,7 @@ fun SearchResultItem(
             )
 
             Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(start = And03Padding.PADDING_M),
+                modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
