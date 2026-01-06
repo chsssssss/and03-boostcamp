@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class NaverBookItem(
     @SerialName("title") val title: String,
-    @SerialName("image ") val thumbnail: String,
+    @SerialName("image") val thumbnail: String,
     @SerialName("author") val author: String,
     @SerialName("publisher") val publisher: String,
     @SerialName("isbn") val isbn: String
