@@ -2,27 +2,46 @@ package com.boostcamp.and03.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-
-private val LightAnd03Scheme = lightAnd03Colors
-private val DarkAnd03Scheme = darkMainColors
 
 @Composable
 fun And03Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val mainColorScheme = if(darkTheme) DarkAnd03Scheme else LightAnd03Scheme
+    val and03Colors = if(darkTheme) darkMainColors else lightMainColors
+
+    val mainColorScheme = lightColorScheme(
+        primary = and03Colors.primary,
+        onPrimary = and03Colors.onPrimary,
+        primaryContainer = and03Colors.primaryContainer,
+        onPrimaryContainer = and03Colors.onPrimaryContainer,
+        secondary = and03Colors.secondary,
+        onSecondary = and03Colors.onSecondary,
+        secondaryContainer = and03Colors.secondaryContainer,
+        onSecondaryContainer = and03Colors.onSecondaryContainer,
+        background = and03Colors.background,
+        onBackground = and03Colors.onBackground,
+        surface = and03Colors.surface,
+        onSurface = and03Colors.onSurface,
+        surfaceVariant = and03Colors.surfaceVariant,
+        onSurfaceVariant = and03Colors.onSurfaceVariant,
+        error = and03Colors.error,
+        onError = and03Colors.onError,
+        outline = and03Colors.outline,
+        outlineVariant = and03Colors.outlineVariant,
+        scrim = and03Colors.scrim
+    )
 
     CompositionLocalProvider(
-        LocalAnd03Colors provides mainColorScheme,
+        LocalAnd03Colors provides and03Colors,
         LocalAnd03Typography provides and03Typography,
         LocalAnd03Shapes provides and03Shapes
     ) {
         MaterialTheme(
-            colorScheme = colorScheme,
+            colorScheme = mainColorScheme,
             typography = Typography,
             content = content
         )
