@@ -110,7 +110,7 @@ data class And03Colors(
     val scrim: Color
 )
 
-internal val lightAnd03Colors = And03Colors(
+internal val lightMainColors = And03Colors(
     primary = Primary,
     onPrimary = OnPrimary,
 
@@ -173,5 +173,5 @@ internal val darkMainColors = And03Colors(
 )
 
 internal val LocalAnd03Colors = staticCompositionLocalOf {
-    lightAnd03Colors
+    lightMainColors
 }

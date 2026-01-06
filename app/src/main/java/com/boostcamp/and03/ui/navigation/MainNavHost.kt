@@ -9,18 +9,23 @@ import com.boostcamp.and03.ui.screen.addbook.addBookNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
 import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
+import com.boostcamp.and03.ui.screen.prototype.screen.SnackBarEvent
 
 @Composable
 fun MainNavHost(
     navigator: MainNavigator,
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    onShowSnackBar: (message: String, actionLabel: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navigator.navController,
         startDestination = navigator.startDestination
     ) {
-        booklistNavGraph(modifier = modifier.padding(paddingValues))
+        booklistNavGraph(
+            modifier = modifier.padding(paddingValues),
+            onShowSnackBar = onShowSnackBar
+        )
 
         bookSearchNavGraph(
             navController = navigator.navController,

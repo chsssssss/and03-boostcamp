@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -42,9 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.component.EditableTextField
-import com.boostcamp.and03.ui.component.LabelAndEditableTextField
-import com.boostcamp.and03.ui.component.SearchTextField
+import com.boostcamp.and03.ui.component.ActionSnackBarHost
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
 import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
@@ -65,7 +63,24 @@ fun CanvasScreen(
     val minScale = 0.5f
     val maxScale = 2f
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.snackbarEvent.collect { event ->
+            val result = snackbarHostState.showSnackbar(
+                message = navController.context.getString(event.messageRes),
+                actionLabel = event.actionLabelRes.let {
+                    navController.context.getString(it)
+                }
+            )
+        }
+    }
+
+
     Scaffold(
+        snackbarHost = {
+            ActionSnackBarHost(hostState = snackbarHostState)
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { navController.navigate(PrototypeRoute.MemoEdit) },
@@ -86,6 +101,12 @@ fun CanvasScreen(
                 .padding(padding)
         ) {
             Button(
+                onClick = viewModel::showSnackbar
+            ) {
+                Text("저장")
+            }
+
+            Button(
                 onClick = {
                     connectMode = !connectMode
                     selectedIds = emptyList()
@@ -102,18 +123,20 @@ fun CanvasScreen(
                 Text("격자 정렬")
             }
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, pan, zoom, _ ->
-                        scale = (scale * zoom).coerceIn(minScale, maxScale)
-                        panOffset += pan
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
                     }
-                }) {
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            scale = (scale * zoom).coerceIn(minScale, maxScale)
+                            panOffset += pan
+                        }
+                    }
+            ) {
                 ArrowCanvas(
                     arrows = items.edges,
                     items = items.nodes,
@@ -146,7 +169,8 @@ fun CanvasScreen(
                         },
                         onSizeChanged = { size ->
                             nodeSizes = nodeSizes + (item.id to size)
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -165,23 +189,23 @@ fun DraggableItem(
     Box(
         modifier = Modifier
             // offset으로 이동, 캔버스 오프셋이랑 아이템 오프셋을 같이 적용
-        .graphicsLayer {
-            translationX = item.offset.x + panOffset.x
-            translationY = item.offset.y + panOffset.y
-        }
-            // 아이템 이동하면서 선도 같이 움직이도록
-        .onGloballyPositioned { coords ->
-            onSizeChanged(coords.size)
-        }
-            // 클릭
-        .combinedClickable(onClick = onClick)
-            // 드래그 제스처
-        .pointerInput(item.id) {
-            detectDragGestures { change, dragAmount ->
-                change.consume()
-                onMove(dragAmount)
+            .graphicsLayer {
+                translationX = item.offset.x + panOffset.x
+                translationY = item.offset.y + panOffset.y
             }
-        }
+            // 아이템 이동하면서 선도 같이 움직이도록
+            .onGloballyPositioned { coords ->
+                onSizeChanged(coords.size)
+            }
+            // 클릭
+            .combinedClickable(onClick = onClick)
+            // 드래그 제스처
+            .pointerInput(item.id) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    onMove(dragAmount)
+                }
+            }
             .background(
                 if (isSelected) Color(0xFFBBDEFB) else Color.White, RoundedCornerShape(8.dp)
             )
