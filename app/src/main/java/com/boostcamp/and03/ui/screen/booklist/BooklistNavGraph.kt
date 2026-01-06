@@ -6,7 +6,8 @@ import androidx.navigation.compose.composable
 import com.boostcamp.and03.ui.navigation.MainTabRoute
 
 fun NavGraphBuilder.booklistNavGraph(
-    modifier: Modifier = Modifier
+    onShowSnackBar: (message: String, actionLabel: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     composable<MainTabRoute.Booklist> {
         BooklistRoute()
