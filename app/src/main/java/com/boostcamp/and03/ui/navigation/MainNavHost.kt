@@ -28,7 +28,7 @@ fun MainNavHost(
         )
 
         bookSearchNavGraph(
-            navController = navigator.navController,
+            navigator = navigator,
             modifier = modifier.padding(paddingValues)
         )
 
