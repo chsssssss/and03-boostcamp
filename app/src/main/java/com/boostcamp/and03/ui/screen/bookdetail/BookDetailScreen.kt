@@ -50,6 +50,13 @@ private fun BookDetailScreen(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        BookInfoSection(
+            thumbnail = uiState.thumbnail,
+            title = uiState.title,
+            author = uiState.author,
+            publisher = uiState.publisher
+        )
+
         SecondaryTabRow(
             selectedTabIndex = selectedTabIndex,
             containerColor = And03Theme.colors.surface,
@@ -158,6 +165,10 @@ private fun MemoTab() {
 @Composable
 fun BooklistScreenPreview() {
     val previewState = BookDetailUiState(
+        thumbnail = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg",
+        title = "Harry Potter and the Philosopher's Stone",
+        author = "J.K. Rowling",
+        publisher = "Bloomsbury Publishing",
         characters = listOf(
             CharacterUiModel(
                 name = "해리 포터",
