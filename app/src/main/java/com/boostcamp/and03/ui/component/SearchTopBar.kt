@@ -21,7 +21,8 @@ fun SearchTopBar(
     title: String,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isSaveEnabled: Boolean = false
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = title) },
@@ -37,7 +38,8 @@ fun SearchTopBar(
         },
         actions = {
             IconButton(
-                onClick = onSaveClick
+                onClick = onSaveClick,
+                enabled = isSaveEnabled
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_check_filled),
