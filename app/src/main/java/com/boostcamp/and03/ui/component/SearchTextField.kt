@@ -1,12 +1,14 @@
 package com.boostcamp.and03.ui.component
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.MainTheme
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchTextField(
@@ -29,7 +32,7 @@ fun SearchTextField(
     modifier: Modifier = Modifier,
     @StringRes placeholderRes: Int = R.string.search_text_field_hint,
     enableCameraSearch: Boolean = false,
-    onCameraClick: () -> Unit = {},
+    onCameraClick: (() -> Unit)? = null,
 ) {
     TextField(
         state = state,
@@ -76,7 +79,7 @@ private fun ClearOrCameraIcon(
     hasText: Boolean,
     enableCameraSearch: Boolean,
     onClear: () -> Unit,
-    onCameraClick: () -> Unit = {}
+    onCameraClick: (() -> Unit)?
 ) {
     when {
         hasText -> {
@@ -89,7 +92,7 @@ private fun ClearOrCameraIcon(
         }
 
         enableCameraSearch -> {
-            IconButton(onClick = onCameraClick) {
+            IconButton(onClick = { onCameraClick?.invoke() }) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_round_camera_alt),
                     contentDescription = null

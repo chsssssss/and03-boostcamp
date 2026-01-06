@@ -3,6 +3,7 @@
 
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
+    <string name="editable_text_field_hint">책 제목을 입력하세요.</string>
 
     <!-- 바텀 탭 문자열 -->
     <string name="bottom_tab_booklist">책 목록</string>

@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.prototype.screen
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.EditableTextField
+import com.boostcamp.and03.ui.component.LabelAndEditableTextField
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
@@ -66,32 +67,38 @@ fun CanvasScreen(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {
-                navController.navigate(PrototypeRoute.MemoEdit)
-            }, icon = {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
-                    contentDescription = null
-                )
-            }, text = {
-                Text(text = "메모 작성")
-            })
-        }) { padding ->
+            ExtendedFloatingActionButton(
+                onClick = { navController.navigate(PrototypeRoute.MemoEdit) },
+                icon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
+                        contentDescription = null
+                    )
+                }, text = {
+                    Text(text = "메모 작성")
+                }
+            )
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Button(onClick = {
-                connectMode = !connectMode
-                selectedIds = emptyList()
-            }) {
+            Button(
+                onClick = {
+                    connectMode = !connectMode
+                    selectedIds = emptyList()
+                }
+            ) {
                 Text(if (connectMode) "연결 취소" else "연결하기")
             }
 
-            Button(onClick = {
-                viewModel.snapToGrid(300f)
-            }) {
+            Button(
+                onClick = {
+                    viewModel.snapToGrid(300f)
+                }
+            ) {
                 Text("격자 정렬")
             }
 
@@ -121,7 +128,6 @@ fun CanvasScreen(
                         isSelected = selectedIds.contains(item.id),
                         onClick = {
                             if (connectMode) {
-
                                 selectedIds =
                                     if (selectedIds.contains(item.id)) selectedIds - item.id
                                     else (selectedIds + item.id).takeLast(2)
