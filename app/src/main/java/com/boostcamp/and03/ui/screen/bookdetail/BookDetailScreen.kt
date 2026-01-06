@@ -28,6 +28,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
+import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
@@ -87,7 +88,7 @@ private fun BookDetailScreen(uiState: BookDetailUiState) {
 
         when (tabs[selectedTabIndex]) {
             BookDetailTab.CHARACTER -> CharacterTab(uiState)
-            BookDetailTab.QUOTE -> ImpressiveQuoteTab()
+            BookDetailTab.QUOTE -> QuoteTab(uiState)
             BookDetailTab.MEMO -> MemoTab()
         }
 
@@ -138,9 +139,7 @@ private fun BookInfoSection(
 }
 
 @Composable
-private fun CharacterTab(
-    uiState: BookDetailUiState
-) {
+private fun CharacterTab(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -158,7 +157,15 @@ private fun CharacterTab(
 }
 
 @Composable
-private fun ImpressiveQuoteTab() {
+private fun QuoteTab(uiState: BookDetailUiState) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        uiState.quotes.forEach { quote ->
+            QuoteCard(quote = quote)
+        }
+    }
 }
 
 @Composable
