@@ -6,6 +6,7 @@
     <string name="editable_text_field_hint">책 제목을 입력하세요.</string>
     <string name="snackbar_save_book_success_message">책이 추가됐어요. 지금 메모를 남겨볼까요?</string>
     <string name="snackbar_save_book_success_action">메모 작성</string>
+
     <!-- 바텀 탭 문자열 -->
     <string name="bottom_tab_booklist">책 목록</string>
     <string name="bottom_tab_add_book">책 추가</string>
@@ -17,6 +18,12 @@
     <string name="ocr_bottom_sheet_take_a_photo_description">책 페이지를 직접 촬영합니다</string>
     <string name="ocr_bottom_sheet_select_image">이미지에서 가져오기</string>
     <string name="ocr_bottom_sheet_select_image_description">기기에 저장된 사진을 선택합니다</string>
+
+    <!-- 책 검색 화면 -->
+    <string name="book_search_title">책 추가</string>
+    <string name="book_search_empty_before_query">책을 직접 추가할 수 있어요.</string>
+    <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
+    <string name="book_search_button_text">직접 추가</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
