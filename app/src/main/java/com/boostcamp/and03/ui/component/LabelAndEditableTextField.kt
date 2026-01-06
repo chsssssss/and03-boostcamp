@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +23,7 @@ fun LabelAndEditableTextField(
     state: TextFieldState,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholderRes: Int = R.string.editable_text_field_hint,
+    @StringRes placeholderRes: Int = R.string.editable_text_field_hint,
     imeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
     maxCharacterCount: Int = 10,
