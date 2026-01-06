@@ -22,4 +22,8 @@ sealed interface MainTabRoute : Route {
 
     @Serializable
     data object MyPage : MainTabRoute
+
+    @Serializable
+    data object BookDetail : MainTabRoute
+
 }
