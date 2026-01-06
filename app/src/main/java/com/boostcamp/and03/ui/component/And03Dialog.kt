@@ -29,7 +29,7 @@ fun And03Dialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-    description: String= ""
+    description: String = ""
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
