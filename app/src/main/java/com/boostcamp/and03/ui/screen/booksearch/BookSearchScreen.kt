@@ -99,7 +99,7 @@ private fun BookSearchScreen(
             else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(Dimensions.PADDING_L),
+                    contentPadding = PaddingValues(horizontal = Dimensions.PADDING_L),
                     verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M)
                 ) {
                     items(
