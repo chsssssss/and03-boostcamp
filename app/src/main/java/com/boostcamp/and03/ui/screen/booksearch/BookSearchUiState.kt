@@ -6,7 +6,6 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class BookSearchUiState(
     val query: String = "",
-    val searchResults: ImmutableList<BookUIModel> = persistentListOf(),
     val selectedBookISBN: String? = null,
     val isLoading: Boolean = false,
     val isPaging: Boolean = false,
