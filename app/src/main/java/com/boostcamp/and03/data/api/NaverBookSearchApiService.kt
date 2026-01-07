@@ -4,7 +4,7 @@ import com.boostcamp.and03.data.model.response.NaverBookSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-object NaverBookSearchApiConstants {
+private object NaverBookSearchApiValues {
     const val START_DEFAULT = 1
     const val START_MAX = 1000
     const val SIZE_DEFAULT = 10
@@ -17,8 +17,8 @@ interface NaverBookSearchApiService {
     @GET("v1/search/book.json")
     suspend fun loadBooks(
         @Query("query") query: String,
-        @Query("display") display: Int = NaverBookSearchApiConstants.SIZE_DEFAULT,
-        @Query("start") start: Int = NaverBookSearchApiConstants.START_DEFAULT,
-        @Query("sort") sort: String = NaverBookSearchApiConstants.SORT_SIMILARITY
+        @Query("display") display: Int = NaverBookSearchApiValues.SIZE_DEFAULT,
+        @Query("start") start: Int = NaverBookSearchApiValues.START_DEFAULT,
+        @Query("sort") sort: String = NaverBookSearchApiValues.SORT_SIMILARITY
     ): NaverBookSearchResponse
 }
