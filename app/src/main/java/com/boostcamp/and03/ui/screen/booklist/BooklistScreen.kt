@@ -100,6 +100,7 @@ fun BooklistScreenPreview() {
                 authors = persistentListOf("조영호"),
                 publisher = "위키북스",
                 thumbnail = "",
+                totalPage = 200,
                 isbn = ""
             )
         )

@@ -31,7 +31,6 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.component.SearchTopBar
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing

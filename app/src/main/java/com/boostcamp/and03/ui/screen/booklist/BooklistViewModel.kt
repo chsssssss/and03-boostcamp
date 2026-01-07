@@ -25,6 +25,7 @@ class BooklistViewModel @Inject constructor() : ViewModel() {
             authors = persistentListOf("이미예"),
             publisher = "팩토리나인",
             thumbnail = "",
+            totalPage = 200,
             isbn = ""
         ),
         BookUiModel(
@@ -32,6 +33,7 @@ class BooklistViewModel @Inject constructor() : ViewModel() {
             authors = persistentListOf("로버트 C. 마틴"),
             publisher = "인사이트",
             thumbnail = "",
+            totalPage = 100,
             isbn = ""
         ),
         BookUiModel(
@@ -39,6 +41,7 @@ class BooklistViewModel @Inject constructor() : ViewModel() {
             authors = persistentListOf("조영호"),
             publisher = "위키북스",
             thumbnail = "",
+            totalPage = 300,
             isbn = ""
         )
     )
