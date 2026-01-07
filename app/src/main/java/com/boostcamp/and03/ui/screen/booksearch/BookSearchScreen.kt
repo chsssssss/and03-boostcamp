@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,7 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,10 +34,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
-import com.boostcamp.and03.ui.component.SearchTopBar
 import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -77,56 +84,70 @@ private fun BookSearchScreen(
             }
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        SearchTopBar(
-            title = stringResource(R.string.book_search_title),
-            onBackClick = onBackClick,
-            onSaveClick = onSaveClick,
-            isSaveEnabled = uiState.isSaveEnabled
-        )
-
-        SearchTextField(
-            state = searchTextState,
-            onSearch = { onQueryChange(searchTextState.text.toString()) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(And03Padding.PADDING_M)
-        )
-
-        when {
-            uiState.query.isBlank() -> {
-                BookSearchEmptySection(
-                    message = stringResource(R.string.book_search_empty_before_query),
-                    onManualAddClick = onManualAddClick
-                )
-            }
-
-            searchResults.itemCount == 0 -> {
-                BookSearchEmptySection(
-                    message = stringResource(R.string.book_search_empty_after_query),
-                    onManualAddClick = onManualAddClick
-                )
-            }
-
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = And03Padding.PADDING_L),
-                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-                ) {
-                    items(
-                        count = searchResults.itemCount,
-                        key = searchResults.itemKey { it.isbn }
-                    ) { index ->
-                        val book = searchResults[index] ?: return@items
-                        SearchResultItem(
-                            thumbnail = book.thumbnail,
-                            title = book.title,
-                            authors = book.authors,
-                            publisher = book.publisher,
-                            isSelected = book.isbn == uiState.selectedBookISBN,
-                            onClick = { onItemClick(book) }
+    Scaffold(
+        topBar = {
+            And03AppBar(
+                title = stringResource(R.string.book_search_title),
+                onBackClick = onBackClick,
+                actions = {
+                    IconButton(onClick = onSaveClick) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_check_filled),
+                            contentDescription = stringResource(R.string.content_description_save_button)
                         )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            SearchTextField(
+                state = searchTextState,
+                onSearch = { onQueryChange(searchTextState.text.toString()) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(And03Padding.PADDING_M)
+            )
+
+            when {
+                uiState.query.isBlank() -> {
+                    BookSearchEmptySection(
+                        message = stringResource(R.string.book_search_empty_before_query),
+                        onManualAddClick = onManualAddClick
+                    )
+                }
+
+                searchResults.itemCount == 0 -> {
+                    BookSearchEmptySection(
+                        message = stringResource(R.string.book_search_empty_after_query),
+                        onManualAddClick = onManualAddClick
+                    )
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = And03Padding.PADDING_L),
+                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                    ) {
+                        items(
+                            count = searchResults.itemCount,
+                            key = searchResults.itemKey { it.isbn }
+                        ) { index ->
+                            val book = searchResults[index] ?: return@items
+                            SearchResultItem(
+                                thumbnail = book.thumbnail,
+                                title = book.title,
+                                authors = book.authors,
+                                publisher = book.publisher,
+                                isSelected = book.isbn == uiState.selectedBookISBN,
+                                onClick = { onItemClick(book) }
+                            )
+                        }
                     }
                 }
             }
