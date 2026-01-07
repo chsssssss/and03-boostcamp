@@ -4,11 +4,12 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BookUIModel(
+data class BookUiModel(
     val title: String,
     val authors: ImmutableList<String>,
     val publisher: String,
     val thumbnail: String,
+    val totalPage: Int,
     val isbn: String // 국제표준도서번호, 고유 id로 활용
 ) {
     val hasThumbnail: Boolean

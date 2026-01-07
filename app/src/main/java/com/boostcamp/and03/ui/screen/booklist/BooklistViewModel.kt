@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
-import com.boostcamp.and03.ui.screen.booklist.model.BooklistUIState
-import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
+import com.boostcamp.and03.ui.screen.booklist.model.BooklistUiState
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,25 +20,28 @@ import kotlinx.coroutines.flow.onEach
 class BooklistViewModel @Inject constructor() : ViewModel() {
 
     private val allBooks = listOf(
-        BookUIModel(
+        BookUiModel(
             title = "달러구트 꿈 백화점",
             authors = persistentListOf("이미예"),
             publisher = "팩토리나인",
             thumbnail = "",
+            totalPage = 200,
             isbn = ""
         ),
-        BookUIModel(
+        BookUiModel(
             title = "클린 아키텍처",
             authors = persistentListOf("로버트 C. 마틴"),
             publisher = "인사이트",
             thumbnail = "",
+            totalPage = 100,
             isbn = ""
         ),
-        BookUIModel(
+        BookUiModel(
             title = "객체지향의 사실과 오해",
             authors = persistentListOf("조영호"),
             publisher = "위키북스",
             thumbnail = "",
+            totalPage = 300,
             isbn = ""
         )
     )
@@ -46,9 +49,9 @@ class BooklistViewModel @Inject constructor() : ViewModel() {
     private val searchQuery = MutableStateFlow("")
 
     private val _uiState = MutableStateFlow(
-        BooklistUIState(books = allBooks)
+        BooklistUiState(books = allBooks)
     )
-    val uiState: StateFlow<BooklistUIState> = _uiState.asStateFlow()
+    val uiState: StateFlow<BooklistUiState> = _uiState.asStateFlow()
 
     init {
         observeSearch()

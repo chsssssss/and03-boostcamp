@@ -5,13 +5,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.boostcamp.and03.data.api.NaverBookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
+import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
+import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.NaverBookItem
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
-    private val remoteDataSource: NaverBookSearchRemoteDataSource
+    private val naverBookSearchRemoteDataSource: NaverBookSearchRemoteDataSource,
+    private val aladinBookLookUpRemoteDataSource: AladinBookLookUpRemoteDataSource
 ): BookRepository {
 
     override fun loadBooksPagingFlow(
@@ -24,10 +27,18 @@ class BookRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = {
                 NaverBookSearchPagingSource(
-                    remoteDataSource = remoteDataSource,
+                    remoteDataSource = naverBookSearchRemoteDataSource,
                     query = query
                 )
             }
         ).flow
+    }
+
+    override suspend fun loadBookPage(
+        itemId: String
+    ): AladinBookLookUpResponse {
+        return aladinBookLookUpRemoteDataSource.loadBookPage(
+            itemId = itemId
+        )
     }
 }

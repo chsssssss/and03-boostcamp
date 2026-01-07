@@ -32,6 +32,7 @@ android {
         properties.load(FileInputStream("local.properties"))
         val naverClientId = properties.getProperty("NAVER_CLIENT_ID")
         val naverClientSecret = properties.getProperty("NAVER_CLIENT_SECRET")
+        val aladinTTBKey = properties.getProperty("ALADIN_TTB_KEY")
 
         buildConfigField (
             "String",
@@ -43,6 +44,12 @@ android {
             "String",
             "NAVER_CLIENT_SECRET",
             "\"$naverClientSecret\""
+        )
+
+        buildConfigField (
+            "String",
+            "ALADIN_TTB_KEY",
+            "\"$aladinTTBKey\""
         )
     }
 
