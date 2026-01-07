@@ -23,7 +23,7 @@ class MainNavigator(
         @Composable get() =
             navController.currentBackStackEntryAsState().value?.destination
 
-    val startDestination = MainTabRoute.AddBook
+    val startDestination = MainTabRoute.Booklist
 
     val mainBottomTabs = MainBottomTab.entries.toImmutableList()
 
@@ -52,6 +52,7 @@ class MainNavigator(
             MainTabRoute.Booklist -> navController.navigateBooklist(navOptions)
             MainTabRoute.AddBook -> navController.navigateAddBook(navOptions)
             MainTabRoute.MyPage -> navController.navigateMyPage(navOptions)
+            MainTabRoute.BookDetail -> navController.navigateBookDetail(navOptions)
         }
     }
 
@@ -65,6 +66,10 @@ class MainNavigator(
 
     fun NavController.navigateMyPage(navOptions: NavOptions) {
         navigate(MainTabRoute.MyPage, navOptions)
+    }
+
+    fun NavController.navigateBookDetail(navOptions: NavOptions) {
+        navigate(MainTabRoute.BookDetail, navOptions)
     }
 
     fun navigatePopBackStack() = navController.popBackStack()
