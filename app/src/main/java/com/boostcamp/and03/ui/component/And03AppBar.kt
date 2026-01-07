@@ -68,7 +68,7 @@ fun And03AppBar(
 }
 
 @Preview(
-    name = "Back + Check + Menu",
+    name = "Back + Check",
     showBackground = true
 )
 @Composable
@@ -83,14 +83,6 @@ private fun And03AppBarPreview_BackCheckMenu() {
                     painter = painterResource(R.drawable.ic_check_filled),
                     contentDescription = stringResource(
                         R.string.content_description_confirm
-                    )
-                )
-            }
-            IconButton(onClick = {}) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_more_vert_filled),
-                    contentDescription = stringResource(
-                        R.string.content_description_more_button
                     )
                 )
             }
