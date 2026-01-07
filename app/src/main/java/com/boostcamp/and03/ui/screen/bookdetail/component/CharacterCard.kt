@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.bookdetail.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ fun CharacterCard(
     role: String,
     iconColor: Color,
     description: String,
+    onClick: () -> Unit,
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -54,6 +56,9 @@ fun CharacterCard(
                 width = 1.dp,
                 color = And03Theme.colors.outline,
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
+            )
+            .clickable(
+                onClick = onClick
             )
             .padding(And03Padding.PADDING_M)
     ) {
@@ -117,6 +122,7 @@ fun CharacterCardPreview() {
         role = "Character Role",
         iconColor = Color(0xFF1E88E5),
         description = "Character Description",
+        onClick = {},
         onMoreClick = {}
     )
 }
