@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di
 
 import com.boostcamp.and03.BuildConfig
-import com.boostcamp.and03.data.api.NaverBookSearchApiService
+import com.boostcamp.and03.data.api.AladinBookLookUpApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -12,36 +12,41 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Singleton
-import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NaverBookSearchNetworkModule {
-    private const val BASE_URL = "https://openapi.naver.com"
-    private const val CLIENT_ID = BuildConfig.NAVER_CLIENT_ID
-    private const val CLIENT_SECRET = BuildConfig.NAVER_CLIENT_SECRET
+object AladinBookLookUpNetworkModule {
+    private const val BASE_URL = "http://www.aladin.co.kr"
+    private const val TTB_KEY = BuildConfig.ALADIN_TTB_KEY
 
     private val contentType = "application/json".toMediaType()
 
-    @NaverBookSearchOkHttpClient
+    @AladinBookLookUpOkHttpClient
     @Provides
     @Singleton
-    fun provideNaverBookSearchOkHttpClient(): OkHttpClient =
+    fun provideAladinBookLookUpOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
-                    .addHeader("X-Naver-Client-Id", CLIENT_ID)
-                    .addHeader("X-Naver-Client-Secret", CLIENT_SECRET)
+                val originalRequest = chain.request()
+                val originalUrl = originalRequest.url
+
+                val newUrl = originalUrl.newBuilder()
+                    .addQueryParameter("TTBKey", TTB_KEY)
                     .build()
+
+                val newRequest = originalRequest.newBuilder()
+                    .url(newUrl)
+                    .build()
+
                 chain.proceed(newRequest)
             }.build()
 
-    @NaverBookSearchRetrofit
+    @AladinBookLookUpRetrofit
     @Provides
     @Singleton
-    fun provideNaverBookSearchRetrofit(
+    fun provideAladinBookLookUpRetrofit(
         json: Json,
-        @NaverBookSearchOkHttpClient okHttpClient: OkHttpClient
+        @AladinBookLookUpOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -51,8 +56,8 @@ object NaverBookSearchNetworkModule {
 
     @Provides
     @Singleton
-    fun provideNaverBookSearchService(
-        @NaverBookSearchRetrofit retrofit: Retrofit
-    ): NaverBookSearchApiService =
-        retrofit.create(NaverBookSearchApiService::class.java)
+    fun provideAladinBookLookUpService(
+        @AladinBookLookUpRetrofit retrofit: Retrofit
+    ): AladinBookLookUpApiService =
+        retrofit.create(AladinBookLookUpApiService::class.java)
 }

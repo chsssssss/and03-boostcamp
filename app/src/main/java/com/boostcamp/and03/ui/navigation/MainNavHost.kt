@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import com.boostcamp.and03.ui.screen.addbook.addBookNavGraph
 import com.boostcamp.and03.ui.screen.bookdetail.bookDetailNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
+import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
 import com.boostcamp.and03.ui.screen.prototype.screen.SnackBarEvent
 
@@ -28,6 +29,11 @@ fun MainNavHost(
             navigateToBookDetail = {
                 navigator.navigate(MainTabRoute.BookDetail)
             }
+        )
+
+        bookSearchNavGraph(
+            navigator = navigator,
+            modifier = modifier.padding(paddingValues)
         )
 
         addBookNavGraph(modifier = modifier.padding(paddingValues))

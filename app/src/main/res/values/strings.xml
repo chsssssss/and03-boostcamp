@@ -32,6 +32,12 @@
     <string name="ocr_bottom_sheet_select_image">이미지에서 가져오기</string>
     <string name="ocr_bottom_sheet_select_image_description">기기에 저장된 사진을 선택합니다</string>
 
+    <!-- 책 검색 화면 -->
+    <string name="book_search_title">책 추가</string>
+    <string name="book_search_empty_before_query">책을 직접 추가할 수 있어요.</string>
+    <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
+    <string name="book_search_button_text">직접 추가</string>
+
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
     <string name="content_description_close">닫기</string>
@@ -39,5 +45,6 @@
     <string name="content_description_open_gallery">갤러리에서 사진을 선택하여 텍스트를 가져옵니다</string>
     <string name="content_description_more_button">더보기 버튼을 눌러 메뉴를 표시합니다</string>
     <string name="content_description_node_item_icon">노드를 나타내는 아이콘입니다.</string>
-    <string name="content_description_"></string>
+    <string name="content_description_confirm">확인</string>
+    <string name="content_description_save_button">저장 버튼을 눌러 책을 저장합니다</string>
 </resources>
