@@ -41,9 +41,9 @@ fun CharacterCard(
     role: String,
     iconColor: Color,
     description: String,
-    onClick: () -> Unit,
     onMoreClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
