@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.And03Radius
 
 @Composable
 fun EditableTextField(
@@ -43,7 +44,7 @@ fun EditableTextField(
         ),
         onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = lineLimits),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(And03Radius.RADIUS_M),
         colors = TextFieldDefaults.colors(
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
