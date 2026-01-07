@@ -5,12 +5,12 @@ import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import javax.inject.Inject
 
 class AladinBookLookUpRemoteDataSourceImpl @Inject constructor(
-    private val aladinBookLookUpService: AladinBookLookUpApiService
+    private val aladinBookLookUpApiService: AladinBookLookUpApiService
 ): AladinBookLookUpRemoteDataSource {
     override suspend fun loadBookInfo(
         itemId: String
     ): AladinBookLookUpResponse =
-        aladinBookLookUpService.loadBookInfo(
+        aladinBookLookUpApiService.loadBookInfo(
             itemId = itemId
         )
 }

@@ -5,14 +5,14 @@ import com.boostcamp.and03.data.model.response.NaverBookSearchResponse
 import javax.inject.Inject
 
 class NaverBookSearchRemoteDataSourceImpl @Inject constructor(
-    private val naverBookSearchService: NaverBookSearchApiService
+    private val naverBookSearchApiService: NaverBookSearchApiService
 ) : NaverBookSearchRemoteDataSource {
     override suspend fun loadBooks(
         query: String,
         display: Int,
         start: Int
     ): NaverBookSearchResponse =
-        naverBookSearchService.loadBooks(
+        naverBookSearchApiService.loadBooks(
             query = query,
             display = display,
             start = start
