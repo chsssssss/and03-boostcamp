@@ -23,7 +23,6 @@ import com.boostcamp.and03.ui.theme.And03ComponentSize.APP_BAR_HEIGHT
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
 
-
 @Composable
 fun And03AppBar(
     title: String,
