@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 
 data class BookDetailUiState(
@@ -10,4 +11,5 @@ data class BookDetailUiState(
     val publisher: String = "",
     val characters: List<CharacterUiModel> = emptyList(),
     val quotes: List<QuoteUiModel> = emptyList(),
+    val memos: List<MemoUiModel> = emptyList()
 )

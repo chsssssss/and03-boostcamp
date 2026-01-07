@@ -28,6 +28,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
+import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
@@ -87,7 +88,7 @@ private fun BookDetailScreen(uiState: BookDetailUiState) {
         when (tabs[selectedTabIndex]) {
             BookDetailTab.CHARACTER -> CharacterTab(uiState)
             BookDetailTab.QUOTE -> QuoteTab(uiState)
-            BookDetailTab.MEMO -> MemoTab()
+            BookDetailTab.MEMO -> MemoTab(uiState)
         }
 
     }
@@ -148,6 +149,7 @@ private fun CharacterTab(uiState: BookDetailUiState) {
                 role = character.role,
                 iconColor = character.iconColor,
                 description = character.description,
+                onClick = { },
                 onMoreClick = { }
             )
         }
@@ -167,8 +169,21 @@ private fun QuoteTab(uiState: BookDetailUiState) {
 }
 
 @Composable
-private fun MemoTab() {
-
+private fun MemoTab(uiState: BookDetailUiState) {
+    Column(
+        modifier = Modifier.padding(And03Padding.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+    ) {
+        uiState.memos.forEach { memo ->
+            MemoCard(
+                type = memo.memoType,
+                title = memo.title,
+                contentPreview = memo.content ?: "",
+                pageLabel = "p.${memo.startPage}~${memo.endPage}",
+                date = memo.date
+            )
+        }
+    }
 }
 
 
