@@ -24,19 +24,22 @@ class BooklistViewModel @Inject constructor() : ViewModel() {
             title = "달러구트 꿈 백화점",
             authors = persistentListOf("이미예"),
             publisher = "팩토리나인",
-            thumbnail = ""
+            thumbnail = "",
+            isbn = ""
         ),
         BookUIModel(
             title = "클린 아키텍처",
             authors = persistentListOf("로버트 C. 마틴"),
             publisher = "인사이트",
-            thumbnail = ""
+            thumbnail = "",
+            isbn = ""
         ),
         BookUIModel(
             title = "객체지향의 사실과 오해",
             authors = persistentListOf("조영호"),
             publisher = "위키북스",
-            thumbnail = ""
+            thumbnail = "",
+            isbn = ""
         )
     )
 

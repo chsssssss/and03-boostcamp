@@ -25,8 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.boostcamp.and03.ui.theme.Dimensions
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 private object OCRBottomSheetValues {
@@ -56,8 +57,8 @@ fun OCRBottomSheet(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PADDING_L),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_L)
+                .padding(And03Padding.PADDING_L),
+            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth()
@@ -120,9 +121,9 @@ private fun OCRBottomSheetButton(
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.padding(Dimensions.PADDING_L),
+            modifier = Modifier.padding(And03Padding.PADDING_L),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.PADDING_M)
+            horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
         ) {
             IconBadge(
                 iconResId = iconResId,

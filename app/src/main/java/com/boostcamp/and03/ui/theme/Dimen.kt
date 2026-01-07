@@ -29,6 +29,14 @@ object And03IconSize {
     val ICON_SIZE_M = 28.dp
     val ICON_SIZE_L = 48.dp
 }
+
+object And03Radius {
+    val RADIUS_XS = 4.dp
+    val RADIUS_S = 8.dp
+    val RADIUS_M = 12.dp
+    val RADIUS_L = 16.dp
+
+}
 object And03ComponentSize {
     val APP_BAR_HEIGHT = 56.dp
 

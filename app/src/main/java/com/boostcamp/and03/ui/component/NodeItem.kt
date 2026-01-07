@@ -20,7 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.theme.Dimensions
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 private object NodeItemValues {
@@ -66,9 +67,9 @@ fun NodeItem(
         }
 
         Column(
-            modifier = Modifier.padding(Dimensions.PADDING_M),
+            modifier = Modifier.padding(And03Padding.PADDING_M),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_S)
+            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S)
         ) {
             IconBadge(
                 iconResId = R.drawable.ic_person_filled,
@@ -95,7 +96,7 @@ fun NodeItem(
 @Composable
 private fun NodeItemPreview() {
     Column(
-        verticalArrangement = Arrangement.spacedBy(Dimensions.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NodeItem(

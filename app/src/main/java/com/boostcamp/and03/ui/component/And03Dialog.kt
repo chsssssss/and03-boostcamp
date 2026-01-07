@@ -15,9 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
-import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun And03Dialog(
@@ -40,7 +41,7 @@ fun And03Dialog(
             Column(
                 modifier = modifier.padding(And03Padding.PADDING_L),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(And03Padding.PADDING_L)
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
             ) {
                 IconBadge(
                     iconResId = iconResId,
@@ -54,7 +55,7 @@ fun And03Dialog(
                     color = And03Theme.colors.onSurface
                 )
 
-                if(description.isNotBlank()) {
+                if (description.isNotBlank()) {
                     Text(
                         text = description,
                         style = And03Theme.typography.bodyMedium,
@@ -65,7 +66,7 @@ fun And03Dialog(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(And03Padding.PADDING_M),
+                    horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     And03Button(

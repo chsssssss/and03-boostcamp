@@ -99,7 +99,8 @@ fun BooklistScreenPreview() {
                 title = "객체지향의 사실과 오해",
                 authors = persistentListOf("조영호"),
                 publisher = "위키북스",
-                thumbnail = ""
+                thumbnail = "",
+                isbn = ""
             )
         )
     )
