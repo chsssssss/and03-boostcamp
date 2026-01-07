@@ -19,10 +19,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.And03ComponentSize.APP_BAR_HEIGHT
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
 
-private const val APP_BAR_HEIGHT = 56
 
 @Composable
 fun And03AppBar(
@@ -34,7 +34,7 @@ fun And03AppBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(APP_BAR_HEIGHT.dp)
+            .height(APP_BAR_HEIGHT)
             .padding(horizontal = And03Padding.PADDING_M),
         contentAlignment = Alignment.Center
     ) {
