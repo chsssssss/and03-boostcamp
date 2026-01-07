@@ -19,12 +19,6 @@ object AladinBookLookUpNetworkModule {
     private const val BASE_URL = "http://www.aladin.co.kr"
     private const val TTB_KEY = BuildConfig.ALADIN_TTB_KEY
 
-    @Provides
-    @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-    }
-
     private val contentType = "application/json".toMediaType()
 
     @AladinBookLookUpOkHttpClient

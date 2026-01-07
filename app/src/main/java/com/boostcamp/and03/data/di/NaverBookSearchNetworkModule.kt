@@ -21,12 +21,6 @@ object NaverBookSearchNetworkModule {
     private const val CLIENT_ID = BuildConfig.NAVER_CLIENT_ID
     private const val CLIENT_SECRET = BuildConfig.NAVER_CLIENT_SECRET
 
-    @Provides
-    @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-    }
-
     private val contentType = "application/json".toMediaType()
 
     @NaverBookSearchOkHttpClient
