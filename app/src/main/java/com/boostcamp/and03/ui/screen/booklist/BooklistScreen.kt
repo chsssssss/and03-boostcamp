@@ -34,7 +34,6 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import kotlinx.collections.immutable.persistentListOf
 
-
 @Composable
 fun BooklistRoute(
     viewModel: BooklistViewModel = hiltViewModel(),
@@ -82,7 +81,7 @@ private fun BooklistScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding) // ⭐ 핵심
+                .padding(innerPadding)
                 .padding(horizontal = And03Padding.PADDING_L)
         ) {
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
