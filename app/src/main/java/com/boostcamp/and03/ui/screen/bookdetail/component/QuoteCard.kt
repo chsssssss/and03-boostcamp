@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.bookdetail.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,9 +22,13 @@ import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
-fun QuoteCard(quote: QuoteUiModel) {
+fun QuoteCard(
+    quote: QuoteUiModel,
+    onClick: () -> Unit = {},
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(And03Radius.RADIUS_M),
         colors = CardDefaults.cardColors(containerColor = And03Theme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

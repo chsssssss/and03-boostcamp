@@ -13,17 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
@@ -41,9 +37,10 @@ fun CharacterCard(
     role: String,
     iconColor: Color,
     description: String,
-    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
@@ -95,12 +92,10 @@ fun CharacterCard(
                     LabelChip(text = role)
                 }
 
-                IconButton(onClick = onMoreClick) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
-                        contentDescription = stringResource(R.string.cd_more_options)
-                    )
-                }
+                MoreVertMenu(
+                    onEditClick = onEditClick,
+                    onDeleteClick = onDeleteClick
+                )
             }
 
             // 설명
@@ -123,6 +118,7 @@ fun CharacterCardPreview() {
         iconColor = Color(0xFF1E88E5),
         description = "Character Description",
         onClick = {},
-        onMoreClick = {}
+        onEditClick = {},
+        onDeleteClick = {}
     )
 }
