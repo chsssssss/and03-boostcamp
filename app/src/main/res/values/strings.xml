@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">and03</string>
 
+    <!--  common  -->
+    <string name="cd_more_options">더보기 옵션</string>
+    <string name="page_indicator">p.%1$d</string>
+
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
     <string name="editable_text_field_hint">책 제목을 입력하세요.</string>
@@ -14,6 +18,7 @@
 
     <!-- book list -->
     <string name="book_count_text">총 %1$d권의 책</string>
+    <string name="character_card_profile_icon_cd">%1$s 프로필</string>
 
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>

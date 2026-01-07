@@ -14,6 +14,7 @@ object And03Spacing {
 }
 
 object And03Padding {
+    val PADDING_2XS = 2.dp
     val PADDING_XS = 4.dp
     val PADDING_S = 8.dp
     val PADDING_M = 12.dp

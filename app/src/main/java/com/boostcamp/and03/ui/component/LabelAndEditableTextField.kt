@@ -16,6 +16,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.And03Radius
+import com.boostcamp.and03.ui.theme.And03Spacing
 
 @Composable
 fun LabelAndEditableTextField(
@@ -35,7 +37,7 @@ fun LabelAndEditableTextField(
             style = MaterialTheme.typography.labelLarge,
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
 
         EditableTextField(
             state = state,

@@ -7,9 +7,14 @@ import com.boostcamp.and03.ui.navigation.MainTabRoute
 
 fun NavGraphBuilder.booklistNavGraph(
     onShowSnackBar: (message: String, actionLabel: String) -> Unit,
+    navigateToBookDetail: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     composable<MainTabRoute.Booklist> {
-        BooklistRoute()
+        BooklistRoute(
+            onBookClick = {
+                navigateToBookDetail()
+            }
+        )
     }
 }
