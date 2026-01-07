@@ -31,7 +31,7 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.component.SearchTopBar
-import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -60,10 +60,10 @@ fun BookSearchRoute(
 @Composable
 private fun BookSearchScreen(
     uiState: BookSearchUiState,
-    searchResults: LazyPagingItems<BookUIModel>,
+    searchResults: LazyPagingItems<BookUiModel>,
     onQueryChange: (String) -> Unit,
     onBackClick: () -> Unit,
-    onItemClick: (BookUIModel) -> Unit,
+    onItemClick: (BookUiModel) -> Unit,
     onSaveClick: () -> Unit,
     onManualAddClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -169,14 +169,14 @@ private fun BookSearchScreenPreview() {
     )
 
     val previewBooks = listOf(
-        BookUIModel(
+        BookUiModel(
             isbn = "111",
             title = "이펙티브 코틀린",
             authors = persistentListOf("마르친 모스칼라"),
             publisher = "인사이트",
             thumbnail = ""
         ),
-        BookUIModel(
+        BookUiModel(
             isbn = "222",
             title = "안드로이드 Compose 완벽 가이드",
             authors = persistentListOf("Compose 팀"),
@@ -211,7 +211,7 @@ private fun BookSearchScreenEmptyBeforeQueryPreview() {
     )
 
     val pagingItems = flowOf(
-        PagingData.empty<BookUIModel>()
+        PagingData.empty<BookUiModel>()
     ).collectAsLazyPagingItems()
 
     And03Theme {

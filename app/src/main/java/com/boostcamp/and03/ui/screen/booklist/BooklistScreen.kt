@@ -14,8 +14,8 @@ import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.booklist.component.BookCountText
 import com.boostcamp.and03.ui.screen.booklist.component.BookGrid
 import com.boostcamp.and03.ui.screen.booklist.component.BooklistTitle
-import com.boostcamp.and03.ui.screen.booklist.model.BooklistUIState
-import com.boostcamp.and03.ui.screen.booklist.model.BookUIModel
+import com.boostcamp.and03.ui.screen.booklist.model.BooklistUiState
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -24,7 +24,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun BooklistRoute(
     viewModel: BooklistViewModel = hiltViewModel(),
-    onBookClick: (BookUIModel) -> Unit = {}
+    onBookClick: (BookUiModel) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -37,9 +37,9 @@ fun BooklistRoute(
 
 @Composable
 private fun BooklistScreen(
-    uiState: BooklistUIState,
+    uiState: BooklistUiState,
     onSearch: (String) -> Unit,
-    onBookClick: (BookUIModel) -> Unit = {}
+    onBookClick: (BookUiModel) -> Unit = {}
 ) {
     val searchState = rememberTextFieldState(uiState.searchQuery)
 
@@ -93,9 +93,9 @@ private fun BooklistScreen(
 @Preview(showBackground = true)
 @Composable
 fun BooklistScreenPreview() {
-    val previewState = BooklistUIState(
+    val previewState = BooklistUiState(
         books = listOf(
-            BookUIModel(
+            BookUiModel(
                 title = "객체지향의 사실과 오해",
                 authors = persistentListOf("조영호"),
                 publisher = "위키북스",
