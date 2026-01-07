@@ -66,7 +66,7 @@ private fun BooklistScreen(
     Scaffold(
         topBar = {
             And03AppBar(
-                title = "책 목록",
+                title = stringResource(R.string.book_list_title),
                 actions = {
                     IconButton(onClick = onAddBookClick) {
                         Icon(
