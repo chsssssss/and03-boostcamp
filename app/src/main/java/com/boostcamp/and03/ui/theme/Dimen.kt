@@ -38,3 +38,7 @@ object And03Radius {
     val RADIUS_L = 16.dp
 
 }
+object And03ComponentSize {
+    val APP_BAR_HEIGHT = 56.dp
+
+}
