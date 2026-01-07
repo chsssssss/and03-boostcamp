@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -17,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.And03ComponentSize.APP_BAR_HEIGHT
 import com.boostcamp.and03.ui.theme.And03Padding
@@ -33,6 +33,7 @@ fun And03AppBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .height(APP_BAR_HEIGHT)
             .padding(horizontal = And03Padding.PADDING_M),
         contentAlignment = Alignment.Center
