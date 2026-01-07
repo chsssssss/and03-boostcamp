@@ -16,9 +16,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             And03Theme {
-//                val navigator = rememberMainNavigator()
-//                MainApp(navigator)
-                PrototypeNavHost()
+                val navigator = rememberMainNavigator()
+                MainApp(navigator)
+//                PrototypeNavHost()
             }
         }
     }

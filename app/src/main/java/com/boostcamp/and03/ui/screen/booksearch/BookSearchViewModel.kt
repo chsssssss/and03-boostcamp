@@ -6,6 +6,7 @@ import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
+import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -28,7 +29,7 @@ class BookSearchViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val pagingBooksFlow: Flow<PagingData<BookUiModel>> = _uiState
+    val pagingBooksFlow: Flow<PagingData<SearchResultUiModel>> = _uiState
         .map { it.query }
         .debounce(300)
         .distinctUntilChanged()
@@ -44,7 +45,7 @@ class BookSearchViewModel @Inject constructor(
         _uiState.update { it.copy(query = query) }
     }
 
-    fun clickItem(item: BookUiModel) {
+    fun clickItem(item: SearchResultUiModel) {
         _uiState.update {
             it.copy(
                 selectedBookISBN = if (it.selectedBookISBN == item.isbn) {
