@@ -21,12 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.IconBadge
 import com.boostcamp.and03.ui.component.LabelChip
+import com.boostcamp.and03.ui.theme.And03IconSize
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Radius
+import com.boostcamp.and03.ui.theme.And03Spacing
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun CharacterCard(
@@ -41,18 +47,18 @@ fun CharacterCard(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = Color.White,
-                shape = RoundedCornerShape(12.dp)
+                color = And03Theme.colors.surface,
+                shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
             .border(
                 width = 1.dp,
-                color = Color(0xFFE0E0E0),
-                shape = RoundedCornerShape(12.dp)
+                color = And03Theme.colors.surface,
+                shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
-            .padding(12.dp)
+            .padding(And03Padding.PADDING_M)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(And03Padding.PADDING_M)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -61,11 +67,14 @@ fun CharacterCard(
                 IconBadge(
                     iconResId = R.drawable.ic_person_filled,
                     iconColor = iconColor,
-                    contentDescription = "$name profile",
-                    size = 48.dp
+                    contentDescription = stringResource(
+                        id = R.string.character_card_profile_icon_cd,
+                        name
+                    ),
+                    size = And03IconSize.ICON_SIZE_L
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(And03Spacing.SPACE_S))
 
                 // 이름 + 역할
                 Column(
@@ -76,7 +85,7 @@ fun CharacterCard(
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
 
                     LabelChip(text = role)
                 }
@@ -84,7 +93,7 @@ fun CharacterCard(
                 IconButton(onClick = onMoreClick) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
-                        contentDescription = "more"
+                        contentDescription = stringResource(R.string.cd_more_options)
                     )
                 }
             }
@@ -98,7 +107,6 @@ fun CharacterCard(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

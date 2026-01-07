@@ -78,9 +78,7 @@ private fun BookDetailScreen(uiState: BookDetailUiState) {
                     selected = selectedTabIndex == index,
                     onClick = { selectedTabIndex = index },
                     text = {
-                        Text(
-                            text = tab.title
-                        )
+                        Text(text = tab.title)
                     }
                 )
             }
@@ -141,8 +139,8 @@ private fun BookInfoSection(
 @Composable
 private fun CharacterTab(uiState: BookDetailUiState) {
     Column(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier.padding(And03Padding.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
     ) {
         uiState.characters.forEach { character ->
             CharacterCard(
@@ -159,8 +157,8 @@ private fun CharacterTab(uiState: BookDetailUiState) {
 @Composable
 private fun QuoteTab(uiState: BookDetailUiState) {
     Column(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier.padding(And03Padding.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
     ) {
         uiState.quotes.forEach { quote ->
             QuoteCard(quote = quote)

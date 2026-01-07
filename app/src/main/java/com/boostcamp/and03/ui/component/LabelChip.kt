@@ -8,7 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
@@ -20,11 +22,11 @@ fun LabelChip(
         modifier = modifier
             .background(
                 color = And03Theme.colors.secondaryContainer,
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(And03Radius.RADIUS_XS)
             )
             .padding(
-                horizontal = 8.dp,
-                vertical = 2.dp
+                horizontal = And03Padding.PADDING_S,
+                vertical = And03Padding.PADDING_2XS
             )
     ) {
         Text(
@@ -33,4 +35,10 @@ fun LabelChip(
             color = And03Theme.colors.onSecondaryContainer
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LabelChipPreview() {
+    LabelChip(text = "Label")
 }
