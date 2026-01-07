@@ -66,7 +66,7 @@ private fun BookSearchScreen(
     onItemClick: (BookUIModel) -> Unit,
     onSaveClick: () -> Unit,
     onManualAddClick: () -> Unit,
-    modifier: Modifier= Modifier
+    modifier: Modifier = Modifier
 ) {
     val searchTextState = remember { TextFieldState(uiState.query) }
 

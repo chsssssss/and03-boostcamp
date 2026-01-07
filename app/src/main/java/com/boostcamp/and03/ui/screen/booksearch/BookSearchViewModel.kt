@@ -47,6 +47,14 @@ class BookSearchViewModel @Inject constructor(
     }
 
     fun clickItem(item: BookUIModel) {
-        _uiState.update { it.copy(selectedBookISBN = if (it.selectedBookISBN == item.isbn) null else item.isbn) }
+        _uiState.update {
+            it.copy(
+                selectedBookISBN = if (it.selectedBookISBN == item.isbn) {
+                    null
+                } else {
+                    item.isbn
+                }
+            )
+        }
     }
 }
