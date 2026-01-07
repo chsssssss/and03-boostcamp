@@ -1,6 +1,8 @@
 package com.boostcamp.and03.data.di
 
-import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSourceImpl
+import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSourceImpl
+
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
