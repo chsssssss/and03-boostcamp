@@ -153,7 +153,8 @@ private fun CharacterTab(uiState: BookDetailUiState) {
                 iconColor = character.iconColor,
                 description = character.description,
                 onClick = { },
-                onMoreClick = { }
+                onEditClick = { },
+                onDeleteClick = { }
             )
         }
     }
