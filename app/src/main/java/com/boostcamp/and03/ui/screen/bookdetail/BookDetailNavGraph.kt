@@ -3,12 +3,12 @@ package com.boostcamp.and03.ui.screen.bookdetail
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.boostcamp.and03.ui.navigation.MainTabRoute
+import com.boostcamp.and03.ui.navigation.Route
 
 fun NavGraphBuilder.bookDetailNavGraph(
     modifier: Modifier = Modifier
 ) {
-    composable<MainTabRoute.BookDetail> {
+    composable<Route.BookDetail> {
         BookDetailRoute()
     }
 }

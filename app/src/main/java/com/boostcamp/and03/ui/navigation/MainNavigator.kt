@@ -8,12 +8,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
-import kotlinx.collections.immutable.toImmutableList
 
 @Stable
 class MainNavigator(
@@ -23,23 +21,9 @@ class MainNavigator(
         @Composable get() =
             navController.currentBackStackEntryAsState().value?.destination
 
-    val startDestination = MainTabRoute.Booklist
+    val startDestination = Route.Booklist
 
-    val mainBottomTabs = MainBottomTab.entries.toImmutableList()
-
-    val currentTab: MainBottomTab?
-        @Composable get() {
-            return MainBottomTab.entries.find { tab ->
-                currentDestination?.hasRoute(tab.route::class) == true
-            }
-        }
-
-    val isShowBottomBar: Boolean
-        @Composable get() = MainBottomTab.entries.any { tab ->
-            currentDestination?.hasRoute(tab.route::class) == true
-        }
-
-    fun navigate(tab: MainTabRoute) {
+    fun navigate(tab: Route) {
         val navOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
@@ -49,31 +33,35 @@ class MainNavigator(
         }
 
         when (tab) {
-            MainTabRoute.Booklist -> navController.navigateBooklist(navOptions)
-            MainTabRoute.AddBook -> navController.navigateAddBook(navOptions)
-            MainTabRoute.MyPage -> navController.navigateMyPage(navOptions)
-            MainTabRoute.BookDetail -> navController.navigateBookDetail(navOptions)
+            Route.Booklist -> navController.navigateBooklist(navOptions)
+            Route.BookSearch -> navController.navigateBookSearch(navOptions)
+            Route.AddBook -> navController.navigateAddBook(navOptions)
+            Route.MyPage -> navController.navigateMyPage(navOptions)
+            Route.BookDetail -> navController.navigateBookDetail(navOptions)
         }
     }
 
     fun NavController.navigateBooklist(navOptions: NavOptions) {
-        navigate(MainTabRoute.Booklist, navOptions)
+        navigate(Route.Booklist, navOptions)
+    }
+
+    fun NavController.navigateBookSearch(navOptions: NavOptions) {
+        navigate(Route.BookSearch, navOptions)
     }
 
     fun NavController.navigateAddBook(navOptions: NavOptions) {
-        navigate(MainTabRoute.AddBook, navOptions)
+        navigate(Route.AddBook, navOptions)
     }
 
     fun NavController.navigateMyPage(navOptions: NavOptions) {
-        navigate(MainTabRoute.MyPage, navOptions)
+        navigate(Route.MyPage, navOptions)
     }
 
     fun NavController.navigateBookDetail(navOptions: NavOptions) {
-        navigate(MainTabRoute.BookDetail, navOptions)
+        navigate(Route.BookDetail, navOptions)
     }
 
     fun navigatePopBackStack() = navController.popBackStack()
-
 }
 
 @SuppressLint("ComposableNaming")

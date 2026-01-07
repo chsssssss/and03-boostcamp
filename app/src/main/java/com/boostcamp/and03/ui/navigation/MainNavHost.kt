@@ -27,7 +27,10 @@ fun MainNavHost(
             modifier = modifier.padding(paddingValues),
             onShowSnackBar = onShowSnackBar,
             navigateToBookDetail = {
-                navigator.navigate(MainTabRoute.BookDetail)
+                navigator.navigate(Route.BookDetail)
+            },
+            navigateToBookSearch = {
+                navigator.navigate(Route.BookSearch)
             }
         )
 

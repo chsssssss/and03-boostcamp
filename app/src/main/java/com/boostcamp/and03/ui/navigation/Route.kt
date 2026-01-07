@@ -18,18 +18,3 @@ sealed interface Route {
     @Serializable
     data object BookDetail : Route
 }
-
-sealed interface MainTabRoute : Route {
-    @Serializable
-    data object Booklist : MainTabRoute
-
-    @Serializable
-    data object AddBook : MainTabRoute
-
-    @Serializable
-    data object MyPage : MainTabRoute
-
-    @Serializable
-    data object BookDetail : MainTabRoute
-
-}
