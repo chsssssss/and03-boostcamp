@@ -73,7 +73,6 @@ class MainNavigator(
     }
 
     fun navigatePopBackStack() = navController.popBackStack()
-
 }
 
 @SuppressLint("ComposableNaming")
