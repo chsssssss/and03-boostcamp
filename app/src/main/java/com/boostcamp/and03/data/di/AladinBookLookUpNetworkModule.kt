@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di
 
 import com.boostcamp.and03.BuildConfig
-import com.boostcamp.and03.data.api.AladinBookLookUpAPIService
+import com.boostcamp.and03.data.api.AladinBookLookUpApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -64,6 +64,6 @@ object AladinBookLookUpNetworkModule {
     @Singleton
     fun provideAladinBookLookUpService(
         @AladinBookLookUpRetrofit retrofit: Retrofit
-    ): AladinBookLookUpAPIService =
-        retrofit.create(AladinBookLookUpAPIService::class.java)
+    ): AladinBookLookUpApiService =
+        retrofit.create(AladinBookLookUpApiService::class.java)
 }
