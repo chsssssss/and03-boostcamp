@@ -38,3 +38,8 @@ object And03Radius {
     val RADIUS_L = 16.dp
 
 }
+
+object And03BorderWidth {
+    val BORDER_1 = 1.dp
+    val BORDER_2 = 2.dp
+}
