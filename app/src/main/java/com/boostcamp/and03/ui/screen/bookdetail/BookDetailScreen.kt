@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.boostcamp.and03.ui.screen.bookdetail.component.AddButton
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
@@ -141,8 +142,10 @@ private fun BookInfoSection(
 private fun CharacterTab(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+        horizontalAlignment = Alignment.End
     ) {
+        AddButton(onClick = { })
         uiState.characters.forEach { character ->
             CharacterCard(
                 name = character.name,
@@ -160,8 +163,10 @@ private fun CharacterTab(uiState: BookDetailUiState) {
 private fun QuoteTab(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+        horizontalAlignment = Alignment.End
     ) {
+        AddButton(onClick = { })
         uiState.quotes.forEach { quote ->
             QuoteCard(quote = quote)
         }
@@ -172,8 +177,10 @@ private fun QuoteTab(uiState: BookDetailUiState) {
 private fun MemoTab(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+        horizontalAlignment = Alignment.End
     ) {
+        AddButton(onClick = { })
         uiState.memos.forEach { memo ->
             MemoCard(
                 type = memo.memoType,
