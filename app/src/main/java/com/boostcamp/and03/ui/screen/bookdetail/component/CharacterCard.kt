@@ -52,7 +52,7 @@ fun CharacterCard(
             )
             .border(
                 width = 1.dp,
-                color = And03Theme.colors.surface,
+                color = And03Theme.colors.outline,
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
             .padding(And03Padding.PADDING_M)
