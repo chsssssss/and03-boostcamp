@@ -19,6 +19,8 @@
     <!-- book list -->
     <string name="book_count_text">총 %1$d권의 책</string>
     <string name="character_card_profile_icon_cd">%1$s 프로필</string>
+    <string name="memo_card_memo_type_canvas">캔버스</string>
+    <string name="memo_card_memo_type_text">텍스트</string>
 
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
