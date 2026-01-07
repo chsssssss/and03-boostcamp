@@ -18,7 +18,6 @@ import androidx.compose.ui.window.Dialog
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.And03Padding
-import com.google.firebase.ai.type.Dimensions
 
 @Composable
 fun And03Dialog(
