@@ -7,10 +7,16 @@ sealed interface Route {
     data object Booklist : Route
 
     @Serializable
+    data object BookSearch : Route
+
+    @Serializable
     data object AddBook : Route
 
     @Serializable
     data object MyPage : Route
+
+    @Serializable
+    data object BookDetail : Route
 }
 
 sealed interface MainTabRoute : Route {
@@ -22,4 +28,8 @@ sealed interface MainTabRoute : Route {
 
     @Serializable
     data object MyPage : MainTabRoute
+
+    @Serializable
+    data object BookDetail : MainTabRoute
+
 }
