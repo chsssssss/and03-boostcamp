@@ -7,6 +7,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import jakarta.inject.Inject
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,7 @@ class BookDetailViewModel @Inject constructor() : ViewModel() {
             title = "Harry Potter and the Philosopher's Stone",
             author = "J.K. Rowling",
             publisher = "Bloomsbury Publishing",
-            characters = listOf(
+            characters = persistentListOf(
                 CharacterUiModel(
                     name = "해리 포터",
                     role = "주인공",
@@ -39,7 +40,7 @@ class BookDetailViewModel @Inject constructor() : ViewModel() {
                     description = "해리의 절친한 친구"
                 )
             ),
-            quotes = listOf(
+            quotes = persistentListOf(
                 QuoteUiModel(
                     "1",
                     "이 책을 읽으면서 꿈에 대한 새로운 관점을 얻게 되었다. 꿈이 단순히 무의식의 산물이 아니라 우리가 구매할 수 있는 상품이라는 설정이 흥미롭다.",
@@ -59,7 +60,7 @@ class BookDetailViewModel @Inject constructor() : ViewModel() {
                     "2024.01.10"
                 )
             ),
-            memos = listOf(
+            memos = persistentListOf(
                 MemoUiModel(
                     id = "memo_1",
                     memoType = MemoType.CANVAS,

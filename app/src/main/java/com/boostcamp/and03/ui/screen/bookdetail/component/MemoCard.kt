@@ -29,7 +29,7 @@ fun MemoCard(
     contentPreview: String,
     pageLabel: String,
     date: String,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -157,7 +157,8 @@ fun MemoCardPreview() {
             title = "메모 제목1",
             contentPreview = "ㅇㅇ",
             pageLabel = "p.1~26",
-            date = "2025.12.24"
+            date = "2025.12.24",
+            onClick = {}
         )
 
         MemoCard(
@@ -165,7 +166,8 @@ fun MemoCardPreview() {
             title = "메모 제목2",
             contentPreview = "내용내용내용내용내용내용내용내용내용내용내용내용내용...",
             pageLabel = "p.1~26",
-            date = "2025.12.24"
+            date = "2025.12.24",
+            onClick = {}
         )
     }
 }

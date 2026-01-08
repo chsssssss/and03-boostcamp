@@ -66,9 +66,7 @@ fun CharacterCard(
                 color = borderColor,
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
-            .clickable(
-                onClick = onClick
-            )
+            .clickable(onClick = onClick)
             .padding(And03Padding.PADDING_M)
     ) {
         Column(
