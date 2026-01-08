@@ -2,8 +2,8 @@ package com.boostcamp.and03.data.di.network
 
 import com.boostcamp.and03.BuildConfig
 import com.boostcamp.and03.data.api.NaverBookSearchApiService
-import com.boostcamp.and03.data.di.NaverBookSearchOkHttpClient
-import com.boostcamp.and03.data.di.NaverBookSearchRetrofit
+import com.boostcamp.and03.data.di.qualifier.NaverBookSearchOkHttpClient
+import com.boostcamp.and03.data.di.qualifier.NaverBookSearchRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.core
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,7 +8,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
-
 
 @InstallIn(SingletonComponent::class)
 @Module
