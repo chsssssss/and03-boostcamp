@@ -7,9 +7,12 @@ import com.boostcamp.and03.data.api.NaverBookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
 import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
+import com.boostcamp.and03.data.model.request.toEntity
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.NaverBookItem
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
+import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -17,7 +20,8 @@ import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
     private val naverBookSearchRemoteDataSource: NaverBookSearchRemoteDataSource,
-    private val aladinBookLookUpRemoteDataSource: AladinBookLookUpRemoteDataSource
+    private val aladinBookLookUpRemoteDataSource: AladinBookLookUpRemoteDataSource,
+    private val bookRemoteDataSource: BookRemoteDataSource
 ): BookRepository {
 
     override suspend fun loadTotalResultCount(query: String): Int {
@@ -51,6 +55,16 @@ class BookRepositoryImpl @Inject constructor(
     ): AladinBookLookUpResponse {
         return aladinBookLookUpRemoteDataSource.loadBookPage(
             itemId = itemId
+        )
+    }
+
+    override suspend fun saveBook(
+        userId: String,
+        book: BookUiModel
+    ) {
+        bookRemoteDataSource.saveBook(
+            userId = userId,
+            book = book.toEntity()
         )
     }
 }

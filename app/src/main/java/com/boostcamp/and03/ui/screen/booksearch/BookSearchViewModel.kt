@@ -1,16 +1,15 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
-import com.boostcamp.and03.data.repository.book.toUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchAction
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchEvent
+import com.boostcamp.and03.ui.screen.booksearch.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
