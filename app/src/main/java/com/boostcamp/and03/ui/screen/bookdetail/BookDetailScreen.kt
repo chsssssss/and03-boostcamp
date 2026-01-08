@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
@@ -22,13 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.bookdetail.component.AddButton
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
+import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
@@ -89,7 +93,11 @@ private fun BookDetailScreen(uiState: BookDetailUiState) {
         when (tabs[selectedTabIndex]) {
             BookDetailTab.CHARACTER -> CharacterTab(uiState)
             BookDetailTab.QUOTE -> QuoteTab(uiState)
-            BookDetailTab.MEMO -> MemoTab(uiState)
+            BookDetailTab.MEMO -> MemoTab(
+                uiState = uiState,
+                onClickAddCanvas = { },
+                onClickAddText = { }
+            )
         }
 
     }
@@ -175,19 +183,49 @@ private fun QuoteTab(uiState: BookDetailUiState) {
 }
 
 @Composable
-private fun MemoTab(uiState: BookDetailUiState) {
+private fun MemoTab(
+    uiState: BookDetailUiState,
+    onClickAddCanvas: () -> Unit,
+    onClickAddText: () -> Unit,
+) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
         horizontalAlignment = Alignment.End
     ) {
-        AddButton(onClick = { })
+        DropdownMenuContainer(
+            trigger = { onClick ->
+                AddButton(onClick = onClick)
+            },
+            menuContent = { closeMenu ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.book_list_add_canvas_memo)) },
+                    onClick = {
+                        closeMenu()
+                        onClickAddCanvas()
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.book_list_add_text_memo)) },
+                    onClick = {
+                        closeMenu()
+                        onClickAddText()
+                    }
+                )
+            }
+        )
+
         uiState.memos.forEach { memo ->
             MemoCard(
                 type = memo.memoType,
                 title = memo.title,
                 contentPreview = memo.content ?: "",
-                pageLabel = "p.${memo.startPage}~${memo.endPage}",
+                pageLabel = stringResource(
+                    id = R.string.book_list_memo_page_range,
+                    memo.startPage,
+                    memo.endPage
+                ),
                 date = memo.date
             )
         }

@@ -24,6 +24,9 @@
     <string name="add_btn_cd">추가</string>
     <string name="more_vert_delete">삭제</string>
     <string name="more_vert_edit">수정</string>
+    <string name="book_list_add_canvas_memo">캔버스 메모 추가</string>
+    <string name="book_list_add_text_memo">택스트 메모 추가</string>
+    <string name="book_list_memo_page_range">p.%1$d~%2$d</string>
 
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
