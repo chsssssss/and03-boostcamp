@@ -6,16 +6,13 @@ import androidx.paging.PagingData
 import com.boostcamp.and03.data.api.NaverBookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
 import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.BookRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.request.toEntity
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.NaverBookItem
-import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
-import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
