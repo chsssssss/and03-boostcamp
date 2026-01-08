@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.bookdetail.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,9 +42,18 @@ fun CharacterCard(
     role: String,
     iconColor: Color,
     description: String,
-    onMoreClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
+    val borderColor = if (selected) {
+        And03Theme.colors.primary
+    } else {
+        And03Theme.colors.outline
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -52,9 +63,10 @@ fun CharacterCard(
             )
             .border(
                 width = 1.dp,
-                color = And03Theme.colors.surface,
+                color = borderColor,
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
+            .clickable(onClick = onClick)
             .padding(And03Padding.PADDING_M)
     ) {
         Column(
@@ -87,15 +99,44 @@ fun CharacterCard(
 
                     Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
 
-                    LabelChip(text = role)
-                }
-
-                IconButton(onClick = onMoreClick) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
-                        contentDescription = stringResource(R.string.cd_more_options)
+                    LabelChip(
+                        content = {
+                            Text(
+                                text = role,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = And03Theme.colors.onSecondaryContainer
+                            )
+                        }
                     )
                 }
+
+                DropdownMenuContainer(
+                    trigger = { onClick ->
+                        IconButton(onClick = onClick) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
+                                contentDescription = stringResource(R.string.cd_more_options)
+                            )
+                        }
+                    },
+                    menuContent = { closeMenu ->
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.more_vert_edit)) },
+                            onClick = {
+                                closeMenu()
+                                onEditClick()
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.more_vert_delete)) },
+                            onClick = {
+                                closeMenu()
+                                onDeleteClick()
+                            }
+                        )
+                    }
+                )
             }
 
             // 설명
@@ -117,6 +158,8 @@ fun CharacterCardPreview() {
         role = "Character Role",
         iconColor = Color(0xFF1E88E5),
         description = "Character Description",
-        onMoreClick = {}
+        onClick = {},
+        onEditClick = {},
+        onDeleteClick = {}
     )
 }
