@@ -151,7 +151,7 @@ private fun BookSearchScreen(
                                     title = book.title,
                                     authors = book.authors,
                                     publisher = book.publisher,
-                                    isSelected = book.isbn == uiState.selectedBookISBN,
+                                    isSelected = book.isbn == uiState.selectedBook?.isbn,
                                     onClick = { onItemClick(book) }
                                 )
                             }
@@ -221,7 +221,7 @@ private fun SearchResultCountText(count: Int) {
 private fun BookSearchScreenPreview() {
     val uiState = BookSearchUiState(
         query = "안드로이드",
-        selectedBookISBN = "222"
+        totalResultCount = 2
     )
 
     val previewBooks = listOf(
@@ -263,7 +263,7 @@ private fun BookSearchScreenPreview() {
 private fun BookSearchScreenEmptyBeforeQueryPreview() {
     val uiState = BookSearchUiState(
         query = "",
-        selectedBookISBN = null
+        selectedBook = null
     )
 
     val pagingItems = flowOf(

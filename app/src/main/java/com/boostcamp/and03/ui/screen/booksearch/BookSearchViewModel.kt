@@ -7,7 +7,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,14 +54,27 @@ class BookSearchViewModel @Inject constructor(
     }
 
     fun clickItem(item: SearchResultUiModel) {
-        _uiState.update {
-            it.copy(
-                selectedBookISBN = if (it.selectedBookISBN == item.isbn) {
-                    null
-                } else {
-                    item.isbn
-                }
-            )
+        _uiState.update { state ->
+            val isSelected = state.selectedBook?.isbn == item.isbn
+
+            state.copy(selectedBook = if (isSelected) null else item)
+        }
+    }
+
+    // 임시 userId 사용
+    fun saveItem(userId: String = "O12OmGoVY8FPYFElNjKN") {
+        val book = _uiState.value.selectedBook ?: return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true) }
+
+            try {
+                // TODO: Repository 구현 후 연결
+                // bookRepository.saveBook(userId, book)
+
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
+            }
         }
     }
 }
