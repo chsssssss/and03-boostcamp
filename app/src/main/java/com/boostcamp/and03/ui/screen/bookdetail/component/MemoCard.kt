@@ -59,14 +59,22 @@ fun MemoCard(
                 modifier = Modifier.weight(1f)
             )
 
-            LabelChip(text = pageLabel)
+            LabelChip(
+                content = {
+                    Text(
+                        text = pageLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = And03Theme.colors.onSecondaryContainer
+                    )
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(And03Padding.PADDING_S))
 
         /** 본문 영역 */
         when (type) {
-            MemoType.CANVAS -> { }
+            MemoType.CANVAS -> {}
 
             MemoType.TEXT -> {
                 Text(
@@ -117,7 +125,7 @@ fun MemoTypeChip(type: MemoType) {
         }
     }
 
-    ColoredLabelChip(backgroundColor = backgroundColor) {
+    LabelChip(backgroundColor = backgroundColor) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 painter = painterResource(id = icon),
