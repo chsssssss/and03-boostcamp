@@ -12,6 +12,7 @@ import com.boostcamp.and03.data.model.request.toEntity
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.NaverBookItem
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
+import com.boostcamp.and03.ui.screen.booklist.model.toUiModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -63,5 +64,12 @@ class BookRepositoryImpl @Inject constructor(
             userId = userId,
             book = book.toEntity()
         )
+    }
+
+    override suspend fun loadSavedBooks(
+        userId: String
+    ): List<BookUiModel> {
+        return bookRemoteDataSource.loadSavedBooks(userId)
+            .map { it.toUiModel() }
     }
 }

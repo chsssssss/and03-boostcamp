@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.model.request
 
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
+import kotlinx.collections.immutable.toImmutableList
 
 data class BookEntity(
     val title: String,

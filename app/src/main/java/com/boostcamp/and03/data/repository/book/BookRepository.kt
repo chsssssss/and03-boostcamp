@@ -25,4 +25,8 @@ interface BookRepository {
         userId: String,
         book: BookUiModel
     )
+
+    suspend fun loadSavedBooks(
+        userId: String
+    ): List<BookUiModel>
 }
