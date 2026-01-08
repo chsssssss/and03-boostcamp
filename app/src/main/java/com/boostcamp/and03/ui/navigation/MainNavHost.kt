@@ -43,7 +43,12 @@ fun MainNavHost(
 
         myPageNavGraph(modifier = modifier.padding(paddingValues))
 
-        bookDetailNavGraph(modifier = modifier.padding(paddingValues))
+        bookDetailNavGraph(
+            modifier = modifier.padding(paddingValues),
+            navigateToBack = {
+                navigator.navigatePopBackStack()
+            }
+        )
 
     }
 }

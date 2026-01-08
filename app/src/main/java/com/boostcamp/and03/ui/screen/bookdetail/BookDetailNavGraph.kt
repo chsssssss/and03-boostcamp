@@ -7,10 +7,14 @@ import androidx.navigation.toRoute
 import com.boostcamp.and03.ui.navigation.Route
 
 fun NavGraphBuilder.bookDetailNavGraph(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToBack: () -> Unit,
 ) {
     composable<Route.BookDetail> { backStackEntry ->
         val route = backStackEntry.toRoute<Route.BookDetail>()
-        BookDetailRoute(isbn = route.isbn)
+        BookDetailRoute(
+            navigateToBack = navigateToBack,
+            isbn = route.isbn
+        )
     }
 }

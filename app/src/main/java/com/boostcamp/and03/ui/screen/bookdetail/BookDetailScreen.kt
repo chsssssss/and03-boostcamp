@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
@@ -22,74 +26,109 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
+import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
+import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
+import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookDetailRoute(
     isbn: String,
+    navigateToBack: () -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    BookDetailScreen(uiState = uiState)
+    BookDetailScreen(
+        uiState = uiState,
+        navigateToBack = navigateToBack
+    )
 }
 
 @Composable
-private fun BookDetailScreen(uiState: BookDetailUiState) {
+private fun BookDetailScreen(
+    uiState: BookDetailUiState,
+    navigateToBack: () -> Unit,
+) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        BookInfoSection(
-            thumbnail = uiState.thumbnail,
-            title = uiState.title,
-            author = uiState.author,
-            publisher = uiState.publisher
-        )
-
-        SecondaryTabRow(
-            selectedTabIndex = selectedTabIndex,
-            containerColor = And03Theme.colors.surface,
-            contentColor = And03Theme.colors.onSurface,
-            indicator = {
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
-                    color = And03Theme.colors.primary
-                )
-            },
-            modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        topBar = {
+            And03AppBar(
+                title = stringResource(R.string.book_detail_app_bar_title),
+                onBackClick = navigateToBack,
+            ) {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_more_vert_filled),
+                        contentDescription = stringResource(
+                            R.string.content_description_more_button
+                        )
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            tabs.forEachIndexed { index, tab ->
-                androidx.compose.material3.Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = {
-                        Text(text = tab.title)
-                    }
+            BookInfoSection(
+                thumbnail = uiState.thumbnail,
+                title = uiState.title,
+                author = uiState.author,
+                publisher = uiState.publisher
+            )
+
+            SecondaryTabRow(
+                selectedTabIndex = selectedTabIndex,
+                containerColor = And03Theme.colors.surface,
+                contentColor = And03Theme.colors.onSurface,
+                indicator = {
+                    TabRowDefaults.SecondaryIndicator(
+                        modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
+                        color = And03Theme.colors.primary
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                tabs.forEachIndexed { index, tab ->
+                    androidx.compose.material3.Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(text = tab.title) }
+                    )
+                }
+            }
+
+            when (tabs[selectedTabIndex]) {
+                BookDetailTab.CHARACTER -> CharacterTab(uiState)
+                BookDetailTab.QUOTE -> QuoteTab(uiState)
+                BookDetailTab.MEMO -> MemoTab(
+                    uiState = uiState,
+                    onClickAddCanvas = { },
+                    onClickAddText = { }
                 )
             }
         }
-
-        when (tabs[selectedTabIndex]) {
-            BookDetailTab.CHARACTER -> CharacterTab(uiState)
-            BookDetailTab.QUOTE -> QuoteTab(uiState)
-            BookDetailTab.MEMO -> MemoTab()
-        }
-
     }
 }
 
@@ -140,15 +179,19 @@ private fun BookInfoSection(
 private fun CharacterTab(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+        horizontalAlignment = Alignment.End
     ) {
+        SquareAddButton(onClick = { })
         uiState.characters.forEach { character ->
             CharacterCard(
                 name = character.name,
                 role = character.role,
                 iconColor = character.iconColor,
                 description = character.description,
-                onMoreClick = { }
+                onClick = { },
+                onEditClick = { },
+                onDeleteClick = { }
             )
         }
     }
@@ -158,19 +201,69 @@ private fun CharacterTab(uiState: BookDetailUiState) {
 private fun QuoteTab(uiState: BookDetailUiState) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+        horizontalAlignment = Alignment.End
     ) {
+        SquareAddButton(onClick = { })
         uiState.quotes.forEach { quote ->
-            QuoteCard(quote = quote)
+            QuoteCard(
+                quote = quote,
+                onClick = {}
+            )
         }
     }
 }
 
 @Composable
-private fun MemoTab() {
+private fun MemoTab(
+    uiState: BookDetailUiState,
+    onClickAddCanvas: () -> Unit,
+    onClickAddText: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.padding(And03Padding.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+        horizontalAlignment = Alignment.End
+    ) {
+        DropdownMenuContainer(
+            trigger = { onClick ->
+                SquareAddButton(onClick = onClick)
+            },
+            menuContent = { closeMenu ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.book_detail_add_canvas_memo)) },
+                    onClick = {
+                        closeMenu()
+                        onClickAddCanvas()
+                    }
+                )
 
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.book_detail_add_text_memo)) },
+                    onClick = {
+                        closeMenu()
+                        onClickAddText()
+                    }
+                )
+            }
+        )
+
+        uiState.memos.forEach { memo ->
+            MemoCard(
+                type = memo.memoType,
+                title = memo.title,
+                contentPreview = memo.content ?: "",
+                pageLabel = stringResource(
+                    id = R.string.book_detail_memo_page_range,
+                    memo.startPage,
+                    memo.endPage
+                ),
+                date = memo.date,
+                onClick = { }
+            )
+        }
+    }
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -180,7 +273,7 @@ fun BooklistScreenPreview() {
         title = "Harry Potter and the Philosopher's Stone",
         author = "J.K. Rowling",
         publisher = "Bloomsbury Publishing",
-        characters = listOf(
+        characters = persistentListOf(
             CharacterUiModel(
                 name = "해리 포터",
                 role = "주인공",
@@ -199,6 +292,7 @@ fun BooklistScreenPreview() {
     And03Theme {
         BookDetailScreen(
             uiState = previewState,
+            navigateToBack = {}
         )
     }
 }

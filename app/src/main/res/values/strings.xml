@@ -19,6 +19,11 @@
     <!-- book list -->
     <string name="book_count_text">총 %1$d권의 책</string>
     <string name="character_card_profile_icon_cd">%1$s 프로필</string>
+    <string name="memo_card_memo_type_canvas">캔버스</string>
+    <string name="memo_card_memo_type_text">텍스트</string>
+    <string name="add_btn_cd">추가</string>
+    <string name="more_vert_delete">삭제</string>
+    <string name="more_vert_edit">수정</string>
 
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
@@ -29,6 +34,12 @@
 
     <!-- 책 목록 화면 -->
     <string name="book_list_title">책 목록</string>
+
+    <!-- 책 상세 화면 -->
+    <string name="book_detail_app_bar_title">책 정보</string>
+    <string name="book_detail_add_canvas_memo">캔버스 메모 추가</string>
+    <string name="book_detail_add_text_memo">택스트 메모 추가</string>
+    <string name="book_detail_memo_page_range">p.%1$d~%2$d</string>
 
     <!-- 책 검색 화면 -->
     <string name="book_search_title">책 추가</string>

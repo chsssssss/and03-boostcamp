@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.bookdetail.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,9 +22,14 @@ import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
-fun QuoteCard(quote: QuoteUiModel) {
+fun QuoteCard(
+    quote: QuoteUiModel,
+    onClick: () -> Unit,
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(And03Radius.RADIUS_M),
         colors = CardDefaults.cardColors(containerColor = And03Theme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -67,7 +73,8 @@ fun QuoteCardPreview() {
             id = "1",
             content = "이 책을 읽으면서 꿈에 대한 새로운 관점을 얻게 되었다. 꿈이 단순히 무의식의 산물이 아니라 우리가 구매할 수 있는 상품이라는 설정이 흥미롭다.",
             page = 26,
-            date = "2026.1.7"
-        )
+            date = "2026.1.7",
+        ),
+        onClick = {}
     )
 }
