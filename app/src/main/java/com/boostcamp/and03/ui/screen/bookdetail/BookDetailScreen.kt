@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
@@ -23,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +34,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.screen.bookdetail.component.AddButton
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
@@ -43,63 +48,88 @@ import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun BookDetailRoute(
+    navigateToBack: () -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BookDetailScreen(
         uiState = uiState,
+        navigateToBack = navigateToBack
     )
 }
 
 @Composable
-private fun BookDetailScreen(uiState: BookDetailUiState) {
+private fun BookDetailScreen(
+    uiState: BookDetailUiState,
+    navigateToBack: () -> Unit,
+) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        BookInfoSection(
-            thumbnail = uiState.thumbnail,
-            title = uiState.title,
-            author = uiState.author,
-            publisher = uiState.publisher
-        )
-
-        SecondaryTabRow(
-            selectedTabIndex = selectedTabIndex,
-            containerColor = And03Theme.colors.surface,
-            contentColor = And03Theme.colors.onSurface,
-            indicator = {
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
-                    color = And03Theme.colors.primary
-                )
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            tabs.forEachIndexed { index, tab ->
-                androidx.compose.material3.Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = {
-                        Text(text = tab.title)
-                    }
-                )
+    Scaffold(
+        topBar = {
+            And03AppBar(
+                title = "책 목록",
+                onBackClick = navigateToBack,
+            ) {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_more_vert_filled),
+                        contentDescription = stringResource(
+                            R.string.content_description_more_button
+                        )
+                    )
+                }
             }
         }
-
-        when (tabs[selectedTabIndex]) {
-            BookDetailTab.CHARACTER -> CharacterTab(uiState)
-            BookDetailTab.QUOTE -> QuoteTab(uiState)
-            BookDetailTab.MEMO -> MemoTab(
-                uiState = uiState,
-                onClickAddCanvas = { },
-                onClickAddText = { }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            BookInfoSection(
+                thumbnail = uiState.thumbnail,
+                title = uiState.title,
+                author = uiState.author,
+                publisher = uiState.publisher
             )
-        }
 
+            SecondaryTabRow(
+                selectedTabIndex = selectedTabIndex,
+                containerColor = And03Theme.colors.surface,
+                contentColor = And03Theme.colors.onSurface,
+                indicator = {
+                    TabRowDefaults.SecondaryIndicator(
+                        modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
+                        color = And03Theme.colors.primary
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                tabs.forEachIndexed { index, tab ->
+                    androidx.compose.material3.Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = {
+                            Text(text = tab.title)
+                        }
+                    )
+                }
+            }
+
+            when (tabs[selectedTabIndex]) {
+                BookDetailTab.CHARACTER -> CharacterTab(uiState)
+                BookDetailTab.QUOTE -> QuoteTab(uiState)
+                BookDetailTab.MEMO -> MemoTab(
+                    uiState = uiState,
+                    onClickAddCanvas = { },
+                    onClickAddText = { }
+                )
+            }
+
+        }
     }
 }
 
@@ -232,7 +262,6 @@ private fun MemoTab(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun BooklistScreenPreview() {
@@ -260,6 +289,7 @@ fun BooklistScreenPreview() {
     And03Theme {
         BookDetailScreen(
             uiState = previewState,
+            navigateToBack = {}
         )
     }
 }

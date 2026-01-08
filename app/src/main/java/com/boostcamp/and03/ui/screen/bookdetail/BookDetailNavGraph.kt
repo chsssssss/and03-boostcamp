@@ -6,9 +6,12 @@ import androidx.navigation.compose.composable
 import com.boostcamp.and03.ui.navigation.MainTabRoute
 
 fun NavGraphBuilder.bookDetailNavGraph(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToBack: () -> Unit,
 ) {
     composable<MainTabRoute.BookDetail> {
-        BookDetailRoute()
+        BookDetailRoute(
+            navigateToBack = navigateToBack
+        )
     }
 }
