@@ -1,7 +1,9 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
@@ -18,7 +20,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,12 +38,17 @@ class BookSearchViewModel @Inject constructor(
         .debounce(300)
         .distinctUntilChanged()
         .filter { it.isNotBlank() }
+        .onEach { query ->
+            val total = bookRepository.loadTotalResultCount(query)
+            _uiState.update  { it.copy(totalResultCount = total) }
+        }
         .flatMapLatest { query ->
             bookRepository.loadBooksPagingFlow(query)
                 .map { pagingData ->
                     pagingData.map { it.toUiModel() }
                 }
         }
+        .cachedIn(viewModelScope)
 
     fun changeQuery(query: String) {
         _uiState.update { it.copy(query = query) }

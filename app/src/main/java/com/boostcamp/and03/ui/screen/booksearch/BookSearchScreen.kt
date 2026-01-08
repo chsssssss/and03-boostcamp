@@ -2,7 +2,6 @@ package com.boostcamp.and03.ui.screen.booksearch
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -26,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -129,24 +129,32 @@ private fun BookSearchScreen(
                 }
 
                 else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = And03Padding.PADDING_L),
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = And03Padding.PADDING_L),
                         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
                     ) {
-                        items(
-                            count = searchResults.itemCount,
-                            key = searchResults.itemKey { it.isbn }
-                        ) { index ->
-                            val book = searchResults[index] ?: return@items
-                            SearchResultItem(
-                                thumbnail = book.thumbnail,
-                                title = book.title,
-                                authors = book.authors,
-                                publisher = book.publisher,
-                                isSelected = book.isbn == uiState.selectedBookISBN,
-                                onClick = { onItemClick(book) }
-                            )
+                        SearchResultCountText(count = uiState.totalResultCount)
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                        ) {
+                            items(
+                                count = searchResults.itemCount,
+                                key = searchResults.itemKey { it.isbn }
+                            ) { index ->
+                                val book = searchResults[index] ?: return@items
+                                SearchResultItem(
+                                    thumbnail = book.thumbnail,
+                                    title = book.title,
+                                    authors = book.authors,
+                                    publisher = book.publisher,
+                                    isSelected = book.isbn == uiState.selectedBookISBN,
+                                    onClick = { onItemClick(book) }
+                                )
+                            }
                         }
                     }
                 }
@@ -179,6 +187,33 @@ private fun BookSearchEmptySection(
             onClick = onManualAddClick
         )
     }
+}
+
+@Composable
+private fun SearchResultCountText(count: Int) {
+    val fullText = stringResource(R.string.book_search_result_count_text, count)
+    val countText = count.toString()
+
+    Text(
+        text = buildAnnotatedString {
+            val start = fullText.indexOf(countText)
+
+            append(fullText)
+
+            if (start >= 0) {
+                addStyle(
+                    style = SpanStyle(
+                        color = And03Theme.colors.primary,
+                        fontSize = And03Theme.typography.bodyLarge.fontSize,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    start = start,
+                    end = start + countText.length
+                )
+            }
+        },
+        style = And03Theme.typography.bodyMedium
+    )
 }
 
 @Preview(showBackground = true)

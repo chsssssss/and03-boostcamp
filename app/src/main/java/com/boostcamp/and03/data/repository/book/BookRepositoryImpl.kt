@@ -10,12 +10,23 @@ import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSourc
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.NaverBookItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
     private val naverBookSearchRemoteDataSource: NaverBookSearchRemoteDataSource,
     private val aladinBookLookUpRemoteDataSource: AladinBookLookUpRemoteDataSource
 ): BookRepository {
+
+    override suspend fun loadTotalResultCount(query: String): Int {
+        val response = naverBookSearchRemoteDataSource.loadBooks(
+            query = query,
+            display = 1,
+            start = 1
+        )
+        return response.total
+    }
 
     override fun loadBooksPagingFlow(
         query: String
