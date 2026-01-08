@@ -1,0 +1,12 @@
+package com.boostcamp.and03.ui.screen.booksearch.model
+
+sealed interface BookSearchAction {
+
+    data object OnBackClick : BookSearchAction
+
+    data class OnItemClick(val item: BookSearchResultUiModel) : BookSearchAction
+
+    data object OnSaveClick : BookSearchAction
+
+    data class OnQueryChange(val query: String) : BookSearchAction
+}
