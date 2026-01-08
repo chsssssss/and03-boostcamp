@@ -14,9 +14,9 @@ class FirestoreBookRemoteDataSourceImpl @Inject constructor(
         book: BookEntity
     ) {
         firestore
-            .collection("users")
+            .collection("user")
             .document(userId)
-            .collection("books")
+            .collection("book")
             .document(book.isbn)
             .set(book)
             .await()

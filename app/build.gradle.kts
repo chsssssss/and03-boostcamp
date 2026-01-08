@@ -108,6 +108,7 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx)
+    implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
 
     // Interceptor
     implementation(libs.logging.interceptor)
