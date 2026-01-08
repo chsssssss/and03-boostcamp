@@ -4,7 +4,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchResultUiModel(
+data class BookSearchResultUiModel(
     val title: String,
     val authors: ImmutableList<String>,
     val publisher: String,
