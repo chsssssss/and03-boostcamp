@@ -28,7 +28,7 @@ import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.booklist.component.BookCountText
 import com.boostcamp.and03.ui.screen.booklist.component.BookGrid
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
-import com.boostcamp.and03.ui.screen.booklist.model.BooklistUiState
+import com.boostcamp.and03.ui.screen.booklist.BooklistUiState
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme

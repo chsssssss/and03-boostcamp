@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
-import com.boostcamp.and03.ui.screen.booklist.model.BooklistUiState
+import com.boostcamp.and03.ui.screen.booklist.BooklistUiState
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
