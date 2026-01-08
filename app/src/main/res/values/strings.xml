@@ -34,6 +34,7 @@
 
     <!-- 책 목록 화면 -->
     <string name="book_list_title">책 목록</string>
+    <string name="book_list_empty_book">저장된 책이 없어요.</string>
 
     <!-- 책 상세 화면 -->
     <string name="book_detail_app_bar_title">책 정보</string>

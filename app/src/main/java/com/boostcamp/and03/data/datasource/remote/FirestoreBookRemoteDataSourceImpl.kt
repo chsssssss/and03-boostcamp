@@ -24,9 +24,9 @@ class FirestoreBookRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun loadSavedBooks(
         userId: String
-    ): List<BookEntity> = firestore.collection("users")
+    ): List<BookEntity> = firestore.collection("user")
         .document(userId)
-        .collection("books")
+        .collection("book")
         .get()
         .await()
         .documents

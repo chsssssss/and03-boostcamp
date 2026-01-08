@@ -4,12 +4,12 @@ import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import kotlinx.collections.immutable.toImmutableList
 
 data class BookEntity(
-    val title: String,
-    val authors: List<String>,
-    val publisher: String,
-    val isbn: String,
-    val totalPage: Int,
-    val thumbnail: String
+    val title: String = "",
+    val authors: List<String> = emptyList(),
+    val publisher: String = "",
+    val isbn: String = "",
+    val totalPage: Int = 0,
+    val thumbnail: String = ""
 )
 
 fun BookUiModel.toEntity() = BookEntity(
