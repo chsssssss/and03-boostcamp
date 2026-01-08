@@ -43,10 +43,17 @@ fun CharacterCard(
     iconColor: Color,
     description: String,
     modifier: Modifier = Modifier,
+    selected: Boolean = false,
     onClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
 ) {
+    val borderColor = if (selected) {
+        And03Theme.colors.primary
+    } else {
+        And03Theme.colors.outline
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -56,7 +63,7 @@ fun CharacterCard(
             )
             .border(
                 width = 1.dp,
-                color = And03Theme.colors.outline,
+                color = borderColor,
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
             .clickable(
