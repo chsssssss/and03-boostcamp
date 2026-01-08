@@ -7,4 +7,8 @@ interface BookRemoteDataSource {
         userId: String,
         book: BookEntity
     )
+
+    suspend fun loadSavedBooks(
+        userId: String
+    ): List<BookEntity>
 }

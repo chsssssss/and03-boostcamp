@@ -21,4 +21,14 @@ class FirestoreBookRemoteDataSourceImpl @Inject constructor(
             .set(book)
             .await()
     }
+
+    override suspend fun loadSavedBooks(
+        userId: String
+    ): List<BookEntity> = firestore.collection("users")
+        .document(userId)
+        .collection("books")
+        .get()
+        .await()
+        .documents
+        .mapNotNull { it.toObject(BookEntity::class.java) }
 }
