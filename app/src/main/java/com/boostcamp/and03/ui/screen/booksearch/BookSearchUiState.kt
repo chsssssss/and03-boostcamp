@@ -1,11 +1,14 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
+import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
+
 data class BookSearchUiState(
     val query: String = "",
-    val selectedBookISBN: String? = null,
+    val selectedBook: SearchResultUiModel? = null,
     val totalResultCount: Int = 0,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isSaving: Boolean = false,
 ) {
     val isSaveEnabled: Boolean
-        get() = selectedBookISBN != null
+        get() = selectedBook != null && !isSaving
 }
