@@ -12,53 +12,34 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 
 @Stable
 class MainNavigator(
     val navController: NavHostController
 ) {
-    val currentDestination: NavDestination?
-        @Composable get() =
-            navController.currentBackStackEntryAsState().value?.destination
-
     val startDestination = Route.Booklist
 
-    fun navigate(tab: Route) {
-        val navOptions = navOptions {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-
-        when (tab) {
-            Route.Booklist -> navController.navigateBooklist(navOptions)
-            Route.BookSearch -> navController.navigateBookSearch(navOptions)
-            Route.AddBook -> navController.navigateAddBook(navOptions)
-            Route.MyPage -> navController.navigateMyPage(navOptions)
-            Route.BookDetail -> navController.navigateBookDetail(navOptions)
-        }
+    fun navigateToBooklist() {
+        navController.navigate(Route.Booklist)
     }
 
-    fun NavController.navigateBooklist(navOptions: NavOptions) {
-        navigate(Route.Booklist, navOptions)
+    fun navigateToBookSearch() {
+        navController.navigate(Route.BookSearch)
     }
 
-    fun NavController.navigateBookSearch(navOptions: NavOptions) {
-        navigate(Route.BookSearch, navOptions)
+    fun navigateToAddBook() {
+        navController.navigate(Route.AddBook)
     }
 
-    fun NavController.navigateAddBook(navOptions: NavOptions) {
-        navigate(Route.AddBook, navOptions)
+    fun navigateToMyPage() {
+        navController.navigate(Route.MyPage)
     }
 
-    fun NavController.navigateMyPage(navOptions: NavOptions) {
-        navigate(Route.MyPage, navOptions)
-    }
-
-    fun NavController.navigateBookDetail(navOptions: NavOptions) {
-        navigate(Route.BookDetail, navOptions)
+    fun navigateToBookDetail(book: BookUiModel) {
+        navController.navigate(
+            Route.BookDetail(isbn = book.isbn)
+        )
     }
 
     fun navigatePopBackStack() = navController.popBackStack()

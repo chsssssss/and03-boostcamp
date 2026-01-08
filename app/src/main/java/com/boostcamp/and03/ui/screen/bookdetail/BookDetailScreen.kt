@@ -31,19 +31,19 @@ import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun BookDetailRoute(
+    isbn: String,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    BookDetailScreen(
-        uiState = uiState,
-    )
+    BookDetailScreen(uiState = uiState)
 }
 
 @Composable

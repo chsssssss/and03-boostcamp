@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.navigation
 
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -16,5 +17,5 @@ sealed interface Route {
     data object MyPage : Route
 
     @Serializable
-    data object BookDetail : Route
+    data class BookDetail(val isbn: String) : Route
 }

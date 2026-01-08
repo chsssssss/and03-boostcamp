@@ -26,11 +26,11 @@ fun MainNavHost(
         booklistNavGraph(
             modifier = modifier.padding(paddingValues),
             onShowSnackBar = onShowSnackBar,
-            navigateToBookDetail = {
-                navigator.navigate(Route.BookDetail)
+            navigateToBookDetail = { book ->
+                navigator.navigateToBookDetail(book)
             },
             navigateToBookSearch = {
-                navigator.navigate(Route.BookSearch)
+                navigator.navigateToBookSearch()
             }
         )
 
