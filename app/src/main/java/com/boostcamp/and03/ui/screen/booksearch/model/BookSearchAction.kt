@@ -4,6 +4,8 @@ sealed interface BookSearchAction {
 
     data object OnBackClick : BookSearchAction
 
+    data object OnManualAddClick : BookSearchAction
+
     data class OnItemClick(val item: BookSearchResultUiModel) : BookSearchAction
 
     data object OnSaveClick : BookSearchAction

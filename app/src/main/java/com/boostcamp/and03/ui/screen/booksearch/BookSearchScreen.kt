@@ -38,10 +38,13 @@ import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.screen.booksearch.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
+import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchAction
+import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchEvent
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 
@@ -53,14 +56,20 @@ fun BookSearchRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchResults = viewModel.pagingBooksFlow.collectAsLazyPagingItems()
 
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            BookSearchEvent.NavigateBack -> onBackClick()
+
+            BookSearchEvent.NavigateToManualAdd -> { /* TODO: 책 정보 입력 화면 구현 */ }
+
+            is BookSearchEvent.SaveFailure -> { /* TODO: 저장 실패 시 동작 구현 */ }
+        }
+    }
+
     BookSearchScreen(
         uiState = uiState,
         searchResults = searchResults,
-        onQueryChange = viewModel::changeQuery,
-        onBackClick = onBackClick,
-        onItemClick = viewModel::clickItem,
-        onSaveClick = { /* TODO: viewModel::saveItem 구현 */ },
-        onManualAddClick = { /* TODO: 책 추가 화면 구현 및 이동 동작 구현 */ }
+        onAction = viewModel::onAction
     )
 }
 
@@ -68,19 +77,15 @@ fun BookSearchRoute(
 private fun BookSearchScreen(
     uiState: BookSearchUiState,
     searchResults: LazyPagingItems<BookSearchResultUiModel>,
-    onQueryChange: (String) -> Unit,
-    onBackClick: () -> Unit,
-    onItemClick: (BookSearchResultUiModel) -> Unit,
-    onSaveClick: () -> Unit,
-    onManualAddClick: () -> Unit,
+    onAction: (BookSearchAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val searchTextState = remember { TextFieldState(uiState.query) }
 
     LaunchedEffect(Unit) {
         snapshotFlow { searchTextState.text.toString() }
-            .collect { text ->
-                onQueryChange(text)
+            .collect { query ->
+                onAction(BookSearchAction.OnQueryChange(query = query))
             }
     }
 
@@ -88,9 +93,12 @@ private fun BookSearchScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(R.string.book_search_title),
-                onBackClick = onBackClick,
+                onBackClick = { onAction(BookSearchAction.OnBackClick) },
                 actions = {
-                    IconButton(onClick = onSaveClick) {
+                    IconButton(
+                        onClick = { onAction(BookSearchAction.OnSaveClick) },
+                        enabled = uiState.isSaveEnabled
+                    ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_check_filled),
                             contentDescription = stringResource(R.string.content_description_save_button)
@@ -107,7 +115,7 @@ private fun BookSearchScreen(
         ) {
             SearchTextField(
                 state = searchTextState,
-                onSearch = { onQueryChange(searchTextState.text.toString()) },
+                onSearch = { onAction(BookSearchAction.OnQueryChange(query = searchTextState.text.toString())) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(And03Padding.PADDING_M)
@@ -117,14 +125,14 @@ private fun BookSearchScreen(
                 uiState.query.isBlank() -> {
                     BookSearchEmptySection(
                         message = stringResource(R.string.book_search_empty_before_query),
-                        onManualAddClick = onManualAddClick
+                        onManualAddClick = { onAction(BookSearchAction.OnManualAddClick) }
                     )
                 }
 
                 searchResults.itemCount == 0 -> {
                     BookSearchEmptySection(
                         message = stringResource(R.string.book_search_empty_after_query),
-                        onManualAddClick = onManualAddClick
+                        onManualAddClick = { onAction(BookSearchAction.OnManualAddClick) }
                     )
                 }
 
@@ -152,7 +160,7 @@ private fun BookSearchScreen(
                                     authors = book.authors,
                                     publisher = book.publisher,
                                     isSelected = book.isbn == uiState.selectedBook?.isbn,
-                                    onClick = { onItemClick(book) }
+                                    onClick = { onAction(BookSearchAction.OnItemClick(item = book)) }
                                 )
                             }
                         }
@@ -249,11 +257,7 @@ private fun BookSearchScreenPreview() {
         BookSearchScreen(
             uiState = uiState,
             searchResults = pagingItems,
-            onQueryChange = {},
-            onBackClick = {},
-            onItemClick = {},
-            onSaveClick = {},
-            onManualAddClick = {}
+            onAction = {}
         )
     }
 }
@@ -274,11 +278,7 @@ private fun BookSearchScreenEmptyBeforeQueryPreview() {
         BookSearchScreen(
             uiState = uiState,
             searchResults = pagingItems,
-            onQueryChange = {},
-            onBackClick = {},
-            onItemClick = {},
-            onSaveClick = {},
-            onManualAddClick = {}
+            onAction = {}
         )
     }
 }

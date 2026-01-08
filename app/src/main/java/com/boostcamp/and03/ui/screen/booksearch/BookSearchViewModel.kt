@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -7,6 +8,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
+import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchAction
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +40,24 @@ class BookSearchViewModel @Inject constructor(
     private val _event: Channel<BookSearchEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
+    fun onAction(action: BookSearchAction) {
+        when (action) {
+            BookSearchAction.OnBackClick -> _event.trySend(BookSearchEvent.NavigateBack)
+
+            BookSearchAction.OnManualAddClick -> _event.trySend(BookSearchEvent.NavigateToManualAdd)
+
+            is BookSearchAction.OnQueryChange -> _uiState.update { it.copy(query = action.query) }
+
+            is BookSearchAction.OnItemClick -> _uiState.update {
+                val isSelected = it.selectedBook?.isbn == action.item.isbn
+
+                it.copy(selectedBook = if (isSelected) null else action.item)
+            }
+
+            BookSearchAction.OnSaveClick -> saveItem()
+        }
+    }
+
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val pagingBooksFlow: Flow<PagingData<BookSearchResultUiModel>> = _uiState
         .map { it.query }
@@ -56,21 +76,10 @@ class BookSearchViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    fun changeQuery(query: String) {
-        _uiState.update { it.copy(query = query) }
-    }
-
-    fun clickItem(item: BookSearchResultUiModel) {
-        _uiState.update { state ->
-            val isSelected = state.selectedBook?.isbn == item.isbn
-
-            state.copy(selectedBook = if (isSelected) null else item)
-        }
-    }
-
     // 임시 userId 사용
-    fun saveItem(userId: String = "O12OmGoVY8FPYFElNjKN") {
+    private fun saveItem(userId: String = "O12OmGoVY8FPYFElNjKN") {
         val book = _uiState.value.selectedBook ?: return
+        if (_uiState.value.isSaving) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }

@@ -4,7 +4,7 @@ sealed interface BookSearchEvent {
 
     data object NavigateBack : BookSearchEvent
 
-    data object SaveSuccess : BookSearchEvent
+    data object NavigateToManualAdd : BookSearchEvent
 
-    data class SaveFailure(val message: String) : BookSearchEvent
+    data class SaveFailure(val reason: SaveFailureReason) : BookSearchEvent
 }

@@ -47,6 +47,7 @@
     <string name="book_search_empty_before_query">책을 직접 추가할 수 있어요.</string>
     <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
     <string name="book_search_button_text">직접 추가</string>
+    <string name="book_search_save_failure_text">책 저장에 실패했습니다</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
