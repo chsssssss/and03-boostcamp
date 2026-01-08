@@ -36,7 +36,7 @@ import androidx.paging.compose.itemKey
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
-import com.boostcamp.and03.ui.component.SearchResultItem
+import com.boostcamp.and03.ui.screen.booksearch.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
