@@ -92,8 +92,6 @@ private fun BooklistScreen(
                 .padding(innerPadding)
                 .padding(horizontal = And03Padding.PADDING_L)
         ) {
-            Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
-
             SearchTextField(
                 state = searchState,
                 onSearch = { onSearch(searchState.text.toString()) },

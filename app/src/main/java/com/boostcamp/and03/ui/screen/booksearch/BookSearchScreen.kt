@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -112,14 +114,23 @@ private fun BookSearchScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = And03Padding.PADDING_L)
         ) {
             SearchTextField(
                 state = searchTextState,
                 onSearch = { onAction(BookSearchAction.OnQueryChange(query = searchTextState.text.toString())) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(And03Padding.PADDING_M)
+                modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
+
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = DividerDefaults.Thickness,
+                color = DividerDefaults.color
+            )
+
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
 
             when {
                 uiState.query.isBlank() -> {
@@ -138,9 +149,7 @@ private fun BookSearchScreen(
 
                 else -> {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = And03Padding.PADDING_L),
+                        modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
                     ) {
                         SearchResultCountText(count = uiState.totalResultCount)
