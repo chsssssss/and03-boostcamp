@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.repository.book.BookRepository
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchAction
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchEvent
@@ -77,18 +78,35 @@ class BookSearchViewModel @Inject constructor(
 
     // 임시 userId 사용
     private fun saveItem(userId: String = "O12OmGoVY8FPYFElNjKN") {
-        val book = _uiState.value.selectedBook ?: return
+        val selectedSearchResult = _uiState.value.selectedBook ?: return
         if (_uiState.value.isSaving) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
 
             try {
-                // TODO: Repository 구현 후 연결
-                // bookRepository.saveBook(userId, book)
+                val lookUpResponse = bookRepository.loadBookPage(itemId = selectedSearchResult.isbn)
+                val totalPage = lookUpResponse.item.first().bookInfo.itemPage
 
+                val book = BookUiModel(
+                    title = selectedSearchResult.title,
+                    authors = selectedSearchResult.authors,
+                    publisher = selectedSearchResult.publisher,
+                    thumbnail = selectedSearchResult.thumbnail,
+                    isbn = selectedSearchResult.isbn,
+                    totalPage = totalPage
+                )
+
+                bookRepository.saveBook(userId, book)
+
+                _event.trySend(BookSearchEvent.NavigateBack)
             } finally {
-                _uiState.update { it.copy(isSaving = false) }
+                _uiState.update {
+                    it.copy(
+                        isSaving = false,
+                        selectedBook = null
+                    )
+                }
             }
         }
     }
