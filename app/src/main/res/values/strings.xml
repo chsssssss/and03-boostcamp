@@ -32,6 +32,7 @@
 
     <!-- 책 검색 화면 -->
     <string name="book_search_title">책 추가</string>
+    <string name="book_search_result_count_text">검색 결과 %1$d건</string>
     <string name="book_search_empty_before_query">책을 직접 추가할 수 있어요.</string>
     <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
     <string name="book_search_button_text">직접 추가</string>
