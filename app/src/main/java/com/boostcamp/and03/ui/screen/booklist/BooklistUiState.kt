@@ -5,7 +5,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class BooklistUiState(
-    val books: ImmutableList<BookUiModel> = persistentListOf(),
+    val allBooks: ImmutableList<BookUiModel> = persistentListOf(),
+    val filteredBooks: ImmutableList<BookUiModel> = persistentListOf(),
     val searchQuery: String = "",
     val isLoading: Boolean = false
 )

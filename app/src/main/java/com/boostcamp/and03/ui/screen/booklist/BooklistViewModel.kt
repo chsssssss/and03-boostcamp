@@ -1,18 +1,13 @@
 package com.boostcamp.and03.ui.screen.booklist
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.and03.data.repository.book.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.collections.immutable.persistentListOf
-import com.boostcamp.and03.ui.screen.booklist.BooklistUiState
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -29,13 +24,10 @@ class BooklistViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BooklistUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val searchQuery = MutableStateFlow("")
-
     private val userId = "O12OmGoVY8FPYFElNjKN" // 임시
 
     init {
         loadBooks()
-        observeSearch()
     }
 
     fun loadBooks() {
@@ -43,42 +35,44 @@ class BooklistViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             val books = bookRepository.loadSavedBooks(userId)
+                .toImmutableList()
 
             _uiState.update {
                 it.copy(
-                    books = books.toImmutableList(),
+                    allBooks = books,
+                    filteredBooks = books,
                     isLoading = false
                 )
             }
         }
     }
 
-    @OptIn(FlowPreview::class)
-    private fun observeSearch() {
-        searchQuery
-            .debounce(300)
-            .distinctUntilChanged()
-            .onEach { query ->
-                val filtered = if (query.isBlank()) {
-                    _uiState.value.books
-                } else {
-                    _uiState.value.books.filter {
-                        it.title.contains(query, ignoreCase = true) ||
-                                it.authors.any { author ->
-                                    author.contains(query, ignoreCase = true)
-                                }
-                    }
-                }
-
-                _uiState.value = _uiState.value.copy(
-                    searchQuery = query,
-                    books = filtered.toImmutableList()
-                )
-            }
-            .launchIn(viewModelScope)
+    fun resetSearch() {
+        _uiState.update { state ->
+            state.copy(
+                searchQuery = "",
+                filteredBooks = state.allBooks
+            )
+        }
     }
 
     fun onSearchQueryChange(query: String) {
-        searchQuery.value = query
+        _uiState.update { state ->
+            val filtered = if (query.isBlank()) {
+                state.allBooks
+            } else {
+                state.allBooks.filter { book ->
+                    book.title.contains(query, ignoreCase = true) ||
+                            book.authors.any { author ->
+                                author.contains(query, ignoreCase = true)
+                            }
+                }.toImmutableList()
+            }
+
+            state.copy(
+                searchQuery = query,
+                filteredBooks = filtered
+            )
+        }
     }
 }
