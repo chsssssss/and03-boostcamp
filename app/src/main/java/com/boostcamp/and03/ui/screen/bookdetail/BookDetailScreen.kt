@@ -42,6 +42,8 @@ import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
+import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -51,13 +53,15 @@ import kotlinx.collections.immutable.persistentListOf
 fun BookDetailRoute(
     isbn: String,
     navigateToBack: () -> Unit,
+    navigateToCanvas: (memoId: String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
-) {
+){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BookDetailScreen(
         uiState = uiState,
-        navigateToBack = navigateToBack
+        navigateToBack = navigateToBack,
+        navigateToCanvas = navigateToCanvas
     )
 }
 
@@ -65,6 +69,7 @@ fun BookDetailRoute(
 private fun BookDetailScreen(
     uiState: BookDetailUiState,
     navigateToBack: () -> Unit,
+    navigateToCanvas: (memoId: String) -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -124,8 +129,13 @@ private fun BookDetailScreen(
                 BookDetailTab.QUOTE -> QuoteTab(uiState)
                 BookDetailTab.MEMO -> MemoTab(
                     uiState = uiState,
-                    onClickAddCanvas = { },
-                    onClickAddText = { }
+                    onClickAddCanvas = { /* TODO */ },
+                    onClickAddText = { /* TODO */ },
+                    onClickMemo = { memo ->
+                        if (memo.memoType == MemoType.CANVAS) {
+                            navigateToCanvas(memo.id)
+                        }
+                    }
                 )
             }
         }
@@ -219,6 +229,7 @@ private fun MemoTab(
     uiState: BookDetailUiState,
     onClickAddCanvas: () -> Unit,
     onClickAddText: () -> Unit,
+    onClickMemo: (MemoUiModel) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(And03Padding.PADDING_L),
@@ -259,7 +270,7 @@ private fun MemoTab(
                     memo.endPage
                 ),
                 date = memo.date,
-                onClick = { }
+                onClick = { onClickMemo(memo) }
             )
         }
     }
@@ -292,7 +303,8 @@ fun BooklistScreenPreview() {
     And03Theme {
         BookDetailScreen(
             uiState = previewState,
-            navigateToBack = {}
+            navigateToBack = {},
+            navigateToCanvas = {}
         )
     }
 }

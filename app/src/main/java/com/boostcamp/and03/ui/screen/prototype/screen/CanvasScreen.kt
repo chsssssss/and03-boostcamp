@@ -18,7 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,20 +35,22 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.ActionSnackBarHost
 import com.boostcamp.and03.ui.screen.prototype.model.Edge
 import com.boostcamp.and03.ui.screen.prototype.model.MemoNode
-import com.boostcamp.and03.ui.screen.prototype.navigation.PrototypeRoute
 
 @Composable
 fun CanvasScreen(
-    navController: NavController, viewModel: CanvasViewModel = viewModel()
+    memoId: String,
+    navigateToBack: () -> Unit,
+    navigateToMemoEdit: () -> Unit,
+    viewModel: CanvasViewModel = viewModel()
 ) {
     val items by viewModel.graph.collectAsState()
 
@@ -65,13 +66,13 @@ fun CanvasScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.snackbarEvent.collect { event ->
             val result = snackbarHostState.showSnackbar(
-                message = navController.context.getString(event.messageRes),
-                actionLabel = event.actionLabelRes.let {
-                    navController.context.getString(it)
-                }
+                message = context.getString(event.messageRes),
+                actionLabel = context.getString(event.actionLabelRes)
             )
         }
     }
@@ -83,7 +84,7 @@ fun CanvasScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { navController.navigate(PrototypeRoute.MemoEdit) },
+                onClick = { navigateToMemoEdit() },
                 icon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_edit_outlined),
