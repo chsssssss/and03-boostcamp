@@ -45,12 +45,13 @@ fun AddQuoteInfoSection() {
         Column {
             Text(
                 text = stringResource(R.string.add_quote_info_title),
-                style = And03Theme.typography.bodyMedium,
+                style = And03Theme.typography.labelLarge
+                ,
                 color = And03Theme.colors.primary
             )
             Text(
                 text = stringResource(R.string.add_quote_info_description),
-                style = And03Theme.typography.bodySmall,
+                style = And03Theme.typography.labelSmall,
                 color = And03Theme.colors.primary
             )
         }
