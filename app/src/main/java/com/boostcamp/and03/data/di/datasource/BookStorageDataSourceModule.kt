@@ -4,6 +4,8 @@ import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSo
 import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSourceImpl
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSourceImpl
+import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
+import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -22,5 +24,10 @@ abstract class BookRemoteDataSourceModule {
     abstract fun bindBookCharacterDataSource(
         characterDataSourceImpl: CharacterDataSourceImpl
     ): CharacterDataSource
+
+    @Binds
+    abstract fun bindBookQuoteDataSource(
+        quoteDataSourceImpl: QuoteDataSourceImpl
+    ): QuoteDataSource
 
 }

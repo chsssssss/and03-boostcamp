@@ -1,38 +1,40 @@
-package com.boostcamp.and03.data.datasource.remote.character
+package com.boostcamp.and03.data.datasource.remote.quote
 
 import android.util.Log
+import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.model.response.CharacterResponse
+import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
 
-class CharacterDataSourceImpl @Inject constructor(
+class QuoteDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
-): CharacterDataSource {
-    override suspend fun getCharacters(
+): QuoteDataSource {
+    override suspend fun getQuotes(
         userId: String,
         bookId: String
-    ): List<CharacterResponse> {
+    ): List<QuoteResponse> {
         return try {
             val snapshot = db
                 .collection("user")
                 .document(userId)
                 .collection("book")
                 .document(bookId)
-                .collection("character")
+                .collection("quote")
                 .get()
                 .await()
 
             snapshot.documents.map { document ->
                 val docId = document.id
                 val data = document.data
-                Log.d("CharacterDataSourceImpl", "data: $data")
+                Log.d("QuoteDataSourceImpl", "data: $data")
                 if (data != null) {
-                    CharacterResponse(
+                    QuoteResponse(
                         id = docId,
-                        role = data["role"] as? String ?: "",
-                        description = data["description"] as? String ?: "",
-                        name = data["name"] as? String ?: "",
+                        content = data["content"] as? String ?: "",
+                        page = data["page"] as? Int ?: 0,
+                        createdAt = data["createdAt"] as? String ?: "",
                     )
                 }
                 else {
@@ -44,4 +46,5 @@ class CharacterDataSourceImpl @Inject constructor(
             emptyList()
         }
     }
+
 }

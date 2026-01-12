@@ -27,6 +27,7 @@ class BookDetailViewModel @Inject constructor(
     init {
         initPreviewData()
         loadCharacters()
+        loadQuotes()
     }
 
     private fun initPreviewData() {
@@ -35,26 +36,6 @@ class BookDetailViewModel @Inject constructor(
             title = "Harry Potter and the Philosopher's Stone",
             author = "J.K. Rowling",
             publisher = "Bloomsbury Publishing",
-            quotes = persistentListOf(
-                QuoteUiModel(
-                    "1",
-                    "이 책을 읽으면서 꿈에 대한 새로운 관점을 얻게 되었다. 꿈이 단순히 무의식의 산물이 아니라 우리가 구매할 수 있는 상품이라는 설정이 흥미롭다.",
-                    26,
-                    "2024.01.10"
-                ),
-                QuoteUiModel(
-                    "2",
-                    "이 책을 읽으면서 꿈에 대한 새로운 관점을 얻게 되었다. 꿈이 단순히 무의식의 산물이 아니라 우리가 구매할 수 있는 상품이라는 설정이 흥미롭다.",
-                    26,
-                    "2024.01.10"
-                ),
-                QuoteUiModel(
-                    "3",
-                    "이 책을 읽으면서 꿈에 대한 새로운 관점을 얻게 되었다. 꿈이 단순히 무의식의 산물이 아니라 우리가 구매할 수 있는 상품이라는 설정이 흥미롭다.",
-                    26,
-                    "2024.01.10"
-                )
-            ),
             memos = persistentListOf(
                 MemoUiModel(
                     id = "memo_1",
@@ -102,6 +83,17 @@ class BookDetailViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     characters = result.map { character -> character.toUiModel() }.toPersistentList()
+                )
+            }
+        }
+    }
+
+    fun loadQuotes(userId: String = "O12OmGoVY8FPYFElNjKN", bookId: String = "YkFyRg6G0v2Us6b3V5Tm") {
+        viewModelScope.launch {
+            val result = bookRepository.getQuotes(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    quotes = result.map { quote -> quote.toUiModel() }.toPersistentList()
                 )
             }
         }
