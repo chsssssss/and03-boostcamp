@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.datasource
 
-import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
-import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSourceImpl
+import com.boostcamp.and03.data.datasource.remote.search.naver.NaverBookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.naver.NaverBookSearchRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

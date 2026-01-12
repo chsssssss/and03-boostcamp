@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.datasource.remote
+package com.boostcamp.and03.data.datasource.remote.search.naver
 
 import com.boostcamp.and03.data.api.NaverBookSearchApiService
 import com.boostcamp.and03.data.model.response.NaverBookSearchResponse

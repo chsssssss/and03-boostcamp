@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.datasource.remote
+package com.boostcamp.and03.data.datasource.remote.search.aladin
 
 import com.boostcamp.and03.data.api.AladinBookLookUpApiService
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse

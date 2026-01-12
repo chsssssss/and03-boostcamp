@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.boostcamp.and03.data.api.NaverBookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
-import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
-import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.aladin.AladinBookLookUpRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.naver.NaverBookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.NaverBookItem
 import kotlinx.coroutines.flow.Flow

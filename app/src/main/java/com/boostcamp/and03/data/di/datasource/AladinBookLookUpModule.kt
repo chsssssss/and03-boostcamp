@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.datasource
 
-import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
-import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSourceImpl
+import com.boostcamp.and03.data.datasource.remote.search.aladin.AladinBookLookUpRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.aladin.AladinBookLookUpRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
