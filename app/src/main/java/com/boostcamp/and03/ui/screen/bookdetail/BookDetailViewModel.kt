@@ -1,18 +1,21 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
-import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
@@ -23,6 +26,7 @@ class BookDetailViewModel @Inject constructor(
 
     init {
         initPreviewData()
+        loadCharacters()
     }
 
     private fun initPreviewData() {
@@ -31,20 +35,6 @@ class BookDetailViewModel @Inject constructor(
             title = "Harry Potter and the Philosopher's Stone",
             author = "J.K. Rowling",
             publisher = "Bloomsbury Publishing",
-            characters = persistentListOf(
-                CharacterUiModel(
-                    name = "해리 포터",
-                    role = "주인공",
-                    iconColor = Color(0xFF1E88E5),
-                    description = "호그와트의 마법사 학생"
-                ),
-                CharacterUiModel(
-                    name = "헤르미온느 그레인저",
-                    role = "조연",
-                    iconColor = Color(0xFF8E24AA),
-                    description = "해리의 절친한 친구"
-                )
-            ),
             quotes = persistentListOf(
                 QuoteUiModel(
                     "1",
@@ -104,5 +94,16 @@ class BookDetailViewModel @Inject constructor(
                 )
             )
         )
+    }
+
+    fun loadCharacters(userId: String = "O12OmGoVY8FPYFElNjKN", bookId: String = "YkFyRg6G0v2Us6b3V5Tm") {
+        viewModelScope.launch {
+            val result = bookRepository.getCharacters(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    characters = result.map { character -> character.toUiModel() }.toPersistentList()
+                )
+            }
+        }
     }
 }
