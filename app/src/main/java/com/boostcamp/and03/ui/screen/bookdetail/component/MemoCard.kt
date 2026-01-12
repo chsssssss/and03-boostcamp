@@ -62,11 +62,10 @@ fun MemoCard(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Row(
                 modifier = Modifier.padding(And03Padding.PADDING_2XL)
-//                    .weight(1f)
             ) {
                 MemoTypeChip(type = type)
 
