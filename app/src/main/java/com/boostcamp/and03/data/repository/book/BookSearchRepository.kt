@@ -2,14 +2,14 @@ package com.boostcamp.and03.data.repository.book
 
 import androidx.paging.PagingData
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
-import com.boostcamp.and03.data.model.response.NaverBookItem
+import com.boostcamp.and03.data.model.response.BookItem
 import kotlinx.coroutines.flow.Flow
 
 interface BookSearchRepository {
 
-    suspend fun loadTotalResultCount(query: String): Int
+    suspend fun loadTotalSearchResultCount(query: String): Int
 
-    fun loadBooksPagingFlow(query: String): Flow<PagingData<NaverBookItem>>
+    fun loadSearchResults(query: String): Flow<PagingData<BookItem>>
 
     suspend fun loadBookPage(itemId: String): AladinBookLookUpResponse
 }

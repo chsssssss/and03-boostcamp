@@ -37,11 +37,11 @@ class BookSearchViewModel @Inject constructor(
         .distinctUntilChanged()
         .filter { it.isNotBlank() }
         .onEach { query ->
-            val total = bookRepository.loadTotalResultCount(query)
+            val total = bookRepository.loadTotalSearchResultCount(query)
             _uiState.update  { it.copy(totalResultCount = total) }
         }
         .flatMapLatest { query ->
-            bookRepository.loadBooksPagingFlow(query)
+            bookRepository.loadSearchResults(query)
                 .map { pagingData ->
                     pagingData.map { it.toUiModel() }
                 }
