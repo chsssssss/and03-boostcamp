@@ -7,4 +7,6 @@ interface QuoteDataSource {
     suspend fun getQuotes(userId: String, bookId: String): List<QuoteResponse>
 
     suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest)
+
+    suspend fun deleteQuote(userId: String, bookId: String, quoteId: String)
 }

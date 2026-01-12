@@ -1,9 +1,7 @@
 package com.boostcamp.and03.data.datasource.remote.quote
 
 import android.util.Log
-import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.model.request.QuoteRequest
-import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
@@ -67,6 +65,28 @@ class QuoteDataSourceImpl @Inject constructor(
             Log.d("QuoteDataSourceImpl", "Quote added: ${newDocRef.id}")
         } catch (e: Exception) {
             Log.e("QuoteDataSourceImpl", "Failed to add quote: ${e.message}")
+            throw e
+        }
+    }
+
+    override suspend fun deleteQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String
+    ) {
+        try {
+            db.collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("quote")
+                .document(quoteId)
+                .delete()
+                .await()
+
+            Log.d("QuoteDataSourceImpl", "Quote deleted: $quoteId")
+        } catch (e: Exception) {
+            Log.e("QuoteDataSourceImpl", "Failed to delete quote: ${e.message}")
             throw e
         }
     }

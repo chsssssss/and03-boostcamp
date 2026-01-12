@@ -19,4 +19,6 @@ interface BookStorageRepository {
 
     suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest)
 
+    suspend fun deleteQuote(userId: String, bookId: String, quoteId: String)
+
 }

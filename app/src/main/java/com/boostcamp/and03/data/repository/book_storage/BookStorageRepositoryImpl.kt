@@ -38,4 +38,14 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest) {
         return quoteDataSource.addQuote(userId, bookId, quote)
     }
+
+    override suspend fun deleteQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String
+    ) {
+        return quoteDataSource.deleteQuote(userId, bookId, quoteId)
+    }
+
+
 }
