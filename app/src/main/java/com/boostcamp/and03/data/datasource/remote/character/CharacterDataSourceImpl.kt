@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.datasource.remote.character
 
 import android.util.Log
+import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
@@ -42,6 +43,29 @@ class CharacterDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("BookStorage", "Error: ${e.message}")
             emptyList()
+        }
+    }
+
+    override suspend fun addCharacter(
+        userId: String,
+        bookId: String,
+        character: CharacterRequest
+    ) {
+        try {
+            val collectionRef = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("character")
+
+            val newDocRef = collectionRef.document()
+            newDocRef.set(character).await()
+
+            Log.d("CharacterDataSourceImpl", "Character added: ${newDocRef.id}")
+        } catch (e: Exception) {
+            Log.e("CharacterDataSourceImpl", "Failed to add character: ${e.message}")
+            throw e
         }
     }
 }
