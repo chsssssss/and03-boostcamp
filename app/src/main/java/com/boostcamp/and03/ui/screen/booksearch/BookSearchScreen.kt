@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
-import android.R.id.message
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -55,10 +54,12 @@ fun BookSearchRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchResults = viewModel.pagingBooksFlow.collectAsLazyPagingItems()
+    val totalResultCount by viewModel.totalResultCountFlow.collectAsStateWithLifecycle(0)
 
     BookSearchScreen(
         uiState = uiState,
         searchResults = searchResults,
+        totalResultCount = totalResultCount,
         onQueryChange = viewModel::changeQuery,
         onBackClick = onBackClick,
         onItemClick = viewModel::clickItem,
@@ -71,6 +72,7 @@ fun BookSearchRoute(
 private fun BookSearchScreen(
     uiState: BookSearchUiState,
     searchResults: LazyPagingItems<SearchResultUiModel>,
+    totalResultCount: Int,
     onQueryChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onItemClick: (SearchResultUiModel) -> Unit,
@@ -156,7 +158,7 @@ private fun BookSearchScreen(
                     BookSearchResultListSection(
                         searchResults = searchResults,
                         selectedBookISBN = uiState.selectedBookISBN,
-                        totalCount = uiState.totalResultCount,
+                        totalResultCount = totalResultCount,
                         onItemClick = onItemClick
                     )
                 }
@@ -169,7 +171,7 @@ private fun BookSearchScreen(
 private fun BookSearchResultListSection(
     searchResults: LazyPagingItems<SearchResultUiModel>,
     selectedBookISBN: String?,
-    totalCount: Int,
+    totalResultCount: Int,
     onItemClick: (SearchResultUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -179,7 +181,7 @@ private fun BookSearchResultListSection(
             .padding(horizontal = And03Padding.PADDING_L),
         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
     ) {
-        SearchResultCountText(count = totalCount)
+        SearchResultCountText(count = totalResultCount)
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -295,6 +297,7 @@ private fun BookSearchScreenPreview() {
         BookSearchScreen(
             uiState = uiState,
             searchResults = pagingItems,
+            totalResultCount = 2,
             onQueryChange = {},
             onBackClick = {},
             onItemClick = {},
@@ -320,6 +323,7 @@ private fun BookSearchScreenEmptyBeforeQueryPreview() {
         BookSearchScreen(
             uiState = uiState,
             searchResults = pagingItems,
+            totalResultCount = 0,
             onQueryChange = {},
             onBackClick = {},
             onItemClick = {},
