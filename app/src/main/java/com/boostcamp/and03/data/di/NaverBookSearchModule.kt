@@ -1,6 +1,6 @@
 package com.boostcamp.and03.data.di
 
-import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.BookSearchRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
@@ -16,5 +16,5 @@ abstract class NaverBookSearchModule {
     @Singleton
     abstract fun bindNaverBookSearchRemoteDataSource(
         impl: NaverBookSearchRemoteDataSourceImpl
-    ): NaverBookSearchRemoteDataSource
+    ): BookSearchRemoteDataSource
 }

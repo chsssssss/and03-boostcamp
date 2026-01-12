@@ -6,11 +6,8 @@ import javax.inject.Inject
 
 class AladinBookLookUpRemoteDataSourceImpl @Inject constructor(
     private val aladinBookLookUpApiService: AladinBookLookUpApiService
-): AladinBookLookUpRemoteDataSource {
-    override suspend fun loadBookPage(
-        itemId: String
-    ): AladinBookLookUpResponse =
-        aladinBookLookUpApiService.loadBookInfo(
-            itemId = itemId
-        )
+): BookDetailRemoteDataSource {
+
+    override suspend fun loadBookPage(itemId: String): AladinBookLookUpResponse =
+        aladinBookLookUpApiService.loadBookInfo(itemId = itemId)
 }
