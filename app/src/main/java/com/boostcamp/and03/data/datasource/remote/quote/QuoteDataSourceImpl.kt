@@ -2,6 +2,7 @@ package com.boostcamp.and03.data.datasource.remote.quote
 
 import android.util.Log
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
+import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.google.firebase.firestore.FirebaseFirestore
@@ -47,4 +48,26 @@ class QuoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun addQuote(
+        userId: String,
+        bookId: String,
+        quote: QuoteRequest
+    ) {
+        try {
+            val collectionRef = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("quote")
+
+            val newDocRef = collectionRef.document()
+            newDocRef.set(quote).await()
+
+            Log.d("QuoteDataSourceImpl", "Quote added: ${newDocRef.id}")
+        } catch (e: Exception) {
+            Log.e("QuoteDataSourceImpl", "Failed to add quote: ${e.message}")
+            throw e
+        }
+    }
 }

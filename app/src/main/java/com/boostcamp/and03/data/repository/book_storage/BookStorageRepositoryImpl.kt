@@ -4,6 +4,7 @@ import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSo
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
 import com.boostcamp.and03.data.model.request.CharacterRequest
+import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
@@ -28,5 +29,9 @@ class BookStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getQuotes(userId: String, bookId: String): List<QuoteResponse> {
         return quoteDataSource.getQuotes(userId, bookId)
+    }
+
+    override suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest) {
+        return quoteDataSource.addQuote(userId, bookId, quote)
     }
 }
