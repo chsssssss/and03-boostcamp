@@ -2,9 +2,12 @@ package com.boostcamp.and03.ui.screen.bookdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.and03.data.model.request.CharacterRequest
+import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -97,4 +100,45 @@ class BookDetailViewModel @Inject constructor(
             }
         }
     }
+//
+//    fun addCharacter(
+//        userId: String = "O12OmGoVY8FPYFElNjKN",
+//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
+//    ) {
+//        viewModelScope.launch {
+//            bookRepository.addCharacter(
+//                userId, bookId, CharacterRequest(
+//                    role = "주인공",
+//                    description = "설명설명설명",
+//                    name = "이름이름"
+//                )
+//            )
+//        }
+//    }
+//
+//    fun addQuote(
+//        userId: String = "O12OmGoVY8FPYFElNjKN",
+//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
+//    ) {
+//        viewModelScope.launch {
+//            bookRepository.addQuote(
+//                userId, bookId, QuoteRequest(
+//                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
+//                    createdAt = "2026.1.5",
+//                    page = 121
+//                )
+//            )
+//        }
+//    }
+//
+//    fun deleteCharacter(
+//        characterId: String = "e9WCxbOGW15gzMK9Dbnc",
+//        userId: String = "O12OmGoVY8FPYFElNjKN",
+//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
+//    ) {
+//        viewModelScope.launch {
+//            bookRepository.deleteCharacter(
+//                userId, bookId, characterId)
+//        }
+//    }
 }
