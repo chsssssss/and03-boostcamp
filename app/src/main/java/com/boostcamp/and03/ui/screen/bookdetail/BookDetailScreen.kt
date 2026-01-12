@@ -49,7 +49,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookDetailRoute(
-    isbn: String,
+    bookId: String,
     navigateToBack: () -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {

@@ -17,5 +17,5 @@ sealed interface Route {
     data object MyPage : Route
 
     @Serializable
-    data class BookDetail(val documentId: String) : Route
+    data class BookDetail(val bookId: String) : Route
 }
