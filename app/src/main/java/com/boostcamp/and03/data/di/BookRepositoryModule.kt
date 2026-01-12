@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di
 
-import com.boostcamp.and03.data.repository.book.BookRepository
-import com.boostcamp.and03.data.repository.book.BookRepositoryImpl
+import com.boostcamp.and03.data.repository.book.BookSearchRepository
+import com.boostcamp.and03.data.repository.book.BookSearchRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ abstract class BookRepositoryModule {
     @Binds
     @Singleton
     abstract fun bindBookRepository(
-        impl: BookRepositoryImpl
-    ): BookRepository
+        impl: BookSearchRepositoryImpl
+    ): BookSearchRepository
 }

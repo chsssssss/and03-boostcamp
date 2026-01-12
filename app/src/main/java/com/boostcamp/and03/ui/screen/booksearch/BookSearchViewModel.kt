@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.boostcamp.and03.data.repository.book.BookRepository
+import com.boostcamp.and03.data.repository.book.BookSearchRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,12 +21,11 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BookSearchViewModel @Inject constructor(
-    private val bookRepository: BookRepository
+    private val bookRepository: BookSearchRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookSearchUiState())
     val uiState = _uiState.asStateFlow()
