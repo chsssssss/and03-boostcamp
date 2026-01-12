@@ -1,9 +1,44 @@
 package com.boostcamp.and03.data.datasource.remote.character
 
+import android.util.Log
+import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 class CharacterDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ): CharacterDataSource {
+    override suspend fun getCharacters(userId: String, bookId: String): List<CharacterResponse> {
+        return try {
+            val snapshot = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("character")
+                .get()
+                .await()
+
+            snapshot.documents.map { document ->
+                val docId = document.id
+                val data = document.data
+                Log.d("CharacterDataSourceImpl", "data: $data")
+                if (data != null) {
+                    CharacterResponse(
+                        id = docId,
+                        role = data["role"] as? String ?: "",
+                        description = data["description"] as? String ?: "",
+                        name = data["name"] as? String ?: "",
+                    )
+                }
+                else {
+                    throw Exception("data is null")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("BookStorage", "Error: ${e.message}")
+            emptyList()
+        }
+    }
 }
