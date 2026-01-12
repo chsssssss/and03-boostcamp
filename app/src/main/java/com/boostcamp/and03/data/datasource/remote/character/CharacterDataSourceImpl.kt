@@ -68,4 +68,26 @@ class CharacterDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun deleteCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String
+    ) {
+        try {
+            db.collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("character")
+                .document(characterId)
+                .delete()
+                .await()
+
+            Log.d("CharacterDataSourceImpl", "Character deleted: $characterId")
+        } catch (e: Exception) {
+            Log.e("CharacterDataSourceImpl", "Failed to delete character: ${e.message}")
+            throw e
+        }
+    }
 }

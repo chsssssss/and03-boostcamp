@@ -27,6 +27,10 @@ class BookStorageRepositoryImpl @Inject constructor(
         characterDataSource.addCharacter(userId, bookId, character)
     }
 
+    override suspend fun deleteCharacter(userId: String, bookId: String, characterId: String) {
+        characterDataSource.deleteCharacter(userId, bookId, characterId)
+    }
+
     override suspend fun getQuotes(userId: String, bookId: String): List<QuoteResponse> {
         return quoteDataSource.getQuotes(userId, bookId)
     }

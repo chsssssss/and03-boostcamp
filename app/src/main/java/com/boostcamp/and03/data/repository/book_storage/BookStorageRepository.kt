@@ -13,6 +13,8 @@ interface BookStorageRepository {
 
     suspend fun addCharacter(userId: String, bookId: String, character: CharacterRequest)
 
+    suspend fun deleteCharacter(userId: String, bookId: String, characterId: String)
+
     suspend fun getQuotes(userId: String, bookId: String): List<QuoteResponse>
 
     suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest)
