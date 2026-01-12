@@ -9,5 +9,9 @@ class NaverBookSearchRemoteDataSourceImpl @Inject constructor(
 ) : BookSearchRemoteDataSource {
 
     override suspend fun loadBooks(query: String, display: Int, start: Int): NaverBookSearchResponse =
-        naverBookSearchApiService.loadBooks(query = query, display = display, start = start)
+        naverBookSearchApiService.loadBooks(
+            query = query,
+            display = display,
+            start = start
+        )
 }
