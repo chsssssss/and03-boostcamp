@@ -51,6 +51,9 @@
     <string name="book_search_save_failure_text">책 저장에 실패했습니다</string>
 
     <!-- 메모 추가 화면 공용 텍스트 -->
+    <string name="add_memo_title">제목</string>
+    <string name="add_memo_content">내용</string>
+    <string name="add_memo_page_information">페이지 정보</string>
     <string name="add_memo_enter_title_placeholder">메모 제목을 입력하세요</string>
     <string name="add_memo_enter_start_page_placeholder">시작</string>
     <string name="add_memo_enter_end_page_placeholder">끝</string>
