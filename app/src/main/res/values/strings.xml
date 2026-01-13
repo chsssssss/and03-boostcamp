@@ -59,6 +59,7 @@
     <string name="add_memo_enter_end_page_placeholder">끝</string>
     <string name="add_memo_save_button_text">저장하기</string>
     <string name="add_memo_page_notice">종료 페이지를 비워두면 단일 페이지로 저장됩니다.</string>
+    <string name="add_memo_character_count">%1$d/%2$d</string>
 
     <!-- 텍스트 메모 추가 화면 -->
     <string name="add_memo_text_app_bar_title">텍스트 메모 추가</string>
@@ -76,6 +77,6 @@
     <string name="content_description_more_button">더보기 버튼을 눌러 메뉴를 표시합니다</string>
     <string name="content_description_node_item_icon">노드를 나타내는 아이콘입니다</string>
     <string name="content_description_confirm">확인</string>
-    <string name="content_description_save_button">저장 버튼을 눌러 책을 저장합니다</string>
+    <string name="content_description_save_button">저장 버튼을 누릅니다</string>
     <string name="content_description_add_book_button">책을 검색하거나 입력하여 책을 추가합니다</string>
 </resources>
