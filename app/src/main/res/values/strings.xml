@@ -56,7 +56,7 @@
     <string name="add_memo_page_information">페이지 정보</string>
     <string name="add_memo_enter_title_placeholder">메모 제목을 입력하세요</string>
     <string name="add_memo_enter_start_page_placeholder">시작</string>
-    <string name="add_memo_enter_end_page_placeholder">끝</string>
+    <string name="add_memo_enter_end_page_placeholder">종료</string>
     <string name="add_memo_save_button_text">저장하기</string>
     <string name="add_memo_page_notice">종료 페이지를 비워두면 단일 페이지로 표시됩니다</string>
     <string name="add_memo_character_count">%1$d/%2$d</string>
