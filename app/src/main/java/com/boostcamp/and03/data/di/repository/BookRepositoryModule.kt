@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.repository
 
 import com.boostcamp.and03.data.repository.book.BookSearchRepository
 import com.boostcamp.and03.data.repository.book.BookSearchRepositoryImpl

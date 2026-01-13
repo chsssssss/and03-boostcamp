@@ -1,20 +1,22 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
-import jakarta.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+@HiltViewModel
 class BookDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    private val bookRepository: BookStorageRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookDetailUiState())
     val uiState: StateFlow<BookDetailUiState> = _uiState.asStateFlow()

@@ -1,7 +1,9 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.network
 
 import com.boostcamp.and03.BuildConfig
 import com.boostcamp.and03.data.api.AladinBookLookUpApiService
+import com.boostcamp.and03.data.di.qualifier.AladinBookLookUpOkHttpClient
+import com.boostcamp.and03.data.di.qualifier.AladinBookLookUpRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
