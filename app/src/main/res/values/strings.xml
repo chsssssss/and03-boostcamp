@@ -60,6 +60,7 @@
     <string name="add_memo_save_button_text">저장하기</string>
     <string name="add_memo_page_notice">종료 페이지를 비워두면 단일 페이지로 저장됩니다.</string>
     <string name="add_memo_character_count">%1$d/%2$d</string>
+    <string name="add_memo_add_by_image">이미지로 추가</string>
 
     <!-- 텍스트 메모 추가 화면 -->
     <string name="add_memo_text_app_bar_title">텍스트 메모 추가</string>
