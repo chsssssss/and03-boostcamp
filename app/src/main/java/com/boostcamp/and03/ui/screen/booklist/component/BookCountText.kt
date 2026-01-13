@@ -9,7 +9,10 @@ import com.boostcamp.and03.R
 @Composable
 fun BookCountText(count: Int) {
     Text(
-        text = stringResource(R.string.book_count_text, count),
+        text = stringResource(
+            id = R.string.book_count_text,
+            arrayOf(count)
+        ),
         style = MaterialTheme.typography.bodyMedium
     )
 }
