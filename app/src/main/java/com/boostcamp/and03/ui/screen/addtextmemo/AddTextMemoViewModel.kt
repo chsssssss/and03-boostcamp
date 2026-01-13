@@ -22,6 +22,14 @@ class AddTextMemoViewModel @Inject constructor(
         _uiState.update { it.copy(content = content) }
     }
 
+    fun updateStartPage(startPage: String) {
+        _uiState.update { it.copy(startPage = startPage) }
+    }
+
+    fun updateEndPage(endPage: String) {
+        _uiState.update { it.copy(endPage = endPage) }
+    }
+
     fun saveTextMemo() {
         // TODO: 텍스트 메모 저장 기능 구현
     }
