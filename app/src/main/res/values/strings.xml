@@ -20,16 +20,13 @@
     <string name="book_count_text">총 %1$d권의 책</string>
 
     <!-- book detail -->
-    <string name="book_detail_app_bar_title">책 정보</string>
     <string name="character_card_profile_icon_cd">%1$s 프로필</string>
     <string name="memo_card_memo_type_canvas">캔버스</string>
     <string name="memo_card_memo_type_text">텍스트</string>
     <string name="add_btn_cd">추가</string>
     <string name="more_vert_delete">삭제</string>
     <string name="more_vert_edit">수정</string>
-    <string name="book_detail_add_canvas_memo">캔버스 메모 추가</string>
-    <string name="book_detail_add_text_memo">텍스트 메모 추가</string>
-    <string name="book_detail_memo_page_range">p.%1$d~%2$d</string>
+
 
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
@@ -63,7 +60,6 @@
     <string name="content_description_more_button">더보기 버튼을 눌러 메뉴를 표시합니다</string>
     <string name="content_description_node_item_icon">노드를 나타내는 아이콘입니다</string>
     <string name="content_description_confirm">확인</string>
-    <string name="content_description_save_button">저장 버튼을 눌러 책을 저장합니다</string>
     <string name="content_description_add_book_button">책을 검색하거나 입력하여 책을 추가합니다</string>
     <string name="content_description_save_button">저장하기</string>
 
