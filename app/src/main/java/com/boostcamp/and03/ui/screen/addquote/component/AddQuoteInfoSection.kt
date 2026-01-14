@@ -45,8 +45,7 @@ fun AddQuoteInfoSection() {
         Column {
             Text(
                 text = stringResource(R.string.add_quote_info_title),
-                style = And03Theme.typography.labelLarge
-                ,
+                style = And03Theme.typography.labelLarge,
                 color = And03Theme.colors.primary
             )
             Text(
