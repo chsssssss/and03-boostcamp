@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -57,6 +59,7 @@ fun BookSearchRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchResults = viewModel.pagingBooksFlow.collectAsLazyPagingItems()
+    val totalResultCount by viewModel.totalResultCountFlow.collectAsStateWithLifecycle(0)
 
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
@@ -83,6 +86,8 @@ private fun BookSearchScreen(
     modifier: Modifier = Modifier
 ) {
     val searchTextState = remember { TextFieldState(uiState.query) }
+    val isQueryEmpty = uiState.query.isBlank()
+    val refreshState = searchResults.loadState.refresh
 
     LaunchedEffect(Unit) {
         snapshotFlow { searchTextState.text.toString() }
@@ -133,47 +138,46 @@ private fun BookSearchScreen(
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
 
             when {
-                uiState.query.isBlank() -> {
-                    BookSearchEmptySection(
+                isQueryEmpty -> {
+                    BookSearchResultEmptySection(
                         message = stringResource(R.string.book_search_empty_before_query),
-                        onManualAddClick = { onAction(BookSearchAction.OnManualAddClick) }
+                        buttonText = stringResource(R.string.book_search_manual_add_button_text),
+                        onButtonClick = { onAction(BookSearchAction.OnManualAddClick) }
                     )
                 }
 
-                searchResults.itemCount == 0 -> {
-                    BookSearchEmptySection(
+                refreshState is LoadState.Loading -> {
+                    BookSearchResultEmptySection(
+                        message = "",
+                        buttonText = "",
+                        onButtonClick = {},
+                        isLoading = true
+                    )
+                }
+
+                refreshState is LoadState.Error -> {
+                    BookSearchResultEmptySection(
+                        message = stringResource(R.string.book_search_error_text),
+                        buttonText = stringResource(R.string.book_search_retry_button_text),
+                        onButtonClick = { searchResults.retry() }
+                    )
+                }
+
+                refreshState is LoadState.NotLoading && searchResults.itemCount == 0 -> {
+                    BookSearchResultEmptySection(
                         message = stringResource(R.string.book_search_empty_after_query),
-                        onManualAddClick = { onAction(BookSearchAction.OnManualAddClick) }
+                        buttonText = stringResource(R.string.book_search_manual_add_button_text),
+                        onButtonClick = { onAction(BookSearchAction.OnManualAddClick) }
                     )
                 }
 
                 else -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-                    ) {
-                        SearchResultCountText(count = uiState.totalResultCount)
-
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-                        ) {
-                            items(
-                                count = searchResults.itemCount,
-                                key = searchResults.itemKey { it.isbn }
-                            ) { index ->
-                                val book = searchResults[index] ?: return@items
-                                SearchResultItem(
-                                    thumbnail = book.thumbnail,
-                                    title = book.title,
-                                    authors = book.authors,
-                                    publisher = book.publisher,
-                                    isSelected = book.isbn == uiState.selectedBook?.isbn,
-                                    onClick = { onAction(BookSearchAction.OnItemClick(item = book)) }
-                                )
-                            }
-                        }
-                    }
+                    BookSearchResultListSection(
+                        searchResults = searchResults,
+                        selectedBookISBN = uiState.selectedBookId,
+                        totalResultCount = uiState.totalResultCount,
+                        onItemClick = { onAction(BookSearchAction.OnItemClick(item = it)) }
+                    )
                 }
             }
         }
@@ -181,28 +185,72 @@ private fun BookSearchScreen(
 }
 
 @Composable
-private fun BookSearchEmptySection(
-    message: String,
-    onManualAddClick: () -> Unit,
+private fun BookSearchResultListSection(
+    searchResults: LazyPagingItems<BookSearchResultUiModel>,
+    selectedBookISBN: String?,
+    totalResultCount: Int,
+    onItemClick: (BookSearchResultUiModel) -> Unit,
     modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = And03Padding.PADDING_L),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+    ) {
+        SearchResultCountText(count = totalResultCount)
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+        ) {
+            items(
+                count = searchResults.itemCount,
+                key = searchResults.itemKey { it.isbn }
+            ) { index ->
+                val book = searchResults[index] ?: return@items
+                SearchResultItem(
+                    thumbnail = book.thumbnail,
+                    title = book.title,
+                    authors = book.authors,
+                    publisher = book.publisher,
+                    isSelected = book.isbn == selectedBookISBN,
+                    onClick = { onItemClick(book) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BookSearchResultEmptySection(
+    message: String,
+    buttonText: String,
+    onButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = message,
-            style = And03Theme.typography.bodyLarge,
-            color = And03Theme.colors.onSurfaceVariant
-        )
+        if (isLoading) {
+            CircularProgressIndicator()
+        } else {
+            Text(
+                text = message,
+                style = And03Theme.typography.bodyLarge,
+                color = And03Theme.colors.onSurfaceVariant
+            )
 
-        Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
-        And03Button(
-            text = stringResource(R.string.book_search_button_text),
-            onClick = onManualAddClick
-        )
+            And03Button(
+                text = buttonText,
+                onClick = onButtonClick
+            )
+        }
     }
 }
 
@@ -276,7 +324,7 @@ private fun BookSearchScreenPreview() {
 private fun BookSearchScreenEmptyBeforeQueryPreview() {
     val uiState = BookSearchUiState(
         query = "",
-        selectedBook = null
+        selectedBookId = null
     )
 
     val pagingItems = flowOf(

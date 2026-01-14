@@ -1,6 +1,6 @@
 package com.boostcamp.and03.data.api
 
-object NaverBookSearchApiConstants {
+object BookSearchApiConstants {
     const val START_DEFAULT = 1
     const val START_MAX = 1000
     const val SIZE_DEFAULT = 10

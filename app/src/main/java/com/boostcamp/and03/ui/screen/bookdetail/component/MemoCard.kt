@@ -2,9 +2,18 @@ package com.boostcamp.and03.ui.screen.bookdetail.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,15 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.LabelChip
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
-import com.boostcamp.and03.ui.theme.*
+import com.boostcamp.and03.ui.theme.And03BorderWidth
+import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Radius
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun MemoCard(
@@ -44,27 +58,47 @@ fun MemoCard(
             .clickable(
                 onClick = onClick
             )
-            .padding(And03Padding.PADDING_M)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top
         ) {
-            MemoTypeChip(type = type)
+            Row(
+                modifier = Modifier.padding(And03Padding.PADDING_2XL)
+            ) {
+                MemoTypeChip(type = type)
 
-            Spacer(modifier = Modifier.width(And03Padding.PADDING_S))
+                Spacer(modifier = Modifier.width(And03Padding.PADDING_S))
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.weight(1f)
-            )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
 
-            LabelChip(
-                content = {
-                    Text(
-                        text = pageLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = And03Theme.colors.onSecondaryContainer
+            DropdownMenuContainer(
+                trigger = { onClick ->
+                    IconButton(onClick = onClick) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
+                            contentDescription = stringResource(R.string.cd_more_options)
+                        )
+                    }
+                },
+                menuContent = { closeMenu ->
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.more_vert_edit)) },
+                        onClick = {
+                            closeMenu()
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.more_vert_delete)) },
+                        onClick = {
+                            closeMenu()
+                        }
                     )
                 }
             )
@@ -78,6 +112,8 @@ fun MemoCard(
 
             MemoType.TEXT -> {
                 Text(
+                    modifier = Modifier
+                        .padding(horizontal = And03Padding.PADDING_2XL),
                     text = contentPreview,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 3,
@@ -88,16 +124,37 @@ fun MemoCard(
 
         Spacer(modifier = Modifier.height(And03Padding.PADDING_S))
 
-        /** 날짜 */
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = And03Padding.PADDING_2XL,
+                    end = And03Padding.PADDING_2XL,
+                    bottom = And03Padding.PADDING_2XL
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = date,
-                style = MaterialTheme.typography.labelSmall,
-                color = And03Theme.colors.onSurfaceVariant
+            LabelChip(
+                content = {
+                    Text(
+                        text = pageLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = And03Theme.colors.onSecondaryContainer
+                    )
+                }
             )
+
+            /** 날짜 */
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = date,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = And03Theme.colors.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -125,6 +182,7 @@ fun MemoTypeChip(type: MemoType) {
         }
     }
 
+
     LabelChip(backgroundColor = backgroundColor) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -142,6 +200,7 @@ fun MemoTypeChip(type: MemoType) {
             )
         }
     }
+
 }
 
 

@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.core
 
 import dagger.Module
 import dagger.Provides

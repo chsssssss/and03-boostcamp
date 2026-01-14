@@ -1,7 +1,9 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.network
 
 import com.boostcamp.and03.BuildConfig
-import com.boostcamp.and03.data.api.NaverBookSearchApiService
+import com.boostcamp.and03.data.api.BookSearchApiService
+import com.boostcamp.and03.data.di.qualifier.NaverBookSearchOkHttpClient
+import com.boostcamp.and03.data.di.qualifier.NaverBookSearchRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -12,7 +14,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Singleton
-import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -53,6 +54,6 @@ object NaverBookSearchNetworkModule {
     @Singleton
     fun provideNaverBookSearchService(
         @NaverBookSearchRetrofit retrofit: Retrofit
-    ): NaverBookSearchApiService =
-        retrofit.create(NaverBookSearchApiService::class.java)
+    ): BookSearchApiService =
+        retrofit.create(BookSearchApiService::class.java)
 }

@@ -16,9 +16,10 @@ fun NavGraphBuilder.bookDetailNavGraph(
 ) {
     composable<Route.BookDetail> { backStackEntry ->
         val route = backStackEntry.toRoute<Route.BookDetail>()
+
         BookDetailRoute(
+            bookId = route.bookId,
             navigateToBack = navigateToBack,
-            isbn = route.isbn,
             navigateToCanvas = navigateToCanvas
         )
     }

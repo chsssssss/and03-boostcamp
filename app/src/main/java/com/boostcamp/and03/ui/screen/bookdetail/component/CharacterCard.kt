@@ -67,16 +67,19 @@ fun CharacterCard(
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
             .clickable(onClick = onClick)
-            .padding(And03Padding.PADDING_M)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(And03Padding.PADDING_M)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.padding(
+                    start = And03Padding.PADDING_XL,
+                ),
+                verticalAlignment = Alignment.Top
             ) {
                 // 프로필 아이콘
                 IconBadge(
+                    modifier = Modifier.padding(top = And03Padding.PADDING_XL),
                     iconResId = R.drawable.ic_person_filled,
                     iconColor = iconColor,
                     contentDescription = stringResource(
@@ -90,7 +93,9 @@ fun CharacterCard(
 
                 // 이름 + 역할
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = And03Padding.PADDING_XL)
                 ) {
                     Text(
                         text = name,
@@ -141,6 +146,10 @@ fun CharacterCard(
 
             // 설명
             Text(
+                modifier = Modifier.padding(
+                    start = And03Padding.PADDING_XL,
+                    bottom = And03Padding.PADDING_XL
+                ),
                 text = description,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color(0xFF616161)

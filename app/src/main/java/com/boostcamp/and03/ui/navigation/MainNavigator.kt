@@ -38,7 +38,7 @@ class MainNavigator(
 
     fun navigateToBookDetail(book: BookUiModel) {
         navController.navigate(
-            Route.BookDetail(isbn = book.isbn)
+            Route.BookDetail(bookId = book.id)
         )
     }
 

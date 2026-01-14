@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.boostcamp.and03.data.repository.book.BookRepository
+import com.boostcamp.and03.data.repository.book.BookSearchRepository
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchAction
-import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchEvent
+import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,8 +23,8 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookSearchViewModel @Inject constructor(
-    private val bookRepository: BookRepository
+    private val bookSearchRepository: BookSearchRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookSearchUiState())
     val uiState = _uiState.asStateFlow()
@@ -49,32 +49,55 @@ class BookSearchViewModel @Inject constructor(
             is BookSearchAction.OnQueryChange -> _uiState.update { it.copy(query = action.query) }
 
             is BookSearchAction.OnItemClick -> _uiState.update {
-                val isSelected = it.selectedBook?.isbn == action.item.isbn
+                val isSelected = it.selectedBookId == action.item.isbn
 
-                it.copy(selectedBook = if (isSelected) null else action.item)
+                it.copy(selectedBookId = if (isSelected) null else action.item.isbn)
             }
 
             BookSearchAction.OnSaveClick -> saveItem()
         }
     }
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val pagingBooksFlow: Flow<PagingData<BookSearchResultUiModel>> = _uiState
+    @OptIn(FlowPreview::class)
+    private val queryFlow: Flow<String> = _uiState
         .map { it.query }
         .debounce(300)
+        .map { it.trim() }
         .distinctUntilChanged()
-        .filter { it.isNotBlank() }
-        .onEach { query ->
-            val total = bookRepository.loadTotalResultCount(query)
-            _uiState.update  { it.copy(totalResultCount = total) }
-        }
-        .flatMapLatest { query ->
-            bookRepository.loadBooksPagingFlow(query)
-                .map { pagingData ->
-                    pagingData.map { it.toUiModel() }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val pagingBooksFlow: Flow<PagingData<BookSearchResultUiModel>> =
+        queryFlow
+            .filter { it.isNotBlank() }
+            .flatMapLatest { query ->
+                bookSearchRepository.loadSearchResults(query)
+                    .map { pagingData -> pagingData.map { it.toUiModel() } }
+            }
+            .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val totalResultCountFlow: Flow<Int> =
+        queryFlow
+            .filter { it.isNotBlank() }
+            .flatMapLatest { query ->
+                flow { emit(bookSearchRepository.loadTotalSearchResultCount(query)) }
+            }
+
+    fun changeQuery(query: String) {
+        _uiState.update { it.copy(query = query) }
+    }
+
+    fun clickItem(item: BookSearchResultUiModel) {
+        _uiState.update {
+            it.copy(
+                selectedBookId = if (it.selectedBookId == item.isbn) {
+                    null
+                } else {
+                    item.isbn
                 }
+            )
         }
-        .cachedIn(viewModelScope)
+    }
 
     // 임시 userId 사용
     private fun saveItem(userId: String = "O12OmGoVY8FPYFElNjKN") {
@@ -85,10 +108,11 @@ class BookSearchViewModel @Inject constructor(
             _uiState.update { it.copy(isSaving = true) }
 
             try {
-                val lookUpResponse = bookRepository.loadBookPage(itemId = selectedSearchResult.isbn)
+                val lookUpResponse = bookSearchRepository.loadBookPage(itemId = selectedSearchResult.isbn)
                 val totalPage = lookUpResponse.item.first().bookInfo.itemPage
 
                 val book = BookUiModel(
+                    id = "", // TODO: id 제거, 따로 두지 않아도 생성됨
                     title = selectedSearchResult.title,
                     authors = selectedSearchResult.authors,
                     publisher = selectedSearchResult.publisher,
@@ -97,14 +121,14 @@ class BookSearchViewModel @Inject constructor(
                     totalPage = totalPage
                 )
 
-                bookRepository.saveBook(userId, book)
+                bookSearchRepository.saveBook(userId, book)
 
                 _event.trySend(BookSearchEvent.NavigateBack)
             } finally {
                 _uiState.update {
                     it.copy(
                         isSaving = false,
-                        selectedBook = null
+                        selectedBookId = null
                     )
                 }
             }

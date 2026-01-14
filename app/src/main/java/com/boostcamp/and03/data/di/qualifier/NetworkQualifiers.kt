@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.qualifier
 
 import javax.inject.Qualifier
 
@@ -12,8 +12,8 @@ annotation class NaverBookSearchOkHttpClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AladinBookLookUpRetrofit
+annotation class BookDetailRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AladinBookLookUpOkHttpClient
+annotation class BookDetailOkHttpClient
