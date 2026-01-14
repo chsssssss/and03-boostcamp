@@ -94,33 +94,29 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    fun loadCharacters(
+    private suspend fun loadCharacters(
         userId: String = "O12OmGoVY8FPYFElNjKN",
         bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
     ) {
-        viewModelScope.launch {
-            val result = bookRepository.getCharacters(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    characters = result.map { character -> character.toUiModel() }
-                        .toPersistentList()
-                )
-            }
+        val result = bookRepository.getCharacters(userId, bookId)
+        _uiState.update {
+            it.copy(
+                characters = result.map { character -> character.toUiModel() }
+                    .toPersistentList()
+            )
         }
     }
 
-    fun loadQuotes(
+    private suspend fun loadQuotes(
         userId: String = "O12OmGoVY8FPYFElNjKN",
         bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
     ) {
-        viewModelScope.launch {
             val result = bookRepository.getQuotes(userId, bookId)
             _uiState.update {
                 it.copy(
                     quotes = result.map { quote -> quote.toUiModel() }.toPersistentList()
                 )
             }
-        }
     }
 //
 //    fun addCharacter(
