@@ -24,24 +24,19 @@ class CharacterDataSourceImpl @Inject constructor(
                 .get()
                 .await()
 
-            snapshot.documents.map { document ->
-                val docId = document.id
-                val data = document.data
-                Log.d("CharacterDataSourceImpl", "data: $data")
-                if (data != null) {
+            snapshot.documents.mapNotNull { document ->
+                document.data?.let { data ->
+                    Log.d("CharacterDataSourceImpl", "data: $data")
                     CharacterResponse(
-                        id = docId,
+                        id = document.id,
                         role = data["role"] as? String ?: "",
                         description = data["description"] as? String ?: "",
                         name = data["name"] as? String ?: "",
                     )
                 }
-                else {
-                    throw Exception("data is null")
-                }
             }
         } catch (e: Exception) {
-            Log.e("BookStorage", "Error: ${e.message}")
+            Log.e("CharacterDataSourceImpl", "Error: ${e.message}")
             emptyList()
         }
     }
