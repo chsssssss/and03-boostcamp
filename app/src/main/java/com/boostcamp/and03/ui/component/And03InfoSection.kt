@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addquote.component
+package com.boostcamp.and03.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,7 +17,7 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.*
 
 @Composable
-fun AddQuoteInfoSection() {
+fun And03InfoSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,6 +61,6 @@ fun AddQuoteInfoSection() {
 @Composable
 private fun AddQuoteInfoSectionPreview() {
     And03Theme {
-        AddQuoteInfoSection()
+        And03InfoSection()
     }
 }
