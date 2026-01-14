@@ -2,9 +2,11 @@ package com.boostcamp.and03.data.repository.book_storage
 
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
+import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
+import com.boostcamp.and03.data.model.response.memo.MemoResponse
 
 interface BookStorageRepository {
     suspend fun getBooks(userId: String): List<BookStorageResponse>
@@ -20,5 +22,9 @@ interface BookStorageRepository {
     suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest)
 
     suspend fun deleteQuote(userId: String, bookId: String, quoteId: String)
+
+    suspend fun getMemos(userId: String, bookId: String): List<MemoResponse>
+
+    suspend fun addTextMemo(userId: String, bookId: String, memo: TextMemoRequest)
 
 }

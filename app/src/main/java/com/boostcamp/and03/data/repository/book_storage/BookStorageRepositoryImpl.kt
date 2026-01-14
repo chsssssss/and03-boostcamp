@@ -2,18 +2,22 @@ package com.boostcamp.and03.data.repository.book_storage
 
 import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSource
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
+import com.boostcamp.and03.data.datasource.remote.memo.MemoDataSource
 import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
+import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
+import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import javax.inject.Inject
 
 class BookStorageRepositoryImpl @Inject constructor(
     private val bookStorageDataSource: BookStorageDataSource,
     private val characterDataSource: CharacterDataSource,
-    private val quoteDataSource: QuoteDataSource
+    private val quoteDataSource: QuoteDataSource,
+    private val memoDataSource: MemoDataSource
 ) : BookStorageRepository {
     override suspend fun getBooks(userId: String): List<BookStorageResponse> {
         return bookStorageDataSource.getBooks(userId)
@@ -65,5 +69,11 @@ class BookStorageRepositoryImpl @Inject constructor(
         quoteDataSource.deleteQuote(userId, bookId, quoteId)
     }
 
+    override suspend fun getMemos(userId: String, bookId: String): List<MemoResponse> {
+        return memoDataSource.getMemos(userId, bookId)
+    }
 
+    override suspend fun addTextMemo(userId: String, bookId: String, memo: TextMemoRequest) {
+        memoDataSource.addTextMemo(userId, bookId, memo)
+    }
 }
