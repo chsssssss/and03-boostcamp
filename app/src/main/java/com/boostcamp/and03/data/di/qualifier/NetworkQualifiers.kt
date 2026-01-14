@@ -12,8 +12,8 @@ annotation class NaverBookSearchOkHttpClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AladinBookLookUpRetrofit
+annotation class BookDetailRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AladinBookLookUpOkHttpClient
+annotation class BookDetailOkHttpClient

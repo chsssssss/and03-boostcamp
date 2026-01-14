@@ -3,22 +3,22 @@ package com.boostcamp.and03.data.repository.book
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.boostcamp.and03.data.api.NaverBookSearchApiConstants
+import com.boostcamp.and03.data.api.BookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
-import com.boostcamp.and03.data.datasource.remote.search.aladin.AladinBookLookUpRemoteDataSource
-import com.boostcamp.and03.data.datasource.remote.search.naver.NaverBookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.aladin.BookDetailRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.naver.BookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import com.boostcamp.and03.data.model.response.BookItem
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BookSearchRepositoryImpl @Inject constructor(
-    private val naverBookSearchRemoteDataSource: NaverBookSearchRemoteDataSource,
-    private val aladinBookLookUpRemoteDataSource: AladinBookLookUpRemoteDataSource
-): BookSearchRepository {
+    private val bookSearchRemoteDataSource: BookSearchRemoteDataSource,
+    private val bookDetailRemoteDataSource: BookDetailRemoteDataSource
+) : BookSearchRepository {
 
     override suspend fun loadTotalSearchResultCount(query: String): Int {
-        val response = naverBookSearchRemoteDataSource.loadBooks(
+        val response = bookSearchRemoteDataSource.loadBooks(
             query = query,
             display = 1,
             start = 1
@@ -29,12 +29,12 @@ class BookSearchRepositoryImpl @Inject constructor(
     override fun loadSearchResults(query: String): Flow<PagingData<BookItem>> {
         return Pager(
             config = PagingConfig(
-                pageSize = NaverBookSearchApiConstants.SIZE_DEFAULT,
+                pageSize = BookSearchApiConstants.SIZE_DEFAULT,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
                 NaverBookSearchPagingSource(
-                    remoteDataSource = naverBookSearchRemoteDataSource,
+                    remoteDataSource = bookSearchRemoteDataSource,
                     query = query
                 )
             }
@@ -44,7 +44,7 @@ class BookSearchRepositoryImpl @Inject constructor(
     override suspend fun loadBookPage(
         itemId: String
     ): AladinBookLookUpResponse {
-        return aladinBookLookUpRemoteDataSource.loadBookPage(
+        return bookDetailRemoteDataSource.loadBookPage(
             itemId = itemId
         )
     }
