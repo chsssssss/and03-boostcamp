@@ -11,7 +11,7 @@ fun BookCountText(count: Int) {
     Text(
         text = stringResource(
             id = R.string.book_count_text,
-            arrayOf(count)
+            count
         ),
         style = MaterialTheme.typography.bodyMedium
     )

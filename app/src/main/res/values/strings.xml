@@ -4,6 +4,7 @@
     <!--  common  -->
     <string name="cd_more_options">더보기 옵션</string>
     <string name="page_indicator">p.%1$d</string>
+    <string name="retry_btn_txt">다시 시도</string>
 
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
@@ -38,11 +39,6 @@
     <!-- 책 목록 화면 -->
     <string name="book_list_title">책 목록</string>
 
-    <!-- 책 상세 화면 -->
-    <string name="book_detail_app_bar_title">책 정보</string>
-    <string name="book_detail_add_canvas_memo">캔버스 메모 추가</string>
-    <string name="book_detail_add_text_memo">택스트 메모 추가</string>
-    <string name="book_detail_memo_page_range">p.%1$d~%2$d</string>
 
     <!-- 책 검색 화면 -->
     <string name="book_search_title">책 추가</string>

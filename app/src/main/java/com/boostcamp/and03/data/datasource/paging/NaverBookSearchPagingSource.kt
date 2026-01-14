@@ -2,7 +2,7 @@ package com.boostcamp.and03.data.datasource.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.boostcamp.and03.data.datasource.remote.BookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.naver.BookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.response.BookItem
 
 class NaverBookSearchPagingSource(

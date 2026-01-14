@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +61,8 @@ fun BookDetailRoute(
 
     BookDetailScreen(
         uiState = uiState,
-        navigateToBack = navigateToBack
+        navigateToBack = navigateToBack,
+        onRetryClick = { viewModel.loadAllData() }
     )
 }
 
@@ -65,6 +70,7 @@ fun BookDetailRoute(
 private fun BookDetailScreen(
     uiState: BookDetailUiState,
     navigateToBack: () -> Unit,
+    onRetryClick: () -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -91,43 +97,68 @@ private fun BookDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            BookInfoSection(
-                thumbnail = uiState.thumbnail,
-                title = uiState.title,
-                author = uiState.author,
-                publisher = uiState.publisher
-            )
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (uiState.errorMessage != null) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = uiState.errorMessage)
+                        Button(onClick = onRetryClick) {
+                            Text(stringResource(R.string.retry_btn_txt))
+                        }
+                    }
+                }
+            } else {
+                BookInfoSection(
+                    thumbnail = uiState.thumbnail,
+                    title = uiState.title,
+                    author = uiState.author,
+                    publisher = uiState.publisher
+                )
 
-            SecondaryTabRow(
-                selectedTabIndex = selectedTabIndex,
-                containerColor = And03Theme.colors.surface,
-                contentColor = And03Theme.colors.onSurface,
-                indicator = {
-                    TabRowDefaults.SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
-                        color = And03Theme.colors.primary
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                tabs.forEachIndexed { index, tab ->
-                    androidx.compose.material3.Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
-                        text = { Text(text = tab.title) }
+                SecondaryTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    containerColor = And03Theme.colors.surface,
+                    contentColor = And03Theme.colors.onSurface,
+                    indicator = {
+                        TabRowDefaults.SecondaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
+                            color = And03Theme.colors.primary
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    tabs.forEachIndexed { index, tab ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index },
+                            text = { Text(text = tab.title) }
+                        )
+                    }
+                }
+
+                when (tabs[selectedTabIndex]) {
+                    BookDetailTab.CHARACTER -> CharacterTab(uiState)
+                    BookDetailTab.QUOTE -> QuoteTab(uiState)
+                    BookDetailTab.MEMO -> MemoTab(
+                        uiState = uiState,
+                        onClickAddCanvas = { },
+                        onClickAddText = { }
                     )
                 }
             }
 
-            when (tabs[selectedTabIndex]) {
-                BookDetailTab.CHARACTER -> CharacterTab(uiState)
-                BookDetailTab.QUOTE -> QuoteTab(uiState)
-                BookDetailTab.MEMO -> MemoTab(
-                    uiState = uiState,
-                    onClickAddCanvas = { },
-                    onClickAddText = { }
-                )
-            }
         }
     }
 }
@@ -292,7 +323,8 @@ fun BooklistScreenPreview() {
     And03Theme {
         BookDetailScreen(
             uiState = previewState,
-            navigateToBack = {}
+            navigateToBack = {},
+            onRetryClick = {}
         )
     }
 }
