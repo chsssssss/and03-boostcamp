@@ -24,24 +24,19 @@ class QuoteDataSourceImpl @Inject constructor(
                 .get()
                 .await()
 
-            snapshot.documents.map { document ->
-                val docId = document.id
-                val data = document.data
-                Log.d("QuoteDataSourceImpl", "data: $data")
-                if (data != null) {
+            snapshot.documents.mapNotNull { document ->
+                document.data?.let { data ->
+                    Log.d("QuoteDataSourceImpl", "data: $data")
                     QuoteResponse(
-                        id = docId,
+                        id = document.id,
                         content = data["content"] as? String ?: "",
-                        page = data["page"] as? Int ?: 0,
+                        page = (data["page"] as? Long)?.toInt() ?: 0,
                         createdAt = data["createdAt"] as? String ?: "",
                     )
                 }
-                else {
-                    throw Exception("data is null")
-                }
             }
         } catch (e: Exception) {
-            Log.e("BookStorage", "Error: ${e.message}")
+            Log.e("QuoteDataSourceImpl", "Error: ${e.message}")
             emptyList()
         }
     }
