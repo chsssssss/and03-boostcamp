@@ -1,6 +1,12 @@
 package com.boostcamp.and03.ui.screen.addquote.component
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Icon
@@ -12,7 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.theme.*
+import com.boostcamp.and03.ui.theme.And03ComponentSize
+import com.boostcamp.and03.ui.theme.And03IconSize
+import com.boostcamp.and03.ui.theme.And03Spacing
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun AddQuoteInputSection() {
@@ -99,9 +108,7 @@ private fun PageSection() {
         value = "",
         onValueChange = {},
         modifier = Modifier.fillMaxWidth(),
-        placeholder = {
-            Text(stringResource(R.string.add_quote_page_hint))
-        },
+        placeholder = { Text(stringResource(R.string.add_quote_page_hint))},
         shape = And03Theme.shapes.defaultCorner
     )
 }
