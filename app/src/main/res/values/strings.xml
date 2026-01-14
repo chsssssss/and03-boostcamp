@@ -20,16 +20,13 @@
     <string name="book_count_text">총 %1$d권의 책</string>
 
     <!-- book detail -->
-    <string name="book_detail_app_bar_title">책 정보</string>
     <string name="character_card_profile_icon_cd">%1$s 프로필</string>
     <string name="memo_card_memo_type_canvas">캔버스</string>
     <string name="memo_card_memo_type_text">텍스트</string>
     <string name="add_btn_cd">추가</string>
     <string name="more_vert_delete">삭제</string>
     <string name="more_vert_edit">수정</string>
-    <string name="book_detail_add_canvas_memo">캔버스 메모 추가</string>
-    <string name="book_detail_add_text_memo">텍스트 메모 추가</string>
-    <string name="book_detail_memo_page_range">p.%1$d~%2$d</string>
+
 
     <!-- OCR 바텀 시트 문자열 -->
     <string name="ocr_bottom_sheet_import_text">텍스트 가져오기</string>
@@ -54,6 +51,7 @@
     <string name="book_search_manual_add_button_text">직접 추가</string>
     <string name="book_search_retry_button_text">다시 시도</string>
     <string name="book_search_error_text">에러가 발생했어요.</string>
+    <string name="book_search_result_count_text">검색 결과 %1$d건</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
@@ -63,6 +61,22 @@
     <string name="content_description_more_button">더보기 버튼을 눌러 메뉴를 표시합니다</string>
     <string name="content_description_node_item_icon">노드를 나타내는 아이콘입니다</string>
     <string name="content_description_confirm">확인</string>
-    <string name="content_description_save_button">저장 버튼을 눌러 책을 저장합니다</string>
     <string name="content_description_add_book_button">책을 검색하거나 입력하여 책을 추가합니다</string>
+    <string name="content_description_save_button">저장하기</string>
+
+    <!-- Add Quote -->
+    <string name="add_quote_title">인상 깊은 문장 추가</string>
+
+    <string name="add_quote_info_title">인상 깊은 문장을 기록해보세요</string>
+    <string name="add_quote_info_description">책이나 영화, 일상에서 마음에 든 문장을 저장할 수 있습니다.</string>
+
+    <string name="add_quote_sentence_label">문장</string>
+    <string name="add_quote_sentence_hint">텍스트를 입력하세요.</string>
+    <string name="add_quote_add_by_image">이미지로 추가</string>
+
+    <string name="add_quote_text_count">%1$d/%2$d</string>
+
+    <string name="add_quote_page_label">페이지</string>
+    <string name="add_quote_page_hint">페이지 번호를 입력하세요</string>
+
 </resources>
