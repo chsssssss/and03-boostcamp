@@ -14,29 +14,47 @@ class BookStorageRepositoryImpl @Inject constructor(
     private val bookStorageDataSource: BookStorageDataSource,
     private val characterDataSource: CharacterDataSource,
     private val quoteDataSource: QuoteDataSource
-): BookStorageRepository {
+) : BookStorageRepository {
     override suspend fun getBooks(userId: String): List<BookStorageResponse> {
         return bookStorageDataSource.getBooks(userId)
     }
 
-    override suspend fun getCharacters(userId: String, bookId: String): List<CharacterResponse> {
+    override suspend fun getCharacters(
+        userId: String,
+        bookId: String
+    ): List<CharacterResponse> {
         return characterDataSource.getCharacters(userId, bookId)
     }
 
-    override suspend fun addCharacter(userId: String, bookId: String, character: CharacterRequest) {
+    override suspend fun addCharacter(
+        userId: String,
+        bookId: String,
+        character: CharacterRequest
+    ) {
         characterDataSource.addCharacter(userId, bookId, character)
     }
 
-    override suspend fun deleteCharacter(userId: String, bookId: String, characterId: String) {
+    override suspend fun deleteCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String
+    ) {
         characterDataSource.deleteCharacter(userId, bookId, characterId)
     }
 
-    override suspend fun getQuotes(userId: String, bookId: String): List<QuoteResponse> {
+    override suspend fun getQuotes(
+        userId: String,
+        bookId: String
+    ): List<QuoteResponse> {
         return quoteDataSource.getQuotes(userId, bookId)
     }
 
-    override suspend fun addQuote(userId: String, bookId: String, quote: QuoteRequest) {
-        return quoteDataSource.addQuote(userId, bookId, quote)
+    override suspend fun addQuote(
+        userId: String,
+        bookId: String,
+        quote: QuoteRequest
+    ) {
+        quoteDataSource.addQuote(userId, bookId, quote)
     }
 
     override suspend fun deleteQuote(
@@ -44,7 +62,7 @@ class BookStorageRepositoryImpl @Inject constructor(
         bookId: String,
         quoteId: String
     ) {
-        return quoteDataSource.deleteQuote(userId, bookId, quoteId)
+        quoteDataSource.deleteQuote(userId, bookId, quoteId)
     }
 
 
