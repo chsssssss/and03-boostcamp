@@ -7,8 +7,7 @@ interface CharacterDataSource {
     suspend fun getCharacters(
         userId: String,
         bookId: String
-    )
-            : List<CharacterResponse>
+    ): List<CharacterResponse>
 
     suspend fun addCharacter(
         userId: String,
