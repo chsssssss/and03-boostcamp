@@ -13,5 +13,7 @@ data class BookDetailUiState(
     val publisher: String = "",
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
-    val memos: ImmutableList<MemoUiModel> = persistentListOf()
+    val memos: ImmutableList<MemoUiModel> = persistentListOf(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 )

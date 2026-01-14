@@ -1,13 +1,11 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.and03.data.model.request.CharacterRequest
-import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
-import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -28,8 +26,7 @@ class BookDetailViewModel @Inject constructor(
 
     init {
         initPreviewData()
-        loadCharacters()
-        loadQuotes()
+        loadAllData()
     }
 
     private fun initPreviewData() {
@@ -79,18 +76,43 @@ class BookDetailViewModel @Inject constructor(
         )
     }
 
-    fun loadCharacters(userId: String = "O12OmGoVY8FPYFElNjKN", bookId: String = "YkFyRg6G0v2Us6b3V5Tm") {
+    fun loadAllData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
+            try {
+                loadCharacters()
+                loadQuotes()
+                _uiState.update { it.copy(isLoading = false) }
+                throw Exception("테스트용")
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
+                }
+                Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
+            }
+        }
+    }
+
+    fun loadCharacters(
+        userId: String = "O12OmGoVY8FPYFElNjKN",
+        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
+    ) {
         viewModelScope.launch {
             val result = bookRepository.getCharacters(userId, bookId)
             _uiState.update {
                 it.copy(
-                    characters = result.map { character -> character.toUiModel() }.toPersistentList()
+                    characters = result.map { character -> character.toUiModel() }
+                        .toPersistentList()
                 )
             }
         }
     }
 
-    fun loadQuotes(userId: String = "O12OmGoVY8FPYFElNjKN", bookId: String = "YkFyRg6G0v2Us6b3V5Tm") {
+    fun loadQuotes(
+        userId: String = "O12OmGoVY8FPYFElNjKN",
+        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
+    ) {
         viewModelScope.launch {
             val result = bookRepository.getQuotes(userId, bookId)
             _uiState.update {
