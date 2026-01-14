@@ -38,7 +38,7 @@ import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
-import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
+import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
