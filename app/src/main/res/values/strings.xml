@@ -51,6 +51,7 @@
     <string name="book_search_manual_add_button_text">직접 추가</string>
     <string name="book_search_retry_button_text">다시 시도</string>
     <string name="book_search_error_text">에러가 발생했어요.</string>
+    <string name="book_search_result_count_text">검색 결과 %1$d건</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
