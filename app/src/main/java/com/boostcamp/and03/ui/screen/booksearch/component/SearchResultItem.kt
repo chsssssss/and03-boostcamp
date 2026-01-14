@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.component
+package com.boostcamp.and03.ui.screen.booksearch.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
