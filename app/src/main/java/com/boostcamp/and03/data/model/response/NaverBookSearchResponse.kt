@@ -7,7 +7,7 @@ data class NaverBookSearchResponse(
     val total: Int,
     val start: Int,
     val display: Int,
-    val items: List<NaverBookItem>
+    val items: List<BookItem>
 ) {
     val hasNext: Boolean
         get() = start + display <= total

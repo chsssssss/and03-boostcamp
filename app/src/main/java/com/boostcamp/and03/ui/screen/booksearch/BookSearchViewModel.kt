@@ -1,11 +1,12 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
-import com.boostcamp.and03.data.repository.book.BookRepository
+import com.boostcamp.and03.data.repository.book.BookSearchRepository
 import com.boostcamp.and03.data.repository.book.toUiModel
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SearchResultUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,29 +18,42 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class BookSearchViewModel @Inject constructor(
-    private val bookRepository: BookRepository
+    private val bookSearchRepository: BookSearchRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookSearchUiState())
     val uiState = _uiState.asStateFlow()
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val pagingBooksFlow: Flow<PagingData<SearchResultUiModel>> = _uiState
+    @OptIn(FlowPreview::class)
+    private val queryFlow: Flow<String> = _uiState
         .map { it.query }
         .debounce(300)
+        .map { it.trim() }
         .distinctUntilChanged()
-        .filter { it.isNotBlank() }
-        .flatMapLatest { query ->
-            bookRepository.loadBooksPagingFlow(query)
-                .map { pagingData ->
-                    pagingData.map { it.toUiModel() }
-                }
-        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val pagingBooksFlow: Flow<PagingData<SearchResultUiModel>> =
+        queryFlow
+            .filter { it.isNotBlank() }
+            .flatMapLatest { query ->
+                bookSearchRepository.loadSearchResults(query)
+                    .map { pagingData -> pagingData.map { it.toUiModel() } }
+            }
+            .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val totalResultCountFlow: Flow<Int> =
+        queryFlow
+            .filter { it.isNotBlank() }
+            .flatMapLatest { query ->
+                flow { emit(bookSearchRepository.loadTotalSearchResultCount(query)) }
+            }
 
     fun changeQuery(query: String) {
         _uiState.update { it.copy(query = query) }

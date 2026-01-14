@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.bookdetail.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -12,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Theme
 
@@ -27,6 +29,7 @@ fun SquareAddButton(
         onClick = onClick
     ) {
         Icon(
+            modifier = Modifier.size(And03IconSize.ICON_SIZE_S),
             imageVector = Icons.Default.Add,
             contentDescription = stringResource(R.string.add_btn_cd),
             tint = And03Theme.colors.onSecondary

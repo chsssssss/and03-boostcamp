@@ -1,8 +1,7 @@
-package com.boostcamp.and03.data.di
+package com.boostcamp.and03.data.di.datasource
 
-import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.BookDetailRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.AladinBookLookUpRemoteDataSourceImpl
-
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,5 +16,5 @@ abstract class AladinBookLookUpModule {
     @Singleton
     abstract fun bindNaverBookSearchRemoteDataSource(
         impl: AladinBookLookUpRemoteDataSourceImpl
-    ): AladinBookLookUpRemoteDataSource
+    ): BookDetailRemoteDataSource
 }
