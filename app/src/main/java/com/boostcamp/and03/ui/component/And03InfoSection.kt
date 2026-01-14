@@ -59,7 +59,7 @@ fun And03InfoSection() {
 
 @Preview(showBackground = true)
 @Composable
-private fun AddQuoteInfoSectionPreview() {
+private fun And03InfoSectionPreview() {
     And03Theme {
         And03InfoSection()
     }
