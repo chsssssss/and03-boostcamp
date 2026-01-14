@@ -10,8 +10,7 @@ import com.boostcamp.and03.R
 fun BookCountText(count: Int) {
     Text(
         text = stringResource(
-            id = R.string.book_count_text,
-            arrayOf(count)
+            id = R.string.book_count_text, count
         ),
         style = MaterialTheme.typography.bodyMedium
     )
