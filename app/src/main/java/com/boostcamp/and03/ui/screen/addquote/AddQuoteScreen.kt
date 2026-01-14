@@ -46,7 +46,10 @@ fun AddQuoteScreen(
         ) {
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
-            And03InfoSection()
+            And03InfoSection(
+                title = stringResource(R.string.add_quote_info_title),
+                description = stringResource(R.string.add_quote_info_description)
+            )
 
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_2XL))
 
