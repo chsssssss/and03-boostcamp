@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,7 +35,13 @@ fun SearchTextField(
     TextField(
         state = state,
         modifier = modifier,
-        placeholder = { Text(text = stringResource(id = placeholderRes)) },
+        textStyle = And03Theme.typography.bodySmall,
+        placeholder = {
+            Text(
+                text = stringResource(id = placeholderRes),
+                style = And03Theme.typography.bodySmall
+            )
+        },
         leadingIcon = {
             Icon(
                 ImageVector.vectorResource(R.drawable.ic_rounded_search),
@@ -103,8 +110,10 @@ private fun ClearOrCameraIcon(
 @Composable
 private fun SearchTextFieldPreview() {
     And03Theme {
+        val state = rememberTextFieldState()
+
         SearchTextField(
-            state = TextFieldState(),
+            state = state,
             onSearch = {},
             modifier = Modifier,
         )
