@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.boostcamp.and03.ui.component.ActionSnackBarHost
-import com.boostcamp.and03.ui.component.MainBottomBar
 import com.boostcamp.and03.ui.navigation.MainNavHost
 import com.boostcamp.and03.ui.navigation.MainNavigator
 import kotlinx.coroutines.launch

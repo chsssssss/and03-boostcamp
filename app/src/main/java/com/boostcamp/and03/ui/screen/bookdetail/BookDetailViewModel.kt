@@ -8,7 +8,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,7 +84,7 @@ class BookDetailViewModel @Inject constructor(
                 loadCharacters()
                 loadQuotes()
                 _uiState.update { it.copy(isLoading = false) }
-                throw Exception("테스트용")
+//                throw Exception("테스트용")
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")

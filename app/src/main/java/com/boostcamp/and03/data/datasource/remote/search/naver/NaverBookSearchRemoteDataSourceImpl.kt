@@ -7,11 +7,8 @@ import javax.inject.Inject
 class NaverBookSearchRemoteDataSourceImpl @Inject constructor(
     private val naverBookSearchApiService: NaverBookSearchApiService
 ) : NaverBookSearchRemoteDataSource {
-    override suspend fun loadBooks(
-        query: String,
-        display: Int,
-        start: Int
-    ): NaverBookSearchResponse =
+
+    override suspend fun loadBooks(query: String, display: Int, start: Int): NaverBookSearchResponse =
         naverBookSearchApiService.loadBooks(
             query = query,
             display = display,
