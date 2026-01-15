@@ -44,7 +44,7 @@
     <!-- 책 상세 화면 -->
     <string name="book_detail_app_bar_title">책 정보</string>
     <string name="book_detail_add_canvas_memo">캔버스 메모 추가</string>
-    <string name="book_detail_add_text_memo">택스트 메모 추가</string>
+    <string name="book_detail_add_text_memo">텍스트 메모 추가</string>
     <string name="book_detail_memo_page_range">p.%1$d~%2$d</string>
 
     <!-- 책 검색 화면 -->
