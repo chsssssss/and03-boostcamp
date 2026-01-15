@@ -50,7 +50,7 @@ fun PageInputSection(
                 value = startPage,
                 onValueChange = { onStartPageChange(it.filter { char -> char.isDigit() }) },
                 placeholder = { Text(text = stringResource(id = R.string.add_memo_enter_start_page_placeholder)) },
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
