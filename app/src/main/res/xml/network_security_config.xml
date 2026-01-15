@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+    <!-- Aladin API에 한정하여 HTTP 통신을 허용합니다. -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">www.aladin.co.kr</domain>
+    </domain-config>
+
+</network-security-config>

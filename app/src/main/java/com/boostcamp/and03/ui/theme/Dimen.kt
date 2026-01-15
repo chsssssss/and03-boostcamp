@@ -40,7 +40,6 @@ object And03Radius {
 }
 object And03ComponentSize {
     val APP_BAR_HEIGHT = 56.dp
-
     val BUTTON_HEIGHT_L = 52.dp
     val TEXT_FIELD_HEIGHT_L = 140.dp
 }

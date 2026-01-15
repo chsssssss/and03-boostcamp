@@ -45,6 +45,14 @@ class MainNavigator(
         navController.navigate(Route.MemoEdit)
     }
 
+    fun navigateToAddTextMemo() {
+        navController.navigate(Route.AddTextMemo)
+    }
+
+    fun navigateToAddCanvasMemo() {
+        navController.navigate(Route.AddCanvasMemo)
+    }
+
     fun navigatePopBackStack() = navController.popBackStack()
 }
 
