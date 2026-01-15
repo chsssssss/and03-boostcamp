@@ -30,6 +30,7 @@ class BookDetailViewModel @Inject constructor(
 
     init {
         loadAllData()
+//        addCharacter()
     }
 
     fun loadAllData() {
@@ -124,6 +125,8 @@ class BookDetailViewModel @Inject constructor(
 //    }
 //
     fun deleteCharacter(characterId: String) {
+        val previousCharacters = _uiState.value.characters
+
         _uiState.update {
             it.copy(
                 characters = it.characters
@@ -141,7 +144,10 @@ class BookDetailViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 Log.d("BookDetailViewModel", "deleteCharacter: ${e.message}")
-                loadCharacters()
+
+                _uiState.update { it.copy(characters = previousCharacters) }
+
+                // TODO : 사용자에게 Snackbar로 알림을 줘야함
             }
         }
     }
