@@ -44,6 +44,8 @@ fun MemoCard(
     pageLabel: String,
     date: String,
     onClick: () -> Unit,
+    onClickDelMemo: () -> Unit,
+    onClickEdit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -91,6 +93,7 @@ fun MemoCard(
                         text = { Text(stringResource(R.string.more_vert_edit)) },
                         onClick = {
                             closeMenu()
+                            onClickEdit()
                         }
                     )
 
@@ -98,6 +101,7 @@ fun MemoCard(
                         text = { Text(stringResource(R.string.more_vert_delete)) },
                         onClick = {
                             closeMenu()
+                            onClickDelMemo()
                         }
                     )
                 }
@@ -217,7 +221,9 @@ fun MemoCardPreview() {
             contentPreview = "ㅇㅇ",
             pageLabel = "p.1~26",
             date = "2025.12.24",
-            onClick = {}
+            onClick = {},
+            onClickDelMemo = {},
+            onClickEdit = {}
         )
 
         MemoCard(
@@ -226,7 +232,9 @@ fun MemoCardPreview() {
             contentPreview = "내용내용내용내용내용내용내용내용내용내용내용내용내용...",
             pageLabel = "p.1~26",
             date = "2025.12.24",
-            onClick = {}
+            onClick = {},
+            onClickDelMemo = {},
+            onClickEdit = {}
         )
     }
 }
