@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BookItem(
+data class BookSearchResultItem(
     @SerialName("title") val title: String,
     @SerialName("image") val thumbnail: String,
     @SerialName("author") val author: String,

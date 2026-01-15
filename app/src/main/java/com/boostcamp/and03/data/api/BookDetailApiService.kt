@@ -15,5 +15,5 @@ interface BookDetailApiService {
         @Query("ItemId") itemId: String,
         @Query("ItemIdType") itemIdType: String = BookDetailApiValues.ITEM_ID_TYPE_ISBN13,
         @Query("Output") output: String = BookDetailApiValues.OUTPUT_METHOD_JSON
-    ): AladinBookLookUpResponse
+    ): String
 }

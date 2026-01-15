@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.repository.book
+package com.boostcamp.and03.data.repository.booksearch
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -7,8 +7,7 @@ import com.boostcamp.and03.data.api.BookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
 import com.boostcamp.and03.data.datasource.remote.search.aladin.BookDetailRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.search.naver.BookSearchRemoteDataSource
-import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
-import com.boostcamp.and03.data.model.response.BookItem
+import com.boostcamp.and03.data.model.response.BookSearchResultItem
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ class BookSearchRepositoryImpl @Inject constructor(
         return response.total
     }
 
-    override fun loadSearchResults(query: String): Flow<PagingData<BookItem>> {
+    override fun loadSearchResults(query: String): Flow<PagingData<BookSearchResultItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = BookSearchApiConstants.SIZE_DEFAULT,
@@ -41,11 +40,7 @@ class BookSearchRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun loadBookPage(
-        itemId: String
-    ): AladinBookLookUpResponse {
-        return bookDetailRemoteDataSource.loadBookPage(
-            itemId = itemId
-        )
+    override suspend fun loadBookPage(itemId: String): Int {
+        return bookDetailRemoteDataSource.loadBookPage(itemId = itemId).item.first().bookInfo.itemPage
     }
 }

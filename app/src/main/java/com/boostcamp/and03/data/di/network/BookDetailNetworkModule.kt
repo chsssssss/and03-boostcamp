@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -53,7 +54,7 @@ object BookDetailNetworkModule {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory(contentType))
+            .addConverterFactory(ScalarsConverterFactory.create()) // String으로 변환
             .build()
 
     @Provides

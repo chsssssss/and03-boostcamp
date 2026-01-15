@@ -1,20 +1,26 @@
 package com.boostcamp.and03.ui.screen.booklist
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -28,7 +34,6 @@ import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.booklist.component.BookCountText
 import com.boostcamp.and03.ui.screen.booklist.component.BookGrid
 import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
-import com.boostcamp.and03.ui.screen.booklist.model.BooklistUiState
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -41,6 +46,11 @@ fun BooklistRoute(
     onAddBookClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.resetSearch()
+        viewModel.loadBooks()
+    }
 
     BooklistScreen(
         uiState = uiState,
@@ -57,10 +67,13 @@ private fun BooklistScreen(
     onBookClick: (BookUiModel) -> Unit,
     onAddBookClick: () -> Unit,
 ) {
-    val searchState = rememberTextFieldState(uiState.searchQuery)
+    val searchState = remember { TextFieldState(uiState.searchQuery) }
 
-    LaunchedEffect(searchState.text) {
-        onSearch(searchState.text.toString())
+    LaunchedEffect(Unit) {
+        snapshotFlow { searchState.text.toString() }
+            .collect { query ->
+                onSearch(query)
+            }
     }
 
     Scaffold(
@@ -84,8 +97,6 @@ private fun BooklistScreen(
                 .padding(innerPadding)
                 .padding(horizontal = And03Padding.PADDING_L)
         ) {
-            Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
-
             SearchTextField(
                 state = searchState,
                 onSearch = { onSearch(searchState.text.toString()) },
@@ -102,14 +113,40 @@ private fun BooklistScreen(
 
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
 
-            BookCountText(count = uiState.books.size)
+            BookCountText(count = uiState.filteredBooks.size)
 
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
 
-            BookGrid(
-                books = uiState.books,
-                onBookClick = onBookClick
-            )
+            when {
+                uiState.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                uiState.allBooks.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.book_list_empty_book),
+                            style = And03Theme.typography.bodyLarge,
+                            color = And03Theme.colors.onSurfaceVariant
+                        )
+                    }
+                }
+
+                else -> {
+                    BookGrid(
+                        books = uiState.filteredBooks,
+                        onBookClick = onBookClick
+                    )
+                }
+            }
         }
     }
 }
@@ -118,7 +155,7 @@ private fun BooklistScreen(
 @Composable
 fun BooklistScreenPreview() {
     val previewState = BooklistUiState(
-        books = listOf(
+        allBooks = persistentListOf(
             BookUiModel(
                 id = "",
                 title = "객체지향의 사실과 오해",

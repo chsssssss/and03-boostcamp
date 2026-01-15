@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AladinBookLookUpResponse(
-    @SerialName("item")val item: List<AladinBookLookUpItem>
+data class AladinBookLookUpItem(
+    @SerialName("bookinfo") val bookInfo: AladinBookInfo
 )

@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.repository
 
-import com.boostcamp.and03.data.repository.book.BookSearchRepository
-import com.boostcamp.and03.data.repository.book.BookSearchRepositoryImpl
+import com.boostcamp.and03.data.repository.booksearch.BookSearchRepository
+import com.boostcamp.and03.data.repository.booksearch.BookSearchRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

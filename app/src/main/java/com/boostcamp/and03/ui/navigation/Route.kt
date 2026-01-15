@@ -18,4 +18,10 @@ sealed interface Route {
 
     @Serializable
     data class BookDetail(val bookId: String) : Route
+
+    @Serializable
+    data class Canvas(val memoId: String) : Route
+
+    @Serializable
+    data object MemoEdit: Route
 }

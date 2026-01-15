@@ -4,6 +4,7 @@ import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSo
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.memo.MemoDataSource
 import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
+import com.boostcamp.and03.data.model.request.BookStorageRequest
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
@@ -21,6 +22,10 @@ class BookStorageRepositoryImpl @Inject constructor(
 ) : BookStorageRepository {
     override suspend fun getBooks(userId: String): List<BookStorageResponse> {
         return bookStorageDataSource.getBooks(userId)
+    }
+
+    override suspend fun saveBook(userId: String, book: BookStorageRequest) {
+        return bookStorageDataSource.saveBook(userId, book)
     }
 
     override suspend fun getCharacters(
