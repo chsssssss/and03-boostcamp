@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.addtextmemo
 
 import androidx.lifecycle.ViewModel
+import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoAction
 import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTextMemoViewModel @Inject constructor(
-
+    private val bookStorageRepository: BookStorageRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AddTextMemoUiState())
     val uiState = _uiState.asStateFlow()
@@ -26,7 +27,7 @@ class AddTextMemoViewModel @Inject constructor(
         when (action) {
             AddTextMemoAction.OnBackClick -> _event.trySend(AddTextMemoEvent.NavigateBack)
 
-            AddTextMemoAction.OnSaveClick -> saveTextMemo()
+            AddTextMemoAction.OnSaveClick -> if (uiState.value.isSaveable) { saveTextMemo() }
 
             is AddTextMemoAction.OnTitleChange -> _uiState.update { it.copy(title = action.title) }
 
@@ -36,6 +37,10 @@ class AddTextMemoViewModel @Inject constructor(
 
             is AddTextMemoAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
         }
+    }
+
+    fun setTotalPage(totalPage: Int) {
+        _uiState.update { it.copy(totalPage = totalPage) }
     }
 
     private fun saveTextMemo() {

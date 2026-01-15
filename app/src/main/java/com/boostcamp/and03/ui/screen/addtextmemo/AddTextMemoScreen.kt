@@ -72,6 +72,7 @@ private fun AddTextMemoScreen(
                 text = stringResource(id = R.string.add_memo_save_button_text),
                 onClick = { onAction(AddTextMemoAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
+                enabled = uiState.isSaveable,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(And03Padding.PADDING_L)
