@@ -21,12 +21,10 @@ class BookStorageDataSourceImpl @Inject constructor(
                 .await()
 
             @Suppress("UNCHECKED_CAST")
-            snapshot.documents.map { document ->
-                val docId = document.id
-                val data = document.data
-                if (data != null) {
+            snapshot.documents.mapNotNull { document ->
+                document.data?.let { data ->
                     BookStorageResponse(
-                        id = docId,
+                        id = document.id,
                         title = data["title"] as? String ?: "",
                         author = data["author"] as? List<String> ?: emptyList(),
                         publisher = data["publisher"] as? String ?: "",
@@ -34,14 +32,12 @@ class BookStorageDataSourceImpl @Inject constructor(
                         thumbnail = data["thumbnail"] as? String ?: "",
                         totalPage = (data["totalPage"] as? Long)?.toInt() ?: 0
                     )
-                } else {
-                    throw Exception("data is null")
                 }
             }
 
         } catch (e: Exception) {
             Log.e("BookStorage", "Error: ${e.message}")
-            emptyList()
+            throw e
         }
     }
 
@@ -74,7 +70,7 @@ class BookStorageDataSourceImpl @Inject constructor(
             )
         } catch (e: Exception) {
             Log.e("BookStorage", "Error getting book detail", e)
-            null
+            throw e
         }
     }
 
