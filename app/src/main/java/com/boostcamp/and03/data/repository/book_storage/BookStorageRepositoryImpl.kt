@@ -8,6 +8,7 @@ import com.boostcamp.and03.data.model.request.BookStorageRequest
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
+import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
@@ -22,6 +23,10 @@ class BookStorageRepositoryImpl @Inject constructor(
 ) : BookStorageRepository {
     override suspend fun getBooks(userId: String): List<BookStorageResponse> {
         return bookStorageDataSource.getBooks(userId)
+    }
+
+    override suspend fun getBookDetail(userId: String, bookId: String): BookDetailResponse? {
+        return bookStorageDataSource.getBookDetail(userId, bookId)
     }
 
     override suspend fun saveBook(userId: String, book: BookStorageRequest) {
