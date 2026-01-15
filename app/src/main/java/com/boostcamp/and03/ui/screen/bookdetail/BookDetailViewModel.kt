@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
@@ -32,7 +31,8 @@ class BookDetailViewModel @Inject constructor(
     init {
         loadAllData()
 //        addCharacter()
-        addQuote()
+//        addQuote()
+//        addTextMemo()
     }
 
     fun loadAllData() {
@@ -111,17 +111,16 @@ class BookDetailViewModel @Inject constructor(
 //    }
 
 
-    fun addQuote() {
-        viewModelScope.launch {
-            bookRepository.addQuote(
-                userId, bookId, QuoteRequest(
-                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
-                    createdAt = "2026.1.5",
-                    page = 121
-                )
-            )
-        }
-    }
+//    fun addQuote() {
+//        viewModelScope.launch {
+//            bookRepository.addQuote(
+//                userId, bookId, QuoteRequest(
+//                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
+//                    page = 121
+//                )
+//            )
+//        }
+//    }
 
     fun deleteCharacter(characterId: String) {
         val previousCharacters = _uiState.value.characters
@@ -207,19 +206,19 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 //
-//    private suspend fun addTextMemo(
-//    userId: String = "O12OmGoVY8FPYFElNjKN",
-//    bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//) {
-//    bookRepository.addTextMemo(
-//        userId, bookId, TextMemoRequest(
-//            title = "메모 제목",
-//            content = "메모 내용",
-//            startPage = 1,
-//            endPage = 2
-//        )
-//    )
-//}
+//    fun addTextMemo() {
+//        viewModelScope.launch {
+//            bookRepository.addTextMemo(
+//                userId, bookId, TextMemoRequest(
+//                    title = "메모 제목",
+//                    content = "메모 내용",
+//                    startPage = 1,
+//                    endPage = 2
+//                )
+//            )
+//        }
+//
+//    }
 
 
 }
