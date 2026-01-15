@@ -37,7 +37,7 @@ class MemoDataSourceImpl @Inject constructor(
 
         } catch (e: Exception) {
             Log.e("MemoDataSourceImpl", "Error: ${e.message}")
-            emptyList()
+            throw e
         }
     }
 

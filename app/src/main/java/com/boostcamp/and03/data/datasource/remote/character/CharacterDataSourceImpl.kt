@@ -37,7 +37,7 @@ class CharacterDataSourceImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("CharacterDataSourceImpl", "Error: ${e.message}")
-            emptyList()
+            throw e
         }
     }
 
