@@ -93,11 +93,9 @@ class BookDetailViewModel @Inject constructor(
             }
         }
     }
-//
-//    fun addCharacter(
-//        userId: String = "O12OmGoVY8FPYFElNjKN",
-//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//    ) {
+
+    //
+//    fun addCharacter() {
 //        viewModelScope.launch {
 //            bookRepository.addCharacter(
 //                userId, bookId, CharacterRequest(
@@ -108,7 +106,8 @@ class BookDetailViewModel @Inject constructor(
 //            )
 //        }
 //    }
-//
+
+    //
 //    fun addQuote(
 //        userId: String = "O12OmGoVY8FPYFElNjKN",
 //        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
@@ -124,16 +123,28 @@ class BookDetailViewModel @Inject constructor(
 //        }
 //    }
 //
-//    fun deleteCharacter(
-//        characterId: String = "e9WCxbOGW15gzMK9Dbnc",
-//        userId: String = "O12OmGoVY8FPYFElNjKN",
-//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//    ) {
-//        viewModelScope.launch {
-//            bookRepository.deleteCharacter(
-//                userId, bookId, characterId)
-//        }
-//    }
+    fun deleteCharacter(characterId: String) {
+        _uiState.update {
+            it.copy(
+                characters = it.characters
+                    .filterNot { character -> character.id == characterId }
+                    .toPersistentList()
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                bookRepository.deleteCharacter(
+                    userId,
+                    bookId,
+                    characterId
+                )
+            } catch (e: Exception) {
+                Log.d("BookDetailViewModel", "deleteCharacter: ${e.message}")
+                loadCharacters()
+            }
+        }
+    }
 //
 //    private suspend fun addTextMemo(
 //    userId: String = "O12OmGoVY8FPYFElNjKN",

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -68,7 +70,8 @@ fun BookDetailRoute(
         uiState = uiState,
         navigateToBack = navigateToBack,
         navigateToCanvas = navigateToCanvas,
-        onRetryClick = { viewModel.loadAllData() }
+        onRetryClick = { viewModel.loadAllData() },
+        onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) }
     )
 }
 
@@ -77,7 +80,8 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
-    onRetryClick: () -> Unit
+    onRetryClick: () -> Unit,
+    onClickDelCharacter: (String) -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -156,7 +160,12 @@ private fun BookDetailScreen(
                 }
 
                 when (tabs[selectedTabIndex]) {
-                    BookDetailTab.CHARACTER -> CharacterTab(uiState.characters)
+                    BookDetailTab.CHARACTER -> CharacterTab(
+                        uiState.characters,
+                        onClickDelete = onClickDelCharacter,
+                        onClickEdit = { }
+                    )
+
                     BookDetailTab.QUOTE -> QuoteTab(uiState.quotes)
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
@@ -218,28 +227,35 @@ private fun BookInfoSection(
 }
 
 @Composable
-private fun CharacterTab(characters: ImmutableList<CharacterUiModel>) {
+private fun CharacterTab(
+    characters: ImmutableList<CharacterUiModel>,
+    onClickDelete: (String) -> Unit,
+    onClickEdit: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
-    )  {
+    ) {
         if (characters.isEmpty()) {
             EmptyScreen()
         } else {
-            Column(
+            LazyColumn(
                 modifier = Modifier.align(Alignment.TopStart),
                 verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
             ) {
-                characters.forEach { character ->
+                items(
+                    items = characters,
+                    key = { it.id }
+                ) { character ->
                     CharacterCard(
                         name = character.name,
                         role = character.role,
                         iconColor = character.iconColor,
                         description = character.description,
                         onClick = { },
-                        onEditClick = { },
-                        onDeleteClick = { }
+                        onEditClick = onClickEdit,
+                        onDeleteClick = { onClickDelete(character.id) }
                     )
                 }
             }
@@ -258,15 +274,15 @@ private fun QuoteTab(quotes: ImmutableList<QuoteUiModel>) {
         modifier = Modifier
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
-    )  {
+    ) {
         if (quotes.isEmpty()) {
             EmptyScreen()
         } else {
-            Column(
+            LazyColumn(
                 modifier = Modifier.align(Alignment.TopStart),
                 verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
             ) {
-                quotes.forEach { quote ->
+                items(quotes, key = { it.id }) { quote ->
                     QuoteCard(
                         quote = quote,
                         onClick = {}
@@ -297,11 +313,11 @@ private fun MemoTab(
         if (memos.isEmpty()) {
             EmptyScreen()
         } else {
-            Column(
+            LazyColumn(
                 modifier = Modifier.align(Alignment.TopStart),
                 verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
             ) {
-                memos.forEach { memo ->
+                items(memos, key = { it.id }) { memo ->
                     MemoCard(
                         type = memo.memoType,
                         title = memo.title,
@@ -354,18 +370,20 @@ fun BooklistScreenPreview() {
         publisher = "Bloomsbury Publishing",
         characters = persistentListOf(
             CharacterUiModel(
+                id = "1",
                 name = "해리 포터",
                 role = "주인공",
                 iconColor = Color(0xFF1E88E5),
                 description = "호그와트의 마법사 학생으로 볼드모트와 맞서 싸우는 주인공"
             ),
             CharacterUiModel(
+                id = "2",
                 name = "헤르미온느 그레인저",
                 role = "조연",
                 iconColor = Color(0xFF8E24AA),
                 description = "뛰어난 마법 실력을 가진 해리의 절친한 친구"
             )
-        )
+        ),
     )
 
     And03Theme {
@@ -373,7 +391,8 @@ fun BooklistScreenPreview() {
             uiState = previewState,
             navigateToBack = {},
             navigateToCanvas = {},
-            onRetryClick = {}
+            onRetryClick = {},
+            onClickDelCharacter = {}
         )
     }
 }
