@@ -25,38 +25,37 @@ import com.boostcamp.and03.ui.component.ContentInputSection
 import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
+import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoAction
+import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoEvent
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
 fun AddTextMemoRoute(
-    navigateToBack: () -> Unit,
+    navigateBack: () -> Unit,
     viewModel: AddTextMemoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            AddTextMemoEvent.NavigateBack -> navigateBack()
+        }
+    }
+
     AddTextMemoScreen(
         uiState = uiState,
-        onBackClick = navigateToBack,
-        onSaveClick = viewModel::saveTextMemo,
-        onTitleChange = { viewModel.updateTitle(uiState.title) },
-        onContentChange = { viewModel.updateContent(uiState.content) },
-        onStartPageChange = { viewModel.updateStartPage(uiState.startPage) },
-        onEndPageChange = { viewModel.updateEndPage(uiState.endPage) }
+        onAction = viewModel::onAction
     )
 }
 
 @Composable
 private fun AddTextMemoScreen(
     uiState: AddTextMemoUiState,
-    onBackClick: () -> Unit,
-    onSaveClick: () -> Unit,
-    onTitleChange: (String) -> Unit,
-    onContentChange: (String) -> Unit,
-    onStartPageChange: (String) -> Unit,
-    onEndPageChange: (String) -> Unit,
+    onAction: (AddTextMemoAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
@@ -65,13 +64,13 @@ private fun AddTextMemoScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(id = R.string.add_memo_text_app_bar_title),
-                onBackClick = onBackClick
+                onBackClick = { onAction(AddTextMemoAction.OnBackClick) }
             )
         },
         bottomBar = {
             And03Button(
                 text = stringResource(id = R.string.add_memo_save_button_text),
-                onClick = onSaveClick,
+                onClick = { onAction(AddTextMemoAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -89,13 +88,13 @@ private fun AddTextMemoScreen(
         ) {
             TitleInputSection(
                 title = uiState.title,
-                onTitleChange = onTitleChange
+                onTitleChange = { onAction(AddTextMemoAction.OnTitleChange(title = it)) }
             )
 
             ContentInputSection(
                 label = stringResource(R.string.add_memo_content),
                 content = uiState.content,
-                onContentChange = onContentChange,
+                onContentChange = { onAction(AddTextMemoAction.OnContentChange(content = it)) },
                 onAddByImageClick = { isOCRBottomSheetVisible = true },
             )
 
@@ -110,8 +109,8 @@ private fun AddTextMemoScreen(
             PageInputSection(
                 startPage = uiState.startPage,
                 endPage = uiState.endPage,
-                onStartPageChange = onStartPageChange,
-                onEndPageChange = onEndPageChange
+                onStartPageChange = { onAction(AddTextMemoAction.OnStartPageChange(startPage = it)) },
+                onEndPageChange = { onAction(AddTextMemoAction.OnEndPageChange(endPage = it)) }
             )
         }
     }
@@ -123,12 +122,7 @@ private fun AddTextMemoScreenPreview() {
     And03Theme {
         AddTextMemoScreen(
             uiState = AddTextMemoUiState(),
-            onBackClick = {},
-            onSaveClick = {},
-            onTitleChange = {},
-            onContentChange = {},
-            onStartPageChange = {},
-            onEndPageChange = {}
+            onAction = {}
         )
     }
 }

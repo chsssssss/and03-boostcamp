@@ -11,7 +11,7 @@ fun NavGraphBuilder.addTextMemoNavGraph(
 ) {
     composable<Route.AddTextMemo> {
         AddTextMemoRoute(
-            navigateToBack = navigateToBack
+            navigateBack = navigateToBack
         )
     }
 }
