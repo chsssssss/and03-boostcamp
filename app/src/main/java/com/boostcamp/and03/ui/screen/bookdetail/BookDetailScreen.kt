@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.component.EmptyScreen
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
@@ -48,9 +49,11 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -154,10 +157,10 @@ private fun BookDetailScreen(
                 }
 
                 when (tabs[selectedTabIndex]) {
-                    BookDetailTab.CHARACTER -> CharacterTab(uiState)
-                    BookDetailTab.QUOTE -> QuoteTab(uiState)
+                    BookDetailTab.CHARACTER -> CharacterTab(uiState.characters)
+                    BookDetailTab.QUOTE -> QuoteTab(uiState.quotes)
                     BookDetailTab.MEMO -> MemoTab(
-                        uiState = uiState,
+                        memos = uiState.memos,
                         onClickAddCanvas = { },
                         onClickAddText = { },
                         onClickMemo = { memo ->
@@ -216,57 +219,108 @@ private fun BookInfoSection(
 }
 
 @Composable
-private fun CharacterTab(uiState: BookDetailUiState) {
-    Column(
-        modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-        horizontalAlignment = Alignment.End
-    ) {
-        SquareAddButton(onClick = { })
-        uiState.characters.forEach { character ->
-            CharacterCard(
-                name = character.name,
-                role = character.role,
-                iconColor = character.iconColor,
-                description = character.description,
-                onClick = { },
-                onEditClick = { },
-                onDeleteClick = { }
-            )
+private fun CharacterTab(characters: ImmutableList<CharacterUiModel>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(And03Padding.PADDING_L)
+    )  {
+        if (characters.isEmpty()) {
+            EmptyScreen()
+        } else {
+            Column(
+                modifier = Modifier.align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+            ) {
+                characters.forEach { character ->
+                    CharacterCard(
+                        name = character.name,
+                        role = character.role,
+                        iconColor = character.iconColor,
+                        description = character.description,
+                        onClick = { },
+                        onEditClick = { },
+                        onDeleteClick = { }
+                    )
+                }
+            }
         }
+
+        SquareAddButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = { }
+        )
     }
 }
 
 @Composable
-private fun QuoteTab(uiState: BookDetailUiState) {
-    Column(
-        modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-        horizontalAlignment = Alignment.End
-    ) {
-        SquareAddButton(onClick = { })
-        uiState.quotes.forEach { quote ->
-            QuoteCard(
-                quote = quote,
-                onClick = {}
-            )
+private fun QuoteTab(quotes: ImmutableList<QuoteUiModel>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(And03Padding.PADDING_L)
+    )  {
+        if (quotes.isEmpty()) {
+            EmptyScreen()
+        } else {
+            Column(
+                modifier = Modifier.align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+            ) {
+                quotes.forEach { quote ->
+                    QuoteCard(
+                        quote = quote,
+                        onClick = {}
+                    )
+                }
+            }
         }
+
+        SquareAddButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = { }
+        )
     }
 }
 
 @Composable
 private fun MemoTab(
-    uiState: BookDetailUiState,
+    memos: ImmutableList<MemoUiModel>,
     onClickAddCanvas: () -> Unit,
     onClickAddText: () -> Unit,
     onClickMemo: (MemoUiModel) -> Unit,
 ) {
-    Column(
-        modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-        horizontalAlignment = Alignment.End
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(And03Padding.PADDING_L)
     ) {
+        if (memos.isEmpty()) {
+            EmptyScreen()
+        } else {
+            Column(
+                modifier = Modifier.align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+            ) {
+                memos.forEach { memo ->
+                    MemoCard(
+                        type = memo.memoType,
+                        title = memo.title,
+                        contentPreview = memo.content ?: "",
+                        pageLabel = stringResource(
+                            id = R.string.book_detail_memo_page_range,
+                            memo.startPage,
+                            memo.endPage
+                        ),
+                        date = memo.date,
+                        onClick = { onClickMemo(memo) }
+                    )
+                }
+            }
+        }
+
         DropdownMenuContainer(
+            modifier = Modifier.align(Alignment.BottomEnd),
             trigger = { onClick ->
                 SquareAddButton(onClick = onClick)
             },
@@ -288,21 +342,6 @@ private fun MemoTab(
                 )
             }
         )
-
-        uiState.memos.forEach { memo ->
-            MemoCard(
-                type = memo.memoType,
-                title = memo.title,
-                contentPreview = memo.content ?: "",
-                pageLabel = stringResource(
-                    id = R.string.book_detail_memo_page_range,
-                    memo.startPage,
-                    memo.endPage
-                ),
-                date = memo.date,
-                onClick = { onClickMemo(memo) }
-            )
-        }
     }
 }
 
