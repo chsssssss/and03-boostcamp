@@ -11,7 +11,7 @@ fun NavGraphBuilder.addCanvasMemoNavGraph(
 ) {
     composable<Route.AddCanvasMemo> {
         AddCanvasMemoRoute(
-            navigateToBack = navigateToBack
+            navigateBack = navigateToBack
         )
     }
 }
