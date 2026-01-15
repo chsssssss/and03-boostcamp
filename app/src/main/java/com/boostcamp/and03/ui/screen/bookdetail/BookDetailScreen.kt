@@ -41,7 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
-import com.boostcamp.and03.ui.component.EmptyScreen
+import com.boostcamp.and03.ui.component.EmptyDataScreen
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
@@ -238,7 +238,7 @@ private fun CharacterTab(
             .padding(And03Padding.PADDING_L)
     ) {
         if (characters.isEmpty()) {
-            EmptyScreen()
+            EmptyDataScreen()
         } else {
             LazyColumn(
                 modifier = Modifier.align(Alignment.TopStart),
@@ -276,7 +276,7 @@ private fun QuoteTab(quotes: ImmutableList<QuoteUiModel>) {
             .padding(And03Padding.PADDING_L)
     ) {
         if (quotes.isEmpty()) {
-            EmptyScreen()
+            EmptyDataScreen()
         } else {
             LazyColumn(
                 modifier = Modifier.align(Alignment.TopStart),
@@ -311,7 +311,7 @@ private fun MemoTab(
             .padding(And03Padding.PADDING_L)
     ) {
         if (memos.isEmpty()) {
-            EmptyScreen()
+            EmptyDataScreen()
         } else {
             LazyColumn(
                 modifier = Modifier.align(Alignment.TopStart),

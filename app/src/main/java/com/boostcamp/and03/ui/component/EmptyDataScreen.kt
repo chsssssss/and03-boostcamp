@@ -22,7 +22,7 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
-fun EmptyScreen(
+fun EmptyDataScreen(
     @StringRes message: Int = R.string.empty_message,
     modifier: Modifier = Modifier
 ) {
