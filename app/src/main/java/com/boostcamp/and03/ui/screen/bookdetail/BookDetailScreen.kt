@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -39,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.component.EmptyDataScreen
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
@@ -48,14 +51,15 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookDetailRoute(
-    bookId: String,
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     navigateToAddTextMemo: () -> Unit,
@@ -68,9 +72,12 @@ fun BookDetailRoute(
         uiState = uiState,
         navigateToBack = navigateToBack,
         navigateToCanvas = navigateToCanvas,
+        onRetryClick = { viewModel.loadAllData() },
+        onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
+        onClilckDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
+        onClickDelMemo = { memoId -> viewModel.deleteMemo(memoId) },
         onClickAddText = navigateToAddTextMemo,
-        onClickAddCanvas = navigateToAddCanvasMemo,
-        onRetryClick = { viewModel.loadAllData() }
+        onClickAddCanvas = navigateToAddCanvasMemo
     )
 }
 
@@ -81,7 +88,10 @@ private fun BookDetailScreen(
     navigateToCanvas: (memoId: String) -> Unit,
     onClickAddText: () -> Unit,
     onClickAddCanvas: () -> Unit,
-    onRetryClick: () -> Unit
+    onRetryClick: () -> Unit,
+    onClickDelCharacter: (String) -> Unit,
+    onClilckDelQuote: (String) -> Unit,
+    onClickDelMemo: (String) -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -160,17 +170,29 @@ private fun BookDetailScreen(
                 }
 
                 when (tabs[selectedTabIndex]) {
-                    BookDetailTab.CHARACTER -> CharacterTab(uiState)
-                    BookDetailTab.QUOTE -> QuoteTab(uiState)
+                    BookDetailTab.CHARACTER -> CharacterTab(
+                        uiState.characters,
+                        onClickDelete = onClickDelCharacter,
+                        onClickEdit = { }
+                    )
+
+                    BookDetailTab.QUOTE -> QuoteTab(
+                        uiState.quotes,
+                        onClickDelete = onClilckDelQuote,
+                        onClickEdit = { }
+                    )
+
                     BookDetailTab.MEMO -> MemoTab(
-                        uiState = uiState,
+                        memos = uiState.memos,
                         onClickAddCanvas = onClickAddCanvas,
                         onClickAddText = onClickAddText,
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
                                 navigateToCanvas(memo.id)
                             }
-                        }
+                        },
+                        onClickDelMemo = onClickDelMemo,
+                        onClickEditMemo = { }
                     )
                 }
             }
@@ -222,57 +244,125 @@ private fun BookInfoSection(
 }
 
 @Composable
-private fun CharacterTab(uiState: BookDetailUiState) {
-    Column(
-        modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-        horizontalAlignment = Alignment.End
+private fun CharacterTab(
+    characters: ImmutableList<CharacterUiModel>,
+    onClickDelete: (String) -> Unit,
+    onClickEdit: (String) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(And03Padding.PADDING_L)
     ) {
-        SquareAddButton(onClick = { })
-        uiState.characters.forEach { character ->
-            CharacterCard(
-                name = character.name,
-                role = character.role,
-                iconColor = character.iconColor,
-                description = character.description,
-                onClick = { },
-                onEditClick = { },
-                onDeleteClick = { }
-            )
+        if (characters.isEmpty()) {
+            EmptyDataScreen()
+        } else {
+            LazyColumn(
+                modifier = Modifier.align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+            ) {
+                items(
+                    items = characters,
+                    key = { it.id }
+                ) { character ->
+                    CharacterCard(
+                        name = character.name,
+                        role = character.role,
+                        iconColor = character.iconColor,
+                        description = character.description,
+                        onClick = { },
+                        onEditClick = { onClickEdit(character.id) },
+                        onDeleteClick = { onClickDelete(character.id) }
+                    )
+                }
+            }
         }
+
+        SquareAddButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = { }
+        )
     }
 }
 
 @Composable
-private fun QuoteTab(uiState: BookDetailUiState) {
-    Column(
-        modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-        horizontalAlignment = Alignment.End
+private fun QuoteTab(
+    quotes: ImmutableList<QuoteUiModel>,
+    onClickDelete: (String) -> Unit,
+    onClickEdit: (String) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(And03Padding.PADDING_L)
     ) {
-        SquareAddButton(onClick = { })
-        uiState.quotes.forEach { quote ->
-            QuoteCard(
-                quote = quote,
-                onClick = {}
-            )
+        if (quotes.isEmpty()) {
+            EmptyDataScreen()
+        } else {
+            LazyColumn(
+                modifier = Modifier.align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+            ) {
+                items(quotes, key = { it.id }) { quote ->
+                    QuoteCard(
+                        quote = quote,
+                        onClick = {},
+                        onClickDelete = { onClickDelete(quote.id) },
+                        onClickEdit = { onClickEdit(quote.id) },
+                    )
+                }
+            }
         }
+
+        SquareAddButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = { }
+        )
     }
 }
 
 @Composable
 private fun MemoTab(
-    uiState: BookDetailUiState,
+    memos: ImmutableList<MemoUiModel>,
     onClickAddCanvas: () -> Unit,
     onClickAddText: () -> Unit,
     onClickMemo: (MemoUiModel) -> Unit,
+    onClickDelMemo: (String) -> Unit,
+    onClickEditMemo: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(And03Padding.PADDING_L),
-        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-        horizontalAlignment = Alignment.End
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(And03Padding.PADDING_L)
     ) {
+        if (memos.isEmpty()) {
+            EmptyDataScreen()
+        } else {
+            LazyColumn(
+                modifier = Modifier.align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+            ) {
+                items(memos, key = { it.id }) { memo ->
+                    MemoCard(
+                        type = memo.memoType,
+                        title = memo.title,
+                        contentPreview = memo.content ?: "",
+                        pageLabel = stringResource(
+                            id = R.string.book_detail_memo_page_range,
+                            memo.startPage,
+                            memo.endPage
+                        ),
+                        date = memo.date,
+                        onClick = { onClickMemo(memo) },
+                        onClickDelMemo = { onClickDelMemo(memo.id) },
+                        onClickEdit = { onClickEditMemo(memo.id) },
+                    )
+                }
+            }
+        }
+
         DropdownMenuContainer(
+            modifier = Modifier.align(Alignment.BottomEnd),
             trigger = { onClick ->
                 SquareAddButton(onClick = onClick)
             },
@@ -294,21 +384,6 @@ private fun MemoTab(
                 )
             }
         )
-
-        uiState.memos.forEach { memo ->
-            MemoCard(
-                type = memo.memoType,
-                title = memo.title,
-                contentPreview = memo.content ?: "",
-                pageLabel = stringResource(
-                    id = R.string.book_detail_memo_page_range,
-                    memo.startPage,
-                    memo.endPage
-                ),
-                date = memo.date,
-                onClick = { onClickMemo(memo) }
-            )
-        }
     }
 }
 
@@ -322,18 +397,20 @@ fun BooklistScreenPreview() {
         publisher = "Bloomsbury Publishing",
         characters = persistentListOf(
             CharacterUiModel(
+                id = "1",
                 name = "해리 포터",
                 role = "주인공",
                 iconColor = Color(0xFF1E88E5),
                 description = "호그와트의 마법사 학생으로 볼드모트와 맞서 싸우는 주인공"
             ),
             CharacterUiModel(
+                id = "2",
                 name = "헤르미온느 그레인저",
                 role = "조연",
                 iconColor = Color(0xFF8E24AA),
                 description = "뛰어난 마법 실력을 가진 해리의 절친한 친구"
             )
-        )
+        ),
     )
 
     And03Theme {
@@ -343,7 +420,10 @@ fun BooklistScreenPreview() {
             navigateToCanvas = {},
             onClickAddText = {},
             onClickAddCanvas = {},
-            onRetryClick = {}
+            onRetryClick = {},
+            onClickDelCharacter = {},
+            onClilckDelQuote = {},
+            onClickDelMemo = {}
         )
     }
 }

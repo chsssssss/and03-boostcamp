@@ -1,10 +1,13 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.and03.data.model.request.TextMemoRequest
+import androidx.navigation.toRoute
+import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
@@ -18,60 +21,18 @@ import javax.inject.Inject
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
     private val bookRepository: BookStorageRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private val bookDetailRoute = savedStateHandle.toRoute<Route.BookDetail>()
+    private val bookId: String = bookDetailRoute.bookId
+    private val userId: String = "O12OmGoVY8FPYFElNjKN"
     private val _uiState = MutableStateFlow(BookDetailUiState())
     val uiState: StateFlow<BookDetailUiState> = _uiState.asStateFlow()
 
     init {
-        initPreviewData()
         loadAllData()
-    }
-
-    private fun initPreviewData() {
-        _uiState.value = BookDetailUiState(
-            thumbnail = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg",
-            title = "Harry Potter and the Philosopher's Stone",
-            author = "J.K. Rowling",
-            publisher = "Bloomsbury Publishing",
-//            memos = persistentListOf(
-//                MemoUiModel(
-//                    id = "memo_1",
-//                    memoType = MemoType.CANVAS,
-//                    startPage = 1,
-//                    endPage = 26,
-//                    date = "2025.12.24",
-//                    title = "인물 관계도 정리",
-//                    content = null
-//                ),
-//                MemoUiModel(
-//                    id = "memo_2",
-//                    memoType = MemoType.TEXT,
-//                    startPage = 5,
-//                    endPage = 8,
-//                    date = "2025.12.24",
-//                    title = "마법 세계관 메모",
-//                    content = "해리 포터 세계관에서 마법은 타고난 재능과 훈련이 결합된 능력으로 묘사된다. 머글과 마법사의 대비가 인상적이었다."
-//                ),
-//                MemoUiModel(
-//                    id = "memo_3",
-//                    memoType = MemoType.TEXT,
-//                    startPage = 20,
-//                    endPage = 22,
-//                    date = "2025.12.25",
-//                    title = "인상 깊은 문장",
-//                    content = "선택이야말로 우리가 누구인지를 보여준다. 능력보다 더 중요한 것은 선택이라는 메시지가 강하게 남았다."
-//                ),
-//                MemoUiModel(
-//                    id = "memo_4",
-//                    memoType = MemoType.CANVAS,
-//                    startPage = 1,
-//                    endPage = 50,
-//                    date = "2025.12.26",
-//                    title = "주요 인물 관계도",
-//                    content = null
-//                )
-//            )
-        )
+//        addCharacter()
+        addQuote()
     }
 
     fun loadAllData() {
@@ -82,7 +43,7 @@ class BookDetailViewModel @Inject constructor(
                 loadCharacters()
                 loadQuotes()
                 loadMemos()
-                addTextMemo()
+                loadBookInfo()
                 _uiState.update { it.copy(isLoading = false) }
 //                throw Exception("테스트용")
             } catch (e: Exception) {
@@ -94,10 +55,7 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadCharacters(
-        userId: String = "O12OmGoVY8FPYFElNjKN",
-        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-    ) {
+    private suspend fun loadCharacters() {
         val result = bookRepository.getCharacters(userId, bookId)
         _uiState.update {
             it.copy(
@@ -107,22 +65,40 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadQuotes(
-        userId: String = "O12OmGoVY8FPYFElNjKN",
-        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-    ) {
-            val result = bookRepository.getQuotes(userId, bookId)
+    private suspend fun loadQuotes() {
+        val result = bookRepository.getQuotes(userId, bookId)
+        _uiState.update {
+            it.copy(
+                quotes = result.map { quote -> quote.toUiModel() }.toPersistentList()
+            )
+        }
+    }
+
+    private suspend fun loadMemos() {
+        val result = bookRepository.getMemos(userId, bookId)
+        _uiState.update {
+            it.copy(
+                memos = result.map { memo -> memo.toUiModel() }.toPersistentList()
+            )
+        }
+    }
+
+    private suspend fun loadBookInfo() {
+        val result = bookRepository.getBookDetail(userId, bookId)
+        if (result != null) {
             _uiState.update {
                 it.copy(
-                    quotes = result.map { quote -> quote.toUiModel() }.toPersistentList()
+                    thumbnail = result.thumbnail,
+                    title = result.title,
+                    author = result.author.joinToString(", "),
+                    publisher = result.publisher
                 )
             }
+        }
     }
-//
-//    fun addCharacter(
-//        userId: String = "O12OmGoVY8FPYFElNjKN",
-//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//    ) {
+
+    //
+//    fun addCharacter() {
 //        viewModelScope.launch {
 //            bookRepository.addCharacter(
 //                userId, bookId, CharacterRequest(
@@ -133,56 +109,117 @@ class BookDetailViewModel @Inject constructor(
 //            )
 //        }
 //    }
-//
-//    fun addQuote(
-//        userId: String = "O12OmGoVY8FPYFElNjKN",
-//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//    ) {
-//        viewModelScope.launch {
-//            bookRepository.addQuote(
-//                userId, bookId, QuoteRequest(
-//                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
-//                    createdAt = "2026.1.5",
-//                    page = 121
-//                )
-//            )
-//        }
-//    }
-//
-//    fun deleteCharacter(
-//        characterId: String = "e9WCxbOGW15gzMK9Dbnc",
-//        userId: String = "O12OmGoVY8FPYFElNjKN",
-//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//    ) {
-//        viewModelScope.launch {
-//            bookRepository.deleteCharacter(
-//                userId, bookId, characterId)
-//        }
-//    }
 
-    private suspend fun loadMemos(
-        userId: String = "O12OmGoVY8FPYFElNjKN",
-        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-    ) {
-        val result = bookRepository.getMemos(userId, bookId)
-        _uiState.update {
-            it.copy(
-                memos = result.map { memo -> memo.toUiModel() }.toPersistentList()
+
+    fun addQuote() {
+        viewModelScope.launch {
+            bookRepository.addQuote(
+                userId, bookId, QuoteRequest(
+                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
+                    createdAt = "2026.1.5",
+                    page = 121
+                )
             )
         }
     }
 
-    private suspend fun addTextMemo(
-        userId: String = "O12OmGoVY8FPYFElNjKN",
-        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-    ) {
-        bookRepository.addTextMemo(
-            userId, bookId, TextMemoRequest(
-                title = "메모 제목",
-                content = "메모 내용",
-                startPage = 1,
-                endPage = 2
+    fun deleteCharacter(characterId: String) {
+        val previousCharacters = _uiState.value.characters
+
+        _uiState.update {
+            it.copy(
+                characters = it.characters
+                    .filterNot { character -> character.id == characterId }
+                    .toPersistentList()
             )
-        )
+        }
+
+        viewModelScope.launch {
+            try {
+                bookRepository.deleteCharacter(
+                    userId,
+                    bookId,
+                    characterId
+                )
+            } catch (e: Exception) {
+                Log.d("BookDetailViewModel", "deleteCharacter: ${e.message}")
+
+                _uiState.update { it.copy(characters = previousCharacters) }
+
+                // TODO : 사용자에게 Snackbar로 알림을 줘야함
+            }
+        }
     }
+
+    fun deleteQuote(quoteId: String) {
+        val previousQuotes = _uiState.value.quotes
+
+        _uiState.update {
+            it.copy(
+                quotes = it.quotes
+                    .filterNot { quote -> quote.id == quoteId }
+                    .toPersistentList()
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                bookRepository.deleteQuote(
+                    userId,
+                    bookId,
+                    quoteId
+                )
+            } catch (e: Exception) {
+                Log.d("BookDetailViewModel", "deleteQuote: ${e.message}")
+
+                _uiState.update { it.copy(quotes = previousQuotes) }
+
+                // TODO : 사용자에게 Snackbar로 알림을 줘야함
+            }
+        }
+    }
+
+    fun deleteMemo(memoId: String) {
+        val previousMemos = _uiState.value.memos
+
+        _uiState.update {
+            it.copy(
+                memos = it.memos
+                    .filterNot { memo -> memo.id == memoId }
+                    .toPersistentList()
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                bookRepository.deleteMemo(
+                    userId,
+                    bookId,
+                    memoId
+                )
+            } catch (e: Exception) {
+                Log.d("BookDetailViewModel", "deleteMemo: ${e.message}")
+
+                _uiState.update { it.copy(memos = previousMemos) }
+
+                // TODO : 사용자에게 Snackbar로 알림을 줘야함
+            }
+        }
+    }
+//
+//    private suspend fun addTextMemo(
+//    userId: String = "O12OmGoVY8FPYFElNjKN",
+//    bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
+//) {
+//    bookRepository.addTextMemo(
+//        userId, bookId, TextMemoRequest(
+//            title = "메모 제목",
+//            content = "메모 내용",
+//            startPage = 1,
+//            endPage = 2
+//        )
+//    )
+//}
+
+
 }

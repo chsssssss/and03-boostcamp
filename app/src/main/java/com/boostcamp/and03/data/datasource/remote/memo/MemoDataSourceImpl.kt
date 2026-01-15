@@ -37,7 +37,7 @@ class MemoDataSourceImpl @Inject constructor(
 
         } catch (e: Exception) {
             Log.e("MemoDataSourceImpl", "Error: ${e.message}")
-            emptyList()
+            throw e
         }
     }
 
@@ -133,6 +133,7 @@ class MemoDataSourceImpl @Inject constructor(
 
             val newDocRef = collectionRef.document()
             newDocRef.set(data).await()
+            newDocRef.update("updateTime", FieldValue.serverTimestamp()).await()
 
             Log.d("MemoDataSourceImpl", "Memo added: ${newDocRef.id}")
         } catch (e: Exception) {
@@ -141,4 +142,25 @@ class MemoDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        try {
+            db.collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("memo")
+                .document(memoId)
+                .delete()
+                .await()
+
+            Log.d("MemoDataSourceImpl", "Memo deleted: $memoId")
+        } catch (e: Exception) {
+            Log.e("MemoDataSourceImpl", "Failed to delete memo: ${e.message}")
+            throw e
+        }
+    }
 }
