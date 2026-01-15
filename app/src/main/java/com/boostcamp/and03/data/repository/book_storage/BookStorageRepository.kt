@@ -68,4 +68,10 @@ interface BookStorageRepository {
         memo: TextMemoRequest
     )
 
+    suspend fun deleteMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    )
+
 }

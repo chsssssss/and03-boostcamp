@@ -86,4 +86,8 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun addTextMemo(userId: String, bookId: String, memo: TextMemoRequest) {
         memoDataSource.addTextMemo(userId, bookId, memo)
     }
+
+    override suspend fun deleteMemo(userId: String, bookId: String, memoId: String) {
+        memoDataSource.deleteMemo(userId, bookId, memoId)
+    }
 }

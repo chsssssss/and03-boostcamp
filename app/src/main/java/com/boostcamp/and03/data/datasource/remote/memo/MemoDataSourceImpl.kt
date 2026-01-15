@@ -141,4 +141,26 @@ class MemoDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun deleteMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        try {
+            db.collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("memo")
+                .document(memoId)
+                .delete()
+                .await()
+
+            Log.d("MemoDataSourceImpl", "Memo deleted: $memoId")
+        } catch (e: Exception) {
+            Log.e("MemoDataSourceImpl", "Failed to delete memo: ${e.message}")
+            throw e
+        }
+    }
 }
