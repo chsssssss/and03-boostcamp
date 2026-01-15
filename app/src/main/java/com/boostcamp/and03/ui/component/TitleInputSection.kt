@@ -1,10 +1,16 @@
 package com.boostcamp.and03.ui.component
 
-import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.theme.And03Spacing
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun TitleInputSection(
@@ -12,13 +18,21 @@ fun TitleInputSection(
     onTitleChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val titleTextFieldState = remember { TextFieldState(title) }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S)
+    ) {
+        Text(
+            text = stringResource(R.string.add_memo_title),
+            style = And03Theme.typography.labelLarge
+        )
 
-    LabelAndEditableTextField(
-        labelRes = R.string.add_memo_title,
-        placeholderRes = R.string.add_memo_enter_title_placeholder,
-        state = titleTextFieldState,
-        onSearch = {},
-        modifier = modifier
-    )
+        OutlinedTextField(
+            value = title,
+            onValueChange = onTitleChange,
+            modifier = modifier.fillMaxWidth(),
+            placeholder = { Text(stringResource(id = R.string.add_memo_enter_title_placeholder)) },
+            shape = And03Theme.shapes.defaultCorner
+        )
+    }
 }
