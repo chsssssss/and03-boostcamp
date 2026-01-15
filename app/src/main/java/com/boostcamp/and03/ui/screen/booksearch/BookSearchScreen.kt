@@ -143,7 +143,7 @@ private fun BookSearchScreen(
                 isQueryEmpty -> {
                     BookSearchResultEmptySection(
                         message = stringResource(R.string.book_search_empty_before_query),
-                        buttonText = stringResource(R.string.book_search_manual_add_button_text),
+                        buttonText = stringResource(R.string.book_search_button_text),
                         onButtonClick = { onAction(BookSearchAction.OnManualAddClick) }
                     )
                 }
@@ -160,15 +160,15 @@ private fun BookSearchScreen(
                 refreshState is LoadState.Error -> {
                     BookSearchResultEmptySection(
                         message = stringResource(R.string.book_search_error_text),
-                        buttonText = stringResource(R.string.book_search_retry_button_text),
-                        onButtonClick = { searchResults.retry() }
+                        buttonText = "",
+                        onButtonClick = { }
                     )
                 }
 
                 refreshState is LoadState.NotLoading && searchResults.itemCount == 0 -> {
                     BookSearchResultEmptySection(
                         message = stringResource(R.string.book_search_empty_after_query),
-                        buttonText = stringResource(R.string.book_search_manual_add_button_text),
+                        buttonText = stringResource(R.string.book_search_button_text),
                         onButtonClick = { onAction(BookSearchAction.OnManualAddClick) }
                     )
                 }
@@ -246,10 +246,12 @@ private fun BookSearchResultEmptySection(
 
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
-            And03Button(
-                text = buttonText,
-                onClick = onButtonClick
-            )
+            if (buttonText.isNotBlank()) {
+                And03Button(
+                    text = buttonText,
+                    onClick = onButtonClick
+                )
+            }
         }
     }
 }
