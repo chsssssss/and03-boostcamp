@@ -48,7 +48,7 @@ fun PageInputSection(
         ) {
             OutlinedTextField(
                 value = startPage,
-                onValueChange = onStartPageChange,
+                onValueChange = { onStartPageChange(it.filter { char -> char.isDigit() }) },
                 placeholder = { Text(text = stringResource(id = R.string.add_memo_enter_start_page_placeholder)) },
                 modifier = modifier
                     .fillMaxWidth()
@@ -68,7 +68,7 @@ fun PageInputSection(
 
             OutlinedTextField(
                 value = endPage,
-                onValueChange = onEndPageChange,
+                onValueChange = { onEndPageChange(it.filter { char -> char.isDigit() }) },
                 placeholder = { Text(text = stringResource(id = R.string.add_memo_enter_end_page_placeholder)) },
                 modifier = modifier
                     .fillMaxWidth()

@@ -48,7 +48,7 @@ fun ContentInputSection(
 
         OutlinedTextField(
             value = content,
-            onValueChange = onContentChange,
+            onValueChange = { if (it.length <= ContentInputSectionValues.MAX_CHARACTER_COUNT) onContentChange(it) },
             modifier = modifier
                 .fillMaxWidth()
                 .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L),
