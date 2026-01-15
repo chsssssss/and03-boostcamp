@@ -58,7 +58,6 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookDetailRoute(
-    bookId: String,
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),

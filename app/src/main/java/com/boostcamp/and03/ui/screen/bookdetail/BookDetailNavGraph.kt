@@ -14,11 +14,8 @@ fun NavGraphBuilder.bookDetailNavGraph(
     navigateToCanvas: (String) -> Unit,
     navigateToMemoEdit: (String) -> Unit
 ) {
-    composable<Route.BookDetail> { backStackEntry ->
-        val route = backStackEntry.toRoute<Route.BookDetail>()
-
+    composable<Route.BookDetail> {
         BookDetailRoute(
-            bookId = route.bookId,
             navigateToBack = navigateToBack,
             navigateToCanvas = navigateToCanvas
         )
