@@ -4,11 +4,10 @@ import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 
 data class BookSearchUiState(
     val query: String = "",
-    val selectedBookId: String? = null,
-    val totalResultCount: Int = 0,
+    val selectedBook: BookSearchResultUiModel? = null,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
 ) {
     val isSaveEnabled: Boolean
-        get() = selectedBookId != null && !isSaving
+        get() = selectedBook != null && !isSaving
 }

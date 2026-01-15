@@ -1,9 +1,8 @@
 package com.boostcamp.and03.data.model.request
 
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
-import kotlinx.collections.immutable.toImmutableList
+import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 
-data class BookEntity(
+data class BookStorageRequest(
     val title: String = "",
     val authors: List<String> = emptyList(),
     val publisher: String = "",
@@ -12,7 +11,7 @@ data class BookEntity(
     val thumbnail: String = ""
 )
 
-fun BookUiModel.toEntity() = BookEntity(
+fun BookSearchResultUiModel.toRequest() = BookStorageRequest(
     title = title,
     authors = authors,
     publisher = publisher,
