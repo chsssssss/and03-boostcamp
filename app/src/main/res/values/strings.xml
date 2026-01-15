@@ -52,6 +52,7 @@
     <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
     <string name="book_search_button_text">직접 추가</string>
     <string name="book_search_save_failure_text">책 저장에 실패했습니다</string>
+    <string name="book_search_error_text">에러가 발생했어요.</string>
 
     <!-- 메모 추가 화면 공용 텍스트 -->
     <string name="add_memo_title">제목</string>
@@ -81,7 +82,6 @@
     <string name="content_description_more_button">더보기 버튼을 눌러 메뉴를 표시합니다</string>
     <string name="content_description_node_item_icon">노드를 나타내는 아이콘입니다</string>
     <string name="content_description_confirm">확인</string>
-    <string name="content_description_save_button">저장 버튼을 누릅니다</string>
     <string name="content_description_add_book_button">책을 검색하거나 입력하여 책을 추가합니다</string>
     <string name="content_description_save_button">저장하기</string>
 
