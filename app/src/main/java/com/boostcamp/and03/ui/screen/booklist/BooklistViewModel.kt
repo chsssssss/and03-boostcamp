@@ -2,23 +2,19 @@ package com.boostcamp.and03.ui.screen.booklist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.and03.data.repository.book.BookRepository
+import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.ui.screen.booklist.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class BooklistViewModel @Inject constructor(
-    private val bookRepository: BookRepository
+    private val bookStorageRepository: BookStorageRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BooklistUiState())
@@ -28,13 +24,15 @@ class BooklistViewModel @Inject constructor(
 
     init {
         loadBooks()
+        resetSearch()
     }
 
     fun loadBooks() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            val books = bookRepository.loadSavedBooks(userId)
+            val books = bookStorageRepository.getBooks(userId)
+                .map { it.toUiModel() }
                 .toImmutableList()
 
             _uiState.update {
@@ -48,10 +46,10 @@ class BooklistViewModel @Inject constructor(
     }
 
     fun resetSearch() {
-        _uiState.update { state ->
-            state.copy(
+        _uiState.update {
+            it.copy(
                 searchQuery = "",
-                filteredBooks = state.allBooks
+                filteredBooks = it.allBooks
             )
         }
     }

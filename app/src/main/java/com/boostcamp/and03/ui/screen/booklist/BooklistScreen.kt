@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.booklist
 
-import android.text.TextUtils.replace
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -159,6 +157,7 @@ fun BooklistScreenPreview() {
     val previewState = BooklistUiState(
         allBooks = persistentListOf(
             BookUiModel(
+                id = "",
                 title = "객체지향의 사실과 오해",
                 authors = persistentListOf("조영호"),
                 publisher = "위키북스",
@@ -167,6 +166,7 @@ fun BooklistScreenPreview() {
                 isbn = ""
             ),
             BookUiModel(
+                id = "",
                 title = "클린 아키텍처",
                 authors = persistentListOf("로버트 C. 마틴"),
                 publisher = "인사이트",

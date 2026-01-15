@@ -4,6 +4,7 @@
     <!--  common  -->
     <string name="cd_more_options">더보기 옵션</string>
     <string name="page_indicator">p.%1$d</string>
+    <string name="retry_btn_txt">다시 시도</string>
 
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
@@ -18,6 +19,8 @@
 
     <!-- book list -->
     <string name="book_count_text">총 %1$d권의 책</string>
+
+    <!-- book detail -->
     <string name="character_card_profile_icon_cd">%1$s 프로필</string>
     <string name="memo_card_memo_type_canvas">캔버스</string>
     <string name="memo_card_memo_type_text">텍스트</string>
@@ -80,4 +83,21 @@
     <string name="content_description_confirm">확인</string>
     <string name="content_description_save_button">저장 버튼을 누릅니다</string>
     <string name="content_description_add_book_button">책을 검색하거나 입력하여 책을 추가합니다</string>
+    <string name="content_description_save_button">저장하기</string>
+
+    <!-- Add Quote -->
+    <string name="add_quote_title">인상 깊은 문장 추가</string>
+
+    <string name="add_quote_info_title">인상 깊은 문장을 기록해보세요</string>
+    <string name="add_quote_info_description">책이나 영화, 일상에서 마음에 든 문장을 저장할 수 있습니다.</string>
+
+    <string name="add_quote_sentence_label">문장</string>
+    <string name="add_quote_sentence_hint">텍스트를 입력하세요.</string>
+    <string name="add_quote_add_by_image">이미지로 추가</string>
+
+    <string name="add_quote_text_count">%1$d/%2$d</string>
+
+    <string name="add_quote_page_label">페이지</string>
+    <string name="add_quote_page_hint">페이지 번호를 입력하세요</string>
+
 </resources>
