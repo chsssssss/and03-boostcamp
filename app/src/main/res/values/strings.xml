@@ -49,14 +49,32 @@
 
     <!-- 책 검색 화면 -->
     <string name="book_search_title">책 추가</string>
+    <string name="book_search_result_count_text">검색 결과 %1$d건</string>
     <string name="book_search_empty_before_query">책을 직접 추가할 수 있어요.</string>
     <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
     <string name="book_search_button_text">직접 추가</string>
     <string name="book_search_save_failure_text">책 저장에 실패했습니다</string>
-    <string name="book_search_manual_add_button_text">직접 추가</string>
-    <string name="book_search_retry_button_text">다시 시도</string>
     <string name="book_search_error_text">에러가 발생했어요.</string>
-    <string name="book_search_result_count_text">검색 결과 %1$d건</string>
+
+    <!-- 메모 추가 화면 공용 텍스트 -->
+    <string name="add_memo_title">제목</string>
+    <string name="add_memo_content">내용</string>
+    <string name="add_memo_page_information">페이지 정보</string>
+    <string name="add_memo_enter_title_placeholder">메모 제목을 입력하세요</string>
+    <string name="add_memo_enter_start_page_placeholder">시작</string>
+    <string name="add_memo_enter_end_page_placeholder">종료</string>
+    <string name="add_memo_save_button_text">저장하기</string>
+    <string name="add_memo_page_notice">종료 페이지를 비워두면 단일 페이지로 표시됩니다</string>
+    <string name="add_memo_character_count">%1$d/%2$d</string>
+    <string name="add_memo_add_by_image">이미지로 추가</string>
+
+    <!-- 텍스트 메모 추가 화면 -->
+    <string name="add_memo_text_app_bar_title">텍스트 메모 추가</string>
+    <string name="add_memo_text_enter_content_placeholder">메모 내용을 입력하거나 OCR을 사용해 텍스트를 가져오세요</string>
+    <string name="add_memo_text_ocr_button_text">이미지로 추가</string>
+
+    <!-- 캔버스 메모 추가 화면 -->
+    <string name="add_memo_canvas_app_bar_title">캔버스 메모 추가</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>

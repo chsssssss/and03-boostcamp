@@ -21,7 +21,7 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 
 @Composable
 fun LabelAndEditableTextField(
-    labelRes: Int,
+    @StringRes labelRes: Int,
     state: TextFieldState,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
