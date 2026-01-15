@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
@@ -31,6 +32,7 @@ class BookDetailViewModel @Inject constructor(
     init {
         loadAllData()
 //        addCharacter()
+        addQuote()
     }
 
     fun loadAllData() {
@@ -108,22 +110,19 @@ class BookDetailViewModel @Inject constructor(
 //        }
 //    }
 
-    //
-//    fun addQuote(
-//        userId: String = "O12OmGoVY8FPYFElNjKN",
-//        bookId: String = "YkFyRg6G0v2Us6b3V5Tm"
-//    ) {
-//        viewModelScope.launch {
-//            bookRepository.addQuote(
-//                userId, bookId, QuoteRequest(
-//                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
-//                    createdAt = "2026.1.5",
-//                    page = 121
-//                )
-//            )
-//        }
-//    }
-//
+
+    fun addQuote() {
+        viewModelScope.launch {
+            bookRepository.addQuote(
+                userId, bookId, QuoteRequest(
+                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
+                    createdAt = "2026.1.5",
+                    page = 121
+                )
+            )
+        }
+    }
+
     fun deleteCharacter(characterId: String) {
         val previousCharacters = _uiState.value.characters
 
@@ -146,6 +145,34 @@ class BookDetailViewModel @Inject constructor(
                 Log.d("BookDetailViewModel", "deleteCharacter: ${e.message}")
 
                 _uiState.update { it.copy(characters = previousCharacters) }
+
+                // TODO : 사용자에게 Snackbar로 알림을 줘야함
+            }
+        }
+    }
+
+    fun deleteQuote(quoteId: String) {
+        val previousQuotes = _uiState.value.quotes
+
+        _uiState.update {
+            it.copy(
+                quotes = it.quotes
+                    .filterNot { quote -> quote.id == quoteId }
+                    .toPersistentList()
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                bookRepository.deleteQuote(
+                    userId,
+                    bookId,
+                    quoteId
+                )
+            } catch (e: Exception) {
+                Log.d("BookDetailViewModel", "deleteQuote: ${e.message}")
+
+                _uiState.update { it.copy(quotes = previousQuotes) }
 
                 // TODO : 사용자에게 Snackbar로 알림을 줘야함
             }

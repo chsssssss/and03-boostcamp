@@ -71,7 +71,8 @@ fun BookDetailRoute(
         navigateToBack = navigateToBack,
         navigateToCanvas = navigateToCanvas,
         onRetryClick = { viewModel.loadAllData() },
-        onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) }
+        onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
+        onClilckDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) }
     )
 }
 
@@ -81,7 +82,8 @@ private fun BookDetailScreen(
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     onRetryClick: () -> Unit,
-    onClickDelCharacter: (String) -> Unit
+    onClickDelCharacter: (String) -> Unit,
+    onClilckDelQuote: (String) -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -166,7 +168,12 @@ private fun BookDetailScreen(
                         onClickEdit = { }
                     )
 
-                    BookDetailTab.QUOTE -> QuoteTab(uiState.quotes)
+                    BookDetailTab.QUOTE -> QuoteTab(
+                        uiState.quotes,
+                        onClickDelete = onClilckDelQuote,
+                        onClickEdit = { }
+                    )
+
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
                         onClickAddCanvas = { },
@@ -269,7 +276,11 @@ private fun CharacterTab(
 }
 
 @Composable
-private fun QuoteTab(quotes: ImmutableList<QuoteUiModel>) {
+private fun QuoteTab(
+    quotes: ImmutableList<QuoteUiModel>,
+    onClickDelete: (String) -> Unit,
+    onClickEdit: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -285,7 +296,9 @@ private fun QuoteTab(quotes: ImmutableList<QuoteUiModel>) {
                 items(quotes, key = { it.id }) { quote ->
                     QuoteCard(
                         quote = quote,
-                        onClick = {}
+                        onClick = {},
+                        onClickDelete = { onClickDelete(quote.id) },
+                        onClickEdit = onClickEdit
                     )
                 }
             }
@@ -392,7 +405,8 @@ fun BooklistScreenPreview() {
             navigateToBack = {},
             navigateToCanvas = {},
             onRetryClick = {},
-            onClickDelCharacter = {}
+            onClickDelCharacter = {},
+            onClilckDelQuote = {}
         )
     }
 }
