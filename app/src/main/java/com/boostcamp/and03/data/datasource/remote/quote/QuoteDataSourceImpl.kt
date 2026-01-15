@@ -3,6 +3,7 @@ package com.boostcamp.and03.data.datasource.remote.quote
 import android.util.Log
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.response.QuoteResponse
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
@@ -56,6 +57,7 @@ class QuoteDataSourceImpl @Inject constructor(
 
             val newDocRef = collectionRef.document()
             newDocRef.set(quote).await()
+            newDocRef.update("createdAt", FieldValue.serverTimestamp()).await()
 
             Log.d("QuoteDataSourceImpl", "Quote added: ${newDocRef.id}")
         } catch (e: Exception) {
