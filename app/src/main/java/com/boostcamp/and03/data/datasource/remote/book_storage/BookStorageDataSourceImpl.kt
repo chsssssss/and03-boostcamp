@@ -75,7 +75,10 @@ class BookStorageDataSourceImpl @Inject constructor(
     }
 
 
-    override suspend fun saveBook(userId: String, book: BookStorageRequest) {
+    override suspend fun saveBook(
+        userId: String,
+        book: BookStorageRequest
+    ) {
         db.collection("user")
             .document(userId)
             .collection("book")

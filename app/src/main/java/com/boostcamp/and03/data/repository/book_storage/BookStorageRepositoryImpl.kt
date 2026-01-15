@@ -25,11 +25,20 @@ class BookStorageRepositoryImpl @Inject constructor(
         return bookStorageDataSource.getBooks(userId)
     }
 
-    override suspend fun getBookDetail(userId: String, bookId: String): BookDetailResponse? {
-        return bookStorageDataSource.getBookDetail(userId, bookId)
+    override suspend fun getBookDetail(
+        userId: String,
+        bookId: String
+    ): BookDetailResponse? {
+        return bookStorageDataSource.getBookDetail(
+            userId,
+            bookId
+        )
     }
 
-    override suspend fun saveBook(userId: String, book: BookStorageRequest) {
+    override suspend fun saveBook(
+        userId: String,
+        book: BookStorageRequest
+    ) {
         return bookStorageDataSource.saveBook(userId, book)
     }
 
@@ -76,18 +85,44 @@ class BookStorageRepositoryImpl @Inject constructor(
         bookId: String,
         quoteId: String
     ) {
-        quoteDataSource.deleteQuote(userId, bookId, quoteId)
+        quoteDataSource.deleteQuote(
+            userId,
+            bookId,
+            quoteId
+        )
     }
 
-    override suspend fun getMemos(userId: String, bookId: String): List<MemoResponse> {
-        return memoDataSource.getMemos(userId, bookId)
+    override suspend fun getMemos(
+        userId: String,
+        bookId: String
+    ): List<MemoResponse> {
+        return memoDataSource.getMemos(
+            userId,
+            bookId
+        )
     }
 
-    override suspend fun addTextMemo(userId: String, bookId: String, memo: TextMemoRequest) {
-        memoDataSource.addTextMemo(userId, bookId, memo)
+    override suspend fun addTextMemo(
+        userId: String,
+        bookId: String,
+        memo: TextMemoRequest
+    ) {
+        memoDataSource.addTextMemo(
+            userId,
+            bookId,
+            memo
+        )
     }
 
-    override suspend fun deleteMemo(userId: String, bookId: String, memoId: String) {
-        memoDataSource.deleteMemo(userId, bookId, memoId)
+    override suspend fun deleteMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        memoDataSource.deleteMemo(
+            userId,
+            bookId,
+            memoId
+        )
     }
 }
