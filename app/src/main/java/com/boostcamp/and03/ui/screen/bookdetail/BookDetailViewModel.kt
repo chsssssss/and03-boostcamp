@@ -178,6 +178,34 @@ class BookDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteMemo(memoId: String) {
+        val previousMemos = _uiState.value.memos
+
+        _uiState.update {
+            it.copy(
+                memos = it.memos
+                    .filterNot { memo -> memo.id == memoId }
+                    .toPersistentList()
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                bookRepository.deleteMemo(
+                    userId,
+                    bookId,
+                    memoId
+                )
+            } catch (e: Exception) {
+                Log.d("BookDetailViewModel", "deleteMemo: ${e.message}")
+
+                _uiState.update { it.copy(memos = previousMemos) }
+
+                // TODO : 사용자에게 Snackbar로 알림을 줘야함
+            }
+        }
+    }
 //
 //    private suspend fun addTextMemo(
 //    userId: String = "O12OmGoVY8FPYFElNjKN",

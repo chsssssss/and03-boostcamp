@@ -72,7 +72,8 @@ fun BookDetailRoute(
         navigateToCanvas = navigateToCanvas,
         onRetryClick = { viewModel.loadAllData() },
         onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
-        onClilckDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) }
+        onClilckDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
+        onClickDelMemo = { memoId -> viewModel.deleteMemo(memoId) }
     )
 }
 
@@ -83,7 +84,8 @@ private fun BookDetailScreen(
     navigateToCanvas: (memoId: String) -> Unit,
     onRetryClick: () -> Unit,
     onClickDelCharacter: (String) -> Unit,
-    onClilckDelQuote: (String) -> Unit
+    onClilckDelQuote: (String) -> Unit,
+    onClickDelMemo: (String) -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -182,7 +184,9 @@ private fun BookDetailScreen(
                             if (memo.memoType == MemoType.CANVAS) {
                                 navigateToCanvas(memo.id)
                             }
-                        }
+                        },
+                        onClickDelMemo = onClickDelMemo,
+                        onClickEditMemo = { }
                     )
                 }
             }
@@ -237,7 +241,7 @@ private fun BookInfoSection(
 private fun CharacterTab(
     characters: ImmutableList<CharacterUiModel>,
     onClickDelete: (String) -> Unit,
-    onClickEdit: () -> Unit
+    onClickEdit: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -261,7 +265,7 @@ private fun CharacterTab(
                         iconColor = character.iconColor,
                         description = character.description,
                         onClick = { },
-                        onEditClick = onClickEdit,
+                        onEditClick = { onClickEdit(character.id) },
                         onDeleteClick = { onClickDelete(character.id) }
                     )
                 }
@@ -279,7 +283,7 @@ private fun CharacterTab(
 private fun QuoteTab(
     quotes: ImmutableList<QuoteUiModel>,
     onClickDelete: (String) -> Unit,
-    onClickEdit: () -> Unit
+    onClickEdit: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -298,7 +302,7 @@ private fun QuoteTab(
                         quote = quote,
                         onClick = {},
                         onClickDelete = { onClickDelete(quote.id) },
-                        onClickEdit = onClickEdit
+                        onClickEdit = { onClickEdit(quote.id) },
                     )
                 }
             }
@@ -317,6 +321,8 @@ private fun MemoTab(
     onClickAddCanvas: () -> Unit,
     onClickAddText: () -> Unit,
     onClickMemo: (MemoUiModel) -> Unit,
+    onClickDelMemo: (String) -> Unit,
+    onClickEditMemo: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -341,7 +347,9 @@ private fun MemoTab(
                             memo.endPage
                         ),
                         date = memo.date,
-                        onClick = { onClickMemo(memo) }
+                        onClick = { onClickMemo(memo) },
+                        onClickDelMemo = { onClickDelMemo(memo.id) },
+                        onClickEdit = { onClickEditMemo(memo.id) },
                     )
                 }
             }
@@ -406,7 +414,8 @@ fun BooklistScreenPreview() {
             navigateToCanvas = {},
             onRetryClick = {},
             onClickDelCharacter = {},
-            onClilckDelQuote = {}
+            onClilckDelQuote = {},
+            onClickDelMemo = {}
         )
     }
 }
