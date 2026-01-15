@@ -59,6 +59,7 @@ fun BookDetailRoute(
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     navigateToAddTextMemo: () -> Unit,
+    navigateToAddCanvasMemo: () -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -68,6 +69,7 @@ fun BookDetailRoute(
         navigateToBack = navigateToBack,
         navigateToCanvas = navigateToCanvas,
         onClickAddText = navigateToAddTextMemo,
+        onClickAddCanvas = navigateToAddCanvasMemo,
         onRetryClick = { viewModel.loadAllData() }
     )
 }
@@ -78,6 +80,7 @@ private fun BookDetailScreen(
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     onClickAddText: () -> Unit,
+    onClickAddCanvas: () -> Unit,
     onRetryClick: () -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -161,7 +164,7 @@ private fun BookDetailScreen(
                     BookDetailTab.QUOTE -> QuoteTab(uiState)
                     BookDetailTab.MEMO -> MemoTab(
                         uiState = uiState,
-                        onClickAddCanvas = { },
+                        onClickAddCanvas = onClickAddCanvas,
                         onClickAddText = onClickAddText,
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
@@ -339,6 +342,7 @@ fun BooklistScreenPreview() {
             navigateToBack = {},
             navigateToCanvas = {},
             onClickAddText = {},
+            onClickAddCanvas = {},
             onRetryClick = {}
         )
     }
