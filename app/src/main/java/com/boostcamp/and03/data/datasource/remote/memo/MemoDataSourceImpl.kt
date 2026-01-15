@@ -133,6 +133,7 @@ class MemoDataSourceImpl @Inject constructor(
 
             val newDocRef = collectionRef.document()
             newDocRef.set(data).await()
+            newDocRef.update("updateTime", FieldValue.serverTimestamp()).await()
 
             Log.d("MemoDataSourceImpl", "Memo added: ${newDocRef.id}")
         } catch (e: Exception) {
