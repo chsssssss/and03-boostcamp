@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NaverBookSearchNetworkModule {
+object BookSearchNetworkModule {
     private const val BASE_URL = "https://openapi.naver.com"
     private const val CLIENT_ID = BuildConfig.NAVER_CLIENT_ID
     private const val CLIENT_SECRET = BuildConfig.NAVER_CLIENT_SECRET

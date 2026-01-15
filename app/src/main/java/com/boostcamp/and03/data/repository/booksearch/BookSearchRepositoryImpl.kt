@@ -4,9 +4,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.boostcamp.and03.data.api.BookSearchApiConstants
-import com.boostcamp.and03.data.datasource.paging.NaverBookSearchPagingSource
-import com.boostcamp.and03.data.datasource.remote.search.aladin.BookDetailRemoteDataSource
-import com.boostcamp.and03.data.datasource.remote.search.naver.BookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.paging.BookSearchPagingSource
+import com.boostcamp.and03.data.datasource.remote.book_detail.BookDetailRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.BookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.response.BookSearchResultItem
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class BookSearchRepositoryImpl @Inject constructor(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                NaverBookSearchPagingSource(
+                BookSearchPagingSource(
                     remoteDataSource = bookSearchRemoteDataSource,
                     query = query
                 )
