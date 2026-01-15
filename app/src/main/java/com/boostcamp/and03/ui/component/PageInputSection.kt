@@ -33,7 +33,7 @@ fun PageInputSection(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S)
     ) {
         Text(
@@ -70,7 +70,7 @@ fun PageInputSection(
                 value = endPage,
                 onValueChange = { onEndPageChange(it.filter { char -> char.isDigit() }) },
                 placeholder = { Text(text = stringResource(id = R.string.add_memo_enter_end_page_placeholder)) },
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
