@@ -2,17 +2,17 @@ package com.boostcamp.and03.data.datasource.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.boostcamp.and03.data.datasource.remote.NaverBookSearchRemoteDataSource
-import com.boostcamp.and03.data.model.response.NaverBookItem
+import com.boostcamp.and03.data.datasource.remote.search.naver.BookSearchRemoteDataSource
+import com.boostcamp.and03.data.model.response.BookSearchResultItem
 
 class NaverBookSearchPagingSource(
-    private val remoteDataSource: NaverBookSearchRemoteDataSource,
+    private val remoteDataSource: BookSearchRemoteDataSource,
     private val query: String
-): PagingSource<Int, NaverBookItem>() {
+): PagingSource<Int, BookSearchResultItem>() {
 
     override suspend fun load(
         params: LoadParams<Int>
-    ): LoadResult<Int, NaverBookItem> {
+    ): LoadResult<Int, BookSearchResultItem> {
 
         val display = params.loadSize
         val start = params.key ?: 1
@@ -30,7 +30,7 @@ class NaverBookSearchPagingSource(
         )
     }
 
-    override fun getRefreshKey(state: PagingState<Int, NaverBookItem>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, BookSearchResultItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val closestPage = state.closestPageToPosition(anchorPosition)
             closestPage?.prevKey?.plus(state.config.pageSize)

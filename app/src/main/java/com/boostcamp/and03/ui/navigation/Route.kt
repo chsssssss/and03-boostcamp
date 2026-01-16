@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.navigation
 
+import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -16,20 +17,17 @@ sealed interface Route {
     data object MyPage : Route
 
     @Serializable
-    data object BookDetail : Route
-}
-
-sealed interface MainTabRoute : Route {
-    @Serializable
-    data object Booklist : MainTabRoute
+    data class BookDetail(val bookId: String) : Route
 
     @Serializable
-    data object AddBook : MainTabRoute
+    data class Canvas(val memoId: String) : Route
 
     @Serializable
-    data object MyPage : MainTabRoute
+    data object MemoEdit: Route // 메모 관계도 화면에서 넘어갈 수 있느 메모 편집 화면, 추후 수정 필요
 
     @Serializable
-    data object BookDetail : MainTabRoute
+    data object AddTextMemo: Route
 
+    @Serializable
+    data object AddCanvasMemo: Route
 }

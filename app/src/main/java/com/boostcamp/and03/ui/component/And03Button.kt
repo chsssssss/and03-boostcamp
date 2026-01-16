@@ -21,6 +21,7 @@ fun And03Button(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     variant: ButtonVariant = ButtonVariant.Primary,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding
 ) {
@@ -46,6 +47,7 @@ fun And03Button(
         colors = colors,
         shape = And03Theme.shapes.defaultCorner,
         contentPadding = contentPadding,
+        enabled = enabled,
         modifier = modifier
     ) {
         Text(

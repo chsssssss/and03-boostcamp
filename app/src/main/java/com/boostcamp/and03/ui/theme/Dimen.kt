@@ -46,6 +46,8 @@ object And03ComponentSize {
 
 object And03Border {
     val LEFT_BAR_WIDTH = 6.dp
+    val BUTTON_HEIGHT_L = 52.dp
+    val TEXT_FIELD_HEIGHT_L = 140.dp
 }
 
 object And03BorderWidth {

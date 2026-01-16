@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.network
 
 import com.boostcamp.and03.BuildConfig
-import com.boostcamp.and03.data.api.NaverBookSearchApiService
+import com.boostcamp.and03.data.api.BookSearchApiService
 import com.boostcamp.and03.data.di.qualifier.NaverBookSearchOkHttpClient
 import com.boostcamp.and03.data.di.qualifier.NaverBookSearchRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -54,6 +54,6 @@ object NaverBookSearchNetworkModule {
     @Singleton
     fun provideNaverBookSearchService(
         @NaverBookSearchRetrofit retrofit: Retrofit
-    ): NaverBookSearchApiService =
-        retrofit.create(NaverBookSearchApiService::class.java)
+    ): BookSearchApiService =
+        retrofit.create(BookSearchApiService::class.java)
 }
