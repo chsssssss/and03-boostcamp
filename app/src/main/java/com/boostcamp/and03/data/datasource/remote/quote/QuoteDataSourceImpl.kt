@@ -56,8 +56,13 @@ class QuoteDataSourceImpl @Inject constructor(
                 .collection("quote")
 
             val newDocRef = collectionRef.document()
-            newDocRef.set(quote).await()
-            newDocRef.update("createdAt", FieldValue.serverTimestamp()).await()
+
+            val data = mapOf(
+                "content" to quote.content,
+                "page" to quote.page,
+                "createdAt" to FieldValue.serverTimestamp()
+            )
+            newDocRef.set(data).await()
 
             Log.d("QuoteDataSourceImpl", "Quote added: ${newDocRef.id}")
         } catch (e: Exception) {
