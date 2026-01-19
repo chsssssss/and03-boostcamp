@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -20,9 +21,32 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
 
     fun onAction(action: CanvasMemoAction) {
         when (action) {
-            is CanvasMemoAction.ClickBack -> {
-                _event.trySend(CanvasMemoEvent.NavToBack)
-            }
+            CanvasMemoAction.ClickBack -> handleClickBack()
+            CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
+            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
         }
+    }
+
+    private fun handleClickBack() {
+        _event.trySend(CanvasMemoEvent.NavToBack)
+    }
+
+    private fun handleCloseRelationDialog() {
+        _uiState.value = _uiState.value.copy(
+            isRelationDialogVisible = false,
+            relationSelection = null,
+            relationNameState = TextFieldState()
+        )
+    }
+
+    private fun handleOpenRelationDialog(action: CanvasMemoAction.OpenRelationDialog) {
+        _uiState.value = _uiState.value.copy(
+            isRelationDialogVisible = true,
+            relationSelection = RelationSelection(
+                fromNodeId = action.fromNodeId,
+                toNodeId = action.toNodeId
+            ),
+            relationNameState = TextFieldState()
+        )
     }
 }
