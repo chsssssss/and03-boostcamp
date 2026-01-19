@@ -74,7 +74,7 @@ fun BookDetailRoute(
         navigateToCanvas = navigateToCanvas,
         onRetryClick = { viewModel.loadAllData() },
         onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
-        onClilckDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
+        onClickDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
         onClickDelMemo = { memoId -> viewModel.deleteMemo(memoId) },
         onClickAddText = navigateToAddTextMemo,
         onClickAddCanvas = navigateToAddCanvasMemo
@@ -90,7 +90,7 @@ private fun BookDetailScreen(
     onClickAddCanvas: () -> Unit,
     onRetryClick: () -> Unit,
     onClickDelCharacter: (String) -> Unit,
-    onClilckDelQuote: (String) -> Unit,
+    onClickDelQuote: (String) -> Unit,
     onClickDelMemo: (String) -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -178,7 +178,7 @@ private fun BookDetailScreen(
 
                     BookDetailTab.QUOTE -> QuoteTab(
                         uiState.quotes,
-                        onClickDelete = onClilckDelQuote,
+                        onClickDelete = onClickDelQuote,
                         onClickEdit = { }
                     )
 
@@ -422,7 +422,7 @@ fun BooklistScreenPreview() {
             onClickAddCanvas = {},
             onRetryClick = {},
             onClickDelCharacter = {},
-            onClilckDelQuote = {},
+            onClickDelQuote = {},
             onClickDelMemo = {}
         )
     }
