@@ -24,6 +24,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -67,6 +69,10 @@ fun BookDetailRoute(
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadAllData()
+    }
 
     BookDetailScreen(
         uiState = uiState,
@@ -145,7 +151,8 @@ private fun BookDetailScreen(
                     thumbnail = uiState.thumbnail,
                     title = uiState.title,
                     author = uiState.author,
-                    publisher = uiState.publisher
+                    publisher = uiState.publisher,
+                    totalPage = uiState.totalPage
                 )
 
                 SecondaryTabRow(
@@ -207,7 +214,8 @@ private fun BookInfoSection(
     thumbnail: String,
     title: String,
     author: String,
-    publisher: String
+    publisher: String,
+    totalPage: Int
 ) {
     Row(
         modifier = Modifier.padding(And03Padding.PADDING_XL),
@@ -227,7 +235,8 @@ private fun BookInfoSection(
         ) {
             Text(
                 text = title,
-                style = And03Theme.typography.titleLarge
+                style = And03Theme.typography.titleLarge,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
             Text(
@@ -238,6 +247,15 @@ private fun BookInfoSection(
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
             Text(
                 text = publisher,
+                style = And03Theme.typography.bodySmall,
+                color = And03Theme.colors.secondary
+            )
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
+            Text(
+                text = stringResource(
+                    id = R.string.book_detail_total_page,
+                    totalPage
+                ),
                 style = And03Theme.typography.bodySmall,
                 color = And03Theme.colors.secondary
             )

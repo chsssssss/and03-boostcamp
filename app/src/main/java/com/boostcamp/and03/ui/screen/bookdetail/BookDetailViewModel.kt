@@ -91,7 +91,8 @@ class BookDetailViewModel @Inject constructor(
                     thumbnail = result.thumbnail,
                     title = result.title,
                     author = result.author.joinToString(", "),
-                    publisher = result.publisher
+                    publisher = result.publisher,
+                    totalPage = result.totalPage
                 )
             }
         }
