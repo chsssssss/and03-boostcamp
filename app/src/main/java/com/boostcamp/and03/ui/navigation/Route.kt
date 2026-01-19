@@ -25,9 +25,17 @@ sealed interface Route {
     @Serializable
     data object MemoEdit: Route // 메모 관계도 화면에서 넘어갈 수 있느 메모 편집 화면, TODO: 추후 수정 필요
 
+    /**
+     * memoId == "" : 새 메모 생성 모드
+     * memoId != "" : 기존 메모 수정 모드
+     */
     @Serializable
     data class EditTextMemo(val memoId: String = "") : Route
 
+    /**
+     * memoId == "" : 새 메모 생성 모드
+     * memoId != "" : 기존 메모 수정 모드
+     */
     @Serializable
     data class EditCanvasMemo(val memoId: String = "") : Route
 }
