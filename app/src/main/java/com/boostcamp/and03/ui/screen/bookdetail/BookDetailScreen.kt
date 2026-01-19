@@ -318,7 +318,7 @@ private fun QuoteTab(
 
         SquareAddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = { }
+            onClick = {}
         )
     }
 }
