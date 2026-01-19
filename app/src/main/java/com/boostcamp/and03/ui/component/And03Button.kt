@@ -13,6 +13,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 enum class ButtonVariant {
     Primary,
     Secondary,
+    SurfaceVariant,
     Transparent
 }
 
@@ -33,6 +34,11 @@ fun And03Button(
 
         ButtonVariant.Secondary -> ButtonDefaults.buttonColors(
             containerColor = And03Theme.colors.surface,
+            contentColor = And03Theme.colors.onSurface
+        )
+
+        ButtonVariant.SurfaceVariant -> ButtonDefaults.buttonColors(
+            containerColor = And03Theme.colors.surfaceVariant,
             contentColor = And03Theme.colors.onSurface
         )
 
@@ -64,6 +70,18 @@ private fun And03ButtonPrimaryPreview() {
         And03Button(
             text = "버튼",
             onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun And03ButtonSurfaceVariantPreview() {
+    And03Theme {
+        And03Button(
+            text = "버튼",
+            onClick = {},
+            variant = ButtonVariant.SurfaceVariant
         )
     }
 }
