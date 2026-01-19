@@ -62,8 +62,8 @@ import kotlinx.collections.immutable.persistentListOf
 fun BookDetailRoute(
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
-    navigateToAddTextMemo: () -> Unit,
-    navigateToAddCanvasMemo: () -> Unit,
+    navigateToAddTextMemo: (String) -> Unit,
+    navigateToAddCanvasMemo: (String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -86,8 +86,8 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
-    onClickAddText: () -> Unit,
-    onClickAddCanvas: () -> Unit,
+    onClickAddText: (String) -> Unit,
+    onClickAddCanvas: (String) -> Unit,
     onRetryClick: () -> Unit,
     onClickDelCharacter: (String) -> Unit,
     onClickDelQuote: (String) -> Unit,
@@ -184,15 +184,17 @@ private fun BookDetailScreen(
 
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
-                        onClickAddCanvas = onClickAddCanvas,
-                        onClickAddText = onClickAddText,
+                        onClickAddCanvas = { onClickAddCanvas(uiState.bookId) },
+                        onClickAddText = { onClickAddText(uiState.bookId) },
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
                                 navigateToCanvas(memo.id)
                             }
                         },
                         onClickDelMemo = onClickDelMemo,
-                        onClickEditMemo = { }
+                        onClickEditMemo = { memoId -> // TODO: memoId를 포함하여 수정 화면으로 이동
+                            onClickAddText(uiState.bookId)
+                        }
                     )
                 }
             }

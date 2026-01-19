@@ -49,8 +49,18 @@ fun MainNavHost(
             navigateToCanvas = { memoId ->
                 navigator.navigateToCanvas(memoId)
             },
-            navigateToAddTextMemo = { navigator.navigateToAddTextMemo() },
-            navigateToAddCanvasMemo = { navigator.navigateToAddCanvasMemo() },
+            navigateToAddTextMemo = { bookId ->
+                navigator.navigateToTextMemoEditor(
+                    bookId = bookId,
+                    memoId = ""
+                )
+            },
+            navigateToAddCanvasMemo = { bookId ->
+                navigator.navigateToCanvasMemoEditor(
+                    bookId = bookId,
+                    memoId = ""
+                )
+            },
             navigateToMemoEdit = { navigator.navigateToMemoEdit() }
         )
 

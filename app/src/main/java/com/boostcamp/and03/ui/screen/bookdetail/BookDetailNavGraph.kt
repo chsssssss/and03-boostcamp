@@ -13,8 +13,8 @@ fun NavGraphBuilder.bookDetailNavGraph(
     navigateToBack: () -> Unit,
     navigateToCanvas: (String) -> Unit,
     navigateToMemoEdit: (String) -> Unit,
-    navigateToAddTextMemo: () -> Unit,
-    navigateToAddCanvasMemo: () -> Unit
+    navigateToAddTextMemo: (String) -> Unit,
+    navigateToAddCanvasMemo: (String) -> Unit
 ) {
     composable<Route.BookDetail> {
         BookDetailRoute(

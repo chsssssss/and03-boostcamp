@@ -6,4 +6,5 @@ data class BookDetailResponse(
     val author: List<String>,
     val publisher: String,
     val thumbnail: String,
+    val totalPage: Int
 )

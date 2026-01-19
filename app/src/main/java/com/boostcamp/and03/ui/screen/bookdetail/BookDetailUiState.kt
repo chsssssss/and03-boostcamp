@@ -7,6 +7,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class BookDetailUiState(
+    val bookId: String = "",
     val thumbnail: String = "",
     val title: String = "",
     val author: String = "",
