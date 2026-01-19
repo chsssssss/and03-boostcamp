@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemoeditor
 
 import androidx.lifecycle.ViewModel
+import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.canvasmemoeditor.model.CanvasMemoEditorAction
 import com.boostcamp.and03.ui.screen.canvasmemoeditor.model.CanvasMemoEditorEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CanvasMemoEditorViewModel @Inject constructor(
-
+    private val bookStorageRepository: BookStorageRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(CanvasMemoEditorUiState())
     val uiState = _uiState.asStateFlow()

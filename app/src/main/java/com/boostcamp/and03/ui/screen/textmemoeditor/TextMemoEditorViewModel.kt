@@ -23,6 +23,8 @@ class TextMemoEditorViewModel @Inject constructor(
     private val _event: Channel<TextMemoEditorEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
+    private val userId: String = "O12OmGoVY8FPYFElNjKN"
+
     fun onAction(action: TextMemoEditorAction) {
         when (action) {
             TextMemoEditorAction.OnBackClick -> _event.trySend(TextMemoEditorEvent.NavigateBack)
@@ -44,6 +46,10 @@ class TextMemoEditorViewModel @Inject constructor(
     }
 
     private fun saveTextMemo() {
-        // TODO: 텍스트 메모 저장 기능 구현
+        bookStorageRepository.addTextMemo(
+            userId = userId,
+            bookId = "YkFyRg6G0v2Us6b3V5Tm",
+
+        )
     }
 }
