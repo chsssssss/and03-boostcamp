@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.boostcamp.and03.ui.screen.addbook.addBookNavGraph
-import com.boostcamp.and03.ui.screen.canvasmemoeditor.addCanvasMemoNavGraph
-import com.boostcamp.and03.ui.screen.textmemoeditor.addTextMemoNavGraph
+import com.boostcamp.and03.ui.screen.canvasmemoeditor.canvasMemoEditorNavGraph
+import com.boostcamp.and03.ui.screen.textmemoeditor.textMemoEditorNavGraph
 import com.boostcamp.and03.ui.screen.bookdetail.bookDetailNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
 import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
@@ -54,12 +54,12 @@ fun MainNavHost(
             navigateToMemoEdit = { navigator.navigateToMemoEdit() }
         )
 
-        addTextMemoNavGraph(
+        textMemoEditorNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
             modifier = modifier.padding(paddingValues)
         )
 
-        addCanvasMemoNavGraph(
+        canvasMemoEditorNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
             modifier = modifier.padding(paddingValues)
         )

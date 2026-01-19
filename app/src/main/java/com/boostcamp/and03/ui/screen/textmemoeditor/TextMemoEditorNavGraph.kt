@@ -5,12 +5,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.boostcamp.and03.ui.navigation.Route
 
-fun NavGraphBuilder.addTextMemoNavGraph(
+fun NavGraphBuilder.textMemoEditorNavGraph(
     navigateToBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     composable<Route.AddTextMemo> {
-        AddTextMemoRoute(
+        TextMemoEditorRoute(
+            navigateBack = navigateToBack
+        )
+    }
+
+    composable<Route.EditTextMemo> {
+        TextMemoEditorRoute(
             navigateBack = navigateToBack
         )
     }

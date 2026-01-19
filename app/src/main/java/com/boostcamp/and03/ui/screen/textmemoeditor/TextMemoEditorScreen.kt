@@ -34,7 +34,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
-fun AddTextMemoRoute(
+fun TextMemoEditorRoute(
     navigateBack: () -> Unit,
     viewModel: TextMemoEditorViewModel = hiltViewModel()
 ) {
@@ -46,14 +46,14 @@ fun AddTextMemoRoute(
         }
     }
 
-    AddTextMemoScreen(
+    TextMemoEditorScreen(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun AddTextMemoScreen(
+private fun TextMemoEditorScreen(
     uiState: TextMemoEditorUiState,
     onAction: (TextMemoEditorAction) -> Unit,
     modifier: Modifier = Modifier
@@ -119,9 +119,9 @@ private fun AddTextMemoScreen(
 
 @Preview
 @Composable
-private fun AddTextMemoScreenPreview() {
+private fun TextMemoEditorScreenPreview() {
     And03Theme {
-        AddTextMemoScreen(
+        TextMemoEditorScreen(
             uiState = TextMemoEditorUiState(),
             onAction = {}
         )

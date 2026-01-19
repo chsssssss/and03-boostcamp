@@ -29,7 +29,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
-fun AddCanvasMemoRoute(
+fun CanvasMemoEditorRoute(
     navigateBack: () -> Unit,
     viewModel: CanvasMemoEditorViewModel = hiltViewModel()
 ) {
@@ -41,14 +41,14 @@ fun AddCanvasMemoRoute(
         }
     }
 
-    AddCanvasMemoScreen(
+    CanvasMemoEditorScreen(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun AddCanvasMemoScreen(
+private fun CanvasMemoEditorScreen(
     uiState: CanvasMemoEditorUiState,
     onAction: (CanvasMemoEditorAction) -> Unit,
     modifier: Modifier = Modifier
@@ -97,9 +97,9 @@ private fun AddCanvasMemoScreen(
 
 @Preview
 @Composable
-private fun AddCanvasMemoScreenPreview() {
+private fun CanvasMemoEditorScreenPreview() {
     And03Theme {
-        AddCanvasMemoScreen(
+        CanvasMemoEditorScreen(
             uiState = CanvasMemoEditorUiState(),
             onAction = {}
         )
