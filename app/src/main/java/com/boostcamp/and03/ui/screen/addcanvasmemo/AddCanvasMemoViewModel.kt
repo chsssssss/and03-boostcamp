@@ -3,7 +3,6 @@ package com.boostcamp.and03.ui.screen.addcanvasmemo
 import androidx.lifecycle.ViewModel
 import com.boostcamp.and03.ui.screen.addcanvasmemo.model.AddCanvasMemoAction
 import com.boostcamp.and03.ui.screen.addcanvasmemo.model.AddCanvasMemoEvent
-import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
