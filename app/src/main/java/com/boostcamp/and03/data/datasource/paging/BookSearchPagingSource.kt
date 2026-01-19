@@ -2,10 +2,10 @@ package com.boostcamp.and03.data.datasource.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.boostcamp.and03.data.datasource.remote.search.naver.BookSearchRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.search.BookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.response.BookSearchResultItem
 
-class NaverBookSearchPagingSource(
+class BookSearchPagingSource(
     private val remoteDataSource: BookSearchRemoteDataSource,
     private val query: String
 ): PagingSource<Int, BookSearchResultItem>() {
@@ -39,6 +39,6 @@ class NaverBookSearchPagingSource(
     }
 
     companion object {
-        private const val NAVER_STARTING_ITEM_INDEX = 1
+        private const val STARTING_ITEM_INDEX = 1
     }
 }

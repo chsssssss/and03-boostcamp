@@ -1,6 +1,5 @@
 package com.boostcamp.and03.data.api
 
-import com.boostcamp.and03.data.model.response.AladinBookLookUpResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
