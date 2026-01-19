@@ -9,6 +9,7 @@ import com.boostcamp.and03.ui.screen.addbook.addBookNavGraph
 import com.boostcamp.and03.ui.screen.bookdetail.bookDetailNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
 import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
+import com.boostcamp.and03.ui.screen.canvasmemo.canvasMemoNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
 
 @Composable
@@ -49,7 +50,14 @@ fun MainNavHost(
             },
             navigateToMemoEdit = {
                 navigator.navigateToMemoEdit()
+            },
+            navigateToAddCanvasMemo = {
+                navigator.navigateToCanvasMemo()
             }
+        )
+
+        canvasMemoNavGraph(
+            navigateToBack = { navigator.navigatePopBackStack() },
         )
     }
 }
