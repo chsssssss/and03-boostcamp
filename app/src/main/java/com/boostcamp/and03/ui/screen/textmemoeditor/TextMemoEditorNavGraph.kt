@@ -9,12 +9,6 @@ fun NavGraphBuilder.textMemoEditorNavGraph(
     navigateToBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    composable<Route.AddTextMemo> {
-        TextMemoEditorRoute(
-            navigateBack = navigateToBack
-        )
-    }
-
     composable<Route.EditTextMemo> {
         TextMemoEditorRoute(
             navigateBack = navigateToBack

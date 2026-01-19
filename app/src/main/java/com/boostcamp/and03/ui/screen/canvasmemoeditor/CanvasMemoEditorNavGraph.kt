@@ -9,12 +9,6 @@ fun NavGraphBuilder.canvasMemoEditorNavGraph(
     navigateToBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    composable<Route.AddCanvasMemo> {
-        CanvasMemoEditorRoute(
-            navigateBack = navigateToBack
-        )
-    }
-
     composable<Route.EditCanvasMemo> {
         CanvasMemoEditorRoute(
             navigateBack = navigateToBack
