@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addtextmemo
+package com.boostcamp.and03.ui.screen.canvasmemoeditor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,12 +18,10 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.ButtonVariant
-import com.boostcamp.and03.ui.component.ContentInputSection
-import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
-import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoAction
-import com.boostcamp.and03.ui.screen.addtextmemo.model.AddTextMemoEvent
+import com.boostcamp.and03.ui.screen.canvasmemoeditor.model.CanvasMemoEditorAction
+import com.boostcamp.and03.ui.screen.canvasmemoeditor.model.CanvasMemoEditorEvent
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -34,43 +29,41 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
-fun AddTextMemoRoute(
+fun AddCanvasMemoRoute(
     navigateBack: () -> Unit,
-    viewModel: AddTextMemoViewModel = hiltViewModel()
+    viewModel: CanvasMemoEditorViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
-            AddTextMemoEvent.NavigateBack -> navigateBack()
+            CanvasMemoEditorEvent.NavigateBack -> navigateBack()
         }
     }
 
-    AddTextMemoScreen(
+    AddCanvasMemoScreen(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun AddTextMemoScreen(
-    uiState: AddTextMemoUiState,
-    onAction: (AddTextMemoAction) -> Unit,
+private fun AddCanvasMemoScreen(
+    uiState: CanvasMemoEditorUiState,
+    onAction: (CanvasMemoEditorAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             And03AppBar(
-                title = stringResource(id = R.string.add_memo_text_app_bar_title),
-                onBackClick = { onAction(AddTextMemoAction.OnBackClick) }
+                title = stringResource(id = R.string.add_memo_canvas_app_bar_title),
+                onBackClick = { onAction(CanvasMemoEditorAction.OnBackClick) }
             )
         },
         bottomBar = {
             And03Button(
                 text = stringResource(id = R.string.add_memo_save_button_text),
-                onClick = { onAction(AddTextMemoAction.OnSaveClick) },
+                onClick = { onAction(CanvasMemoEditorAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
                 enabled = uiState.isSaveable,
                 modifier = Modifier
@@ -89,29 +82,14 @@ private fun AddTextMemoScreen(
         ) {
             TitleInputSection(
                 title = uiState.title,
-                onTitleChange = { onAction(AddTextMemoAction.OnTitleChange(title = it)) }
+                onTitleChange = { onAction(CanvasMemoEditorAction.OnTitleChange(title = it)) }
             )
-
-            ContentInputSection(
-                label = stringResource(R.string.add_memo_content),
-                content = uiState.content,
-                onContentChange = { onAction(AddTextMemoAction.OnContentChange(content = it)) },
-                onAddByImageClick = { isOCRBottomSheetVisible = true },
-            )
-
-            if (isOCRBottomSheetVisible) {
-                OCRBottomSheet(
-                    onDismiss = { isOCRBottomSheetVisible = false },
-                    onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
-                    onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
-                )
-            }
 
             PageInputSection(
                 startPage = uiState.startPage,
                 endPage = uiState.endPage,
-                onStartPageChange = { onAction(AddTextMemoAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(AddTextMemoAction.OnEndPageChange(endPage = it)) }
+                onStartPageChange = { onAction(CanvasMemoEditorAction.OnStartPageChange(startPage = it)) },
+                onEndPageChange = { onAction(CanvasMemoEditorAction.OnEndPageChange(endPage = it)) }
             )
         }
     }
@@ -119,10 +97,10 @@ private fun AddTextMemoScreen(
 
 @Preview
 @Composable
-private fun AddTextMemoScreenPreview() {
+private fun AddCanvasMemoScreenPreview() {
     And03Theme {
-        AddTextMemoScreen(
-            uiState = AddTextMemoUiState(),
+        AddCanvasMemoScreen(
+            uiState = CanvasMemoEditorUiState(),
             onAction = {}
         )
     }

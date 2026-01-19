@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addtextmemo
+package com.boostcamp.and03.ui.screen.textmemoeditor
 
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder

@@ -1,8 +1,7 @@
-package com.boostcamp.and03.ui.screen.addtextmemo
+package com.boostcamp.and03.ui.screen.canvasmemoeditor
 
-data class AddTextMemoUiState(
+data class CanvasMemoEditorUiState(
     val title: String = "",
-    val content: String = "",
     val startPage: String = "",
     val endPage: String = "",
     val totalPage: Int = 1000 // 동작 확인을 위한 임시 기본값 TODO: 실제 책의 페이지를 가져오게 수정 필요
@@ -22,8 +21,6 @@ data class AddTextMemoUiState(
 
     val isSaveable: Boolean
         get() {
-            return title.isNotBlank() &&
-                    content.isNotBlank() &&
-                    isValidPageRange
+            return title.isNotBlank() && isValidPageRange
         }
 }

@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addcanvasmemo
+package com.boostcamp.and03.ui.screen.canvasmemoeditor
 
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder

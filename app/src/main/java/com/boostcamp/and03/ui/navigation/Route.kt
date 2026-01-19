@@ -29,5 +29,11 @@ sealed interface Route {
     data object AddTextMemo: Route
 
     @Serializable
+    data class EditTextMemo(val memoId: String) : Route
+
+    @Serializable
     data object AddCanvasMemo: Route
+
+    @Serializable
+    data class EditCanvasMemo(val memoId: String) : Route
 }
