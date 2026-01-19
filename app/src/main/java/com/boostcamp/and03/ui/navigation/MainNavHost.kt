@@ -62,9 +62,6 @@ fun MainNavHost(
         addCanvasMemoNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
             modifier = modifier.padding(paddingValues)
-            navigateToMemoEdit = {
-                navigator.navigateToMemoEdit()
-            }
         )
     }
 }
