@@ -44,6 +44,7 @@ object And03ComponentSize {
     val QUOTE_LEFT_BAR_HEIGHT = 48.dp
     val BUTTON_HEIGHT_L = 52.dp
     val TEXT_FIELD_HEIGHT_L = 140.dp
+    val PAGE_LIST_SCROLL = 160.dp
 }
 
 object And03Border {
