@@ -82,6 +82,8 @@
     <string name="relation_name_placeholder">관계 이름을 입력하세요.</string>
     <string name="relation_dialog_title">관계 추가</string>
     <string name="relation_dialog_question_format">%1$s 와 %2$s 은 어떤 관계인가요?</string>
+    <string name="canvas_memo_editor_page_list_scroll_page_range">p.%1$d~%2$d</string>
+    <string name="canvas_memo_editor_page_list_scroll_single_page">p.%1$d</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>

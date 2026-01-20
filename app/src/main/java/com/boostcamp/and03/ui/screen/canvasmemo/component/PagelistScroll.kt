@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.ui.component.LabelChip
@@ -25,6 +26,7 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import com.boostcamp.and03.R
 
 @Composable
 fun PagelistScroll(
@@ -69,6 +71,19 @@ private fun PagelistItem(
     endPage: Int,
     modifier: Modifier = Modifier
 ) {
+    val pageText = if (startPage == endPage) {
+        stringResource(
+            id = R.string.canvas_memo_editor_page_list_scroll_single_page,
+            startPage
+        )
+    } else {
+        stringResource(
+            id = R.string.canvas_memo_editor_page_list_scroll_page_range,
+            startPage,
+            endPage
+        )
+    }
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S),
@@ -76,7 +91,7 @@ private fun PagelistItem(
     ) {
         LabelChip {
             Text(
-                text = "p.$startPage~$endPage",
+                text = pageText,
                 style = And03Theme.typography.labelSmall,
                 color = And03Theme.colors.onSecondaryContainer
             )
@@ -100,7 +115,7 @@ private fun PagelistScrollPreview() {
                 memoId = "memo-1",
                 title = "캔버스 메모 아이템을 보여주는 리스트 스크롤 컴포넌트입니다.",
                 startPage = 1,
-                endPage = 26
+                endPage = 1
             ),
             CanvasMemoSummaryUiModel(
                 memoId = "memo-2",
