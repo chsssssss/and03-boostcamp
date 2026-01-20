@@ -1,7 +1,6 @@
 package com.boostcamp.and03.data.datasource.remote.memo
 
 import android.util.Log
-import android.util.Log.e
 import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
@@ -263,10 +262,3 @@ class MemoDataSourceImpl @Inject constructor(
         }
     }
 }
-
-//try {
-//
-//} catch (e: Exception) {
-//    Log.e("MemoDataSourceImpl", "Failed to add memo: ${e.message}")
-//    throw e
-//}
