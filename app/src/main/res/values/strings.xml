@@ -108,4 +108,12 @@
     <string name="add_quote_page_label">페이지</string>
     <string name="add_quote_page_hint">페이지 번호를 입력하세요</string>
 
+    <!-- Add Quote - Bottom Sheet -->
+    <string name="add_quote_bottom_sheet_title">인상깊은 구절 추가</string>
+    <string name="add_quote_bottom_sheet_info_title">인상깊은 구절을 선택하거나 새로 기록해보세요.</string>
+    <string name="add_quote_bottom_sheet_info_description">인상 깊은 구절을 선택해 관계도에 구절을 추가해주세요.\n아직 등록하지 않았다면 인상깊은 구절을 새로 추가해주세요.</string>
+    <string name="add_quote_bottom_sheet_search_placeholder">인상깊은 문장 또는 페이지를 입력하세요.</string>
+    <string name="add_quote_bottom_sheet_new_sentence">새 문장 추가</string>
+    <string name="add_quote_bottom_sheet_button_add">추가하기</string>
+
 </resources>

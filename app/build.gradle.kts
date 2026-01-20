@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.foundation.layout)
     ksp(libs.hilt.compiler)
 
     // serialization

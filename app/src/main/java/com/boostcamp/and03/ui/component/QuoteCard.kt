@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.bookdetail.component
+package com.boostcamp.and03.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +22,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
@@ -89,7 +90,6 @@ fun QuoteCard(
                         }
                     )
                 }
-
             }
             Row(
                 modifier = Modifier
