@@ -49,12 +49,12 @@ class MainNavigator(
      * memoId == "" : 새 메모 생성 모드
      * memoId != "" : 기존 메모 수정 모드
      */
-    fun navigateToTextMemoEditor(
+    fun navigateToTextMemoForm(
         bookId: String,
         memoId: String = ""
     ) {
         navController.navigate(
-            Route.TextMemoEditor(
+            Route.TextMemoForm(
                 bookId = bookId,
                 memoId = memoId
             )
@@ -65,12 +65,12 @@ class MainNavigator(
      * memoId == "" : 새 메모 생성 모드
      * memoId != "" : 기존 메모 수정 모드
      */
-    fun navigateToCanvasMemoEditor(
+    fun navigateToCanvasMemoForm(
         bookId: String,
         memoId: String = ""
     )  {
         navController.navigate(
-            Route.CanvasMemoEditor(
+            Route.CanvasMemoForm(
                 bookId = bookId,
                 memoId = memoId
             )

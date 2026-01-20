@@ -1,6 +1,6 @@
-package com.boostcamp.and03.ui.screen.canvasmemoeditor
+package com.boostcamp.and03.ui.screen.canvasmemoform
 
-data class CanvasMemoEditorUiState(
+data class CanvasMemoFormUiState(
     val title: String = "",
     val startPage: String = "",
     val endPage: String = "",

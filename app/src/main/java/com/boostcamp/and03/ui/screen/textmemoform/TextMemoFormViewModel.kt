@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.textmemoeditor
+package com.boostcamp.and03.ui.screen.textmemoform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -7,8 +7,8 @@ import androidx.navigation.toRoute
 import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
-import com.boostcamp.and03.ui.screen.textmemoeditor.model.TextMemoEditorAction
-import com.boostcamp.and03.ui.screen.textmemoeditor.model.TextMemoEditorEvent
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormAction
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -20,17 +20,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TextMemoEditorViewModel @Inject constructor(
+class TextMemoFormViewModel @Inject constructor(
     private val bookStorageRepository: BookStorageRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val textMemoEditorRoute = savedStateHandle.toRoute<Route.TextMemoEditor>()
+    private val textMemoEditorRoute = savedStateHandle.toRoute<Route.TextMemoForm>()
     private val bookId = textMemoEditorRoute.bookId
 
-    private val _uiState = MutableStateFlow(TextMemoEditorUiState())
+    private val _uiState = MutableStateFlow(TextMemoFormUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _event: Channel<TextMemoEditorEvent> = Channel(BUFFERED)
+    private val _event: Channel<TextMemoFormEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
@@ -41,26 +41,26 @@ class TextMemoEditorViewModel @Inject constructor(
         }
     }
 
-    fun onAction(action: TextMemoEditorAction) {
+    fun onAction(action: TextMemoFormAction) {
         when (action) {
-            TextMemoEditorAction.OnBackClick -> _event.trySend(TextMemoEditorEvent.NavigateBack)
+            TextMemoFormAction.OnBackClick -> _event.trySend(TextMemoFormEvent.NavigateBack)
 
-            TextMemoEditorAction.OnSaveClick -> {
+            TextMemoFormAction.OnSaveClick -> {
                 if (uiState.value.isSaveable) {
                     viewModelScope.launch {
                         saveTextMemo()
-                        _event.send(TextMemoEditorEvent.NavigateBack)
+                        _event.send(TextMemoFormEvent.NavigateBack)
                     }
                 }
             }
 
-            is TextMemoEditorAction.OnTitleChange -> _uiState.update { it.copy(title = action.title) }
+            is TextMemoFormAction.OnTitleChange -> _uiState.update { it.copy(title = action.title) }
 
-            is TextMemoEditorAction.OnContentChange -> _uiState.update { it.copy(content = action.content) }
+            is TextMemoFormAction.OnContentChange -> _uiState.update { it.copy(content = action.content) }
 
-            is TextMemoEditorAction.OnStartPageChange -> _uiState.update { it.copy(startPage = action.startPage) }
+            is TextMemoFormAction.OnStartPageChange -> _uiState.update { it.copy(startPage = action.startPage) }
 
-            is TextMemoEditorAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
+            is TextMemoFormAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
         }
     }
 

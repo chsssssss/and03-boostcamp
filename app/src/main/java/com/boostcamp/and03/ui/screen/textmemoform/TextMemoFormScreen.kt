@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.textmemoeditor
+package com.boostcamp.and03.ui.screen.textmemoform
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,8 +25,8 @@ import com.boostcamp.and03.ui.component.ContentInputSection
 import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
-import com.boostcamp.and03.ui.screen.textmemoeditor.model.TextMemoEditorAction
-import com.boostcamp.and03.ui.screen.textmemoeditor.model.TextMemoEditorEvent
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormAction
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormEvent
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -34,28 +34,28 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
-fun TextMemoEditorRoute(
+fun TextMemoFormRoute(
     navigateBack: () -> Unit,
-    viewModel: TextMemoEditorViewModel = hiltViewModel()
+    viewModel: TextMemoFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
-            TextMemoEditorEvent.NavigateBack -> navigateBack()
+            TextMemoFormEvent.NavigateBack -> navigateBack()
         }
     }
 
-    TextMemoEditorScreen(
+    TextMemoFormScreen(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun TextMemoEditorScreen(
-    uiState: TextMemoEditorUiState,
-    onAction: (TextMemoEditorAction) -> Unit,
+private fun TextMemoFormScreen(
+    uiState: TextMemoFormUiState,
+    onAction: (TextMemoFormAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
@@ -64,13 +64,13 @@ private fun TextMemoEditorScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(id = R.string.add_memo_text_app_bar_title),
-                onBackClick = { onAction(TextMemoEditorAction.OnBackClick) }
+                onBackClick = { onAction(TextMemoFormAction.OnBackClick) }
             )
         },
         bottomBar = {
             And03Button(
                 text = stringResource(id = R.string.add_memo_save_button_text),
-                onClick = { onAction(TextMemoEditorAction.OnSaveClick) },
+                onClick = { onAction(TextMemoFormAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
                 enabled = uiState.isSaveable,
                 modifier = Modifier
@@ -89,13 +89,13 @@ private fun TextMemoEditorScreen(
         ) {
             TitleInputSection(
                 title = uiState.title,
-                onTitleChange = { onAction(TextMemoEditorAction.OnTitleChange(title = it)) }
+                onTitleChange = { onAction(TextMemoFormAction.OnTitleChange(title = it)) }
             )
 
             ContentInputSection(
                 label = stringResource(R.string.add_memo_content),
                 content = uiState.content,
-                onContentChange = { onAction(TextMemoEditorAction.OnContentChange(content = it)) },
+                onContentChange = { onAction(TextMemoFormAction.OnContentChange(content = it)) },
                 onAddByImageClick = { isOCRBottomSheetVisible = true },
             )
 
@@ -110,8 +110,8 @@ private fun TextMemoEditorScreen(
             PageInputSection(
                 startPage = uiState.startPage,
                 endPage = uiState.endPage,
-                onStartPageChange = { onAction(TextMemoEditorAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(TextMemoEditorAction.OnEndPageChange(endPage = it)) },
+                onStartPageChange = { onAction(TextMemoFormAction.OnStartPageChange(startPage = it)) },
+                onEndPageChange = { onAction(TextMemoFormAction.OnEndPageChange(endPage = it)) },
                 totalPage = uiState.totalPage
             )
         }
@@ -122,8 +122,8 @@ private fun TextMemoEditorScreen(
 @Composable
 private fun TextMemoEditorScreenPreview() {
     And03Theme {
-        TextMemoEditorScreen(
-            uiState = TextMemoEditorUiState(),
+        `TextMemoForm,Screen`(
+            uiState = TextMemoFormUiState(),
             onAction = {}
         )
     }

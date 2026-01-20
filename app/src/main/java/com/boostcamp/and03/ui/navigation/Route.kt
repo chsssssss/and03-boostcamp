@@ -29,7 +29,7 @@ sealed interface Route {
      * memoId != "" : 기존 메모 수정 모드
      */
     @Serializable
-    data class TextMemoEditor(
+    data class TextMemoForm(
         val bookId: String,
         val memoId: String = ""
     ) : Route
@@ -39,7 +39,7 @@ sealed interface Route {
      * memoId != "" : 기존 메모 수정 모드
      */
     @Serializable
-    data class CanvasMemoEditor(
+    data class CanvasMemoForm(
         val bookId: String,
         val memoId: String = ""
     ) : Route

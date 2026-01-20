@@ -1,6 +1,6 @@
-package com.boostcamp.and03.ui.screen.textmemoeditor
+package com.boostcamp.and03.ui.screen.textmemoform
 
-data class TextMemoEditorUiState(
+data class TextMemoFormUiState(
     val title: String = "",
     val content: String = "",
     val startPage: String = "",

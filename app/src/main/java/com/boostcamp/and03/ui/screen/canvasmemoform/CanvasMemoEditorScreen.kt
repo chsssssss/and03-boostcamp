@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.canvasmemoeditor
+package com.boostcamp.and03.ui.screen.canvasmemoform
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,8 +20,8 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
-import com.boostcamp.and03.ui.screen.canvasmemoeditor.model.CanvasMemoEditorAction
-import com.boostcamp.and03.ui.screen.canvasmemoeditor.model.CanvasMemoEditorEvent
+import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormAction
+import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormEvent
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -29,41 +29,41 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
-fun CanvasMemoEditorRoute(
+fun CanvasMemoFormRoute(
     navigateBack: () -> Unit,
-    viewModel: CanvasMemoEditorViewModel = hiltViewModel()
+    viewModel: CanvasMemoFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
-            CanvasMemoEditorEvent.NavigateBack -> navigateBack()
+            CanvasMemoFormEvent.NavigateBack -> navigateBack()
         }
     }
 
-    CanvasMemoEditorScreen(
+    CanvasMemoFormScreen(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun CanvasMemoEditorScreen(
-    uiState: CanvasMemoEditorUiState,
-    onAction: (CanvasMemoEditorAction) -> Unit,
+private fun CanvasMemoFormScreen(
+    uiState: CanvasMemoFormUiState,
+    onAction: (CanvasMemoFormAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             And03AppBar(
                 title = stringResource(id = R.string.add_memo_canvas_app_bar_title),
-                onBackClick = { onAction(CanvasMemoEditorAction.OnBackClick) }
+                onBackClick = { onAction(CanvasMemoFormAction.OnBackClick) }
             )
         },
         bottomBar = {
             And03Button(
                 text = stringResource(id = R.string.add_memo_save_button_text),
-                onClick = { onAction(CanvasMemoEditorAction.OnSaveClick) },
+                onClick = { onAction(CanvasMemoFormAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
                 enabled = uiState.isSaveable,
                 modifier = Modifier
@@ -82,14 +82,14 @@ private fun CanvasMemoEditorScreen(
         ) {
             TitleInputSection(
                 title = uiState.title,
-                onTitleChange = { onAction(CanvasMemoEditorAction.OnTitleChange(title = it)) }
+                onTitleChange = { onAction(CanvasMemoFormAction.OnTitleChange(title = it)) }
             )
 
             PageInputSection(
                 startPage = uiState.startPage,
                 endPage = uiState.endPage,
-                onStartPageChange = { onAction(CanvasMemoEditorAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(CanvasMemoEditorAction.OnEndPageChange(endPage = it)) },
+                onStartPageChange = { onAction(CanvasMemoFormAction.OnStartPageChange(startPage = it)) },
+                onEndPageChange = { onAction(CanvasMemoFormAction.OnEndPageChange(endPage = it)) },
                 totalPage = uiState.totalPage
             )
         }
@@ -98,10 +98,10 @@ private fun CanvasMemoEditorScreen(
 
 @Preview
 @Composable
-private fun CanvasMemoEditorScreenPreview() {
+private fun CanvasMemoFormScreenPreview() {
     And03Theme {
-        CanvasMemoEditorScreen(
-            uiState = CanvasMemoEditorUiState(),
+        CanvasMemoFormScreen(
+            uiState = CanvasMemoFormUiState(),
             onAction = {}
         )
     }
