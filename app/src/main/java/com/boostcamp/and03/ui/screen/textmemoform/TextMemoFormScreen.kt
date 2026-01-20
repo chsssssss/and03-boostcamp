@@ -122,7 +122,7 @@ private fun TextMemoFormScreen(
 @Composable
 private fun TextMemoEditorScreenPreview() {
     And03Theme {
-        `TextMemoForm,Screen`(
+        TextMemoFormScreen(
             uiState = TextMemoFormUiState(),
             onAction = {}
         )
