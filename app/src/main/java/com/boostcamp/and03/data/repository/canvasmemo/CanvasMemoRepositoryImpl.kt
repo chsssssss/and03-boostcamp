@@ -13,5 +13,4 @@ class CanvasMemoRepositoryImpl @Inject constructor(
         val response = canvasMemoDataSource.getCanvasMemo(graphId)
         return MemoGraphFactory.fromResponse(response)
     }
-
 }
