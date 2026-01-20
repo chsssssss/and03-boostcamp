@@ -81,6 +81,10 @@
     <string name="relation_name_placeholder">관계 이름을 입력하세요.</string>
     <string name="relation_dialog_title">관계 추가</string>
     <string name="relation_dialog_question_format">%1$s 와 %2$s 은 어떤 관계인가요?</string>
+    <string name="tool_ic_content_desc_zoom_in">확대</string>
+    <string name="tool_ic_content_desc_zoom_out">축소</string>
+    <string name="tool_ic_content_desc_fit_screen">화면 맞추기</string>
+    <string name="tool_ic_content_desc_toggle_menu">도구 메뉴</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
