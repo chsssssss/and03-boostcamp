@@ -31,9 +31,9 @@ import com.boostcamp.and03.ui.theme.And03Theme
 fun QuoteCard(
     quote: QuoteUiModel,
     onClick: () -> Unit,
-    onClickDelete: () -> Unit,
-    onClickEdit: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickDelete: (() -> Unit)? = null,
+    onClickEdit: (() -> Unit)? = null,
 ) {
     Card(
         modifier = modifier
@@ -60,33 +60,36 @@ fun QuoteCard(
                         top = And03Padding.PADDING_XL,
                     )
                 )
-                DropdownMenuContainer(
-                    trigger = { onClick ->
-                        IconButton(onClick = onClick) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
-                                contentDescription = stringResource(R.string.cd_more_options)
+                if (onClickDelete != null && onClickEdit != null) {
+                    DropdownMenuContainer(
+                        trigger = { onClick ->
+                            IconButton(onClick = onClick) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
+                                    contentDescription = stringResource(R.string.cd_more_options)
+                                )
+                            }
+                        },
+                        menuContent = { closeMenu ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.more_vert_edit)) },
+                                onClick = {
+                                    closeMenu()
+                                    onClickEdit()
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.more_vert_delete)) },
+                                onClick = {
+                                    closeMenu()
+                                    onClickDelete()
+                                }
                             )
                         }
-                    },
-                    menuContent = { closeMenu ->
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.more_vert_edit)) },
-                            onClick = {
-                                closeMenu()
-                                onClickEdit()
-                            }
-                        )
+                    )
+                }
 
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.more_vert_delete)) },
-                            onClick = {
-                                closeMenu()
-                                onClickDelete()
-                            }
-                        )
-                    }
-                )
             }
             Row(
                 modifier = Modifier
