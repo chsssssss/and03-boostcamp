@@ -62,8 +62,8 @@ fun QuoteCard(
                 )
                 if (onClickDelete != null && onClickEdit != null) {
                     DropdownMenuContainer(
-                        trigger = { onClick ->
-                            IconButton(onClick = onClick) {
+                        trigger = { openMenu ->
+                            IconButton(onClick = openMenu) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
                                     contentDescription = stringResource(R.string.cd_more_options)
