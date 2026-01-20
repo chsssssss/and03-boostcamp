@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addquote.component
+package com.boostcamp.and03.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,9 +17,13 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.*
 
 @Composable
-fun AddQuoteInfoSection() {
+fun And03InfoSection(
+    title: String,
+    description: String,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = And03Theme.colors.primaryContainer,
@@ -44,12 +48,12 @@ fun AddQuoteInfoSection() {
 
         Column {
             Text(
-                text = stringResource(R.string.add_quote_info_title),
+                text = title,
                 style = And03Theme.typography.labelLarge,
                 color = And03Theme.colors.primary
             )
             Text(
-                text = stringResource(R.string.add_quote_info_description),
+                text = description,
                 style = And03Theme.typography.labelSmall,
                 color = And03Theme.colors.primary
             )
@@ -59,8 +63,8 @@ fun AddQuoteInfoSection() {
 
 @Preview(showBackground = true)
 @Composable
-private fun AddQuoteInfoSectionPreview() {
+private fun And03InfoSectionPreview() {
     And03Theme {
-        AddQuoteInfoSection()
+        And03InfoSection("인상 깊은 문장을 기록해보세요","책이나 영화, 일상에서 마음에 든 문장을 저장할 수 있습니다.")
     }
 }
