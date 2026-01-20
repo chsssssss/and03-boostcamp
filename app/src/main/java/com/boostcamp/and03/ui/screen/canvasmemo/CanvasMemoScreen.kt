@@ -20,6 +20,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddCharacterDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
@@ -100,6 +101,17 @@ private fun CanvasMemoScreen(
                         onConfirm = { /* 관계 저장 */ },
                         onFromImageClick = { /* 왼쪽 인물 선택 */ },
                         onToImageClick = { /* 오른쪽 인물 선택 */ }
+                    )
+                }
+
+                if (uiState.isAddCharacterDialogVisible) {
+                    AddCharacterDialog(
+                        nameState = uiState.characterNameState,
+                        descState = uiState.characterDescState,
+                        enabled = uiState.characterNameState.text.isNotBlank(),
+                        onDismiss = { onAction(CanvasMemoAction.CloseAddCharacterDialog) },
+                        onConfirm = { /* 캐릭터 저장 */ },
+                        onClickAddImage = { /* 이미지 추가 */ }
                     )
                 }
             }
