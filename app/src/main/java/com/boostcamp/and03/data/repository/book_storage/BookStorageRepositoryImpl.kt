@@ -8,11 +8,13 @@ import com.boostcamp.and03.data.model.request.BookStorageRequest
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
+import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import javax.inject.Inject
 
 class BookStorageRepositoryImpl @Inject constructor(
@@ -105,12 +107,12 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun addTextMemo(
         userId: String,
         bookId: String,
-        memo: TextMemoRequest
+        memo: TextMemoFormUiModel
     ) {
         memoDataSource.addTextMemo(
             userId,
             bookId,
-            memo
+            memo.toRequest()
         )
     }
 

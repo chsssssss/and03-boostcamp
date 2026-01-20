@@ -19,7 +19,7 @@ fun TitleInputSection(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S)
     ) {
         Text(
@@ -30,7 +30,7 @@ fun TitleInputSection(
         OutlinedTextField(
             value = title,
             onValueChange = onTitleChange,
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(id = R.string.add_memo_enter_title_placeholder)) },
             shape = And03Theme.shapes.defaultCorner
         )

@@ -160,8 +160,8 @@ private fun BookSearchScreen(
                 refreshState is LoadState.Error -> {
                     BookSearchResultEmptySection(
                         message = stringResource(R.string.book_search_error_text),
-                        buttonText = "",
-                        onButtonClick = { }
+                        buttonText = stringResource(R.string.retry_btn_txt),
+                        onButtonClick = { /* TODO: 검색 재요청 동작 구현 */ }
                     )
                 }
 

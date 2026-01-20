@@ -25,7 +25,7 @@ class BookDetailViewModel @Inject constructor(
     private val bookDetailRoute = savedStateHandle.toRoute<Route.BookDetail>()
     private val bookId: String = bookDetailRoute.bookId
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
-    private val _uiState = MutableStateFlow(BookDetailUiState())
+    private val _uiState = MutableStateFlow(BookDetailUiState(bookId = bookId))
     val uiState: StateFlow<BookDetailUiState> = _uiState.asStateFlow()
 
     init {
@@ -91,7 +91,8 @@ class BookDetailViewModel @Inject constructor(
                     thumbnail = result.thumbnail,
                     title = result.title,
                     author = result.author.joinToString(", "),
-                    publisher = result.publisher
+                    publisher = result.publisher,
+                    totalPage = result.totalPage
                 )
             }
         }

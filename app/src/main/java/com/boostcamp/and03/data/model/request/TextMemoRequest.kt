@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.model.request
 
-import com.google.firebase.firestore.FieldValue
+import com.boostcamp.and03.ui.screen.textmemoform.TextMemoFormUiState
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,3 +12,16 @@ data class TextMemoRequest(
     val startPage: Int = 0,
     val endPage: Int = 0,
 )
+
+fun TextMemoFormUiModel.toRequest(): TextMemoRequest {
+    val start = startPage
+    val end = endPage
+
+    return TextMemoRequest(
+        title = title.trim(),
+        content = content.trim(),
+        type = "TEXT",
+        startPage = start,
+        endPage = end
+    )
+}
