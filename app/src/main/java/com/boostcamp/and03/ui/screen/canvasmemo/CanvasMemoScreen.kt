@@ -58,7 +58,7 @@ private fun CanvasMemoScreen(
         topBar = {
             And03AppBar(
                 title = "임시 제목",
-                onBackClick = {}
+                onBackClick = { onAction(CanvasMemoAction.ClickBack) }
             ) {
                 IconButton(onClick = {}) {
                     Icon(

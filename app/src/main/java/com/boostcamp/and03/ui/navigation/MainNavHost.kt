@@ -72,6 +72,7 @@ fun MainNavHost(
 
         canvasMemoFormNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
+            navigateToCanvasMemo = { navigator.navigateToCanvasMemo() },
             modifier = modifier.padding(paddingValues)
         )
 
