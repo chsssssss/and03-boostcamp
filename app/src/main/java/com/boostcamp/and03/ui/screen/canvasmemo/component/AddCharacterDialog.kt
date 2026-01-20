@@ -22,7 +22,7 @@ fun AddCharacterDialog(
     onClickAddImage: () -> Unit,
 ) {
     And03ActionDialog(
-        title = stringResource(R.string.relation_dialog_title),
+        title = stringResource(R.string.add_character_dialog_title),
         dismissText = stringResource(R.string.common_cancel),
         confirmText = stringResource(R.string.common_save),
         onDismiss = onDismiss,
