@@ -70,10 +70,6 @@ fun BookDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadAllData()
-    }
-
     BookDetailScreen(
         uiState = uiState,
         navigateToBack = navigateToBack,
