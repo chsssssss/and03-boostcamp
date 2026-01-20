@@ -11,7 +11,6 @@ data class CanvasMemoUiState(
     val isAddCharacterDialogVisible: Boolean = true,
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),
-    val isEnabledAddCharacter: Boolean = false
 )
 
 data class RelationSelection(
