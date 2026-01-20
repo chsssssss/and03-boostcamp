@@ -62,6 +62,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun BookDetailRoute(
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
+    navigateToAddCanvasMemo: () -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -70,6 +71,7 @@ fun BookDetailRoute(
         uiState = uiState,
         navigateToBack = navigateToBack,
         navigateToCanvas = navigateToCanvas,
+        navigateToAddCanvasMemo = navigateToAddCanvasMemo,
         onRetryClick = { viewModel.loadAllData() },
         onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
         onClilckDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
@@ -82,6 +84,7 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
+    navigateToAddCanvasMemo: () -> Unit,
     onRetryClick: () -> Unit,
     onClickDelCharacter: (String) -> Unit,
     onClilckDelQuote: (String) -> Unit,
@@ -178,7 +181,7 @@ private fun BookDetailScreen(
 
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
-                        onClickAddCanvas = { },
+                        onClickAddCanvas = { navigateToAddCanvasMemo() },
                         onClickAddText = { },
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
@@ -412,6 +415,7 @@ fun BooklistScreenPreview() {
             uiState = previewState,
             navigateToBack = {},
             navigateToCanvas = {},
+            navigateToAddCanvasMemo = {},
             onRetryClick = {},
             onClickDelCharacter = {},
             onClilckDelQuote = {},
