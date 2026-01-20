@@ -9,6 +9,7 @@ import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 
 interface BookStorageRepository {
     suspend fun getBooks(userId: String): List<BookStorageResponse>
@@ -65,7 +66,7 @@ interface BookStorageRepository {
     suspend fun addTextMemo(
         userId: String,
         bookId: String,
-        memo: TextMemoRequest
+        memo: TextMemoFormUiModel
     )
 
     suspend fun deleteMemo(
