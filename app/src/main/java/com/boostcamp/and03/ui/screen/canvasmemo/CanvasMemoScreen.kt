@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,11 +13,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
@@ -50,7 +54,21 @@ private fun CanvasMemoScreen(
     onAction: (CanvasMemoAction) -> Unit,
 ) {
     Scaffold(
-
+        topBar = {
+            And03AppBar(
+                title = "임시 제목",
+                onBackClick = {}
+            ) {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_more_vert_filled),
+                        contentDescription = stringResource(
+                            R.string.content_description_more_button
+                        )
+                    )
+                }
+            }
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
