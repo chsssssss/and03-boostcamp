@@ -16,7 +16,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
+import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormEvent
 import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.util.collectWithLifecycle
 
 @Composable
 fun CanvasMemoRoute(
@@ -25,11 +27,9 @@ fun CanvasMemoRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is CanvasMemoEvent.NavToBack -> navigateToBack()
-            }
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            is CanvasMemoEvent.NavToBack -> navigateToBack()
         }
     }
 

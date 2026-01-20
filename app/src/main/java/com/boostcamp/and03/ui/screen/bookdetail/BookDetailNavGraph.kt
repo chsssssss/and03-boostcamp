@@ -18,7 +18,7 @@ fun NavGraphBuilder.bookDetailNavGraph(
 ) {
     composable<Route.BookDetail> {
         BookDetailRoute(
-            navigateToBack = navigateToBack,
+            navigateBack = navigateToBack,
             navigateToCanvas = navigateToCanvas,
             navigateToTextMemoForm = navigateToTextMemoForm,
             navigateToCanvasMemoForm = navigateToCanvasMemoForm

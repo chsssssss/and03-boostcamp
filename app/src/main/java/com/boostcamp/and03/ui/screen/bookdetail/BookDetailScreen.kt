@@ -24,7 +24,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +48,8 @@ import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
 import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
+import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailAction
+import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailEvent
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
@@ -57,12 +58,13 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookDetailRoute(
-    navigateToBack: () -> Unit,
+    navigateBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
     navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
@@ -70,30 +72,38 @@ fun BookDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            BookDetailEvent.NavigateBack -> navigateBack()
+
+            is BookDetailEvent.NavigateToTextMemoForm -> {
+                navigateToTextMemoForm(
+                    event.bookId,
+                    event.memoId
+                )
+            }
+
+            is BookDetailEvent.NavigateToCanvasMemoForm -> {
+                navigateToCanvasMemoForm(
+                    event.bookId,
+                    event.memoId
+                )
+            }
+
+            is BookDetailEvent.NavigateToCanvas -> { navigateToCanvas(event.memoId) }
+        }
+    }
+
     BookDetailScreen(
         uiState = uiState,
-        navigateToBack = navigateToBack,
-        navigateToCanvas = navigateToCanvas,
-        onRetryClick = { viewModel.loadAllData() },
-        onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
-        onClickDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
-        onClickDelMemo = { memoId -> viewModel.deleteMemo(memoId) },
-        onOpenTextMemoForm = navigateToTextMemoForm,
-        onOpenCanvasMemoForm = navigateToCanvasMemoForm
+        onAction = viewModel::onAction
     )
 }
 
 @Composable
 private fun BookDetailScreen(
     uiState: BookDetailUiState,
-    navigateToBack: () -> Unit,
-    navigateToCanvas: (memoId: String) -> Unit,
-    onOpenTextMemoForm: (bookId: String, memoId: String) -> Unit,
-    onOpenCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
-    onRetryClick: () -> Unit,
-    onClickDelCharacter: (String) -> Unit,
-    onClickDelQuote: (String) -> Unit,
-    onClickDelMemo: (String) -> Unit
+    onAction: (BookDetailAction) -> Unit,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -102,7 +112,7 @@ private fun BookDetailScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(R.string.book_detail_app_bar_title),
-                onBackClick = navigateToBack,
+                onBackClick = { onAction(BookDetailAction.OnBackClick) },
             ) {
                 IconButton(onClick = {}) {
                     Icon(
@@ -137,7 +147,7 @@ private fun BookDetailScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = uiState.errorMessage)
-                        Button(onClick = onRetryClick) {
+                        Button(onClick = { onAction(BookDetailAction.OnRetryClick) }) {
                             Text(stringResource(R.string.retry_btn_txt))
                         }
                     }
@@ -175,40 +185,52 @@ private fun BookDetailScreen(
                 when (tabs[selectedTabIndex]) {
                     BookDetailTab.CHARACTER -> CharacterTab(
                         uiState.characters,
-                        onClickDelete = onClickDelCharacter,
+                        onClickDelete = { characterId ->
+                            onAction(BookDetailAction.DeleteCharacter(characterId))
+                        },
                         onClickEdit = { }
                     )
 
                     BookDetailTab.QUOTE -> QuoteTab(
                         uiState.quotes,
-                        onClickDelete = onClickDelQuote,
+                        onClickDelete = { quoteId ->
+                            onAction(BookDetailAction.DeleteQuote(quoteId))
+                        },
                         onClickEdit = { }
                     )
 
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
                         onClickAddCanvas = {
-                            onOpenCanvasMemoForm(
-                                uiState.bookId,
-                                ""
+                            onAction(
+                                BookDetailAction.OnOpenCanvasMemoForm(
+                                    uiState.bookId,
+                                    ""
+                                )
                             )
                         },
                         onClickAddText = {
-                            onOpenTextMemoForm(
-                                uiState.bookId,
-                                ""
+                            onAction(
+                                BookDetailAction.OnOpenTextMemoForm(
+                                    uiState.bookId,
+                                    ""
+                                )
                             )
                         },
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
-                                navigateToCanvas(memo.id)
+                                BookDetailAction.OnCanvasMemoClick(memo.id)
                             }
                         },
-                        onClickDelMemo = onClickDelMemo,
+                        onClickDelMemo = { memoId ->
+                            onAction(BookDetailAction.DeleteMemo(memoId))
+                        },
                         onClickEditMemo = { memoId -> // TODO: memoId를 포함하여 수정 화면으로 이동
-                            onOpenTextMemoForm(
-                                uiState.bookId,
-                                memoId
+                            onAction(
+                                BookDetailAction.OnOpenTextMemoForm(
+                                    uiState.bookId,
+                                    memoId
+                                )
                             )
                         }
                     )
@@ -445,14 +467,7 @@ fun BooklistScreenPreview() {
     And03Theme {
         BookDetailScreen(
             uiState = previewState,
-            navigateToBack = {},
-            navigateToCanvas = {},
-            onOpenTextMemoForm = { _, _ -> },
-            onOpenCanvasMemoForm = { _, _ -> },
-            onRetryClick = {},
-            onClickDelCharacter = {},
-            onClickDelQuote = {},
-            onClickDelMemo = {}
+            onAction = {}
         )
     }
 }
