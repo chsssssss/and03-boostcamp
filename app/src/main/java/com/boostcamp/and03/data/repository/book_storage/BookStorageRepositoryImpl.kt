@@ -133,13 +133,13 @@ class BookStorageRepositoryImpl @Inject constructor(
         userId: String,
         bookId: String,
         memoId: String,
-        memo: TextMemoRequest
+        memo: TextMemoFormUiModel
     ) {
         memoDataSource.updateTextMemo(
             userId,
             bookId,
             memoId,
-            memo
+            memo.toRequest()
         )
     }
 

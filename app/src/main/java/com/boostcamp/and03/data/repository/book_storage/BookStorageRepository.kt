@@ -80,7 +80,7 @@ interface BookStorageRepository {
         userId: String,
         bookId: String,
         memoId: String,
-        memo: TextMemoRequest
+        memo: TextMemoFormUiModel
     )
 
     suspend fun updateCanvasMemo(
