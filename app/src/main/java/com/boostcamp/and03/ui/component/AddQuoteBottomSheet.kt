@@ -134,7 +134,7 @@ fun AddQuoteBottomSheet(
                 ) {
                     QuoteCard(
                         quote = quote,
-                        onClick = { selectedQuoteId = quote.id }
+                        onClick = { selectedQuoteId = quote.id },
                     )
                 }
             }
