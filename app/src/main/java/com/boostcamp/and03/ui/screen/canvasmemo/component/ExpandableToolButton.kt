@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -66,7 +67,7 @@ fun ToolExpandableButton(
             } else {
                 R.drawable.ic_round_build
             },
-            contentDescription = null,
+            contentDescription = stringResource(R.string.tool_ic_content_desc_toggle_menu),
             onClick = { expanded = !expanded }
         )
     }
