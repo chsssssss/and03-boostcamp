@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.repository.book_storage
 
 import com.boostcamp.and03.data.model.request.BookStorageRequest
+import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
@@ -67,6 +68,26 @@ interface BookStorageRepository {
         userId: String,
         bookId: String,
         memo: TextMemoFormUiModel
+    )
+
+    suspend fun addCanvasMemo(
+        userId: String,
+        bookId: String,
+        memo: CanvasMemoRequest
+    )
+
+    suspend fun updateTextMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        memo: TextMemoRequest
+    )
+
+    suspend fun updateCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        memo: CanvasMemoRequest
     )
 
     suspend fun deleteMemo(

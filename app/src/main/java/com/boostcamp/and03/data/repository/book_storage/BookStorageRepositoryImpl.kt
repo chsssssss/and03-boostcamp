@@ -5,6 +5,7 @@ import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.memo.MemoDataSource
 import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
 import com.boostcamp.and03.data.model.request.BookStorageRequest
+import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
@@ -113,6 +114,46 @@ class BookStorageRepositoryImpl @Inject constructor(
             userId,
             bookId,
             memo.toRequest()
+        )
+    }
+
+    override suspend fun addCanvasMemo(
+        userId: String,
+        bookId: String,
+        memo: CanvasMemoRequest
+    ) {
+        memoDataSource.addCanvasMemo(
+            userId,
+            bookId,
+            memo
+        )
+    }
+
+    override suspend fun updateTextMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        memo: TextMemoRequest
+    ) {
+        memoDataSource.updateTextMemo(
+            userId,
+            bookId,
+            memoId,
+            memo
+        )
+    }
+
+    override suspend fun updateCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        memo: CanvasMemoRequest
+    ) {
+        memoDataSource.updateCanvasMemo(
+            userId,
+            bookId,
+            memoId,
+            memo
         )
     }
 
