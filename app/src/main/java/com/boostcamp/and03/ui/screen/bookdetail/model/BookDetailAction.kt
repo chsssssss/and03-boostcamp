@@ -1,0 +1,26 @@
+package com.boostcamp.and03.ui.screen.bookdetail.model
+
+sealed interface BookDetailAction {
+
+    data object OnBackClick: BookDetailAction
+
+    data object OnRetryClick: BookDetailAction
+
+    data class DeleteCharacter(val characterId: String): BookDetailAction
+
+    data class DeleteQuote(val quoteId: String): BookDetailAction
+
+    data class DeleteMemo(val memoId: String): BookDetailAction
+
+    data class OnOpenTextMemoForm(
+        val bookId: String,
+        val memoId: String
+    ): BookDetailAction
+
+    data class OnOpenCanvasMemoForm(
+        val bookId: String,
+        val memoId: String
+    ): BookDetailAction
+
+    data class OnCanvasMemoClick(val memoId: String): BookDetailAction
+}
