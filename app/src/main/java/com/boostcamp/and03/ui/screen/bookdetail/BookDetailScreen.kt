@@ -47,7 +47,7 @@ import com.boostcamp.and03.ui.component.EmptyDataScreen
 import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
-import com.boostcamp.and03.ui.screen.bookdetail.component.QuoteCard
+import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
@@ -336,7 +336,7 @@ private fun QuoteTab(
 
         SquareAddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = {}
+            onClick = { }
         )
     }
 }

@@ -77,6 +77,10 @@ class MainNavigator(
         )
     }
 
+    fun navigateToCanvasMemo() {
+        navController.navigate(Route.CanvasMemo)
+    }
+
     fun navigatePopBackStack() = navController.popBackStack()
 }
 

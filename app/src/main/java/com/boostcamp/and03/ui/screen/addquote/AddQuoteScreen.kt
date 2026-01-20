@@ -11,7 +11,7 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.theme.*
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.screen.addquote.component.AddQuoteInfoSection
+import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.screen.addquote.component.AddQuoteInputSection
 
 @Composable
@@ -46,7 +46,10 @@ fun AddQuoteScreen(
         ) {
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
-            AddQuoteInfoSection()
+            And03InfoSection(
+                title = stringResource(R.string.add_quote_info_title),
+                description = stringResource(R.string.add_quote_info_description)
+            )
 
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_2XL))
 
