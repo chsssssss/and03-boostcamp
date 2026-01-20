@@ -89,7 +89,8 @@ private fun CanvasMemoEditorScreen(
                 startPage = uiState.startPage,
                 endPage = uiState.endPage,
                 onStartPageChange = { onAction(CanvasMemoEditorAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(CanvasMemoEditorAction.OnEndPageChange(endPage = it)) }
+                onEndPageChange = { onAction(CanvasMemoEditorAction.OnEndPageChange(endPage = it)) },
+                totalPage = uiState.totalPage
             )
         }
     }

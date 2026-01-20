@@ -111,7 +111,8 @@ private fun TextMemoEditorScreen(
                 startPage = uiState.startPage,
                 endPage = uiState.endPage,
                 onStartPageChange = { onAction(TextMemoEditorAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(TextMemoEditorAction.OnEndPageChange(endPage = it)) }
+                onEndPageChange = { onAction(TextMemoEditorAction.OnEndPageChange(endPage = it)) },
+                totalPage = uiState.totalPage
             )
         }
     }

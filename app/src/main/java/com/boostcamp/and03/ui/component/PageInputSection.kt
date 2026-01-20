@@ -28,6 +28,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 fun PageInputSection(
     startPage: String,
     endPage: String,
+    totalPage: Int,
     onStartPageChange: (String) -> Unit,
     onEndPageChange: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -69,7 +70,14 @@ fun PageInputSection(
             OutlinedTextField(
                 value = endPage,
                 onValueChange = { onEndPageChange(it.filter { char -> char.isDigit() }) },
-                placeholder = { Text(text = stringResource(id = R.string.add_memo_enter_end_page_placeholder)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(
+                            id = R.string.add_memo_enter_end_page_placeholder,
+                            totalPage
+                        )
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -93,6 +101,7 @@ private fun PageInputSectionPreview() {
         PageInputSection(
             startPage = "1",
             endPage = "10",
+            totalPage = 100,
             onStartPageChange = {},
             onEndPageChange = {}
         )
