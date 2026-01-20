@@ -23,7 +23,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 @Composable
 fun EditableTextField(
     state: TextFieldState,
-    onSearch: () -> Unit,
+    onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
     @StringRes placeholderRes: Int = R.string.editable_text_field_hint,
     imeAction: ImeAction = ImeAction.Next,
@@ -41,7 +41,7 @@ fun EditableTextField(
             keyboardType = keyboardType,
             imeAction = imeAction
         ),
-        onKeyboardAction = { onSearch() },
+        onKeyboardAction = { onSubmit() },
         lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = lineLimits),
         shape = RoundedCornerShape(And03Radius.RADIUS_M),
         colors = TextFieldDefaults.colors(
@@ -61,7 +61,7 @@ fun EditableTextField(
 fun EditableTextFieldPreview() {
     EditableTextField(
         state = TextFieldState(),
-        onSearch = {},
+        onSubmit = {},
         modifier = Modifier,
     )
 }
