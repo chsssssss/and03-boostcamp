@@ -9,10 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
@@ -25,26 +31,71 @@ import com.boostcamp.and03.ui.theme.And03Theme
 fun QuoteCard(
     quote: QuoteUiModel,
     onClick: () -> Unit,
+    onClickDelete: () -> Unit,
+    onClickEdit: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(And03Radius.RADIUS_M),
         colors = CardDefaults.cardColors(containerColor = And03Theme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(And03Padding.PADDING_XL)
-        ) {
-            Text(
-                text = quote.content,
-                style = And03Theme.typography.bodyMedium,
-                color = And03Theme.colors.onSurface,
-                modifier = Modifier.padding(bottom = And03Padding.PADDING_2XL)
-            )
+        Column {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = And03Padding.PADDING_XL),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = quote.content,
+                    style = And03Theme.typography.bodyMedium,
+                    color = And03Theme.colors.onSurface,
+                    modifier = Modifier.padding(
+                        bottom = And03Padding.PADDING_2XL,
+                        top = And03Padding.PADDING_XL,
+                    )
+                )
+                DropdownMenuContainer(
+                    trigger = { onClick ->
+                        IconButton(onClick = onClick) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
+                                contentDescription = stringResource(R.string.cd_more_options)
+                            )
+                        }
+                    },
+                    menuContent = { closeMenu ->
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.more_vert_edit)) },
+                            onClick = {
+                                closeMenu()
+                                onClickEdit()
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.more_vert_delete)) },
+                            onClick = {
+                                closeMenu()
+                                onClickDelete()
+                            }
+                        )
+                    }
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = And03Padding.PADDING_XL,
+                        end = And03Padding.PADDING_XL,
+                        bottom = And03Padding.PADDING_XL,
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
@@ -75,6 +126,8 @@ fun QuoteCardPreview() {
             page = 26,
             date = "2026.1.7",
         ),
-        onClick = {}
+        onClick = {},
+        onClickDelete = {},
+        onClickEdit = {}
     )
 }

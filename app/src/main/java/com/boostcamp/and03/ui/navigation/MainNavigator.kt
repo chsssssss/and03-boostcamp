@@ -4,15 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
-import com.boostcamp.and03.ui.screen.booklist.model.BookUiModel
 
 @Stable
 class MainNavigator(
@@ -36,10 +29,28 @@ class MainNavigator(
         navController.navigate(Route.MyPage)
     }
 
-    fun navigateToBookDetail(book: BookUiModel) {
+    fun navigateToBookDetail(bookId: String) {
         navController.navigate(
-            Route.BookDetail(bookId = book.id)
+            Route.BookDetail(bookId = bookId)
         )
+    }
+
+    fun navigateToCanvas(memoId: String) {
+        navController.navigate(
+            Route.Canvas(memoId = memoId)
+        )
+    }
+
+    fun navigateToMemoEdit() {
+        navController.navigate(Route.MemoEdit)
+    }
+
+    fun navigateToAddTextMemo() {
+        navController.navigate(Route.AddTextMemo)
+    }
+
+    fun navigateToAddCanvasMemo() {
+        navController.navigate(Route.AddCanvasMemo)
     }
 
     fun navigatePopBackStack() = navController.popBackStack()

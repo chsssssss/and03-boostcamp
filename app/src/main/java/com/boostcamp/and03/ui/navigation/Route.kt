@@ -18,4 +18,16 @@ sealed interface Route {
 
     @Serializable
     data class BookDetail(val bookId: String) : Route
+
+    @Serializable
+    data class Canvas(val memoId: String) : Route
+
+    @Serializable
+    data object MemoEdit: Route // 메모 관계도 화면에서 넘어갈 수 있느 메모 편집 화면, 추후 수정 필요
+
+    @Serializable
+    data object AddTextMemo: Route
+
+    @Serializable
+    data object AddCanvasMemo: Route
 }
