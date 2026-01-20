@@ -1,13 +1,11 @@
 package com.boostcamp.and03.ui.screen.canvasmemo.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -38,7 +36,6 @@ fun ToolExpandableButton(
 
     Column(
         modifier = modifier
-            .animateContentSize()
             .padding(And03Padding.PADDING_M),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
