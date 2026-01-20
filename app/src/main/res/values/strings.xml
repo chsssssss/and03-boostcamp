@@ -85,6 +85,11 @@
     <string name="tool_ic_content_desc_zoom_out">축소</string>
     <string name="tool_ic_content_desc_fit_screen">화면 맞추기</string>
     <string name="tool_ic_content_desc_toggle_menu">도구 메뉴</string>
+    <string name="add_character_dialog_title">등장인물 추가</string>
+    <string name="add_character_dialog_name_label">이름 *</string>
+    <string name="add_character_dialog_name_placeholder">이름을 입력하세요.</string>
+    <string name="add_character_dialog_desc_label">설명</string>
+    <string name="add_character_dialog_desc_placeholder">설명을 입력하세요</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
