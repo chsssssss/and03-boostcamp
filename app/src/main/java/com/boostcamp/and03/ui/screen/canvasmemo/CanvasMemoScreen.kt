@@ -13,7 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
+import com.boostcamp.and03.ui.theme.And03Padding
 
 @Composable
 fun CanvasMemoRoute(
@@ -50,6 +53,15 @@ private fun CanvasMemoScreen(
                 .padding(innerPadding)
         ) {
             Text(text = "CanvasMemoScreen")
+
+            AlertMessageCard(
+                message = "삭제할 아이템을 선택해주세요.",
+                modifier = Modifier.padding(And03Padding.PADDING_M),
+                actions = listOf(
+                    AlertAction("취소") { },
+                    AlertAction("삭제") { }
+                )
+            )
 
             if (uiState.isRelationDialogVisible) {
                 RelationEditorDialog(
