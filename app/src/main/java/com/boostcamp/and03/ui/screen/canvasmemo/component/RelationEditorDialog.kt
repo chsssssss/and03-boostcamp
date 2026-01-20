@@ -69,7 +69,7 @@ fun RelationEditorDialog(
 
             EditableTextField(
                 state = relationNameState,
-                onSearch = onConfirm,
+                onSubmit = onConfirm,
                 placeholderRes = R.string.relation_name_placeholder
             )
         }
