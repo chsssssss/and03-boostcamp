@@ -67,6 +67,7 @@ class BookStorageDataSourceImpl @Inject constructor(
                 author = data["author"] as? List<String> ?: emptyList(),
                 publisher = data["publisher"] as? String ?: "",
                 thumbnail = data["thumbnail"] as? String ?: "",
+                totalPage = (data["totalPage"] as? Long)?.toInt() ?: 0
             )
         } catch (e: Exception) {
             Log.e("BookStorage", "Error getting book detail", e)
