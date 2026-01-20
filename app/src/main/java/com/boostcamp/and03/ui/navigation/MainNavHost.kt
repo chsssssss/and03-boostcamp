@@ -50,16 +50,16 @@ fun MainNavHost(
             navigateToCanvas = { memoId ->
                 navigator.navigateToCanvas(memoId)
             },
-            navigateToTextMemoForm = { bookId ->
+            navigateToTextMemoForm = { bookId, memoId ->
                 navigator.navigateToTextMemoForm(
                     bookId = bookId,
-                    memoId = ""
+                    memoId = memoId
                 )
             },
-            navigateToCanvasMemoForm = { bookId ->
+            navigateToCanvasMemoForm = { bookId, memoId ->
                 navigator.navigateToCanvasMemoForm(
                     bookId = bookId,
-                    memoId = ""
+                    memoId = memoId
                 )
             },
             navigateToMemoEdit = { navigator.navigateToMemoEdit() }

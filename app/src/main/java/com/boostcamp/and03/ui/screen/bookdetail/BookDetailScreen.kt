@@ -64,8 +64,8 @@ import kotlinx.collections.immutable.persistentListOf
 fun BookDetailRoute(
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
-    navigateToTextMemoForm: (String) -> Unit,
-    navigateToCanvasMemoForm: (String) -> Unit,
+    navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
+    navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -88,8 +88,8 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     navigateToBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
-    onOpenTextMemoForm: (String) -> Unit,
-    onOpenCanvasMemoForm: (String) -> Unit,
+    onOpenTextMemoForm: (bookId: String, memoId: String) -> Unit,
+    onOpenCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
     onRetryClick: () -> Unit,
     onClickDelCharacter: (String) -> Unit,
     onClickDelQuote: (String) -> Unit,
@@ -187,8 +187,18 @@ private fun BookDetailScreen(
 
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
-                        onClickAddCanvas = { onOpenCanvasMemoForm(uiState.bookId) },
-                        onClickAddText = { onOpenTextMemoForm(uiState.bookId) },
+                        onClickAddCanvas = {
+                            onOpenCanvasMemoForm(
+                                uiState.bookId,
+                                ""
+                            )
+                        },
+                        onClickAddText = {
+                            onOpenTextMemoForm(
+                                uiState.bookId,
+                                ""
+                            )
+                        },
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
                                 navigateToCanvas(memo.id)
@@ -196,7 +206,10 @@ private fun BookDetailScreen(
                         },
                         onClickDelMemo = onClickDelMemo,
                         onClickEditMemo = { memoId -> // TODO: memoId를 포함하여 수정 화면으로 이동
-                            onOpenTextMemoForm(uiState.bookId)
+                            onOpenTextMemoForm(
+                                uiState.bookId,
+                                memoId
+                            )
                         }
                     )
                 }
@@ -434,8 +447,8 @@ fun BooklistScreenPreview() {
             uiState = previewState,
             navigateToBack = {},
             navigateToCanvas = {},
-            onOpenTextMemoForm = {},
-            onOpenCanvasMemoForm = {},
+            onOpenTextMemoForm = { _, _ -> },
+            onOpenCanvasMemoForm = { _, _ -> },
             onRetryClick = {},
             onClickDelCharacter = {},
             onClickDelQuote = {},
