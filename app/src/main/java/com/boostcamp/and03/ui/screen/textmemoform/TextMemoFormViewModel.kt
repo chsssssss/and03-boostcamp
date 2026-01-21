@@ -22,9 +22,9 @@ class TextMemoFormViewModel @Inject constructor(
     private val bookStorageRepository: BookStorageRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val textMemoEditorRoute = savedStateHandle.toRoute<Route.TextMemoForm>()
-    private val bookId = textMemoEditorRoute.bookId
-    private val memoId = textMemoEditorRoute.memoId
+    private val textMemoFormRoute = savedStateHandle.toRoute<Route.TextMemoForm>()
+    private val bookId = textMemoFormRoute.bookId
+    private val memoId = textMemoFormRoute.memoId
 
     private val _uiState = MutableStateFlow(TextMemoFormUiState())
     val uiState = _uiState.asStateFlow()
