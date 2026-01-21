@@ -47,6 +47,7 @@ import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 
 @Composable
 fun AddQuoteBottomSheet(
@@ -168,29 +169,6 @@ fun AddQuoteBottomSheet(
 }
 
 
-fun Modifier.drawVerticalScrollbar(
-    state: LazyListState,
-    width: Dp = 4.dp,
-    color: Color = Color.Gray.copy(alpha = 0.5f)
-): Modifier = drawWithContent {
-    drawContent()
-
-    val firstVisibleElementIndex =
-        state.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: return@drawWithContent
-    val needScrollbar = state.layoutInfo.totalItemsCount > state.layoutInfo.visibleItemsInfo.size
-
-    if (needScrollbar) {
-        val elementHeight = size.height / state.layoutInfo.totalItemsCount
-        val scrollbarOffsetY = firstVisibleElementIndex * elementHeight
-        val scrollbarHeight = state.layoutInfo.visibleItemsInfo.size * elementHeight
-
-        drawRect(
-            color = color,
-            topLeft = Offset(size.width - width.toPx(), scrollbarOffsetY),
-            size = Size(width.toPx(), scrollbarHeight),
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
