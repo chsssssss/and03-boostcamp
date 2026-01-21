@@ -17,6 +17,7 @@ import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
+import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import javax.inject.Inject
 
@@ -134,12 +135,12 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun addCanvasMemo(
         userId: String,
         bookId: String,
-        memo: CanvasMemoRequest
+        memo: CanvasMemoFormUiModel
     ) {
         memoDataSource.addCanvasMemo(
             userId,
             bookId,
-            memo
+            memo.toRequest()
         )
     }
 
@@ -161,13 +162,13 @@ class BookStorageRepositoryImpl @Inject constructor(
         userId: String,
         bookId: String,
         memoId: String,
-        memo: CanvasMemoRequest
+        memo: CanvasMemoFormUiModel
     ) {
         memoDataSource.updateCanvasMemo(
             userId,
             bookId,
             memoId,
-            memo
+            memo.toRequest()
         )
     }
 

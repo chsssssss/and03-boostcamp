@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.canvasmemoform.model.toUiModel
+import com.boostcamp.and03.ui.screen.textmemoform.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -66,12 +68,15 @@ class CanvasMemoFormViewModel @Inject constructor(
             userId = userId,
             bookId = bookId
         )
+
         if (result != null) {
             _uiState.update { it.copy(totalPage = result.totalPage) }
         }
     }
 
     private suspend fun loadTextMemo() {
+        if (memoId.isBlank()) return
+
         val result = bookStorageRepository.getCanvasMemo(
             userId = userId,
             bookId = bookId,
@@ -90,6 +95,19 @@ class CanvasMemoFormViewModel @Inject constructor(
     }
 
     private suspend fun saveCanvasMemo() {
-        // TODO: 캔버스 메모 저장 기능 구현
+        if (memoId == "") {
+            bookStorageRepository.addCanvasMemo(
+                userId = userId,
+                bookId = bookId,
+                memo = _uiState.value.toUiModel()
+            )
+        } else {
+            bookStorageRepository.updateCanvasMemo(
+                userId = userId,
+                bookId = bookId,
+                memoId = memoId,
+                memo = _uiState.value.toUiModel()
+            )
+        }
     }
 }

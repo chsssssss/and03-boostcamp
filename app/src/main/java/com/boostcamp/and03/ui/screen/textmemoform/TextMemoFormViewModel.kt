@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.textmemoform
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -69,12 +70,15 @@ class TextMemoFormViewModel @Inject constructor(
             userId = userId,
             bookId = bookId
         )
+
         if (result != null) {
             _uiState.update { it.copy(totalPage = result.totalPage) }
         }
     }
 
     private suspend fun loadTextMemo() {
+        if (memoId.isBlank()) return
+
         val result = bookStorageRepository.getTextMemo(
             userId = userId,
             bookId = bookId,

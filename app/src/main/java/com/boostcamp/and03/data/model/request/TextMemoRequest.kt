@@ -13,15 +13,10 @@ data class TextMemoRequest(
     val endPage: Int = 0,
 )
 
-fun TextMemoFormUiModel.toRequest(): TextMemoRequest {
-    val start = startPage
-    val end = endPage
-
-    return TextMemoRequest(
-        title = title.trim(),
-        content = content.trim(),
-        type = "TEXT",
-        startPage = start,
-        endPage = end
-    )
-}
+fun TextMemoFormUiModel.toRequest() = TextMemoRequest(
+    title = title,
+    content = content,
+    type = "TEXT",
+    startPage = startPage,
+    endPage = endPage,
+)
