@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,21 +33,25 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun handleCloseRelationDialog() {
-        _uiState.value = _uiState.value.copy(
-            isRelationDialogVisible = false,
-            relationSelection = null,
-            relationNameState = TextFieldState()
-        )
+        _uiState.update {
+            it.copy(
+                isRelationDialogVisible = false,
+                relationSelection = null,
+                relationNameState = TextFieldState()
+            )
+        }
     }
 
     private fun handleOpenRelationDialog(action: CanvasMemoAction.OpenRelationDialog) {
-        _uiState.value = _uiState.value.copy(
-            isRelationDialogVisible = true,
-            relationSelection = RelationSelection(
-                fromNodeId = action.fromNodeId,
-                toNodeId = action.toNodeId
-            ),
-            relationNameState = TextFieldState()
-        )
+        _uiState.update {
+            it.copy(
+                isRelationDialogVisible = true,
+                relationSelection = RelationSelection(
+                    fromNodeId = action.fromNodeId,
+                    toNodeId = action.toNodeId
+                ),
+                relationNameState = TextFieldState()
+            )
+        }
     }
 }
