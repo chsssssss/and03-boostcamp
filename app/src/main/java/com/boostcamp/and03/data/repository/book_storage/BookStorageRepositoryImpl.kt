@@ -14,6 +14,7 @@ import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
+import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
@@ -176,6 +177,18 @@ class BookStorageRepositoryImpl @Inject constructor(
         memoId: String
     ) {
         memoDataSource.deleteMemo(
+            userId,
+            bookId,
+            memoId
+        )
+    }
+
+    override suspend fun getCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): CanvasMemoResponse {
+        return memoDataSource.getCanvasMemo(
             userId,
             bookId,
             memoId
