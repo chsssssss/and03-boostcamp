@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.canvasmemoform.model
+package com.boostcamp.and03.ui.screen.canvasmemoform
 
 sealed interface CanvasMemoFormAction {
 

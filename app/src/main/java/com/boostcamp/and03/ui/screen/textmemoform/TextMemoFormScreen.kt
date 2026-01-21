@@ -25,8 +25,6 @@ import com.boostcamp.and03.ui.component.ContentInputSection
 import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
-import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormAction
-import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormEvent
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing

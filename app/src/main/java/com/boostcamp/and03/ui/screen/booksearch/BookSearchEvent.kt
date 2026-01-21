@@ -1,4 +1,6 @@
-package com.boostcamp.and03.ui.screen.booksearch.model
+package com.boostcamp.and03.ui.screen.booksearch
+
+import com.boostcamp.and03.ui.screen.booksearch.model.SaveFailureReason
 
 sealed interface BookSearchEvent {
 

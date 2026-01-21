@@ -2,8 +2,6 @@ package com.boostcamp.and03.ui.screen.canvasmemoform
 
 import androidx.lifecycle.ViewModel
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
-import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormAction
-import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED

@@ -3,11 +3,9 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,7 +14,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
-import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormEvent
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 

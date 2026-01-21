@@ -42,8 +42,6 @@ import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.screen.booksearch.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
-import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchAction
-import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchEvent
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing

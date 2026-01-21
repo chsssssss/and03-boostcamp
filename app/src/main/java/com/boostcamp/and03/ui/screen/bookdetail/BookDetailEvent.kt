@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.bookdetail.model
+package com.boostcamp.and03.ui.screen.bookdetail
 
 sealed interface BookDetailEvent {
 
