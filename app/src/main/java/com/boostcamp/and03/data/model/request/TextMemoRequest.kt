@@ -15,7 +15,7 @@ data class TextMemoRequest(
 
 fun TextMemoFormUiModel.toRequest() = TextMemoRequest(
     title = title.trim(),
-    content = content,
+    content = content.trim(),
     type = "TEXT",
     startPage = startPage,
     endPage = endPage,

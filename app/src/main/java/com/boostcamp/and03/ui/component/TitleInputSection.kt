@@ -32,7 +32,8 @@ fun TitleInputSection(
             onValueChange = onTitleChange,
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(id = R.string.add_memo_enter_title_placeholder)) },
-            shape = And03Theme.shapes.defaultCorner
+            shape = And03Theme.shapes.defaultCorner,
+            singleLine = true
         )
     }
 }

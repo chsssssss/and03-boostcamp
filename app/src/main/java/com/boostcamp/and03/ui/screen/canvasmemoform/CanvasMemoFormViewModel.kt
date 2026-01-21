@@ -95,7 +95,7 @@ class CanvasMemoFormViewModel @Inject constructor(
     }
 
     private suspend fun saveCanvasMemo() {
-        if (memoId == "") {
+        if (memoId.isBlank()) {
             bookStorageRepository.addCanvasMemo(
                 userId = userId,
                 bookId = bookId,

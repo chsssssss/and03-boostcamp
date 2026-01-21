@@ -98,7 +98,7 @@ class TextMemoFormViewModel @Inject constructor(
     }
 
     private suspend fun saveTextMemo() {
-        if (memoId == "") {
+        if (memoId.isBlank()) {
             bookStorageRepository.addTextMemo(
                 userId = userId,
                 bookId = bookId,
