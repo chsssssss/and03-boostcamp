@@ -12,7 +12,7 @@ data class CanvasMemoRequest(
 )
 
 fun CanvasMemoFormUiModel.toRequest() = CanvasMemoRequest(
-    title = title,
+    title = title.trim(),
     type = "CANVAS",
     startPage = startPage,
     endPage = endPage
