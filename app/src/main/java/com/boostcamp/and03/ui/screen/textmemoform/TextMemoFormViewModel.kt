@@ -81,11 +81,14 @@ class TextMemoFormViewModel @Inject constructor(
             memoId = memoId
         )
 
-        _uiState.update {
-            it.copy(
+        _uiState.update { state ->
+            val isSamePage = result.startPage == result.endPage
+
+            state.copy(
                 title = result.title,
                 content = result.content,
                 startPage = result.startPage.toString(),
+                endPage = if (isSamePage) "" else result.endPage.toString()
             )
         }
     }

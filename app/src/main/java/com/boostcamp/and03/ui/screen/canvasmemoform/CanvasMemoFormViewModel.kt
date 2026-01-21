@@ -79,9 +79,12 @@ class CanvasMemoFormViewModel @Inject constructor(
         )
 
         _uiState.update {
+            val isSamePage = result.startPage == result.endPage
+
             it.copy(
                 title = result.title,
                 startPage = result.startPage.toString(),
+                endPage = if (isSamePage) "" else result.endPage.toString()
             )
         }
     }
