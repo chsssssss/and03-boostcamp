@@ -392,15 +392,24 @@ private fun MemoTab(
                 verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
             ) {
                 items(memos, key = { it.id }) { memo ->
+                    val pageLabelText = if (memo.startPage == memo.endPage) {
+                        stringResource(
+                            id = R.string.book_detail_memo_single_page,
+                            memo.startPage
+                        )
+                    } else {
+                        stringResource(
+                            id = R.string.book_detail_memo_page_range,
+                            memo.startPage,
+                            memo.endPage
+                        )
+                    }
+
                     MemoCard(
                         type = memo.memoType,
                         title = memo.title,
                         contentPreview = memo.content ?: "",
-                        pageLabel = stringResource(
-                            id = R.string.book_detail_memo_page_range,
-                            memo.startPage,
-                            memo.endPage
-                        ),
+                        pageLabel = pageLabelText,
                         date = memo.date,
                         onClick = { onClickMemo(memo) },
                         onClickDelMemo = { onClickDelMemo(memo.id) },
