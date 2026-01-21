@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.bookdetail.component
+package com.boostcamp.and03.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,8 +28,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.component.IconBadge
-import com.boostcamp.and03.ui.component.LabelChip
+import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
