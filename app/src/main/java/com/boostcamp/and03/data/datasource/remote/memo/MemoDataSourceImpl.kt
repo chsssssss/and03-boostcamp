@@ -329,7 +329,7 @@ class MemoDataSourceImpl @Inject constructor(
                 id = snapshot.id,
                 title = data["title"] as? String ?: "",
                 createdAt = data["createdAt"] as? String ?: "",
-                type = data["type"] as? String ?: "TEXT",
+                type = data["type"] as? String ?: "CANVAS",
                 startPage = (data["startPage"] as? Long)?.toInt() ?: 0,
                 endPage = (data["endPage"] as? Long)?.toInt() ?: 0,
                 graph = parseGraph(data["graph"] as? Map<String, Any>)
