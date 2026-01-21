@@ -4,7 +4,7 @@ data class CanvasMemoFormUiState(
     val title: String = "",
     val startPage: String = "",
     val endPage: String = "",
-    val totalPage: Int = 1000 // 동작 확인을 위한 임시 기본값 TODO: 실제 책의 페이지를 가져오게 수정 필요
+    val totalPage: Int = 0
 ) {
     val isValidPageRange: Boolean
         get() {
