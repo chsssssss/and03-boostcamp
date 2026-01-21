@@ -91,6 +91,8 @@
     <string name="add_character_dialog_name_placeholder">이름을 입력하세요.</string>
     <string name="add_character_dialog_desc_label">설명</string>
     <string name="add_character_dialog_desc_placeholder">설명을 입력하세요</string>
+    <string name="canvas_memo_editor_page_list_scroll_page_range">p.%1$d~%2$d</string>
+    <string name="canvas_memo_editor_page_list_scroll_single_page">p.%1$d</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
@@ -125,5 +127,13 @@
     <string name="add_quote_bottom_sheet_search_placeholder">인상깊은 문장 또는 페이지를 입력하세요.</string>
     <string name="add_quote_bottom_sheet_new_sentence">새 문장 추가</string>
     <string name="add_quote_bottom_sheet_button_add">추가하기</string>
+
+    <!-- Add Node - Bottom Sheet -->
+    <string name="add_node_bottom_sheet_title">노드 추가</string>
+    <string name="add_node_bottom_sheet_info_title">등장인물을 선택해 노드를 추가해주세요.</string>
+    <string name="add_node_bottom_sheet_info_description">아직 등록하지 않았다면 새 등장인물을 추가할 수 있어요.</string>
+    <string name="add_node_bottom_sheet_search_placeholder">등장인물 이름을 검색하세요.</string>
+    <string name="add_node_bottom_sheet_new_character">새 등장인물 추가</string>
+    <string name="add_node_bottom_sheet_add_button">추가하기</string>
 
 </resources>
