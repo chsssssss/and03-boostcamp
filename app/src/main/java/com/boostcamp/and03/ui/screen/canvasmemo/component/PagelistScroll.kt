@@ -27,6 +27,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 
 @Composable
 fun PagelistScroll(
