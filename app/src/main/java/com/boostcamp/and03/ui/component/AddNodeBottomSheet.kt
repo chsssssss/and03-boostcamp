@@ -1,7 +1,6 @@
 package com.boostcamp.and03.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,16 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,27 +29,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
-import com.boostcamp.and03.ui.theme.And03BorderWidth
+import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.theme.And03ComponentSize
-import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 
+
 @Composable
-fun AddQuoteBottomSheet(
+fun AddNodeBottomSheet(
+    characters: List<CharacterUiModel>,
+    infoTitle: String,
+    infoDescription: String,
+    onSearch: (String) -> Unit,
+    onNewCharacterClick: () -> Unit,
+    onAddClick: (CharacterUiModel?) -> Unit,
     modifier: Modifier = Modifier,
-    quotes: List<QuoteUiModel> = emptyList(),
-    onAddClick: () -> Unit = {},
-    onNewSentenceClick: () -> Unit = {},
-    onSearch: (String) -> Unit = {},
 ) {
     val searchState = rememberTextFieldState()
     val listState = rememberLazyListState()
-    var selectedQuoteId by remember { mutableStateOf<String?>(null) }
+    var selectedCharacterId by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = modifier
@@ -66,23 +62,27 @@ fun AddQuoteBottomSheet(
                     topEnd = And03Radius.RADIUS_L
                 )
             )
-            .padding(horizontal = And03Padding.PADDING_L, vertical = And03Padding.PADDING_M),
+            .padding(
+                horizontal = And03Padding.PADDING_L,
+                vertical = And03Padding.PADDING_M
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Box(
             modifier = Modifier
                 .width(40.dp)
                 .height(4.dp)
                 .background(
-                    And03Theme.colors.outlineVariant,
-                    RoundedCornerShape(And03Radius.RADIUS_S)
+                    color = And03Theme.colors.outlineVariant,
+                    shape = RoundedCornerShape(And03Radius.RADIUS_S)
                 )
         )
 
         Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
         Text(
-            text = stringResource(R.string.add_quote_bottom_sheet_title),
+            text = stringResource(R.string.add_node_bottom_sheet_title),
             style = And03Theme.typography.titleMedium,
             color = And03Theme.colors.onBackground
         )
@@ -90,8 +90,8 @@ fun AddQuoteBottomSheet(
         Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
 
         And03InfoSection(
-            title = stringResource(R.string.add_quote_bottom_sheet_info_title),
-            description = stringResource(R.string.add_quote_bottom_sheet_info_description)
+            title = infoTitle,
+            description = infoDescription
         )
 
         Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
@@ -100,7 +100,7 @@ fun AddQuoteBottomSheet(
             state = searchState,
             onSearch = { onSearch(searchState.text.toString()) },
             modifier = Modifier.fillMaxWidth(),
-            placeholderRes = R.string.add_quote_bottom_sheet_search_placeholder
+            placeholderRes = R.string.add_node_bottom_sheet_search_placeholder
         )
 
         Spacer(modifier = Modifier.height(And03Spacing.SPACE_M))
@@ -108,53 +108,48 @@ fun AddQuoteBottomSheet(
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .weight(1f, fill = false)
-                .drawVerticalScrollbar(listState, color = And03Theme.colors.outlineVariant),
+                .weight(1f)
+                .drawVerticalScrollbar(
+                    state = listState,
+                    color = And03Theme.colors.outlineVariant
+                ),
             verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S),
             contentPadding = PaddingValues(bottom = And03Padding.PADDING_M)
         ) {
             items(
-                items = quotes,
+                items = characters,
                 key = { it.id }
-            ) { quote ->
-                val isSelected = selectedQuoteId == quote.id
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = And03BorderWidth.BORDER_2,
-                            color = if (isSelected) And03Theme.colors.primary else Color.Transparent,
-                            shape = RoundedCornerShape(And03Radius.RADIUS_M)
-                        )
-                ) {
-                    QuoteCard(
-                        quote = quote,
-                        onClick = { selectedQuoteId = quote.id },
-                    )
-                }
+            ) { character ->
+                CharacterCard(
+                    name = character.name,
+                    role = character.role,
+                    iconColor = character.iconColor,
+                    description = character.description,
+                    selected = selectedCharacterId == character.id,
+                    onClick = { selectedCharacterId = character.id },
+                    onEditClick = {},
+                    onDeleteClick = {}
+                )
             }
         }
 
         TextButton(
-            onClick = onNewSentenceClick,
+            onClick = onNewCharacterClick,
             modifier = Modifier.padding(vertical = And03Spacing.SPACE_S)
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = null,
-                modifier = Modifier.size(And03IconSize.ICON_SIZE_S)
-            )
-            Spacer(modifier = Modifier.width(And03Spacing.SPACE_XS))
             Text(
-                text = stringResource(R.string.add_quote_bottom_sheet_new_sentence),
-                style = And03Theme.typography.labelLarge
+                text = stringResource(R.string.add_node_bottom_sheet_new_character),
+                style = And03Theme.typography.labelLarge,
+                color = And03Theme.colors.primary
             )
         }
 
         And03Button(
-            text = stringResource(R.string.add_quote_bottom_sheet_button_add),
-            onClick = onAddClick,
+            text = stringResource(R.string.add_node_bottom_sheet_add_button),
+            onClick = {
+                val selected = characters.find { it.id == selectedCharacterId }
+                onAddClick(selected)
+            },
             variant = ButtonVariant.Primary,
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,19 +159,25 @@ fun AddQuoteBottomSheet(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
-private fun AddQuoteBottomSheetPreview() {
-    val dummyQuotes = List(10) { i ->
-        QuoteUiModel(
-            id = i.toString(),
-            content = "이 책을 읽으면서 꿈에 대한 새로운 관점을 얻게 되었다. $i",
-            page = 10 + i,
-            date = "2026.01.14"
-        )
-    }
+private fun AddNodeBottomSheetPreview() {
     And03Theme {
-        AddQuoteBottomSheet(quotes = dummyQuotes)
+        AddNodeBottomSheet(
+            characters = List(8) {
+                CharacterUiModel(
+                    id = it.toString(),
+                    name = "헤르미온느 그레인저",
+                    role = "조연",
+                    description = "뛰어난 마법 실력을 가진 해리의 친구",
+                    iconColor = Color(0xFF4CAF50)
+                )
+            },
+            infoTitle = "등장인물을 선택해 노드를 추가해주세요.",
+            infoDescription = "아직 등록하지 않았다면 새로 추가할 수 있어요.",
+            onSearch = {},
+            onNewCharacterClick = {},
+            onAddClick = {}
+        )
     }
 }

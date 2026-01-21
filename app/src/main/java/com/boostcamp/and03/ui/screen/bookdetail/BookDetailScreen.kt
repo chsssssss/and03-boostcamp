@@ -43,7 +43,7 @@ import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.EmptyDataScreen
-import com.boostcamp.and03.ui.screen.bookdetail.component.CharacterCard
+import com.boostcamp.and03.ui.component.CharacterCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
 import com.boostcamp.and03.ui.component.QuoteCard
