@@ -96,6 +96,8 @@ class MemoDataSourceImpl @Inject constructor(
                 title = it["title"] as? String ?: "",
                 content = it["content"] as? String ?: "",
                 nodeType = it["nodeType"] as? String ?: "",
+                startPage = (it["startPage"] as? Long)?.toInt(),
+                endPage = (it["endPage"] as? Long)?.toInt(),
                 x = (it["x"] as? Double)?.toFloat() ?: 0f,
                 y = (it["y"] as? Double)?.toFloat() ?: 0f,
             )

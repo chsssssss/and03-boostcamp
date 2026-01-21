@@ -7,11 +7,13 @@ import com.boostcamp.and03.ui.navigation.Route
 
 fun NavGraphBuilder.canvasMemoFormNavGraph(
     navigateToBack: () -> Unit,
+    navigateToCanvasMemo: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     composable<Route.CanvasMemoForm> {
         CanvasMemoFormRoute(
-            navigateBack = navigateToBack
+            navigateBack = navigateToBack,
+            navigateToCanvasMemo = navigateToCanvasMemo
         )
     }
 }

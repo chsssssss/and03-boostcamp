@@ -3,6 +3,7 @@ package com.boostcamp.and03.domain.editor
 import androidx.compose.ui.geometry.Offset
 import com.boostcamp.and03.domain.model.Edge
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.domain.model.MemoNode
 
 class CanvasMemoEditor(
     private val graph: MemoGraph
@@ -10,8 +11,17 @@ class CanvasMemoEditor(
 
     fun moveNode(nodeId: String, delta: Offset): MemoGraph {
         val node = graph.nodes[nodeId] ?: return graph
+
+        val movedNode = when (node) {
+            is MemoNode.CharacterNode ->
+                node.copy(offset = node.offset + delta)
+
+            is MemoNode.QuoteNode ->
+                node.copy(offset = node.offset + delta)
+        }
+
         return graph.copy(
-            nodes = graph.nodes + (nodeId to node.copy(offset = node.offset + delta))
+            nodes = graph.nodes + (nodeId to movedNode)
         )
     }
 

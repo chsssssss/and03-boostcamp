@@ -33,8 +33,8 @@ fun And03Button(
         )
 
         ButtonVariant.Secondary -> ButtonDefaults.buttonColors(
-            containerColor = And03Theme.colors.surface,
-            contentColor = And03Theme.colors.onSurface
+            containerColor = And03Theme.colors.secondary,
+            contentColor = And03Theme.colors.onSecondary
         )
 
         ButtonVariant.SurfaceVariant -> ButtonDefaults.buttonColors(
