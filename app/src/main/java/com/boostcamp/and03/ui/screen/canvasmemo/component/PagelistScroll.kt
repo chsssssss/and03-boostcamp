@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.ui.component.LabelChip
-import com.boostcamp.and03.ui.component.drawVerticalScrollbar
+import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 import com.boostcamp.and03.ui.screen.canvasmemo.model.CanvasMemoSummaryUiModel
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
