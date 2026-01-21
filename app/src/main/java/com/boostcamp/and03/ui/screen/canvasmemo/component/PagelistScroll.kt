@@ -85,7 +85,7 @@ private fun PagelistItem(
     }
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S),
         verticalAlignment = Alignment.CenterVertically
     ) {
