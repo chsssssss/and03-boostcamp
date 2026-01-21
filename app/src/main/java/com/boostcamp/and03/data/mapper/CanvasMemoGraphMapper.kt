@@ -12,12 +12,25 @@ import com.boostcamp.and03.domain.model.MemoNode
 
 // NodeResponse → MemoNode
 fun NodeResponse.toDomain(): MemoNode =
-    MemoNode(
-        id = id,
-        title = title,
-        content = content,
-        offset = Offset(x, y)
-    )
+    when (nodeType) {
+        "CHARACTER" -> MemoNode.CharacterNode(
+            id = id,
+            name = title,
+            description = content,
+            offset = Offset(x, y)
+        )
+
+        "QUOTE" -> MemoNode.QuoteNode(
+            id = id,
+            content = content,
+            startPage = startPage ?: 0,
+            endPage = endPage ?: 0,
+            offset = Offset(x, y)
+        )
+
+        else -> error("Unknown node type: $nodeType")
+    }
+
 
 // EdgeResponse → Edge
 fun EdgeResponse.toDomain(): Edge =

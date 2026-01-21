@@ -1,7 +1,6 @@
 package com.boostcamp.and03.domain.model
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.IntSize
 
 sealed class MemoNode {
     abstract val id: String
@@ -17,7 +16,8 @@ sealed class MemoNode {
     data class QuoteNode(
         override val id: String,
         val content: String,
-        val page: Int,
+        val startPage: Int,
+        val endPage: Int,
         override val offset: Offset,
     ) : MemoNode()
 }
