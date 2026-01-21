@@ -223,13 +223,22 @@ private fun BookDetailScreen(
                         onClickDelMemo = { memoId ->
                             onAction(BookDetailAction.DeleteMemo(memoId))
                         },
-                        onClickEditMemo = { memoId -> // TODO: memoId를 포함하여 수정 화면으로 이동
-                            onAction(
-                                BookDetailAction.OnOpenTextMemoForm(
-                                    uiState.bookId,
-                                    memoId
+                        onClickEditMemo = { memo -> // TODO: memoId를 포함하여 수정 화면으로 이동
+                            when (memo.memoType) {
+                                MemoType.TEXT -> onAction(
+                                    BookDetailAction.OnOpenTextMemoForm(
+                                        uiState.bookId,
+                                        memo.id
+                                    )
                                 )
-                            )
+
+                                MemoType.CANVAS -> onAction(
+                                    BookDetailAction.OnOpenCanvasMemoForm(
+                                        uiState.bookId,
+                                        memo.id
+                                    )
+                                )
+                            }
                         }
                     )
                 }
@@ -377,7 +386,7 @@ private fun MemoTab(
     onClickAddText: () -> Unit,
     onClickMemo: (MemoUiModel) -> Unit,
     onClickDelMemo: (String) -> Unit,
-    onClickEditMemo: (String) -> Unit
+    onClickEditMemo: (MemoUiModel) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -413,7 +422,7 @@ private fun MemoTab(
                         date = memo.date,
                         onClick = { onClickMemo(memo) },
                         onClickDelMemo = { onClickDelMemo(memo.id) },
-                        onClickEdit = { onClickEditMemo(memo.id) },
+                        onClickEdit = { onClickEditMemo(memo) },
                     )
                 }
             }
