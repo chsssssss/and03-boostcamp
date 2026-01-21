@@ -217,7 +217,7 @@ private fun BookDetailScreen(
                         },
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
-                                BookDetailAction.OnCanvasMemoClick(memo.id)
+                                onAction(BookDetailAction.OnCanvasMemoClick(memo.id))
                             }
                         },
                         onClickDelMemo = { memoId ->
