@@ -31,6 +31,7 @@ import com.boostcamp.and03.ui.util.collectWithLifecycle
 @Composable
 fun CanvasMemoFormRoute(
     navigateBack: () -> Unit,
+    navigateToCanvasMemo: () -> Unit,
     viewModel: CanvasMemoFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -38,6 +39,7 @@ fun CanvasMemoFormRoute(
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
             CanvasMemoFormEvent.NavigateBack -> navigateBack()
+            CanvasMemoFormEvent.NavigateCanvasMemo -> navigateToCanvasMemo()
         }
     }
 

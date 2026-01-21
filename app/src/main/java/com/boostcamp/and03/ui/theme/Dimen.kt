@@ -41,6 +41,8 @@ object And03Radius {
 object And03ComponentSize {
     val APP_BAR_HEIGHT = 56.dp
     val BOTTOM_BAR_ITEM_SIZE = 56.dp
+
+    val BUTTON_SIZE = 56.dp
     val QUOTE_LEFT_BAR_HEIGHT = 48.dp
     val BUTTON_HEIGHT_L = 52.dp
     val TEXT_FIELD_HEIGHT_L = 140.dp
@@ -54,4 +56,10 @@ object And03Border {
 object And03BorderWidth {
     val BORDER_1 = 1.dp
     val BORDER_2 = 2.dp
+}
+
+object And03Elevation {
+    val S = 2.dp
+    val M = 4.dp
+    val L = 8.dp
 }
