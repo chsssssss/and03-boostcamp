@@ -23,7 +23,7 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 fun LabelAndEditableTextField(
     @StringRes labelRes: Int,
     state: TextFieldState,
-    onSearch: () -> Unit,
+    onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
     @StringRes placeholderRes: Int = R.string.editable_text_field_hint,
     imeAction: ImeAction = ImeAction.Next,
@@ -41,7 +41,7 @@ fun LabelAndEditableTextField(
 
         EditableTextField(
             state = state,
-            onSearch = onSearch,
+            onSubmit = onSubmit,
             placeholderRes = placeholderRes,
             imeAction = imeAction,
             keyboardType = keyboardType,
@@ -58,6 +58,6 @@ fun LabelAndTextFieldPreview() {
     LabelAndEditableTextField(
         labelRes = R.string.editable_text_field_hint,
         state = TextFieldState(),
-        onSearch = {}
+        onSubmit = {}
     )
 }

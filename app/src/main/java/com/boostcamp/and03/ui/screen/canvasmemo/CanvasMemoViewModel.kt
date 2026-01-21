@@ -24,6 +24,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             CanvasMemoAction.ClickBack -> handleClickBack()
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
             is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
+            CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
         }
     }
 
@@ -47,6 +48,14 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
                 toNodeId = action.toNodeId
             ),
             relationNameState = TextFieldState()
+        )
+    }
+
+    private fun handleCloseAddCharacterDialog() {
+        _uiState.value = _uiState.value.copy(
+            isAddCharacterDialogVisible = false,
+            characterNameState = TextFieldState(),
+            characterDescState = TextFieldState()
         )
     }
 }

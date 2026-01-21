@@ -21,7 +21,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun PersonImagePlaceholder(
-    imageUrl: String = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg",
+    imageUrl: String? = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg",
     onClick: () -> Unit,
 ) {
     Column(

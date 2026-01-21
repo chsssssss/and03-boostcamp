@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CanvasMemoFormViewModel @Inject constructor(
     private val bookStorageRepository: BookStorageRepository
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(CanvasMemoFormUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -27,7 +27,10 @@ class CanvasMemoFormViewModel @Inject constructor(
         when (action) {
             CanvasMemoFormAction.OnBackClick -> _event.trySend(CanvasMemoFormEvent.NavigateBack)
 
-            CanvasMemoFormAction.OnSaveClick -> if (uiState.value.isSaveable) { saveCanvasMemo() }
+            CanvasMemoFormAction.OnSaveClick -> if (uiState.value.isSaveable) {
+                saveCanvasMemo()
+                _event.trySend(CanvasMemoFormEvent.NavigateCanvasMemo)
+            }
 
             is CanvasMemoFormAction.OnTitleChange -> _uiState.update { it.copy(title = action.title) }
 

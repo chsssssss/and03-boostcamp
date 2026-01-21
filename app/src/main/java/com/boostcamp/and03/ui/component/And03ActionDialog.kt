@@ -26,6 +26,7 @@ fun And03ActionDialog(
     onConfirm: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -60,8 +61,13 @@ fun And03ActionDialog(
                     And03Button(
                         text = confirmText,
                         onClick = onConfirm,
-                        variant = ButtonVariant.Primary,
-                        modifier = Modifier.weight(1f)
+                        variant = if (enabled) {
+                            ButtonVariant.Primary
+                        } else {
+                            ButtonVariant.Secondary
+                        },
+                        modifier = Modifier.weight(1f),
+                        enabled = enabled,
                     )
                 }
             }
