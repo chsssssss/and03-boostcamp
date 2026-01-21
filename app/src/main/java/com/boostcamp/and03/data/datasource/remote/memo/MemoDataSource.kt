@@ -2,6 +2,7 @@ package com.boostcamp.and03.data.datasource.remote.memo
 
 import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
+import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
 
@@ -49,4 +50,10 @@ interface MemoDataSource {
         bookId: String,
         memoId: String
     ): TextMemoResponse
+
+    suspend fun getCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): CanvasMemoResponse
 }

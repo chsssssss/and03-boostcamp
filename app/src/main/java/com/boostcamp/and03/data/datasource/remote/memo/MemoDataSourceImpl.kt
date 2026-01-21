@@ -299,4 +299,42 @@ class MemoDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun getCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): CanvasMemoResponse {
+        return try {
+            val snapshot = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("memo")
+                .document(memoId)
+                .get()
+                .await()
+
+            if (!snapshot.exists()) {
+                throw IllegalStateException("Memo not found: $memoId")
+            }
+
+            val data = snapshot.data
+                ?: throw IllegalStateException("Memo data is null: $memoId")
+
+            CanvasMemoResponse(
+                id = snapshot.id,
+                title = data["title"] as? String ?: "",
+                createdAt = data["createdAt"] as? String ?: "",
+                type = data["type"] as? String ?: "TEXT",
+                startPage = (data["startPage"] as? Long)?.toInt() ?: 0,
+                endPage = (data["endPage"] as? Long)?.toInt() ?: 0,
+                graph = parseGraph(data["graph"] as? Map<String, Any>)
+            )
+        } catch (e: Exception) {
+            Log.e("MemoDataSourceImpl", "getCanvasMemo error: ${e.message}", e)
+            throw e
+        }
+    }
 }
