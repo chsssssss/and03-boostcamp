@@ -37,6 +37,7 @@ class TextMemoFormViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadTotalPage()
+            loadTextMemo()
         }
     }
 
@@ -70,6 +71,22 @@ class TextMemoFormViewModel @Inject constructor(
         )
         if (result != null) {
             _uiState.update { it.copy(totalPage = result.totalPage) }
+        }
+    }
+
+    private suspend fun loadTextMemo() {
+        val result = bookStorageRepository.getTextMemo(
+            userId = userId,
+            bookId = bookId,
+            memoId = memoId
+        )
+
+        _uiState.update {
+            it.copy(
+                title = result.title,
+                content = result.content,
+                startPage = result.startPage.toString(),
+            )
         }
     }
 

@@ -261,4 +261,42 @@ class MemoDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun getTextMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): TextMemoResponse {
+        return try {
+            val snapshot = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("memo")
+                .document(memoId)
+                .get()
+                .await()
+
+            if (!snapshot.exists()) {
+                throw IllegalStateException("Memo not found: $memoId")
+            }
+
+            val data = snapshot.data
+                ?: throw IllegalStateException("Memo data is null: $memoId")
+
+            TextMemoResponse(
+                id = snapshot.id,
+                title = data["title"] as? String ?: "",
+                content = data["content"] as? String ?: "",
+                createdAt = data["createdAt"] as? String ?: "",
+                type = data["type"] as? String ?: "TEXT",
+                startPage = (data["startPage"] as? Long)?.toInt() ?: 0,
+                endPage = (data["endPage"] as? Long)?.toInt() ?: 0
+            )
+        } catch (e: Exception) {
+            Log.e("MemoDataSourceImpl", "getTextMemo error: ${e.message}", e)
+            throw e
+        }
+    }
 }
