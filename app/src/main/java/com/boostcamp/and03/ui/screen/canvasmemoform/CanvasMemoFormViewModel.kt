@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.toUiModel
-import com.boostcamp.and03.ui.screen.textmemoform.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
