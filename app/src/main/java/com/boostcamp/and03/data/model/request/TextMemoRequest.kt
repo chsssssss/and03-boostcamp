@@ -1,6 +1,5 @@
 package com.boostcamp.and03.data.model.request
 
-import com.boostcamp.and03.ui.screen.textmemoform.TextMemoFormUiState
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import kotlinx.serialization.Serializable
 
