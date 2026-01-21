@@ -8,7 +8,7 @@ data class CanvasMemoUiState(
     val relationSelection: RelationSelection? = null,
     val relationNameState: TextFieldState = TextFieldState(),
     val isRelationDialogVisible: Boolean = false,
-    val isAddCharacterDialogVisible: Boolean = true,
+    val isAddCharacterDialogVisible: Boolean = false,
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),
 )
