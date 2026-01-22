@@ -41,6 +41,8 @@ class BookDetailViewModel @Inject constructor(
 
             BookDetailAction.OnRetryClick -> loadAllData()
 
+            is BookDetailAction.OnTabSelect -> _uiState.update { it.copy(selectedTabIndex = action.index) }
+
             is BookDetailAction.OnOpenCharacterForm -> _event.trySend(
                 BookDetailEvent.NavigateToCharacterForm(
                     action.bookId,

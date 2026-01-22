@@ -121,7 +121,7 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     onAction: (BookDetailAction) -> Unit,
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val selectedTabIndex = uiState.selectedTabIndex
     val tabs = BookDetailTab.entries
 
     Scaffold(
@@ -192,7 +192,7 @@ private fun BookDetailScreen(
                     tabs.forEachIndexed { index, tab ->
                         Tab(
                             selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
+                            onClick = { onAction(BookDetailAction.OnTabSelect(index)) },
                             text = { Text(text = tab.title) }
                         )
                     }
