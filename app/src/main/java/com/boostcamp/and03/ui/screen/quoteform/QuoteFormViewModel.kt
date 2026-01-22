@@ -42,6 +42,7 @@ class QuoteFormViewModel @Inject constructor(
                 viewModelScope.launch {
                     try {
                         saveQuote()
+                        _event.trySend(QuoteFormEvent.NavigateBack)
                     } catch (e: Exception) {
                         // TODO: 오류 메시지 UI 구현
                     }
