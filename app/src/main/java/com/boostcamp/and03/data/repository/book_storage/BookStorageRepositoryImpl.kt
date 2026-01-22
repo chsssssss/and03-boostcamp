@@ -18,6 +18,7 @@ import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import javax.inject.Inject
@@ -46,14 +47,20 @@ class BookStorageRepositoryImpl @Inject constructor(
         userId: String,
         book: BookStorageRequest
     ) {
-        return bookStorageDataSource.saveBook(userId, book)
+        return bookStorageDataSource.saveBook(
+            userId,
+            book
+        )
     }
 
     override suspend fun getCharacters(
         userId: String,
         bookId: String
     ): List<CharacterResponse> {
-        return characterDataSource.getCharacters(userId, bookId)
+        return characterDataSource.getCharacters(
+            userId,
+            bookId
+        )
     }
 
     override suspend fun getCharacter(
@@ -61,7 +68,11 @@ class BookStorageRepositoryImpl @Inject constructor(
         bookId: String,
         characterId: String
     ): CharacterResponse {
-        return characterDataSource.getCharacter(userId, bookId, characterId)
+        return characterDataSource.getCharacter(
+            userId,
+            bookId,
+            characterId
+        )
     }
 
     override suspend fun addCharacter(
@@ -81,7 +92,11 @@ class BookStorageRepositoryImpl @Inject constructor(
         bookId: String,
         characterId: String
     ) {
-        characterDataSource.deleteCharacter(userId, bookId, characterId)
+        characterDataSource.deleteCharacter(
+            userId,
+            bookId,
+            characterId
+        )
     }
 
     override suspend fun updateCharacter(
@@ -102,15 +117,48 @@ class BookStorageRepositoryImpl @Inject constructor(
         userId: String,
         bookId: String
     ): List<QuoteResponse> {
-        return quoteDataSource.getQuotes(userId, bookId)
+        return quoteDataSource.getQuotes(
+            userId,
+            bookId
+        )
+    }
+
+    override suspend fun getQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String
+    ): QuoteResponse {
+        return quoteDataSource.getQuote(
+            userId,
+            bookId,
+            quoteId
+        )
     }
 
     override suspend fun addQuote(
         userId: String,
         bookId: String,
-        quote: QuoteRequest
+        quote: QuoteUiModel
     ) {
-        quoteDataSource.addQuote(userId, bookId, quote)
+        quoteDataSource.addQuote(
+            userId,
+            bookId,
+            quote.toRequest()
+        )
+    }
+
+    override suspend fun updateQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String,
+        quote: QuoteUiModel
+    ) {
+        quoteDataSource.updateQuote(
+            userId,
+            bookId,
+            quoteId,
+            quote.toRequest()
+        )
     }
 
     override suspend fun deleteQuote(
