@@ -43,7 +43,7 @@ interface BookStorageRepository {
     suspend fun addCharacter(
         userId: String,
         bookId: String,
-        character: CharacterRequest
+        character: CharacterUiModel
     )
 
     suspend fun deleteCharacter(

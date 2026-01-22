@@ -67,9 +67,13 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun addCharacter(
         userId: String,
         bookId: String,
-        character: CharacterRequest
+        character: CharacterUiModel
     ) {
-        characterDataSource.addCharacter(userId, bookId, character)
+        characterDataSource.addCharacter(
+            userId,
+            bookId,
+            character.toRequest()
+        )
     }
 
     override suspend fun deleteCharacter(
