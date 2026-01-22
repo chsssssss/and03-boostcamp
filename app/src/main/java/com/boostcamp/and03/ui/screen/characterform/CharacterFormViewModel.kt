@@ -9,6 +9,7 @@ import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -30,7 +31,7 @@ class CharacterFormViewModel @Inject constructor (
     private val _uiState = MutableStateFlow(CharacterFormUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _event = Channel<CharacterFormEvent>()
+    private val _event: Channel<CharacterFormEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
     fun onAction(action: CharacterFormAction) {
