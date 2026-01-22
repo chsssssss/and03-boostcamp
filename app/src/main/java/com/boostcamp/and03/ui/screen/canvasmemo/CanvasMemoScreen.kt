@@ -88,21 +88,17 @@ private fun CanvasMemoScreen(
                     )
                 )
 
-//                if (uiState.isRelationDialogVisible) {
-//                    RelationEditorDialog(
-//                        relationNameState = uiState.relationNameState,
-//                        fromName = uiState.relationSelection
-//                            ?.fromNodeId
-//                            ?.let { uiState.nodes[it]?.node?.na } ?: "",
-//                        toName = uiState.relationSelection
-//                            ?.toNodeId
-//                            ?.let { uiState.nodes[it]?.node?.title } ?: "",
-//                        onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
-//                        onConfirm = { /* 관계 저장 */ },
-//                        onFromImageClick = { /* 왼쪽 인물 선택 */ },
-//                        onToImageClick = { /* 오른쪽 인물 선택 */ }
-//                    )
-//                }
+                if (uiState.isRelationDialogVisible) {
+                    RelationEditorDialog(
+                        relationNameState = uiState.relationNameState,
+                        fromName = uiState.fromCharacterName,
+                        toName = uiState.toCharacterName,
+                        onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
+                        onConfirm = { /* 관계 저장 로직 */ },
+                        onFromImageClick = { /* 인물 선택 로직 */ },
+                        onToImageClick = { /* 인물 선택 로직 */ }
+                    )
+                }
 
                 if (uiState.isAddCharacterDialogVisible) {
                     AddCharacterDialog(
