@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun And03Theme(
@@ -60,4 +61,13 @@ object And03Theme {
     val shapes: And03Shapes
         @Composable
         get() = LocalAnd03Shapes.current
+}
+
+object CanvasMemoColors {
+
+    val Node = Color(0xFF6C63FF)
+    val Relation = Color(0xFF8B5CF6)
+    val Quote = Color(0xFFFFA500)
+    val Delete = Color(0xFFFF4D4D)
+
 }
