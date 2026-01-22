@@ -117,7 +117,7 @@ private fun QuoteFormScreen(
 
             PageInputSection(
                 page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) }
+                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it.filter { char -> char.isDigit() })) }
             )
         }
     }
@@ -149,7 +149,11 @@ private fun QuoteInputSection(
 
         OutlinedTextField(
             value = quote,
-            onValueChange = { if (it.length <= QuoteFormScreenValues.MAX_CHARACTER_COUNT) onQuoteChange(it) },
+            onValueChange = {
+                if (it.length <= QuoteFormScreenValues.MAX_CHARACTER_COUNT) onQuoteChange(
+                    it
+                )
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L),
