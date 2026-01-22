@@ -73,7 +73,8 @@ class CharacterFormViewModel @Inject constructor (
         _uiState.update {
             it.copy(
                 name = result.name,
-                role = result.role
+                role = result.role,
+                description = result.description
             )
         }
     }
