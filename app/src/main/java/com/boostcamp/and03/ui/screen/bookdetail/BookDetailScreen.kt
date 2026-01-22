@@ -200,12 +200,24 @@ private fun BookDetailScreen(
                     BookDetailTab.CHARACTER -> CharacterTab(
                         uiState.characters,
                         onClickAdd = {
-
+                            onAction(
+                                BookDetailAction.OnOpenCharacterForm(
+                                    uiState.bookId,
+                                    ""
+                                )
+                            )
                         },
                         onClickDelete = { characterId ->
                             onAction(BookDetailAction.DeleteCharacter(characterId))
                         },
-                        onClickEdit = { }
+                        onClickEdit = { characterId ->
+                            onAction(
+                                BookDetailAction.OnOpenCharacterForm(
+                                    uiState.bookId,
+                                    characterId
+                                )
+                            )
+                        }
                     )
 
                     BookDetailTab.QUOTE -> QuoteTab(

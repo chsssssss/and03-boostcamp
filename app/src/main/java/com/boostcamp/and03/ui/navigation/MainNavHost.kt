@@ -12,6 +12,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.bookDetailNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
 import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
 import com.boostcamp.and03.ui.screen.canvasmemo.canvasMemoNavGraph
+import com.boostcamp.and03.ui.screen.characterform.characterFormNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
 
 @Composable
@@ -90,6 +91,11 @@ fun MainNavHost(
 
         canvasMemoNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
+        )
+
+        characterFormNavGraph(
+            navigateBack = { navigator.navigatePopBackStack() },
+            modifier = modifier.padding(paddingValues)
         )
     }
 }

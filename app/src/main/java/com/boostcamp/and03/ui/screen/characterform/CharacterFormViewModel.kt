@@ -45,6 +45,8 @@ class CharacterFormViewModel @Inject constructor (
                 _event.trySend(CharacterFormEvent.NavigateBack)
             }
 
+            CharacterFormAction.OnAddImageClick -> { /* TODO: 등장인물 사진 추가 동작 구현 */ }
+
             is CharacterFormAction.OnNameChange -> _uiState.update { it.copy(name = action.name) }
 
             is CharacterFormAction.OnRoleChange -> _uiState.update { it.copy(role = action.role) }
