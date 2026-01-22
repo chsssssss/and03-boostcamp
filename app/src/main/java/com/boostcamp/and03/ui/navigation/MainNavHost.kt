@@ -76,7 +76,6 @@ fun MainNavHost(
             navigateToCanvas = { memoId ->
                 navigator.navigateToCanvas(memoId)
             },
-            navigateToMemoEdit = { navigator.navigateToMemoEdit() }
         )
 
         textMemoFormNavGraph(
