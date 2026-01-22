@@ -68,7 +68,13 @@ class QuoteDataSourceImpl @Inject constructor(
             QuoteResponse(
                 id = snapshot.id,
                 content = data["content"] as? String ?: "",
-                page = (data["page"] as? Long)?.toInt() ?: 0,
+                page = (data["page"] as? Long)
+                    ?.coerceIn(
+                        Int.MIN_VALUE.toLong(),
+                        Int.MAX_VALUE.toLong()
+                    )
+                    ?.toInt()
+                    ?: 0,
                 createdAt = data["createdAt"] as? String ?: ""
             )
         } catch (e: Exception) {
