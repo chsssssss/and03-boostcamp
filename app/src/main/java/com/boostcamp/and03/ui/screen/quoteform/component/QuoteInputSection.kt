@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addquote.component
+package com.boostcamp.and03.ui.screen.quoteform.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
