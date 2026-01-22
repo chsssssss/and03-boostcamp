@@ -3,6 +3,7 @@ package com.boostcamp.and03.ui.theme
 import androidx.compose.ui.unit.dp
 
 object And03Spacing {
+    val SPACE_XXS = 2.dp
     val SPACE_XS = 4.dp
     val SPACE_S = 8.dp
     val SPACE_M = 12.dp
