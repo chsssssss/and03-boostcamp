@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
-import android.R.attr.top
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,9 +25,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,18 +39,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
-import com.boostcamp.and03.ui.component.EmptyDataScreen
 import com.boostcamp.and03.ui.component.CharacterCard
+import com.boostcamp.and03.ui.component.EmptyDataScreen
+import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
-import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
-import com.boostcamp.and03.ui.theme.And03Elevation
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
