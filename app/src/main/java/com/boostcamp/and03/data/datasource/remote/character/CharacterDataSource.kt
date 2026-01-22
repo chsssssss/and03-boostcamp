@@ -9,6 +9,12 @@ interface CharacterDataSource {
         bookId: String
     ): List<CharacterResponse>
 
+    suspend fun getCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String
+    ): CharacterResponse
+
     suspend fun addCharacter(
         userId: String,
         bookId: String,
@@ -19,5 +25,12 @@ interface CharacterDataSource {
         userId: String,
         bookId: String,
         characterId: String
+    )
+
+    suspend fun updateCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String,
+        character: CharacterRequest
     )
 }
