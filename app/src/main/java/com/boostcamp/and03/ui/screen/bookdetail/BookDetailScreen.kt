@@ -63,9 +63,11 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun BookDetailRoute(
     navigateBack: () -> Unit,
-    navigateToCanvas: (memoId: String) -> Unit,
+    navigateToCharacterForm: (bookId: String, characterId: String) -> Unit,
+    navigateToQuoteForm: (bookId: String, quoteId: String) -> Unit,
     navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
     navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
+    navigateToCanvas: (memoId: String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -73,6 +75,20 @@ fun BookDetailRoute(
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
             BookDetailEvent.NavigateBack -> navigateBack()
+
+            is BookDetailEvent.NavigateToCharacterForm -> {
+                navigateToCharacterForm(
+                    event.bookId,
+                    event.characterId
+                )
+            }
+
+            is BookDetailEvent.NavigateToQuoteForm -> {
+                navigateToQuoteForm(
+                    event.bookId,
+                    event.quoteId
+                )
+            }
 
             is BookDetailEvent.NavigateToTextMemoForm -> {
                 navigateToTextMemoForm(
@@ -183,6 +199,9 @@ private fun BookDetailScreen(
                 when (tabs[selectedTabIndex]) {
                     BookDetailTab.CHARACTER -> CharacterTab(
                         uiState.characters,
+                        onClickAdd = {
+
+                        },
                         onClickDelete = { characterId ->
                             onAction(BookDetailAction.DeleteCharacter(characterId))
                         },
@@ -304,6 +323,7 @@ private fun BookInfoSection(
 @Composable
 private fun CharacterTab(
     characters: ImmutableList<CharacterUiModel>,
+    onClickAdd: () -> Unit,
     onClickDelete: (String) -> Unit,
     onClickEdit: (String) -> Unit
 ) {
@@ -338,7 +358,7 @@ private fun CharacterTab(
 
         SquareAddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = { }
+            onClick = onClickAdd
         )
     }
 }

@@ -47,8 +47,17 @@ fun MainNavHost(
 
         bookDetailNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
-            navigateToCanvas = { memoId ->
-                navigator.navigateToCanvas(memoId)
+            navigateToCharacterForm = { bookId, characterId ->
+                navigator.navigateToCharacterForm(
+                    bookId = bookId,
+                    characterId = characterId
+                )
+            },
+            navigateToQuoteForm = { bookId, quoteId ->
+                navigator.navigateToQuoteForm(
+                    bookId = bookId,
+                    quoteId = quoteId
+                )
             },
             navigateToTextMemoForm = { bookId, memoId ->
                 navigator.navigateToTextMemoForm(
@@ -61,6 +70,9 @@ fun MainNavHost(
                     bookId = bookId,
                     memoId = memoId
                 )
+            },
+            navigateToCanvas = { memoId ->
+                navigator.navigateToCanvas(memoId)
             },
             navigateToMemoEdit = { navigator.navigateToMemoEdit() }
         )

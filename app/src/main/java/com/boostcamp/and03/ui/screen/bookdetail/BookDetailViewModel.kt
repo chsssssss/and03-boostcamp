@@ -41,6 +41,20 @@ class BookDetailViewModel @Inject constructor(
 
             BookDetailAction.OnRetryClick -> loadAllData()
 
+            is BookDetailAction.OnOpenCharacterForm -> _event.trySend(
+                BookDetailEvent.NavigateToCharacterForm(
+                    action.bookId,
+                    action.characterId
+                )
+            )
+
+            is BookDetailAction.OnOpenQuoteForm -> _event.trySend(
+                BookDetailEvent.NavigateToQuoteForm(
+                    action.bookId,
+                    action.quoteId
+                )
+            )
+
             is BookDetailAction.DeleteCharacter -> deleteCharacter(action.characterId)
 
             is BookDetailAction.DeleteQuote -> deleteQuote(action.quoteId)
