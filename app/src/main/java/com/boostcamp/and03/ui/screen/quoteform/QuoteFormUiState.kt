@@ -5,5 +5,5 @@ data class QuoteFormUiState(
     val page: String = "",
 ) {
     val isSaveable: Boolean
-        get() = quote.isNotBlank()
+        get() = quote.isNotBlank() && page.isNotBlank()
 }
