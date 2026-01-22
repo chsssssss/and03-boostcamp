@@ -12,6 +12,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.bookDetailNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
 import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
 import com.boostcamp.and03.ui.screen.canvasmemo.canvasMemoNavGraph
+import com.boostcamp.and03.ui.screen.characterform.characterFormNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
 
 @Composable
@@ -47,8 +48,17 @@ fun MainNavHost(
 
         bookDetailNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
-            navigateToCanvas = { memoId ->
-                navigator.navigateToCanvas(memoId)
+            navigateToCharacterForm = { bookId, characterId ->
+                navigator.navigateToCharacterForm(
+                    bookId = bookId,
+                    characterId = characterId
+                )
+            },
+            navigateToQuoteForm = { bookId, quoteId ->
+                navigator.navigateToQuoteForm(
+                    bookId = bookId,
+                    quoteId = quoteId
+                )
             },
             navigateToTextMemoForm = { bookId, memoId ->
                 navigator.navigateToTextMemoForm(
@@ -62,11 +72,14 @@ fun MainNavHost(
                     memoId = memoId
                 )
             },
+            navigateToCanvas = { memoId ->
+                navigator.navigateToCanvas(memoId)
+            },
             navigateToMemoEdit = { navigator.navigateToMemoEdit() }
         )
 
         textMemoFormNavGraph(
-            navigateToBack = { navigator.navigatePopBackStack() },
+            navigateBack = { navigator.navigatePopBackStack() },
             modifier = modifier.padding(paddingValues)
         )
 
@@ -78,6 +91,11 @@ fun MainNavHost(
 
         canvasMemoNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
+        )
+
+        characterFormNavGraph(
+            navigateBack = { navigator.navigatePopBackStack() },
+            modifier = modifier.padding(paddingValues)
         )
     }
 }

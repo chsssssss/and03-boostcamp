@@ -28,6 +28,18 @@ sealed interface Route {
     data object MemoEdit: Route // 메모 관계도 화면에서 넘어갈 수 있느 메모 편집 화면, TODO: 추후 수정 필요
 
     @Serializable
+    data class CharacterForm(
+        val bookId: String,
+        val characterId: String
+    ) : Route
+
+    @Serializable
+    data class QuoteForm(
+        val bookId: String,
+        val quoteId: String
+    ) : Route
+
+    @Serializable
     data class TextMemoForm(
         val bookId: String,
         val memoId: String

@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.addquote
+package com.boostcamp.and03.ui.screen.quoteform
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
@@ -12,10 +12,21 @@ import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.theme.*
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03InfoSection
-import com.boostcamp.and03.ui.screen.addquote.component.AddQuoteInputSection
+import com.boostcamp.and03.ui.screen.quoteform.component.AddQuoteInputSection
 
 @Composable
-fun AddQuoteScreen(
+fun QuoteFormRoute(
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit
+) {
+    QuoteFormScreen(
+        onBackClick = onBackClick,
+        onSaveClick = onSaveClick
+    )
+}
+
+@Composable
+private fun QuoteFormScreen(
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
@@ -60,8 +71,11 @@ fun AddQuoteScreen(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun AddQuoteScreenPreview() {
+private fun QuoteFormScreenPreview() {
     And03Theme {
-        AddQuoteScreen({}, {})
+        QuoteFormScreen(
+            onBackClick = {},
+            onSaveClick = {}
+        )
     }
 }
