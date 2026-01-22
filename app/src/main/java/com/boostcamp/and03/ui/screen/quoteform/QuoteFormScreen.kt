@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.AddTextByImageButton
 import com.boostcamp.and03.ui.component.And03AppBar
@@ -45,7 +45,7 @@ private object QuoteFormScreenValues {
 @Composable
 fun QuoteFormRoute(
     navigateBack: () -> Unit,
-    viewModel: QuoteFormViewModel = viewModel(),
+    viewModel: QuoteFormViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -79,6 +79,7 @@ private fun QuoteFormScreen(
             And03Button(
                 text = stringResource(R.string.content_description_save_button),
                 onClick = { onAction(QuoteFormAction.OnSaveClick) },
+                enabled = uiState.isSaveable,
                 variant = ButtonVariant.Primary,
                 modifier = Modifier
                     .fillMaxWidth()

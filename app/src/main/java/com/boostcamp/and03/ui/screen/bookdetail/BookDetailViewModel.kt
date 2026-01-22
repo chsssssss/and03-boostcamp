@@ -81,9 +81,6 @@ class BookDetailViewModel @Inject constructor(
 
     init {
         loadAllData()
-//        addCharacter()
-//        addQuote()
-//        addTextMemo()
     }
 
     fun loadAllData() {
@@ -148,31 +145,6 @@ class BookDetailViewModel @Inject constructor(
             }
         }
     }
-
-    //
-//    fun addCharacter() {
-//        viewModelScope.launch {
-//            bookRepository.addCharacter(
-//                userId, bookId, CharacterRequest(
-//                    role = "주인공",
-//                    description = "설명설명설명",
-//                    name = "이름이름"
-//                )
-//            )
-//        }
-//    }
-
-
-//    fun addQuote() {
-//        viewModelScope.launch {
-//            bookRepository.addQuote(
-//                userId, bookId, QuoteRequest(
-//                    content = "어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고",
-//                    page = 121
-//                )
-//            )
-//        }
-//    }
 
     fun deleteCharacter(characterId: String) {
         val previousCharacters = _uiState.value.characters
@@ -257,20 +229,4 @@ class BookDetailViewModel @Inject constructor(
             }
         }
     }
-//
-//    fun addTextMemo() {
-//        viewModelScope.launch {
-//            bookRepository.addTextMemo(
-//                userId, bookId, TextMemoRequest(
-//                    title = "메모 제목",
-//                    content = "메모 내용",
-//                    startPage = 1,
-//                    endPage = 2
-//                )
-//            )
-//        }
-//
-//    }
-
-
 }

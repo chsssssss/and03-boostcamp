@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
+import android.R.attr.top
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +54,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoType
 import com.boostcamp.and03.ui.screen.bookdetail.model.MemoUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
+import com.boostcamp.and03.ui.theme.And03Elevation
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -222,10 +224,25 @@ private fun BookDetailScreen(
 
                     BookDetailTab.QUOTE -> QuoteTab(
                         uiState.quotes,
+                        onClickAdd = {
+                            onAction(
+                                BookDetailAction.OnOpenQuoteForm(
+                                    uiState.bookId,
+                                    ""
+                                )
+                            )
+                        },
                         onClickDelete = { quoteId ->
                             onAction(BookDetailAction.DeleteQuote(quoteId))
                         },
-                        onClickEdit = { }
+                        onClickEdit = { quoteId ->
+                            onAction(
+                                BookDetailAction.OnOpenQuoteForm(
+                                    uiState.bookId,
+                                    quoteId
+                                )
+                            )
+                        }
                     )
 
                     BookDetailTab.MEMO -> MemoTab(
@@ -378,6 +395,7 @@ private fun CharacterTab(
 @Composable
 private fun QuoteTab(
     quotes: ImmutableList<QuoteUiModel>,
+    onClickAdd: () -> Unit,
     onClickDelete: (String) -> Unit,
     onClickEdit: (String) -> Unit
 ) {
@@ -406,7 +424,7 @@ private fun QuoteTab(
 
         SquareAddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = { }
+            onClick = onClickAdd
         )
     }
 }
