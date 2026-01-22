@@ -39,10 +39,13 @@ class CharacterFormViewModel @Inject constructor (
 
             CharacterFormAction.OnSaveClick -> {
                 viewModelScope.launch {
-                    saveCharacter()
+                    try {
+                        saveCharacter()
+                        _event.trySend(CharacterFormEvent.NavigateBack)
+                    } catch (e: Exception) {
+                        // TODO: 오류 메시지 UI 표시 구현
+                    }
                 }
-
-                _event.trySend(CharacterFormEvent.NavigateBack)
             }
 
             CharacterFormAction.OnAddImageClick -> { /* TODO: 등장인물 사진 추가 동작 구현 */ }
