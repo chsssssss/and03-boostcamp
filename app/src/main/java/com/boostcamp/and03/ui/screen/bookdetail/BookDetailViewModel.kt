@@ -10,9 +10,12 @@ import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,8 +28,42 @@ class BookDetailViewModel @Inject constructor(
     private val bookDetailRoute = savedStateHandle.toRoute<Route.BookDetail>()
     private val bookId: String = bookDetailRoute.bookId
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
+
     private val _uiState = MutableStateFlow(BookDetailUiState(bookId = bookId))
     val uiState: StateFlow<BookDetailUiState> = _uiState.asStateFlow()
+
+    private val _event: Channel<BookDetailEvent> = Channel(BUFFERED)
+    val event = _event.receiveAsFlow()
+
+    fun onAction(action: BookDetailAction) {
+        when (action) {
+            BookDetailAction.OnBackClick -> _event.trySend(BookDetailEvent.NavigateBack)
+
+            BookDetailAction.OnRetryClick -> loadAllData()
+
+            is BookDetailAction.DeleteCharacter -> deleteCharacter(action.characterId)
+
+            is BookDetailAction.DeleteQuote -> deleteQuote(action.quoteId)
+
+            is BookDetailAction.DeleteMemo -> deleteMemo(action.memoId)
+
+            is BookDetailAction.OnOpenTextMemoForm -> _event.trySend(
+                BookDetailEvent.NavigateToTextMemoForm(
+                    action.bookId,
+                    action.memoId
+                )
+            )
+
+            is BookDetailAction.OnOpenCanvasMemoForm -> _event.trySend(
+                BookDetailEvent.NavigateToCanvasMemoForm(
+                    action.bookId,
+                    action.memoId
+                )
+            )
+
+            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(BookDetailEvent.NavigateToCanvas(action.memoId))
+        }
+    }
 
     init {
         loadAllData()
