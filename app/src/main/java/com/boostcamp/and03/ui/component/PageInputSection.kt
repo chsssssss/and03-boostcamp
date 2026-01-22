@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.R
@@ -54,8 +55,11 @@ fun PageInputSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                shape = RoundedCornerShape(And03Radius.RADIUS_M)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next,
+                ),
+                shape = RoundedCornerShape(And03Radius.RADIUS_M),
             )
 
             Icon(
@@ -81,7 +85,10 @@ fun PageInputSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
                 shape = RoundedCornerShape(And03Radius.RADIUS_M)
             )
         }

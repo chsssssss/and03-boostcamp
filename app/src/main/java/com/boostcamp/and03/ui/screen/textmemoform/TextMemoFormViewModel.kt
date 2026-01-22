@@ -1,14 +1,12 @@
 package com.boostcamp.and03.ui.screen.textmemoform
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
-import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormAction
-import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormEvent
 import com.boostcamp.and03.ui.screen.textmemoform.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -25,8 +23,9 @@ class TextMemoFormViewModel @Inject constructor(
     private val bookStorageRepository: BookStorageRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val textMemoEditorRoute = savedStateHandle.toRoute<Route.TextMemoForm>()
-    private val bookId = textMemoEditorRoute.bookId
+    private val textMemoFormRoute = savedStateHandle.toRoute<Route.TextMemoForm>()
+    private val bookId = textMemoFormRoute.bookId
+    private val memoId = textMemoFormRoute.memoId
 
     private val _uiState = MutableStateFlow(TextMemoFormUiState())
     val uiState = _uiState.asStateFlow()
@@ -39,6 +38,7 @@ class TextMemoFormViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadTotalPage()
+            loadTextMemo()
         }
     }
 
@@ -70,16 +70,47 @@ class TextMemoFormViewModel @Inject constructor(
             userId = userId,
             bookId = bookId
         )
+
         if (result != null) {
             _uiState.update { it.copy(totalPage = result.totalPage) }
         }
     }
 
-    private suspend fun saveTextMemo() {
-        bookStorageRepository.addTextMemo(
+    private suspend fun loadTextMemo() {
+        if (memoId.isBlank()) return
+
+        val result = bookStorageRepository.getTextMemo(
             userId = userId,
             bookId = bookId,
-            memo = _uiState.value.toUiModel()
+            memoId = memoId
         )
+
+        _uiState.update { state ->
+            val isSamePage = result.startPage == result.endPage
+
+            state.copy(
+                title = result.title,
+                content = result.content,
+                startPage = result.startPage.toString(),
+                endPage = if (isSamePage) "" else result.endPage.toString()
+            )
+        }
+    }
+
+    private suspend fun saveTextMemo() {
+        if (memoId.isBlank()) {
+            bookStorageRepository.addTextMemo(
+                userId = userId,
+                bookId = bookId,
+                memo = _uiState.value.toUiModel()
+            )
+        } else {
+            bookStorageRepository.updateTextMemo(
+                userId = userId,
+                bookId = bookId,
+                memoId = memoId,
+                memo = _uiState.value.toUiModel()
+            )
+        }
     }
 }

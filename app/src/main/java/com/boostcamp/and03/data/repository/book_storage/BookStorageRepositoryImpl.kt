@@ -5,6 +5,7 @@ import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.memo.MemoDataSource
 import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
 import com.boostcamp.and03.data.model.request.BookStorageRequest
+import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.QuoteRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
@@ -13,7 +14,10 @@ import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
+import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
+import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
+import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import javax.inject.Inject
 
@@ -116,12 +120,76 @@ class BookStorageRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun getTextMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): TextMemoResponse {
+        return memoDataSource.getTextMemo(
+            userId,
+            bookId,
+            memoId
+        )
+    }
+
+    override suspend fun addCanvasMemo(
+        userId: String,
+        bookId: String,
+        memo: CanvasMemoFormUiModel
+    ) {
+        memoDataSource.addCanvasMemo(
+            userId,
+            bookId,
+            memo.toRequest()
+        )
+    }
+
+    override suspend fun updateTextMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        memo: TextMemoFormUiModel
+    ) {
+        memoDataSource.updateTextMemo(
+            userId,
+            bookId,
+            memoId,
+            memo.toRequest()
+        )
+    }
+
+    override suspend fun updateCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        memo: CanvasMemoFormUiModel
+    ) {
+        memoDataSource.updateCanvasMemo(
+            userId,
+            bookId,
+            memoId,
+            memo.toRequest()
+        )
+    }
+
     override suspend fun deleteMemo(
         userId: String,
         bookId: String,
         memoId: String
     ) {
         memoDataSource.deleteMemo(
+            userId,
+            bookId,
+            memoId
+        )
+    }
+
+    override suspend fun getCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): CanvasMemoResponse {
+        return memoDataSource.getCanvasMemo(
             userId,
             bookId,
             memoId

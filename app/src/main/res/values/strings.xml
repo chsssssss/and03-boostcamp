@@ -47,6 +47,7 @@
     <string name="book_detail_add_canvas_memo">캔버스 메모 추가</string>
     <string name="book_detail_add_text_memo">텍스트 메모 추가</string>
     <string name="book_detail_memo_page_range">p.%1$d~%2$d</string>
+    <string name="book_detail_memo_single_page">p.%1$d</string>
     <string name="book_detail_total_page">총 %1$d페이지</string>
 
     <!-- 책 검색 화면 -->

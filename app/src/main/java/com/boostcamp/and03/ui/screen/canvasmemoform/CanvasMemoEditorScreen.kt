@@ -20,8 +20,6 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
-import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormAction
-import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormEvent
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing

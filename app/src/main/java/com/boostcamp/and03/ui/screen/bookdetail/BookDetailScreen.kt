@@ -56,43 +56,52 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookDetailRoute(
-    navigateToBack: () -> Unit,
+    navigateBack: () -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
-    navigateToAddTextMemo: (String) -> Unit,
-    navigateToAddCanvasMemo: (String) -> Unit,
+    navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
+    navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            BookDetailEvent.NavigateBack -> navigateBack()
+
+            is BookDetailEvent.NavigateToTextMemoForm -> {
+                navigateToTextMemoForm(
+                    event.bookId,
+                    event.memoId
+                )
+            }
+
+            is BookDetailEvent.NavigateToCanvasMemoForm -> {
+                navigateToCanvasMemoForm(
+                    event.bookId,
+                    event.memoId
+                )
+            }
+
+            is BookDetailEvent.NavigateToCanvas -> { navigateToCanvas(event.memoId) }
+        }
+    }
+
     BookDetailScreen(
         uiState = uiState,
-        navigateToBack = navigateToBack,
-        navigateToCanvas = navigateToCanvas,
-        onRetryClick = { viewModel.loadAllData() },
-        onClickDelCharacter = { characterId -> viewModel.deleteCharacter(characterId) },
-        onClickDelQuote = { quoteId -> viewModel.deleteQuote(quoteId) },
-        onClickDelMemo = { memoId -> viewModel.deleteMemo(memoId) },
-        onClickAddText = navigateToAddTextMemo,
-        onClickAddCanvas = navigateToAddCanvasMemo
+        onAction = viewModel::onAction
     )
 }
 
 @Composable
 private fun BookDetailScreen(
     uiState: BookDetailUiState,
-    navigateToBack: () -> Unit,
-    navigateToCanvas: (memoId: String) -> Unit,
-    onClickAddText: (String) -> Unit,
-    onClickAddCanvas: (String) -> Unit,
-    onRetryClick: () -> Unit,
-    onClickDelCharacter: (String) -> Unit,
-    onClickDelQuote: (String) -> Unit,
-    onClickDelMemo: (String) -> Unit
+    onAction: (BookDetailAction) -> Unit,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = BookDetailTab.entries
@@ -101,7 +110,7 @@ private fun BookDetailScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(R.string.book_detail_app_bar_title),
-                onBackClick = navigateToBack,
+                onBackClick = { onAction(BookDetailAction.OnBackClick) },
             ) {
                 IconButton(onClick = {}) {
                     Icon(
@@ -136,7 +145,7 @@ private fun BookDetailScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = uiState.errorMessage)
-                        Button(onClick = onRetryClick) {
+                        Button(onClick = { onAction(BookDetailAction.OnRetryClick) }) {
                             Text(stringResource(R.string.retry_btn_txt))
                         }
                     }
@@ -174,28 +183,62 @@ private fun BookDetailScreen(
                 when (tabs[selectedTabIndex]) {
                     BookDetailTab.CHARACTER -> CharacterTab(
                         uiState.characters,
-                        onClickDelete = onClickDelCharacter,
+                        onClickDelete = { characterId ->
+                            onAction(BookDetailAction.DeleteCharacter(characterId))
+                        },
                         onClickEdit = { }
                     )
 
                     BookDetailTab.QUOTE -> QuoteTab(
                         uiState.quotes,
-                        onClickDelete = onClickDelQuote,
+                        onClickDelete = { quoteId ->
+                            onAction(BookDetailAction.DeleteQuote(quoteId))
+                        },
                         onClickEdit = { }
                     )
 
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
-                        onClickAddCanvas = { onClickAddCanvas(uiState.bookId) },
-                        onClickAddText = { onClickAddText(uiState.bookId) },
+                        onClickAddCanvas = {
+                            onAction(
+                                BookDetailAction.OnOpenCanvasMemoForm(
+                                    uiState.bookId,
+                                    ""
+                                )
+                            )
+                        },
+                        onClickAddText = {
+                            onAction(
+                                BookDetailAction.OnOpenTextMemoForm(
+                                    uiState.bookId,
+                                    ""
+                                )
+                            )
+                        },
                         onClickMemo = { memo ->
                             if (memo.memoType == MemoType.CANVAS) {
-                                navigateToCanvas(memo.id)
+                                onAction(BookDetailAction.OnCanvasMemoClick(memo.id))
                             }
                         },
-                        onClickDelMemo = onClickDelMemo,
-                        onClickEditMemo = { memoId -> // TODO: memoId를 포함하여 수정 화면으로 이동
-                            onClickAddText(uiState.bookId)
+                        onClickDelMemo = { memoId ->
+                            onAction(BookDetailAction.DeleteMemo(memoId))
+                        },
+                        onClickEditMemo = { memo -> // TODO: memoId를 포함하여 수정 화면으로 이동
+                            when (memo.memoType) {
+                                MemoType.TEXT -> onAction(
+                                    BookDetailAction.OnOpenTextMemoForm(
+                                        uiState.bookId,
+                                        memo.id
+                                    )
+                                )
+
+                                MemoType.CANVAS -> onAction(
+                                    BookDetailAction.OnOpenCanvasMemoForm(
+                                        uiState.bookId,
+                                        memo.id
+                                    )
+                                )
+                            }
                         }
                     )
                 }
@@ -343,7 +386,7 @@ private fun MemoTab(
     onClickAddText: () -> Unit,
     onClickMemo: (MemoUiModel) -> Unit,
     onClickDelMemo: (String) -> Unit,
-    onClickEditMemo: (String) -> Unit
+    onClickEditMemo: (MemoUiModel) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -358,19 +401,28 @@ private fun MemoTab(
                 verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
             ) {
                 items(memos, key = { it.id }) { memo ->
+                    val pageLabelText = if (memo.startPage == memo.endPage) {
+                        stringResource(
+                            id = R.string.book_detail_memo_single_page,
+                            memo.startPage
+                        )
+                    } else {
+                        stringResource(
+                            id = R.string.book_detail_memo_page_range,
+                            memo.startPage,
+                            memo.endPage
+                        )
+                    }
+
                     MemoCard(
                         type = memo.memoType,
                         title = memo.title,
                         contentPreview = memo.content ?: "",
-                        pageLabel = stringResource(
-                            id = R.string.book_detail_memo_page_range,
-                            memo.startPage,
-                            memo.endPage
-                        ),
+                        pageLabel = pageLabelText,
                         date = memo.date,
                         onClick = { onClickMemo(memo) },
                         onClickDelMemo = { onClickDelMemo(memo.id) },
-                        onClickEdit = { onClickEditMemo(memo.id) },
+                        onClickEdit = { onClickEditMemo(memo) },
                     )
                 }
             }
@@ -431,14 +483,7 @@ fun BooklistScreenPreview() {
     And03Theme {
         BookDetailScreen(
             uiState = previewState,
-            navigateToBack = {},
-            navigateToCanvas = {},
-            onClickAddText = {},
-            onClickAddCanvas = {},
-            onRetryClick = {},
-            onClickDelCharacter = {},
-            onClickDelQuote = {},
-            onClickDelMemo = {}
+            onAction = {}
         )
     }
 }
