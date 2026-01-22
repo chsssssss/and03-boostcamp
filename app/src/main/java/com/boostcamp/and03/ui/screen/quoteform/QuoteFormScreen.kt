@@ -117,7 +117,7 @@ private fun QuoteFormScreen(
 
             PageInputSection(
                 page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it.filter { char -> char.isDigit() })) }
+                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) }
             )
         }
     }

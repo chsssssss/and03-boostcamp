@@ -22,12 +22,12 @@ class QuoteFormViewModel @Inject constructor(
     private val bookStorageRepository: BookStorageRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val quoteFormRoute = savedStateHandle.toRoute< Route.QuoteForm>()
+    private val quoteFormRoute = savedStateHandle.toRoute<Route.QuoteForm>()
     private val bookId = quoteFormRoute.bookId
     private val quoteId = quoteFormRoute.quoteId
 
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
-    
+
     private val _uiState = MutableStateFlow(QuoteFormUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -51,7 +51,15 @@ class QuoteFormViewModel @Inject constructor(
 
             is QuoteFormAction.OnQuoteChange -> _uiState.update { it.copy(quote = action.quote) }
 
-            is QuoteFormAction.OnPageChange -> _uiState.update { it.copy(page = action.page) }
+            is QuoteFormAction.OnPageChange -> {
+                _uiState.update {
+                    it.copy(
+                        page = action.page.filter {
+                            char -> char.isDigit()
+                        }
+                    )
+                }
+            }
         }
     }
 
