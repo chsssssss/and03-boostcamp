@@ -12,6 +12,7 @@ import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
+import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 
@@ -33,6 +34,12 @@ interface BookStorageRepository {
         bookId: String
     ): List<CharacterResponse>
 
+    suspend fun getCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String
+    ): CharacterResponse
+
     suspend fun addCharacter(
         userId: String,
         bookId: String,
@@ -43,6 +50,13 @@ interface BookStorageRepository {
         userId: String,
         bookId: String,
         characterId: String
+    )
+
+    suspend fun updateCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String,
+        character: CharacterUiModel
     )
 
     suspend fun getQuotes(

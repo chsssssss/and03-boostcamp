@@ -17,6 +17,7 @@ import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
+import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
 import javax.inject.Inject
@@ -55,6 +56,14 @@ class BookStorageRepositoryImpl @Inject constructor(
         return characterDataSource.getCharacters(userId, bookId)
     }
 
+    override suspend fun getCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String
+    ): CharacterResponse {
+        return characterDataSource.getCharacter(userId, bookId, characterId)
+    }
+
     override suspend fun addCharacter(
         userId: String,
         bookId: String,
@@ -69,6 +78,20 @@ class BookStorageRepositoryImpl @Inject constructor(
         characterId: String
     ) {
         characterDataSource.deleteCharacter(userId, bookId, characterId)
+    }
+
+    override suspend fun updateCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String,
+        character: CharacterUiModel
+    ) {
+        characterDataSource.updateCharacter(
+            userId,
+            bookId,
+            characterId,
+            character.toRequest()
+        )
     }
 
     override suspend fun getQuotes(
