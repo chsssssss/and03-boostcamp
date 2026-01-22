@@ -9,9 +9,22 @@ interface QuoteDataSource {
         bookId: String
     ): List<QuoteResponse>
 
+    suspend fun getQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String
+    ): QuoteResponse
+
     suspend fun addQuote(
         userId: String,
         bookId: String,
+        quote: QuoteRequest
+    )
+
+    suspend fun updateQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String,
         quote: QuoteRequest
     )
 

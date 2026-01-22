@@ -37,7 +37,42 @@ class QuoteDataSourceImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.e("QuoteDataSourceImpl", "Error: ${e.message}")
+            Log.e("QuoteDataSourceImpl", "Failed to get quotes: ${e.message}")
+            throw e
+        }
+    }
+
+    override suspend fun getQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String
+    ): QuoteResponse {
+        return try {
+            val snapshot = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("quote")
+                .document(quoteId)
+                .get()
+                .await()
+
+            if (!snapshot.exists()) {
+                throw IllegalStateException("Quote not found: $quoteId")
+            }
+
+            val data = snapshot.data
+                ?: throw IllegalStateException("Quote data is null: $quoteId")
+
+            QuoteResponse(
+                id = snapshot.id,
+                content = data["content"] as? String ?: "",
+                page = (data["page"] as? Long)?.toInt() ?: 0,
+                createdAt = data["createdAt"] as? String ?: ""
+            )
+        } catch (e: Exception) {
+            Log.e("QuoteDataSourceImpl", "Failed to get quote: ${e.message}")
             throw e
         }
     }
@@ -67,6 +102,35 @@ class QuoteDataSourceImpl @Inject constructor(
             Log.d("QuoteDataSourceImpl", "Quote added: ${newDocRef.id}")
         } catch (e: Exception) {
             Log.e("QuoteDataSourceImpl", "Failed to add quote: ${e.message}")
+            throw e
+        }
+    }
+
+    override suspend fun updateQuote(
+        userId: String,
+        bookId: String,
+        quoteId: String,
+        quote: QuoteRequest
+    ) {
+        try {
+            val data = mapOf(
+                "content" to quote.content,
+                "page" to quote.page,
+                "updatedAt" to FieldValue.serverTimestamp()
+            )
+
+            db.collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("quote")
+                .document(quoteId)
+                .update(data)
+                .await()
+
+            Log.d("QuoteDataSourceImpl", "Quote updated: $quoteId")
+        } catch (e: Exception) {
+            Log.e("QuoteDataSourceImpl", "Failed to update quote: ${e.message}")
             throw e
         }
     }

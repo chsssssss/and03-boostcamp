@@ -4,5 +4,5 @@ data class QuoteResponse(
     val id: String,
     val content: String,
     val page: Int,
-    val createdAt: String,
+    val createdAt: String
 )
