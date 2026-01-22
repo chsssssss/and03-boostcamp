@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.screen.textmemoform.model
+package com.boostcamp.and03.ui.screen.textmemoform
 
 sealed interface TextMemoFormAction {
 
