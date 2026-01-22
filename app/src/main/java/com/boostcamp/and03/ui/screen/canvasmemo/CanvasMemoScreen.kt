@@ -95,25 +95,25 @@ private fun CanvasMemoScreen(
             items = listOf(
                 MainBottomBarItem(
                     type = MainBottomBarType.NODE,
-                    label = "노드",
+                    label = stringResource(R.string.canvas_bottom_bar_node),
                     icon = Icons.Default.PersonAdd,
                     backgroundColor = CanvasMemoColors.Node
                 ),
                 MainBottomBarItem(
                     type = MainBottomBarType.RELATION,
-                    label = "관계",
+                    label = stringResource(R.string.canvas_bottom_bar_relation),
                     icon = Icons.Default.Link,
                     backgroundColor = CanvasMemoColors.Relation
                 ),
                 MainBottomBarItem(
                     type = MainBottomBarType.QUOTE,
-                    label = "구절",
+                    label = stringResource(R.string.canvas_bottom_bar_quote),
                     icon = Icons.Default.FormatQuote,
                     backgroundColor = CanvasMemoColors.Quote
                 ),
                 MainBottomBarItem(
                     type = MainBottomBarType.DELETE,
-                    label = "삭제",
+                    label = stringResource(R.string.canvas_bottom_bar_delete),
                     icon = Icons.Default.Delete,
                     backgroundColor = CanvasMemoColors.Delete
                 )
