@@ -78,7 +78,7 @@ fun MainNavHost(
         )
 
         textMemoFormNavGraph(
-            navigateToBack = { navigator.navigatePopBackStack() },
+            navigateBack = { navigator.navigatePopBackStack() },
             modifier = modifier.padding(paddingValues)
         )
 
