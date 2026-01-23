@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.component
+package com.boostcamp.and03.ui.screen.canvasmemo.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03InfoSection
+import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.QuoteCard
+import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03BorderWidth
 import com.boostcamp.and03.ui.theme.And03ComponentSize

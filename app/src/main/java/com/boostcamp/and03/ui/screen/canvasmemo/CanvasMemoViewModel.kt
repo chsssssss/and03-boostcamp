@@ -26,6 +26,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
             is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
+            is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
         }
     }
 
@@ -62,5 +63,12 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             characterNameState = TextFieldState(),
             characterDescState = TextFieldState()
         )
+    }
+    private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
+        _uiState.update {
+            it.copy(
+                selectedBottomBarType = action.type
+            )
+        }
     }
 }

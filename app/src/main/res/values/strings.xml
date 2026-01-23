@@ -137,6 +137,11 @@
     <string name="add_node_bottom_sheet_new_character">새 등장인물 추가</string>
     <string name="add_node_bottom_sheet_add_button">추가하기</string>
 
+    <!-- Canvas Bottom Bar -->
+    <string name="canvas_bottom_bar_node">노드</string>
+    <string name="canvas_bottom_bar_relation">관계</string>
+    <string name="canvas_bottom_bar_quote">구절</string>
+    <string name="canvas_bottom_bar_delete">삭제</string>
     <!-- 등장인물 추가 화면 -->
     <string name="character_form_title">등장인물 추가</string>
     <string name="character_form_name">이름 *</string>
