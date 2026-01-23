@@ -11,17 +11,21 @@ import com.boostcamp.and03.ui.screen.prototype.screen.MemoEditScreen
 fun NavGraphBuilder.bookDetailNavGraph(
     modifier: Modifier = Modifier,
     navigateToBack: () -> Unit,
+    navigateToCharacterForm: (bookId: String, characterId: String) -> Unit,
+    navigateToQuoteForm: (bookId: String, quoteId: String) -> Unit,
+    navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
+    navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
     navigateToCanvas: (String) -> Unit,
     navigateToMemoEdit: (String) -> Unit,
-    navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
-    navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit
 ) {
     composable<Route.BookDetail> {
         BookDetailRoute(
             navigateBack = navigateToBack,
-            navigateToCanvas = navigateToCanvas,
+            navigateToCharacterForm = navigateToCharacterForm,
+            navigateToQuoteForm = navigateToQuoteForm,
             navigateToTextMemoForm = navigateToTextMemoForm,
-            navigateToCanvasMemoForm = navigateToCanvasMemoForm
+            navigateToCanvasMemoForm = navigateToCanvasMemoForm,
+            navigateToCanvas = navigateToCanvas,
         )
     }
 

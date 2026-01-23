@@ -45,6 +45,30 @@ class MainNavigator(
         navController.navigate(Route.MemoEdit)
     }
 
+    fun navigateToCharacterForm(
+        bookId: String,
+        characterId: String
+    ) {
+        navController.navigate(
+            Route.CharacterForm(
+                bookId = bookId,
+                characterId = characterId
+            )
+        )
+    }
+
+    fun navigateToQuoteForm(
+        bookId: String,
+        quoteId: String
+    ) {
+        navController.navigate(
+            Route.QuoteForm(
+                bookId = bookId,
+                quoteId = quoteId
+            )
+        )
+    }
+
     fun navigateToTextMemoForm(
         bookId: String,
         memoId: String
