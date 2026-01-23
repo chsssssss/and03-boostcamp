@@ -25,9 +25,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,11 +39,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
-import com.boostcamp.and03.ui.component.EmptyDataScreen
 import com.boostcamp.and03.ui.component.CharacterCard
+import com.boostcamp.and03.ui.component.EmptyDataScreen
+import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.screen.bookdetail.component.MemoCard
-import com.boostcamp.and03.ui.component.QuoteCard
 import com.boostcamp.and03.ui.screen.bookdetail.component.SquareAddButton
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
@@ -119,7 +116,7 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     onAction: (BookDetailAction) -> Unit,
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val selectedTabIndex = uiState.selectedTabIndex
     val tabs = BookDetailTab.entries
 
     Scaffold(
@@ -190,7 +187,7 @@ private fun BookDetailScreen(
                     tabs.forEachIndexed { index, tab ->
                         Tab(
                             selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
+                            onClick = { onAction(BookDetailAction.OnTabSelect(index)) },
                             text = { Text(text = tab.title) }
                         )
                     }
@@ -222,10 +219,25 @@ private fun BookDetailScreen(
 
                     BookDetailTab.QUOTE -> QuoteTab(
                         uiState.quotes,
+                        onClickAdd = {
+                            onAction(
+                                BookDetailAction.OnOpenQuoteForm(
+                                    uiState.bookId,
+                                    ""
+                                )
+                            )
+                        },
                         onClickDelete = { quoteId ->
                             onAction(BookDetailAction.DeleteQuote(quoteId))
                         },
-                        onClickEdit = { }
+                        onClickEdit = { quoteId ->
+                            onAction(
+                                BookDetailAction.OnOpenQuoteForm(
+                                    uiState.bookId,
+                                    quoteId
+                                )
+                            )
+                        }
                     )
 
                     BookDetailTab.MEMO -> MemoTab(
@@ -378,6 +390,7 @@ private fun CharacterTab(
 @Composable
 private fun QuoteTab(
     quotes: ImmutableList<QuoteUiModel>,
+    onClickAdd: () -> Unit,
     onClickDelete: (String) -> Unit,
     onClickEdit: (String) -> Unit
 ) {
@@ -406,7 +419,7 @@ private fun QuoteTab(
 
         SquareAddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = { }
+            onClick = onClickAdd
         )
     }
 }

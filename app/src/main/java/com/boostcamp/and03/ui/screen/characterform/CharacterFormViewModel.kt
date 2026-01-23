@@ -9,6 +9,7 @@ import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -30,7 +31,7 @@ class CharacterFormViewModel @Inject constructor (
     private val _uiState = MutableStateFlow(CharacterFormUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _event = Channel<CharacterFormEvent>()
+    private val _event: Channel<CharacterFormEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
     fun onAction(action: CharacterFormAction) {
@@ -39,10 +40,13 @@ class CharacterFormViewModel @Inject constructor (
 
             CharacterFormAction.OnSaveClick -> {
                 viewModelScope.launch {
-                    saveCharacter()
+                    try {
+                        saveCharacter()
+                        _event.trySend(CharacterFormEvent.NavigateBack)
+                    } catch (e: Exception) {
+                        // TODO: 오류 메시지 UI 표시 구현
+                    }
                 }
-
-                _event.trySend(CharacterFormEvent.NavigateBack)
             }
 
             CharacterFormAction.OnAddImageClick -> { /* TODO: 등장인물 사진 추가 동작 구현 */ }
@@ -73,7 +77,8 @@ class CharacterFormViewModel @Inject constructor (
         _uiState.update {
             it.copy(
                 name = result.name,
-                role = result.role
+                role = result.role,
+                description = result.description
             )
         }
     }
