@@ -37,12 +37,32 @@ class MainNavigator(
 
     fun navigateToCanvas(memoId: String) {
         navController.navigate(
-            Route.Canvas(memoId = memoId)
+            Route.CanvasMemo(memoId = memoId)
         )
     }
 
-    fun navigateToMemoEdit() {
-        navController.navigate(Route.MemoEdit)
+    fun navigateToCharacterForm(
+        bookId: String,
+        characterId: String
+    ) {
+        navController.navigate(
+            Route.CharacterForm(
+                bookId = bookId,
+                characterId = characterId
+            )
+        )
+    }
+
+    fun navigateToQuoteForm(
+        bookId: String,
+        quoteId: String
+    ) {
+        navController.navigate(
+            Route.QuoteForm(
+                bookId = bookId,
+                quoteId = quoteId
+            )
+        )
     }
 
     fun navigateToTextMemoForm(

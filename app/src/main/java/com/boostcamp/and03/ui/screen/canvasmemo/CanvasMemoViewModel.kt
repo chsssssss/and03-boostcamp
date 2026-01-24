@@ -61,6 +61,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
             is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
+            is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
         }
     }
 
@@ -119,6 +120,13 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             currentState.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
                 isRelationDialogVisible = false
+            )
+        }
+    }
+    private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
+        _uiState.update {
+            it.copy(
+                selectedBottomBarType = action.type
             )
         }
     }

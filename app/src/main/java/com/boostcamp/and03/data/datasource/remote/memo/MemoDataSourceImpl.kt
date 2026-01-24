@@ -233,6 +233,7 @@ class MemoDataSourceImpl @Inject constructor(
                 .document(memoId)
                 .update(data)
                 .await()
+
             Log.d("MemoDataSourceImpl", "Memo updated: $memoId")
         } catch (e: Exception) {
             Log.e("MemoDataSourceImpl", "Failed to update memo: ${e.message}")

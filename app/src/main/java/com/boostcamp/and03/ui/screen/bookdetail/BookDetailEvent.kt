@@ -4,6 +4,16 @@ sealed interface BookDetailEvent {
 
     data object NavigateBack : BookDetailEvent
 
+    data class NavigateToCharacterForm(
+        val bookId: String,
+        val characterId: String
+    ) : BookDetailEvent
+
+    data class NavigateToQuoteForm(
+        val bookId: String,
+        val quoteId: String
+    ) : BookDetailEvent
+
     data class NavigateToTextMemoForm(
         val bookId: String,
         val memoId: String

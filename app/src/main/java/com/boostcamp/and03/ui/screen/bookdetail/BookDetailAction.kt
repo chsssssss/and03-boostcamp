@@ -6,6 +6,18 @@ sealed interface BookDetailAction {
 
     data object OnRetryClick: BookDetailAction
 
+    data class OnTabSelect(val index: Int): BookDetailAction
+
+    data class OnOpenCharacterForm(
+        val bookId: String,
+        val characterId: String
+    ): BookDetailAction
+
+    data class OnOpenQuoteForm(
+        val bookId: String,
+        val quoteId: String
+    ): BookDetailAction
+
     data class DeleteCharacter(val characterId: String): BookDetailAction
 
     data class DeleteQuote(val quoteId: String): BookDetailAction

@@ -9,8 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.FormatQuote
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,10 +50,16 @@ import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarItem
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
+import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
+import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import kotlin.math.max
 import kotlin.math.min
 
@@ -252,31 +264,65 @@ private fun CanvasMemoScreen(
             ToolExpandableButton(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = And03Padding.PADDING_L, bottom = And03Padding.PADDING_2XL),
+                    .padding(
+                        start = And03Padding.PADDING_XS,
+                        bottom = And03Padding.PADDING_4XL + And03ComponentSize.BOTTOM_BAR_ITEM_SIZE + And03Spacing.SPACE_L
+                    ),
                 actions = listOf(
                     ToolAction(
                         iconRes = R.drawable.ic_add_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
-                        onClick = {
-                            scale = (scale * 1.2f).coerceIn(minScale, maxScale)
-                        }
+                        onClick = { }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_remove_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
-                        onClick = {
-                            scale = (scale / 1.2f).coerceIn(minScale, maxScale)
-                        }
+                        onClick = { }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_fit_screen,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_fit_screen),
-                        onClick = {
-                            scale = 1f
-                            offset = Offset(0f, 0f)
-                        }
+                        onClick = { }
                     )
                 )
+            )
+
+            MainBottomBar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = And03Spacing.SPACE_XS),
+                items = listOf(
+                    MainBottomBarItem(
+                        type = MainBottomBarType.NODE,
+                        label = stringResource(R.string.canvas_bottom_bar_node),
+                        icon = Icons.Default.PersonAdd,
+                        backgroundColor = CanvasMemoColors.Node
+                    ),
+                    MainBottomBarItem(
+                        type = MainBottomBarType.RELATION,
+                        label = stringResource(R.string.canvas_bottom_bar_relation),
+                        icon = Icons.Default.Link,
+                        backgroundColor = CanvasMemoColors.Relation
+                    ),
+                    MainBottomBarItem(
+                        type = MainBottomBarType.QUOTE,
+                        label = stringResource(R.string.canvas_bottom_bar_quote),
+                        icon = Icons.Default.FormatQuote,
+                        backgroundColor = CanvasMemoColors.Quote
+                    ),
+                    MainBottomBarItem(
+                        type = MainBottomBarType.DELETE,
+                        label = stringResource(R.string.canvas_bottom_bar_delete),
+                        icon = Icons.Default.Delete,
+                        backgroundColor = CanvasMemoColors.Delete
+                    )
+
+                ),
+                selectedType = uiState.selectedBottomBarType,
+                onItemClick = { type ->
+                    onAction(CanvasMemoAction.OnBottomBarClick(type))
+                }
             )
         }
     }
@@ -362,11 +408,12 @@ fun Arrows(
 @Preview(showBackground = true)
 @Composable
 fun CanvasMemoScreenPreview() {
-    val previewState = CanvasMemoUiState()
+    val previewState = CanvasMemoUiState(
+        selectedBottomBarType = MainBottomBarType.NODE
+    )
 
     CanvasMemoScreen(
         uiState = previewState,
         onAction = {},
     )
-
 }

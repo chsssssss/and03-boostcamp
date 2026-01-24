@@ -6,13 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.boostcamp.and03.ui.screen.addbook.addBookNavGraph
-import com.boostcamp.and03.ui.screen.canvasmemoform.canvasMemoFormNavGraph
-import com.boostcamp.and03.ui.screen.textmemoform.textMemoFormNavGraph
 import com.boostcamp.and03.ui.screen.bookdetail.bookDetailNavGraph
 import com.boostcamp.and03.ui.screen.booklist.booklistNavGraph
 import com.boostcamp.and03.ui.screen.booksearch.bookSearchNavGraph
 import com.boostcamp.and03.ui.screen.canvasmemo.canvasMemoNavGraph
+import com.boostcamp.and03.ui.screen.canvasmemoform.canvasMemoFormNavGraph
+import com.boostcamp.and03.ui.screen.characterform.characterFormNavGraph
 import com.boostcamp.and03.ui.screen.mypage.myPageNavGraph
+import com.boostcamp.and03.ui.screen.quoteform.quoteFormNavGraph
+import com.boostcamp.and03.ui.screen.textmemoform.textMemoFormNavGraph
 
 @Composable
 fun MainNavHost(
@@ -47,9 +49,17 @@ fun MainNavHost(
 
         bookDetailNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
-            navigateToCanvas = { memoId ->
-//                navigator.navigateToCanvas(memoId)
-                navigator.navigateToCanvasMemo()
+            navigateToCharacterForm = { bookId, characterId ->
+                navigator.navigateToCharacterForm(
+                    bookId = bookId,
+                    characterId = characterId
+                )
+            },
+            navigateToQuoteForm = { bookId, quoteId ->
+                navigator.navigateToQuoteForm(
+                    bookId = bookId,
+                    quoteId = quoteId
+                )
             },
             navigateToTextMemoForm = { bookId, memoId ->
                 navigator.navigateToTextMemoForm(
@@ -63,11 +73,14 @@ fun MainNavHost(
                     memoId = memoId
                 )
             },
-            navigateToMemoEdit = { navigator.navigateToMemoEdit() }
+            navigateToCanvas = { memoId ->
+                navigator.navigateToCanvas(memoId)
+//                navigator.navigateToCanvasMemo()
+            },
         )
 
         textMemoFormNavGraph(
-            navigateToBack = { navigator.navigatePopBackStack() },
+            navigateBack = { navigator.navigatePopBackStack() },
             modifier = modifier.padding(paddingValues)
         )
 
@@ -77,8 +90,19 @@ fun MainNavHost(
             modifier = modifier.padding(paddingValues)
         )
 
+        characterFormNavGraph(
+            navigateBack = { navigator.navigatePopBackStack() },
+            modifier = modifier.padding(paddingValues)
+        )
+
+        quoteFormNavGraph(
+            navigateBack = { navigator.navigatePopBackStack() },
+            modifier = modifier.padding(paddingValues)
+        )
+
         canvasMemoNavGraph(
             navigateToBack = { navigator.navigatePopBackStack() },
+            modifier = modifier.padding(paddingValues)
         )
     }
 }

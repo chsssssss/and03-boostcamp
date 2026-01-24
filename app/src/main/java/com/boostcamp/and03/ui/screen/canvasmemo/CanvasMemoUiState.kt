@@ -1,8 +1,8 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
-import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 
 data class CanvasMemoUiState(
@@ -14,17 +14,8 @@ data class CanvasMemoUiState(
     val isAddCharacterDialogVisible: Boolean = false,
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),
-) {
-    val fromCharacterName: String
-        get() = relationSelection?.fromNodeId?.let { id ->
-            (nodes[id]?.node as? MemoNode.CharacterNode)?.name
-        } ?: ""
-
-    val toCharacterName: String
-        get() = relationSelection?.toNodeId?.let { id ->
-            (nodes[id]?.node as? MemoNode.CharacterNode)?.name
-        } ?: ""
-}
+    val selectedBottomBarType: MainBottomBarType = MainBottomBarType.NODE, // 하단 메인 바텀바 상태 기본값은 노드로 설정함
+)
 
 data class RelationSelection(
     val fromNodeId: String?,

@@ -101,17 +101,19 @@ fun CharacterCard(
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
+                    if (role.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(And03Spacing.SPACE_XS))
 
-                    LabelChip(
-                        content = {
-                            Text(
-                                text = role,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = And03Theme.colors.onSecondaryContainer
-                            )
-                        }
-                    )
+                        LabelChip(
+                            content = {
+                                Text(
+                                    text = role,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = And03Theme.colors.onSecondaryContainer
+                                )
+                            }
+                        )
+                    }
                 }
 
                 DropdownMenuContainer(

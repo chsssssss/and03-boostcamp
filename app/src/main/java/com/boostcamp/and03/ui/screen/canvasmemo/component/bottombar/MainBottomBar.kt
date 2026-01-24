@@ -1,4 +1,4 @@
-package com.boostcamp.and03.ui.component.bottombar
+package com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -3,7 +3,6 @@ package com.boostcamp.and03.data.datasource.remote.character
 import android.util.Log
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.response.CharacterResponse
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
@@ -35,8 +34,45 @@ class CharacterDataSourceImpl @Inject constructor(
                     )
                 }
             }
+
         } catch (e: Exception) {
-            Log.e("CharacterDataSourceImpl", "Error: ${e.message}")
+            Log.e("CharacterDataSourceImpl", "Failed to get characters: ${e.message}")
+            throw e
+        }
+    }
+
+    override suspend fun getCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String
+    ): CharacterResponse {
+        return try {
+            val snapshot = db
+                .collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("character")
+                .document(characterId)
+                .get()
+                .await()
+
+            if (!snapshot.exists()) {
+                throw IllegalStateException("Character not found: $characterId")
+            }
+
+            val data = snapshot.data
+                ?: throw IllegalStateException("Character data is null: $characterId")
+
+            CharacterResponse(
+                id = snapshot.id,
+                role = data["role"] as? String ?: "",
+                description = data["description"] as? String ?: "",
+                name = data["name"] as? String ?: "",
+            )
+
+        } catch (e: Exception) {
+            Log.e("CharacterDataSourceImpl", "Failed to get character: ${e.message}")
             throw e
         }
     }
@@ -82,6 +118,35 @@ class CharacterDataSourceImpl @Inject constructor(
             Log.d("CharacterDataSourceImpl", "Character deleted: $characterId")
         } catch (e: Exception) {
             Log.e("CharacterDataSourceImpl", "Failed to delete character: ${e.message}")
+            throw e
+        }
+    }
+
+    override suspend fun updateCharacter(
+        userId: String,
+        bookId: String,
+        characterId: String,
+        character: CharacterRequest
+    ) {
+        try {
+            val data: HashMap<String, Any> = hashMapOf(
+                "role" to character.role,
+                "description" to character.description,
+                "name" to character.name,
+            )
+
+            db.collection("user")
+                .document(userId)
+                .collection("book")
+                .document(bookId)
+                .collection("character")
+                .document(characterId)
+                .update(data)
+                .await()
+
+            Log.d("CharacterDataSourceImpl", "Character updated: $characterId")
+        } catch (e: Exception) {
+            Log.e("CharacterDataSourceImpl", "Failed to update character: ${e.message}")
             throw e
         }
     }
