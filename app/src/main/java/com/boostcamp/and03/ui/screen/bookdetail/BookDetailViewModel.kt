@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.util.PerformanceLogger
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -87,20 +88,21 @@ class BookDetailViewModel @Inject constructor(
 
     fun loadAllData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            PerformanceLogger.measureLoadingTime("loadAllData()") {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            try {
-                loadCharacters()
-                loadQuotes()
-                loadMemos()
-                loadBookInfo()
-                _uiState.update { it.copy(isLoading = false) }
-//                throw Exception("테스트용")
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
+                try {
+                    loadCharacters()
+                    loadQuotes()
+                    loadMemos()
+                    loadBookInfo()
+                    _uiState.update { it.copy(isLoading = false) }
+                } catch (e: Exception) {
+                    _uiState.update {
+                        it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
+                    }
+                    Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
                 }
-                Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
             }
         }
     }
