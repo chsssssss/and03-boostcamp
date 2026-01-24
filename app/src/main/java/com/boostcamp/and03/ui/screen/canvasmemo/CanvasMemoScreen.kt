@@ -90,7 +90,7 @@ private fun CanvasMemoScreen(
     onAction: (CanvasMemoAction) -> Unit,
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset(0f, 0f)) }
+    var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
     val canvasSize = 2000.dp
     val minScale = 0.5f
@@ -143,7 +143,7 @@ private fun CanvasMemoScreen(
                             val newScale = (scale * zoom).coerceIn(minScale, maxScale)
 
                             scale = newScale
-                            offset = clampOffset(offset + pan)
+                            panOffset = clampOffset(panOffset + pan)
                         }
                     }
             ) {
@@ -153,8 +153,8 @@ private fun CanvasMemoScreen(
                         .graphicsLayer {
                             scaleX = scale
                             scaleY = scale
-                            translationX = offset.x
-                            translationY = offset.y
+                            translationX = panOffset.x
+                            translationY = panOffset.y
                             transformOrigin = TransformOrigin(0f, 0f)
                         }
                 ) {
@@ -223,7 +223,7 @@ private fun CanvasMemoScreen(
                 ) {
                     Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
                         Text(
-                            text = "Offset: (${offset.x.toInt()}, ${offset.y.toInt()})",
+                            text = "Offset: (${panOffset.x.toInt()}, ${panOffset.y.toInt()})",
                             color = And03Theme.colors.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -272,17 +272,24 @@ private fun CanvasMemoScreen(
                     ToolAction(
                         iconRes = R.drawable.ic_add_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
-                        onClick = { }
+                        onClick = {
+                            scale = (scale * 1.2f).coerceIn(minScale, maxScale)
+                        }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_remove_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
-                        onClick = { }
+                        onClick = {
+                            scale = (scale / 1.2f).coerceIn(minScale, maxScale)
+                        }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_fit_screen,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_fit_screen),
-                        onClick = { }
+                        onClick = {
+                            scale = 1f
+                            panOffset = Offset(0f, 0f)
+                        }
                     )
                 )
             )
