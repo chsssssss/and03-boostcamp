@@ -38,6 +38,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
+import com.boostcamp.and03.data.util.PerformanceLogger
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.CharacterCard
 import com.boostcamp.and03.ui.component.EmptyDataScreen

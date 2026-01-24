@@ -42,7 +42,23 @@ class BookDetailViewModel @Inject constructor(
 
             BookDetailAction.OnRetryClick -> loadAllData()
 
-            is BookDetailAction.OnTabSelect -> _uiState.update { it.copy(selectedTabIndex = action.index) }
+            is BookDetailAction.OnTabSelect -> {
+                _uiState.update { it.copy(selectedTabIndex = action.index) }
+
+                when(action.index) {
+                    0 -> if (_uiState.value.characters.isEmpty()) {
+                        viewModelScope.launch { loadCharacters() }
+                    }
+
+                    1 -> if (_uiState.value.quotes.isEmpty()) {
+                        viewModelScope.launch { loadQuotes() }
+                    }
+
+                    2 -> if (_uiState.value.memos.isEmpty()) {
+                        viewModelScope.launch { loadMemos() }
+                    }
+                }
+            }
 
             is BookDetailAction.OnOpenCharacterForm -> _event.trySend(
                 BookDetailEvent.NavigateToCharacterForm(
@@ -83,69 +99,83 @@ class BookDetailViewModel @Inject constructor(
     }
 
     init {
-        loadAllData()
+        viewModelScope.launch {
+            loadBookInfo()
+            loadCharacters()
+        }
     }
 
     fun loadAllData() {
         viewModelScope.launch {
-            PerformanceLogger.measureLoadingTime("loadAllData()") {
-                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-                try {
-                    loadCharacters()
-                    loadQuotes()
-                    loadMemos()
-                    loadBookInfo()
-                    _uiState.update { it.copy(isLoading = false) }
-                } catch (e: Exception) {
-                    _uiState.update {
-                        it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
-                    }
-                    Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
+            try {
+                loadCharacters()
+                loadQuotes()
+                loadMemos()
+                loadBookInfo()
+                _uiState.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
                 }
+                Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
             }
         }
     }
 
     private suspend fun loadCharacters() {
-        val result = bookRepository.getCharacters(userId, bookId)
-        _uiState.update {
-            it.copy(
-                characters = result.map { character -> character.toUiModel() }
-                    .toPersistentList()
-            )
+        PerformanceLogger.measureLoadingTime("loadCharacters") {
+            val result = bookRepository.getCharacters(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    characters = result
+                        .map { character -> character.toUiModel() }
+                        .toPersistentList()
+                )
+            }
         }
     }
 
     private suspend fun loadQuotes() {
-        val result = bookRepository.getQuotes(userId, bookId)
-        _uiState.update {
-            it.copy(
-                quotes = result.map { quote -> quote.toUiModel() }.toPersistentList()
-            )
+        PerformanceLogger.measureLoadingTime("loadQuotes") {
+            val result = bookRepository.getQuotes(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    quotes = result
+                        .map { quote -> quote.toUiModel() }
+                        .toPersistentList()
+                )
+            }
         }
     }
 
     private suspend fun loadMemos() {
-        val result = bookRepository.getMemos(userId, bookId)
-        _uiState.update {
-            it.copy(
-                memos = result.map { memo -> memo.toUiModel() }.toPersistentList()
-            )
+        PerformanceLogger.measureLoadingTime("loadMemos") {
+            val result = bookRepository.getMemos(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    memos = result
+                        .map { memo -> memo.toUiModel() }
+                        .toPersistentList()
+                )
+            }
         }
     }
 
     private suspend fun loadBookInfo() {
-        val result = bookRepository.getBookDetail(userId, bookId)
-        if (result != null) {
-            _uiState.update {
-                it.copy(
-                    thumbnail = result.thumbnail,
-                    title = result.title,
-                    author = result.author.joinToString(", "),
-                    publisher = result.publisher,
-                    totalPage = result.totalPage
-                )
+        PerformanceLogger.measureLoadingTime("loadMemos") {
+            val result = bookRepository.getBookDetail(userId, bookId)
+            if (result != null) {
+                _uiState.update {
+                    it.copy(
+                        thumbnail = result.thumbnail,
+                        title = result.title,
+                        author = result.author.joinToString(", "),
+                        publisher = result.publisher,
+                        totalPage = result.totalPage
+                    )
+                }
             }
         }
     }
