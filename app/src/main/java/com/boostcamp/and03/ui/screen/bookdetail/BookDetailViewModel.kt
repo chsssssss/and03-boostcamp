@@ -107,17 +107,22 @@ class BookDetailViewModel @Inject constructor(
 
     fun loadAllData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update {
+                it.copy(
+                    isLoadingBookInfo = true,
+                    errorMessage = null
+                )
+            }
 
             try {
                 loadCharacters()
                 loadQuotes()
                 loadMemos()
                 loadBookInfo()
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoadingBookInfo = false) }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isLoading = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
+                    it.copy(isLoadingBookInfo = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
                 }
                 Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
             }
@@ -125,46 +130,53 @@ class BookDetailViewModel @Inject constructor(
     }
 
     private suspend fun loadCharacters() {
+        _uiState.update { it.copy(isLoadingCharacters = true) }
         PerformanceLogger.measureLoadingTime("loadCharacters") {
             val result = bookRepository.getCharacters(userId, bookId)
             _uiState.update {
                 it.copy(
                     characters = result
                         .map { character -> character.toUiModel() }
-                        .toPersistentList()
+                        .toPersistentList(),
+                    isLoadingCharacters = false
                 )
             }
         }
     }
 
     private suspend fun loadQuotes() {
+        _uiState.update { it.copy(isLoadingQuotes = true) }
         PerformanceLogger.measureLoadingTime("loadQuotes") {
             val result = bookRepository.getQuotes(userId, bookId)
             _uiState.update {
                 it.copy(
                     quotes = result
                         .map { quote -> quote.toUiModel() }
-                        .toPersistentList()
+                        .toPersistentList(),
+                    isLoadingQuotes = false
                 )
             }
         }
     }
 
     private suspend fun loadMemos() {
+        _uiState.update { it.copy(isLoadingMemos = true) }
         PerformanceLogger.measureLoadingTime("loadMemos") {
             val result = bookRepository.getMemos(userId, bookId)
             _uiState.update {
                 it.copy(
                     memos = result
                         .map { memo -> memo.toUiModel() }
-                        .toPersistentList()
+                        .toPersistentList(),
+                    isLoadingMemos = false
                 )
             }
         }
     }
 
     private suspend fun loadBookInfo() {
-        PerformanceLogger.measureLoadingTime("loadMemos") {
+        _uiState.update { it.copy(isLoadingBookInfo = true) }
+        PerformanceLogger.measureLoadingTime("loadBookInfo") {
             val result = bookRepository.getBookDetail(userId, bookId)
             if (result != null) {
                 _uiState.update {
@@ -173,7 +185,8 @@ class BookDetailViewModel @Inject constructor(
                         title = result.title,
                         author = result.author.joinToString(", "),
                         publisher = result.publisher,
-                        totalPage = result.totalPage
+                        totalPage = result.totalPage,
+                        isLoadingBookInfo = false
                     )
                 }
             }

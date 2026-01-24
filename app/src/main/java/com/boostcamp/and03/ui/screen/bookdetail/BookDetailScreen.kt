@@ -38,7 +38,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.boostcamp.and03.R
-import com.boostcamp.and03.data.util.PerformanceLogger
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.CharacterCard
 import com.boostcamp.and03.ui.component.EmptyDataScreen
@@ -142,7 +141,7 @@ private fun BookDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (uiState.isLoading) {
+            if (uiState.isLoadingBookInfo) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -196,7 +195,8 @@ private fun BookDetailScreen(
 
                 when (tabs[selectedTabIndex]) {
                     BookDetailTab.CHARACTER -> CharacterTab(
-                        uiState.characters,
+                        characters = uiState.characters,
+                        isLoading = uiState.isLoadingCharacters,
                         onClickAdd = {
                             onAction(
                                 BookDetailAction.OnOpenCharacterForm(
@@ -219,7 +219,8 @@ private fun BookDetailScreen(
                     )
 
                     BookDetailTab.QUOTE -> QuoteTab(
-                        uiState.quotes,
+                        quotes = uiState.quotes,
+                        isLoading = uiState.isLoadingQuotes,
                         onClickAdd = {
                             onAction(
                                 BookDetailAction.OnOpenQuoteForm(
@@ -243,6 +244,7 @@ private fun BookDetailScreen(
 
                     BookDetailTab.MEMO -> MemoTab(
                         memos = uiState.memos,
+                        isLoading = uiState.isLoadingMemos,
                         onClickAddCanvas = {
                             onAction(
                                 BookDetailAction.OnOpenCanvasMemoForm(
@@ -348,6 +350,7 @@ private fun BookInfoSection(
 @Composable
 private fun CharacterTab(
     characters: ImmutableList<CharacterUiModel>,
+    isLoading: Boolean,
     onClickAdd: () -> Unit,
     onClickDelete: (String) -> Unit,
     onClickEdit: (String) -> Unit
@@ -357,26 +360,30 @@ private fun CharacterTab(
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
     ) {
-        if (characters.isEmpty()) {
-            EmptyDataScreen()
-        } else {
-            LazyColumn(
-                modifier = Modifier.align(Alignment.TopStart),
-                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-            ) {
-                items(
-                    items = characters,
-                    key = { it.id }
-                ) { character ->
-                    CharacterCard(
-                        name = character.name,
-                        role = character.role,
-                        iconColor = character.iconColor,
-                        description = character.description,
-                        onClick = { },
-                        onEditClick = { onClickEdit(character.id) },
-                        onDeleteClick = { onClickDelete(character.id) }
-                    )
+        when {
+            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+            characters.isEmpty() -> EmptyDataScreen()
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                ) {
+                    items(
+                        items = characters,
+                        key = { it.id }
+                    ) { character ->
+                        CharacterCard(
+                            name = character.name,
+                            role = character.role,
+                            iconColor = character.iconColor,
+                            description = character.description,
+                            onClick = { },
+                            onEditClick = { onClickEdit(character.id) },
+                            onDeleteClick = { onClickDelete(character.id) }
+                        )
+                    }
                 }
             }
         }
@@ -391,6 +398,7 @@ private fun CharacterTab(
 @Composable
 private fun QuoteTab(
     quotes: ImmutableList<QuoteUiModel>,
+    isLoading: Boolean,
     onClickAdd: () -> Unit,
     onClickDelete: (String) -> Unit,
     onClickEdit: (String) -> Unit
@@ -400,20 +408,24 @@ private fun QuoteTab(
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
     ) {
-        if (quotes.isEmpty()) {
-            EmptyDataScreen()
-        } else {
-            LazyColumn(
-                modifier = Modifier.align(Alignment.TopStart),
-                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-            ) {
-                items(quotes, key = { it.id }) { quote ->
-                    QuoteCard(
-                        quote = quote,
-                        onClick = {},
-                        onClickDelete = { onClickDelete(quote.id) },
-                        onClickEdit = { onClickEdit(quote.id) },
-                    )
+        when {
+            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+            quotes.isEmpty() -> EmptyDataScreen()
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                ) {
+                    items(quotes, key = { it.id }) { quote ->
+                        QuoteCard(
+                            quote = quote,
+                            onClick = {},
+                            onClickDelete = { onClickDelete(quote.id) },
+                            onClickEdit = { onClickEdit(quote.id) },
+                        )
+                    }
                 }
             }
         }
@@ -428,6 +440,7 @@ private fun QuoteTab(
 @Composable
 private fun MemoTab(
     memos: ImmutableList<MemoUiModel>,
+    isLoading: Boolean,
     onClickAddCanvas: () -> Unit,
     onClickAddText: () -> Unit,
     onClickMemo: (MemoUiModel) -> Unit,
@@ -439,37 +452,41 @@ private fun MemoTab(
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
     ) {
-        if (memos.isEmpty()) {
-            EmptyDataScreen()
-        } else {
-            LazyColumn(
-                modifier = Modifier.align(Alignment.TopStart),
-                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-            ) {
-                items(memos, key = { it.id }) { memo ->
-                    val pageLabelText = if (memo.startPage == memo.endPage) {
-                        stringResource(
-                            id = R.string.book_detail_memo_single_page,
-                            memo.startPage
-                        )
-                    } else {
-                        stringResource(
-                            id = R.string.book_detail_memo_page_range,
-                            memo.startPage,
-                            memo.endPage
+        when {
+            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+            memos.isEmpty() -> EmptyDataScreen()
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                ) {
+                    items(memos, key = { it.id }) { memo ->
+                        val pageLabelText = if (memo.startPage == memo.endPage) {
+                            stringResource(
+                                id = R.string.book_detail_memo_single_page,
+                                memo.startPage
+                            )
+                        } else {
+                            stringResource(
+                                id = R.string.book_detail_memo_page_range,
+                                memo.startPage,
+                                memo.endPage
+                            )
+                        }
+
+                        MemoCard(
+                            type = memo.memoType,
+                            title = memo.title,
+                            contentPreview = memo.content ?: "",
+                            pageLabel = pageLabelText,
+                            date = memo.date,
+                            onClick = { onClickMemo(memo) },
+                            onClickDelMemo = { onClickDelMemo(memo.id) },
+                            onClickEdit = { onClickEditMemo(memo) },
                         )
                     }
-
-                    MemoCard(
-                        type = memo.memoType,
-                        title = memo.title,
-                        contentPreview = memo.content ?: "",
-                        pageLabel = pageLabelText,
-                        date = memo.date,
-                        onClick = { onClickMemo(memo) },
-                        onClickDelMemo = { onClickDelMemo(memo.id) },
-                        onClickEdit = { onClickEditMemo(memo) },
-                    )
                 }
             }
         }
