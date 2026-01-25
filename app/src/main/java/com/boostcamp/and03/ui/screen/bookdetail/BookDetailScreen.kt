@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,6 +60,7 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 
 @Composable
 fun BookDetailRoute(
@@ -119,23 +121,17 @@ private fun BookDetailScreen(
     uiState: BookDetailUiState,
     onAction: (BookDetailAction) -> Unit,
 ) {
-    val selectedTabIndex = uiState.selectedTabIndex
     val tabs = BookDetailTab.entries
+    val scope = rememberCoroutineScope()
 
-    val pagerState = rememberPagerState(
-        initialPage = selectedTabIndex,
-        pageCount = { tabs.size }
-    )
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
 
-    LaunchedEffect(pagerState.currentPage) {
-        if (pagerState.currentPage != selectedTabIndex) {
+    LaunchedEffect(
+        pagerState.currentPage,
+        pagerState.isScrollInProgress
+    ) {
+        if (!pagerState.isScrollInProgress) {
             onAction(BookDetailAction.OnTabSelect(pagerState.currentPage))
-        }
-    }
-
-    LaunchedEffect(selectedTabIndex) {
-        if (pagerState.currentPage != selectedTabIndex) {
-            pagerState.animateScrollToPage(selectedTabIndex)
         }
     }
 
@@ -193,12 +189,12 @@ private fun BookDetailScreen(
                 )
 
                 SecondaryTabRow(
-                    selectedTabIndex = selectedTabIndex,
+                    selectedTabIndex = pagerState.currentPage,
                     containerColor = And03Theme.colors.surface,
                     contentColor = And03Theme.colors.onSurface,
                     indicator = {
                         TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(selectedTabIndex),
+                            modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                             color = And03Theme.colors.primary
                         )
                     },
@@ -206,8 +202,10 @@ private fun BookDetailScreen(
                 ) {
                     tabs.forEachIndexed { index, tab ->
                         Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = { onAction(BookDetailAction.OnTabSelect(index)) },
+                            selected = pagerState.currentPage == index,
+                            onClick = { scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            } },
                             text = { Text(text = tab.title) }
                         )
                     }

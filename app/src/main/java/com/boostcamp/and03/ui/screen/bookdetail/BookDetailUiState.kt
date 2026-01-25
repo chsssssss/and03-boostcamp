@@ -17,7 +17,6 @@ data class BookDetailUiState(
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
     val memos: ImmutableList<MemoUiModel> = persistentListOf(),
     val errorMessage: String? = null,
-    val selectedTabIndex: Int = 0,
     val isLoadingBookInfo: Boolean = false,
     val isLoadingCharacters: Boolean = false,
     val isLoadingQuotes: Boolean = false,

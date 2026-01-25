@@ -43,8 +43,6 @@ class BookDetailViewModel @Inject constructor(
             BookDetailAction.OnRetryClick -> loadAllData()
 
             is BookDetailAction.OnTabSelect -> {
-                _uiState.update { it.copy(selectedTabIndex = action.index) }
-
                 when(action.index) {
                     0 -> if (_uiState.value.characters.isEmpty()) {
                         viewModelScope.launch { loadCharacters() }
