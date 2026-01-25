@@ -183,11 +183,7 @@ private fun BookDetailScreen(
                         tabs.forEachIndexed { index, tab ->
                             Tab(
                                 selected = pagerState.currentPage == index,
-                                onClick = {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
-                                },
+                                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                                 text = { Text(text = tab.title) }
                             )
                         }
