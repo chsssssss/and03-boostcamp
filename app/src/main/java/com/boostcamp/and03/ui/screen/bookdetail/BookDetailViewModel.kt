@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.data.util.PerformanceLogger
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
@@ -43,16 +44,16 @@ class BookDetailViewModel @Inject constructor(
             BookDetailAction.OnRetryClick -> loadAllData()
 
             is BookDetailAction.OnTabSelect -> {
-                when(action.index) {
-                    0 -> if (_uiState.value.characters.isEmpty()) {
+                when(BookDetailTab.entries[action.index]) {
+                    BookDetailTab.CHARACTER -> if (_uiState.value.characters.isEmpty()) {
                         viewModelScope.launch { loadCharacters() }
                     }
 
-                    1 -> if (_uiState.value.quotes.isEmpty()) {
+                    BookDetailTab.QUOTE -> if (_uiState.value.quotes.isEmpty()) {
                         viewModelScope.launch { loadQuotes() }
                     }
 
-                    2 -> if (_uiState.value.memos.isEmpty()) {
+                    BookDetailTab.MEMO -> if (_uiState.value.memos.isEmpty()) {
                         viewModelScope.launch { loadMemos() }
                     }
                 }
@@ -129,16 +130,23 @@ class BookDetailViewModel @Inject constructor(
 
     private suspend fun loadCharacters() {
         _uiState.update { it.copy(isLoadingCharacters = true) }
-        PerformanceLogger.measureLoadingTime("loadCharacters") {
-            val result = bookRepository.getCharacters(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    characters = result
-                        .map { character -> character.toUiModel() }
-                        .toPersistentList(),
-                    isLoadingCharacters = false
-                )
+
+        try {
+            PerformanceLogger.measureLoadingTime("loadBookInfo") {
+                bookRepository.getBookDetail(userId, bookId)?.let { result ->
+                    _uiState.update {
+                        it.copy(
+                            thumbnail = result.thumbnail,
+                            title = result.title,
+                            author = result.author.joinToString(", "),
+                            publisher = result.publisher,
+                            totalPage = result.totalPage
+                        )
+                    }
+                }
             }
+        } finally {
+            _uiState.update { it.copy(isLoadingBookInfo = false) }
         }
     }
 
