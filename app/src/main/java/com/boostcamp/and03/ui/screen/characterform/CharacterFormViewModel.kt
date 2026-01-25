@@ -39,12 +39,18 @@ class CharacterFormViewModel @Inject constructor (
             CharacterFormAction.OnBackClick -> _event.trySend(CharacterFormEvent.NavigateBack)
 
             CharacterFormAction.OnSaveClick -> {
+                if (_uiState.value.isSaving) return
+
                 viewModelScope.launch {
+                    _uiState.update { it.copy(isSaving = true) }
+
                     try {
                         saveCharacter()
                         _event.trySend(CharacterFormEvent.NavigateBack)
                     } catch (e: Exception) {
                         // TODO: 오류 메시지 UI 표시 구현
+                    } finally {
+                        _uiState.update { it.copy(isSaving = false) }
                     }
                 }
             }

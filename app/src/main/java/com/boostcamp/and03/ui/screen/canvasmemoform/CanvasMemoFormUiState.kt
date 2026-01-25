@@ -4,7 +4,8 @@ data class CanvasMemoFormUiState(
     val title: String = "",
     val startPage: String = "",
     val endPage: String = "",
-    val totalPage: Int = 0
+    val totalPage: Int = 0,
+    val isSaving: Boolean = false
 ) {
     val isValidPageRange: Boolean
         get() {

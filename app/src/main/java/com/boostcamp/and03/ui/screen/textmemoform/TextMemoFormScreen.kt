@@ -73,10 +73,14 @@ private fun TextMemoFormScreen(
         },
         bottomBar = {
             And03Button(
-                text = stringResource(id = R.string.add_memo_save_button_text),
+                text = if(!uiState.isSaving) {
+                    stringResource(id = R.string.add_memo_save_button_text)
+                } else {
+                    stringResource(id = R.string.add_memo_saving_button_text)
+                },
                 onClick = { onAction(TextMemoFormAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
-                enabled = uiState.isSaveable,
+                enabled = uiState.isSaveable && !uiState.isSaving,
                 modifier = Modifier
                     .fillMaxWidth()
                     .windowInsetsPadding(

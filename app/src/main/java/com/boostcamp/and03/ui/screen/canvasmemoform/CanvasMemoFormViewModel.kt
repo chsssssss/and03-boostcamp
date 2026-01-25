@@ -46,10 +46,18 @@ class CanvasMemoFormViewModel @Inject constructor(
             CanvasMemoFormAction.OnBackClick -> _event.trySend(CanvasMemoFormEvent.NavigateBack)
 
             CanvasMemoFormAction.OnSaveClick -> {
-                if (uiState.value.isSaveable) {
-                    viewModelScope.launch {
+                if (_uiState.value.isSaving) return
+
+                viewModelScope.launch {
+                    _uiState.update { it.copy(isSaving = true) }
+
+                    try {
                         saveCanvasMemo()
                         _event.send(CanvasMemoFormEvent.NavigateBack)
+                    } catch (e: Exception) {
+                        // TODO: 오류 메시지 UI 표시 구현
+                    } finally {
+                        _uiState.update { it.copy(isSaving = false) }
                     }
                 }
             }
