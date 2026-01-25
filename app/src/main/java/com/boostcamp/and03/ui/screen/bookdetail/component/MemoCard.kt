@@ -44,8 +44,8 @@ fun MemoCard(
     pageLabel: String,
     date: String,
     onClick: () -> Unit,
-    onClickDelMemo: () -> Unit,
-    onClickEdit: () -> Unit,
+    onDeleteMemoClick: () -> Unit,
+    onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -57,9 +57,7 @@ fun MemoCard(
                 shape = RoundedCornerShape(And03Radius.RADIUS_S)
             )
             .clip(RoundedCornerShape(And03Radius.RADIUS_S))
-            .clickable(
-                onClick = onClick
-            )
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -93,7 +91,7 @@ fun MemoCard(
                         text = { Text(stringResource(R.string.more_vert_edit)) },
                         onClick = {
                             closeMenu()
-                            onClickEdit()
+                            onEditClick()
                         }
                     )
 
@@ -101,7 +99,7 @@ fun MemoCard(
                         text = { Text(stringResource(R.string.more_vert_delete)) },
                         onClick = {
                             closeMenu()
-                            onClickDelMemo()
+                            onDeleteMemoClick()
                         }
                     )
                 }
@@ -222,8 +220,8 @@ fun MemoCardPreview() {
             pageLabel = "p.1~26",
             date = "2025.12.24",
             onClick = {},
-            onClickDelMemo = {},
-            onClickEdit = {}
+            onDeleteMemoClick = {},
+            onEditClick = {}
         )
 
         MemoCard(
@@ -233,8 +231,8 @@ fun MemoCardPreview() {
             pageLabel = "p.1~26",
             date = "2025.12.24",
             onClick = {},
-            onClickDelMemo = {},
-            onClickEdit = {}
+            onDeleteMemoClick = {},
+            onEditClick = {}
         )
     }
 }

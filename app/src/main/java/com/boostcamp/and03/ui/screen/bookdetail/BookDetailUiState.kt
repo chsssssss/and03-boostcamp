@@ -19,14 +19,14 @@ data class BookDetailUiState(
     val author: String = "",
     val publisher: String = "",
     val totalPage: Int = 0,
-    val bookInfoLoadState: LoadState = LoadState.IDLE,
+    val bookInfoLoadState: LoadState = LoadState.LOADING,
 
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
-    val charactersLoadState: LoadState = LoadState.IDLE,
+    val charactersLoadState: LoadState = LoadState.LOADING,
 
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
-    val quotesLoadState: LoadState = LoadState.IDLE,
+    val quotesLoadState: LoadState = LoadState.LOADING,
 
     val memos: ImmutableList<MemoUiModel> = persistentListOf(),
-    val memosLoadState: LoadState = LoadState.IDLE
+    val memosLoadState: LoadState = LoadState.LOADING
 )

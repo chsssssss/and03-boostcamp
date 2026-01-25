@@ -106,7 +106,9 @@ fun BookDetailRoute(
                 )
             }
 
-            is BookDetailEvent.NavigateToCanvas -> { navigateToCanvas(event.memoId) }
+            is BookDetailEvent.NavigateToCanvas -> {
+                navigateToCanvas(event.memoId)
+            }
         }
     }
 
@@ -126,13 +128,8 @@ private fun BookDetailScreen(
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
 
-    LaunchedEffect(
-        pagerState.currentPage,
-        pagerState.isScrollInProgress
-    ) {
-        if (!pagerState.isScrollInProgress) {
-            onAction(BookDetailAction.OnTabSelect(pagerState.currentPage))
-        }
+    LaunchedEffect(pagerState.currentPage) {
+        onAction(BookDetailAction.OnTabSelect(tabs[pagerState.currentPage]))
     }
 
     Scaffold(
@@ -157,160 +154,177 @@ private fun BookDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (uiState.isLoadingBookInfo) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else if (uiState.errorMessage != null) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            when (uiState.bookInfoLoadState) {
+                LoadState.LOADING -> LoadingScreen()
+
+                LoadState.ERROR -> ErrorScreen(onRetryButtonClick = { onAction(BookDetailAction.OnRetryBookInfo) })
+
+                LoadState.IDLE -> {
+                    BookInfoSection(
+                        thumbnail = uiState.thumbnail,
+                        title = uiState.title,
+                        author = uiState.author,
+                        publisher = uiState.publisher,
+                        totalPage = uiState.totalPage
+                    )
+
+                    SecondaryTabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        containerColor = And03Theme.colors.surface,
+                        contentColor = And03Theme.colors.onSurface,
+                        indicator = {
+                            TabRowDefaults.SecondaryIndicator(
+                                modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
+                                color = And03Theme.colors.primary
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = uiState.errorMessage)
-                        Button(onClick = { onAction(BookDetailAction.OnRetryClick) }) {
-                            Text(stringResource(R.string.retry_btn_txt))
+                        tabs.forEachIndexed { index, tab ->
+                            Tab(
+                                selected = pagerState.currentPage == index,
+                                onClick = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                text = { Text(text = tab.title) }
+                            )
+                        }
+                    }
+
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { selectedTabIndex ->
+                        when (tabs[selectedTabIndex]) {
+                            BookDetailTab.CHARACTER -> CharacterTab(
+                                characters = uiState.characters,
+                                loadState = uiState.charactersLoadState,
+                                onClickAdd = {
+                                    onAction(
+                                        BookDetailAction.OnOpenCharacterForm(
+                                            uiState.bookId,
+                                            ""
+                                        )
+                                    )
+                                },
+                                onClickDelete = { characterId ->
+                                    onAction(BookDetailAction.DeleteCharacter(characterId))
+                                },
+                                onClickEdit = { characterId ->
+                                    onAction(
+                                        BookDetailAction.OnOpenCharacterForm(
+                                            uiState.bookId,
+                                            characterId
+                                        )
+                                    )
+                                },
+                                onRetryButtonClick = { onAction(BookDetailAction.OnRetryTab(BookDetailTab.CHARACTER)) }
+                            )
+
+                            BookDetailTab.QUOTE -> QuoteTab(
+                                quotes = uiState.quotes,
+                                loadState = uiState.quotesLoadState,
+                                onAddClick = {
+                                    onAction(
+                                        BookDetailAction.OnOpenQuoteForm(
+                                            uiState.bookId,
+                                            ""
+                                        )
+                                    )
+                                },
+                                onClickDelete = { quoteId ->
+                                    onAction(BookDetailAction.DeleteQuote(quoteId))
+                                },
+                                onClickEdit = { quoteId ->
+                                    onAction(
+                                        BookDetailAction.OnOpenQuoteForm(
+                                            uiState.bookId,
+                                            quoteId
+                                        )
+                                    )
+                                },
+                                onRetryButtonClick = { onAction(BookDetailAction.OnRetryTab(BookDetailTab.QUOTE)) }
+                            )
+
+                            BookDetailTab.MEMO -> MemoTab(
+                                memos = uiState.memos,
+                                loadState = uiState.memosLoadState,
+                                onAddCanvasMemoClick = {
+                                    onAction(
+                                        BookDetailAction.OnOpenCanvasMemoForm(
+                                            uiState.bookId,
+                                            ""
+                                        )
+                                    )
+                                },
+                                onAddTextMemoClick = {
+                                    onAction(
+                                        BookDetailAction.OnOpenTextMemoForm(
+                                            uiState.bookId,
+                                            ""
+                                        )
+                                    )
+                                },
+                                onMemoClick = { memo ->
+                                    if (memo.memoType == MemoType.CANVAS) {
+                                        onAction(BookDetailAction.OnCanvasMemoClick(memo.id))
+                                    }
+                                },
+                                onDeleteMemoClick = { memoId ->
+                                    onAction(BookDetailAction.DeleteMemo(memoId))
+                                },
+                                onEditMemoClick = { memo ->
+                                    when (memo.memoType) {
+                                        MemoType.TEXT -> onAction(
+                                            BookDetailAction.OnOpenTextMemoForm(
+                                                uiState.bookId,
+                                                memo.id
+                                            )
+                                        )
+
+                                        MemoType.CANVAS -> onAction(
+                                            BookDetailAction.OnOpenCanvasMemoForm(
+                                                uiState.bookId,
+                                                memo.id
+                                            )
+                                        )
+                                    }
+                                },
+                                onRetryButtonClick = { onAction(BookDetailAction.OnRetryTab(BookDetailTab.MEMO)) }
+                            )
                         }
                     }
                 }
-            } else {
-                BookInfoSection(
-                    thumbnail = uiState.thumbnail,
-                    title = uiState.title,
-                    author = uiState.author,
-                    publisher = uiState.publisher,
-                    totalPage = uiState.totalPage
-                )
+            }
+        }
+    }
+}
 
-                SecondaryTabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = And03Theme.colors.surface,
-                    contentColor = And03Theme.colors.onSurface,
-                    indicator = {
-                        TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
-                            color = And03Theme.colors.primary
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    tabs.forEachIndexed { index, tab ->
-                        Tab(
-                            selected = pagerState.currentPage == index,
-                            onClick = { scope.launch {
-                                pagerState.animateScrollToPage(index)
-                            } },
-                            text = { Text(text = tab.title) }
-                        )
-                    }
-                }
+@Composable
+private fun LoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
 
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { selectedTabIndex ->
-                    when (tabs[selectedTabIndex]) {
-                        BookDetailTab.CHARACTER -> CharacterTab(
-                            characters = uiState.characters,
-                            isLoading = uiState.isLoadingCharacters,
-                            onClickAdd = {
-                                onAction(
-                                    BookDetailAction.OnOpenCharacterForm(
-                                        uiState.bookId,
-                                        ""
-                                    )
-                                )
-                            },
-                            onClickDelete = { characterId ->
-                                onAction(BookDetailAction.DeleteCharacter(characterId))
-                            },
-                            onClickEdit = { characterId ->
-                                onAction(
-                                    BookDetailAction.OnOpenCharacterForm(
-                                        uiState.bookId,
-                                        characterId
-                                    )
-                                )
-                            }
-                        )
-
-                        BookDetailTab.QUOTE -> QuoteTab(
-                            quotes = uiState.quotes,
-                            isLoading = uiState.isLoadingQuotes,
-                            onClickAdd = {
-                                onAction(
-                                    BookDetailAction.OnOpenQuoteForm(
-                                        uiState.bookId,
-                                        ""
-                                    )
-                                )
-                            },
-                            onClickDelete = { quoteId ->
-                                onAction(BookDetailAction.DeleteQuote(quoteId))
-                            },
-                            onClickEdit = { quoteId ->
-                                onAction(
-                                    BookDetailAction.OnOpenQuoteForm(
-                                        uiState.bookId,
-                                        quoteId
-                                    )
-                                )
-                            }
-                        )
-
-                        BookDetailTab.MEMO -> MemoTab(
-                            memos = uiState.memos,
-                            isLoading = uiState.isLoadingMemos,
-                            onClickAddCanvas = {
-                                onAction(
-                                    BookDetailAction.OnOpenCanvasMemoForm(
-                                        uiState.bookId,
-                                        ""
-                                    )
-                                )
-                            },
-                            onClickAddText = {
-                                onAction(
-                                    BookDetailAction.OnOpenTextMemoForm(
-                                        uiState.bookId,
-                                        ""
-                                    )
-                                )
-                            },
-                            onClickMemo = { memo ->
-                                if (memo.memoType == MemoType.CANVAS) {
-                                    onAction(BookDetailAction.OnCanvasMemoClick(memo.id))
-                                }
-                            },
-                            onClickDelMemo = { memoId ->
-                                onAction(BookDetailAction.DeleteMemo(memoId))
-                            },
-                            onClickEditMemo = { memo ->
-                                when (memo.memoType) {
-                                    MemoType.TEXT -> onAction(
-                                        BookDetailAction.OnOpenTextMemoForm(
-                                            uiState.bookId,
-                                            memo.id
-                                        )
-                                    )
-
-                                    MemoType.CANVAS -> onAction(
-                                        BookDetailAction.OnOpenCanvasMemoForm(
-                                            uiState.bookId,
-                                            memo.id
-                                        )
-                                    )
-                                }
-                            }
-                        )
-                    }
-                }
+@Composable
+private fun ErrorScreen(onRetryButtonClick: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = stringResource(id = R.string.common_error_text))
+            Button(onClick = onRetryButtonClick) {
+                Text(stringResource(R.string.retry_btn_txt))
             }
         }
     }
@@ -373,170 +387,185 @@ private fun BookInfoSection(
 @Composable
 private fun CharacterTab(
     characters: ImmutableList<CharacterUiModel>,
-    isLoading: Boolean,
+    loadState: LoadState,
     onClickAdd: () -> Unit,
     onClickDelete: (String) -> Unit,
-    onClickEdit: (String) -> Unit
+    onClickEdit: (String) -> Unit,
+    onRetryButtonClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
     ) {
-        when {
-            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        when (loadState) {
+            LoadState.LOADING -> LoadingScreen()
 
-            characters.isEmpty() -> EmptyDataScreen()
+            LoadState.ERROR -> ErrorScreen(onRetryButtonClick = onRetryButtonClick)
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-                ) {
-                    items(
-                        items = characters,
-                        key = { it.id }
-                    ) { character ->
-                        CharacterCard(
-                            name = character.name,
-                            role = character.role,
-                            iconColor = character.iconColor,
-                            description = character.description,
-                            onClick = { },
-                            onEditClick = { onClickEdit(character.id) },
-                            onDeleteClick = { onClickDelete(character.id) }
-                        )
+            LoadState.IDLE -> {
+                if (characters.isEmpty()) {
+                    EmptyDataScreen()
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.align(Alignment.TopStart),
+                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                    ) {
+                        items(
+                            items = characters,
+                            key = { it.id }
+                        ) { character ->
+                            CharacterCard(
+                                name = character.name,
+                                role = character.role,
+                                iconColor = character.iconColor,
+                                description = character.description,
+                                onClick = { },
+                                onEditClick = { onClickEdit(character.id) },
+                                onDeleteClick = { onClickDelete(character.id) }
+                            )
+                        }
                     }
                 }
+
+                SquareAddButton(
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    onClick = onClickAdd
+                )
             }
         }
-
-        SquareAddButton(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = onClickAdd
-        )
     }
 }
 
 @Composable
 private fun QuoteTab(
     quotes: ImmutableList<QuoteUiModel>,
-    isLoading: Boolean,
-    onClickAdd: () -> Unit,
+    loadState: LoadState,
+    onAddClick: () -> Unit,
     onClickDelete: (String) -> Unit,
-    onClickEdit: (String) -> Unit
+    onClickEdit: (String) -> Unit,
+    onRetryButtonClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
     ) {
-        when {
-            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        when (loadState) {
+            LoadState.LOADING -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
-            quotes.isEmpty() -> EmptyDataScreen()
+            LoadState.ERROR -> ErrorScreen(onRetryButtonClick = onRetryButtonClick)
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-                ) {
-                    items(quotes, key = { it.id }) { quote ->
-                        QuoteCard(
-                            quote = quote,
-                            onClick = {},
-                            onClickDelete = { onClickDelete(quote.id) },
-                            onClickEdit = { onClickEdit(quote.id) },
-                        )
+            LoadState.IDLE -> {
+                if (quotes.isEmpty()) {
+                    EmptyDataScreen()
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.align(Alignment.TopStart),
+                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                    ) {
+                        items(quotes, key = { it.id }) { quote ->
+                            QuoteCard(
+                                quote = quote,
+                                onClick = {},
+                                onClickDelete = { onClickDelete(quote.id) },
+                                onClickEdit = { onClickEdit(quote.id) },
+                            )
+                        }
                     }
                 }
+
+                SquareAddButton(
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    onClick = onAddClick
+                )
             }
         }
-
-        SquareAddButton(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = onClickAdd
-        )
     }
 }
 
 @Composable
 private fun MemoTab(
     memos: ImmutableList<MemoUiModel>,
-    isLoading: Boolean,
-    onClickAddCanvas: () -> Unit,
-    onClickAddText: () -> Unit,
-    onClickMemo: (MemoUiModel) -> Unit,
-    onClickDelMemo: (String) -> Unit,
-    onClickEditMemo: (MemoUiModel) -> Unit
+    loadState: LoadState,
+    onAddCanvasMemoClick: () -> Unit,
+    onAddTextMemoClick: () -> Unit,
+    onMemoClick: (MemoUiModel) -> Unit,
+    onDeleteMemoClick: (String) -> Unit,
+    onEditMemoClick: (MemoUiModel) -> Unit,
+    onRetryButtonClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(And03Padding.PADDING_L)
     ) {
-        when {
-            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        when (loadState) {
+            LoadState.LOADING -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
-            memos.isEmpty() -> EmptyDataScreen()
+            LoadState.ERROR -> ErrorScreen(onRetryButtonClick = onRetryButtonClick)
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
-                ) {
-                    items(memos, key = { it.id }) { memo ->
-                        val pageLabelText = if (memo.startPage == memo.endPage) {
-                            stringResource(
-                                id = R.string.book_detail_memo_single_page,
-                                memo.startPage
-                            )
-                        } else {
-                            stringResource(
-                                id = R.string.book_detail_memo_page_range,
-                                memo.startPage,
-                                memo.endPage
+            LoadState.IDLE -> {
+                if (memos.isEmpty()) {
+                    EmptyDataScreen()
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.align(Alignment.TopStart),
+                        verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M)
+                    ) {
+                        items(memos, key = { it.id }) { memo ->
+                            val pageLabelText = if (memo.startPage == memo.endPage) {
+                                stringResource(
+                                    id = R.string.book_detail_memo_single_page,
+                                    memo.startPage
+                                )
+                            } else {
+                                stringResource(
+                                    id = R.string.book_detail_memo_page_range,
+                                    memo.startPage,
+                                    memo.endPage
+                                )
+                            }
+
+                            MemoCard(
+                                type = memo.memoType,
+                                title = memo.title,
+                                contentPreview = memo.content ?: "",
+                                pageLabel = pageLabelText,
+                                date = memo.date,
+                                onClick = { onMemoClick(memo) },
+                                onDeleteMemoClick = { onDeleteMemoClick(memo.id) },
+                                onEditClick = { onEditMemoClick(memo) },
                             )
                         }
-
-                        MemoCard(
-                            type = memo.memoType,
-                            title = memo.title,
-                            contentPreview = memo.content ?: "",
-                            pageLabel = pageLabelText,
-                            date = memo.date,
-                            onClick = { onClickMemo(memo) },
-                            onClickDelMemo = { onClickDelMemo(memo.id) },
-                            onClickEdit = { onClickEditMemo(memo) },
-                        )
                     }
                 }
+
+                DropdownMenuContainer(
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    trigger = { onClick ->
+                        SquareAddButton(onClick = onClick)
+                    },
+                    menuContent = { closeMenu ->
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.book_detail_add_canvas_memo)) },
+                            onClick = {
+                                closeMenu()
+                                onAddCanvasMemoClick()
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.book_detail_add_text_memo)) },
+                            onClick = {
+                                closeMenu()
+                                onAddTextMemoClick()
+                            }
+                        )
+                    }
+                )
             }
         }
-
-        DropdownMenuContainer(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            trigger = { onClick ->
-                SquareAddButton(onClick = onClick)
-            },
-            menuContent = { closeMenu ->
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.book_detail_add_canvas_memo)) },
-                    onClick = {
-                        closeMenu()
-                        onClickAddCanvas()
-                    }
-                )
-
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.book_detail_add_text_memo)) },
-                    onClick = {
-                        closeMenu()
-                        onClickAddText()
-                    }
-                )
-            }
-        )
     }
 }
 

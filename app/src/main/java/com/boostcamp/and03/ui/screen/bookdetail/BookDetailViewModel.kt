@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
-import com.boostcamp.and03.data.util.PerformanceLogger
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
@@ -41,23 +40,48 @@ class BookDetailViewModel @Inject constructor(
         when (action) {
             BookDetailAction.OnBackClick -> _event.trySend(BookDetailEvent.NavigateBack)
 
-            BookDetailAction.OnRetryClick -> loadAllData()
+            BookDetailAction.OnRetryBookInfo -> if (_uiState.value.bookInfoLoadState == LoadState.ERROR) {
+                viewModelScope.launch { loadBookInfo() }
+            }
 
-            is BookDetailAction.OnTabSelect -> {
-                when(BookDetailTab.entries[action.index]) {
-                    BookDetailTab.CHARACTER -> if (_uiState.value.characters.isEmpty()) {
+            is BookDetailAction.OnRetryTab -> {
+                when (action.tab) {
+                    BookDetailTab.CHARACTER -> if (_uiState.value.charactersLoadState == LoadState.ERROR) {
                         viewModelScope.launch { loadCharacters() }
                     }
 
-                    BookDetailTab.QUOTE -> if (_uiState.value.quotes.isEmpty()) {
+                    BookDetailTab.QUOTE -> if (_uiState.value.quotesLoadState == LoadState.ERROR) {
                         viewModelScope.launch { loadQuotes() }
                     }
 
-                    BookDetailTab.MEMO -> if (_uiState.value.memos.isEmpty()) {
+                    BookDetailTab.MEMO -> if (_uiState.value.memosLoadState == LoadState.ERROR) {
                         viewModelScope.launch { loadMemos() }
                     }
                 }
             }
+
+            is BookDetailAction.OnTabSelect -> {
+                when (action.tab) {
+                    BookDetailTab.CHARACTER -> {
+                        if (_uiState.value.charactersLoadState == LoadState.LOADING) {
+                            viewModelScope.launch { loadCharacters() }
+                        }
+                    }
+
+                    BookDetailTab.QUOTE -> {
+                        if (_uiState.value.quotesLoadState == LoadState.LOADING) {
+                            viewModelScope.launch { loadQuotes() }
+                        }
+                    }
+
+                    BookDetailTab.MEMO -> {
+                        if (_uiState.value.memosLoadState == LoadState.LOADING) {
+                            viewModelScope.launch { loadMemos() }
+                        }
+                    }
+                }
+            }
+
 
             is BookDetailAction.OnOpenCharacterForm -> _event.trySend(
                 BookDetailEvent.NavigateToCharacterForm(
@@ -93,96 +117,23 @@ class BookDetailViewModel @Inject constructor(
                 )
             )
 
-            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(BookDetailEvent.NavigateToCanvas(action.memoId))
+            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(
+                BookDetailEvent.NavigateToCanvas(
+                    action.memoId
+                )
+            )
         }
     }
 
     init {
         viewModelScope.launch {
             loadBookInfo()
-            loadCharacters()
-        }
-    }
-
-    fun loadAllData() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoadingBookInfo = true,
-                    errorMessage = null
-                )
-            }
-
-            try {
-                loadCharacters()
-                loadQuotes()
-                loadMemos()
-                loadBookInfo()
-                _uiState.update { it.copy(isLoadingBookInfo = false) }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(isLoadingBookInfo = false, errorMessage = "데이터를 불러오는데 실패했습니다.")
-                }
-                Log.d("BookDetailViewModel", "loadAllData: ${e.message}")
-            }
-        }
-    }
-
-    private suspend fun loadCharacters() {
-        _uiState.update { it.copy(isLoadingCharacters = true) }
-
-        try {
-            PerformanceLogger.measureLoadingTime("loadBookInfo") {
-                bookRepository.getBookDetail(userId, bookId)?.let { result ->
-                    _uiState.update {
-                        it.copy(
-                            thumbnail = result.thumbnail,
-                            title = result.title,
-                            author = result.author.joinToString(", "),
-                            publisher = result.publisher,
-                            totalPage = result.totalPage
-                        )
-                    }
-                }
-            }
-        } finally {
-            _uiState.update { it.copy(isLoadingBookInfo = false) }
-        }
-    }
-
-    private suspend fun loadQuotes() {
-        _uiState.update { it.copy(isLoadingQuotes = true) }
-        PerformanceLogger.measureLoadingTime("loadQuotes") {
-            val result = bookRepository.getQuotes(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    quotes = result
-                        .map { quote -> quote.toUiModel() }
-                        .toPersistentList(),
-                    isLoadingQuotes = false
-                )
-            }
-        }
-    }
-
-    private suspend fun loadMemos() {
-        _uiState.update { it.copy(isLoadingMemos = true) }
-        PerformanceLogger.measureLoadingTime("loadMemos") {
-            val result = bookRepository.getMemos(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    memos = result
-                        .map { memo -> memo.toUiModel() }
-                        .toPersistentList(),
-                    isLoadingMemos = false
-                )
-            }
+            loadCharacters() // 화면 진입 시 등장인물 탭이 등장
         }
     }
 
     private suspend fun loadBookInfo() {
-        _uiState.update { it.copy(isLoadingBookInfo = true) }
-        PerformanceLogger.measureLoadingTime("loadBookInfo") {
+        try {
             val result = bookRepository.getBookDetail(userId, bookId)
             if (result != null) {
                 _uiState.update {
@@ -192,10 +143,64 @@ class BookDetailViewModel @Inject constructor(
                         author = result.author.joinToString(", "),
                         publisher = result.publisher,
                         totalPage = result.totalPage,
-                        isLoadingBookInfo = false
+                        bookInfoLoadState = LoadState.IDLE
                     )
                 }
             }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(bookInfoLoadState = LoadState.ERROR) }
+            Log.d("BookDetailViewModel", "loadBookInfo: ${e.message}")
+        }
+    }
+
+    private suspend fun loadCharacters() {
+        try {
+            val result = bookRepository.getCharacters(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    characters = result
+                        .map { character -> character.toUiModel() }
+                        .toPersistentList(),
+                    charactersLoadState = LoadState.IDLE
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(charactersLoadState = LoadState.ERROR) }
+            Log.d("BookDetailViewModel", "loadCharacters: ${e.message}")
+        }
+    }
+
+    private suspend fun loadQuotes() {
+        try {
+            val result = bookRepository.getQuotes(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    quotes = result
+                        .map { quote -> quote.toUiModel() }
+                        .toPersistentList(),
+                    quotesLoadState = LoadState.IDLE
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(quotesLoadState = LoadState.ERROR) }
+            Log.d("BookDetailViewModel", "loadQuotes: ${e.message}")
+        }
+    }
+
+    private suspend fun loadMemos() {
+        try {
+            val result = bookRepository.getMemos(userId, bookId)
+            _uiState.update {
+                it.copy(
+                    memos = result
+                        .map { memo -> memo.toUiModel() }
+                        .toPersistentList(),
+                    memosLoadState = LoadState.IDLE
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(memosLoadState = LoadState.ERROR) }
+            Log.d("BookDetailViewModel", "loadMemos: ${e.message}")
         }
     }
 
