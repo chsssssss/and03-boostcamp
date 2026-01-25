@@ -4,9 +4,9 @@ sealed interface BookDetailAction {
 
     data object OnBackClick: BookDetailAction
 
-    data object OnRetryClick: BookDetailAction
+    data class OnRetryClick(val tabIndex: Int): BookDetailAction
 
-    data class OnTabSelect(val index: Int): BookDetailAction
+    data class OnTabSelect(val tabIndex: Int): BookDetailAction
 
     data class OnOpenCharacterForm(
         val bookId: String,

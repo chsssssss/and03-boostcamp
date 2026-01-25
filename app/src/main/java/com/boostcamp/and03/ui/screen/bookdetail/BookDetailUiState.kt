@@ -6,6 +6,12 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+enum class LoadState {
+    IDLE,
+    LOADING,
+    ERROR
+}
+
 data class BookDetailUiState(
     val bookId: String = "",
     val thumbnail: String = "",
@@ -13,12 +19,14 @@ data class BookDetailUiState(
     val author: String = "",
     val publisher: String = "",
     val totalPage: Int = 0,
+    val bookInfoLoadState: LoadState = LoadState.IDLE,
+
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
+    val charactersLoadState: LoadState = LoadState.IDLE,
+
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
+    val quotesLoadState: LoadState = LoadState.IDLE,
+
     val memos: ImmutableList<MemoUiModel> = persistentListOf(),
-    val errorMessage: String? = null,
-    val isLoadingBookInfo: Boolean = false,
-    val isLoadingCharacters: Boolean = false,
-    val isLoadingQuotes: Boolean = false,
-    val isLoadingMemos: Boolean = false,
+    val memosLoadState: LoadState = LoadState.IDLE
 )
