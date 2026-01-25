@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -24,6 +26,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -119,6 +122,23 @@ private fun BookDetailScreen(
     val selectedTabIndex = uiState.selectedTabIndex
     val tabs = BookDetailTab.entries
 
+    val pagerState = rememberPagerState(
+        initialPage = selectedTabIndex,
+        pageCount = { tabs.size }
+    )
+
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage != selectedTabIndex) {
+            onAction(BookDetailAction.OnTabSelect(pagerState.currentPage))
+        }
+    }
+
+    LaunchedEffect(selectedTabIndex) {
+        if (pagerState.currentPage != selectedTabIndex) {
+            pagerState.animateScrollToPage(selectedTabIndex)
+        }
+    }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -193,100 +213,105 @@ private fun BookDetailScreen(
                     }
                 }
 
-                when (tabs[selectedTabIndex]) {
-                    BookDetailTab.CHARACTER -> CharacterTab(
-                        characters = uiState.characters,
-                        isLoading = uiState.isLoadingCharacters,
-                        onClickAdd = {
-                            onAction(
-                                BookDetailAction.OnOpenCharacterForm(
-                                    uiState.bookId,
-                                    ""
-                                )
-                            )
-                        },
-                        onClickDelete = { characterId ->
-                            onAction(BookDetailAction.DeleteCharacter(characterId))
-                        },
-                        onClickEdit = { characterId ->
-                            onAction(
-                                BookDetailAction.OnOpenCharacterForm(
-                                    uiState.bookId,
-                                    characterId
-                                )
-                            )
-                        }
-                    )
-
-                    BookDetailTab.QUOTE -> QuoteTab(
-                        quotes = uiState.quotes,
-                        isLoading = uiState.isLoadingQuotes,
-                        onClickAdd = {
-                            onAction(
-                                BookDetailAction.OnOpenQuoteForm(
-                                    uiState.bookId,
-                                    ""
-                                )
-                            )
-                        },
-                        onClickDelete = { quoteId ->
-                            onAction(BookDetailAction.DeleteQuote(quoteId))
-                        },
-                        onClickEdit = { quoteId ->
-                            onAction(
-                                BookDetailAction.OnOpenQuoteForm(
-                                    uiState.bookId,
-                                    quoteId
-                                )
-                            )
-                        }
-                    )
-
-                    BookDetailTab.MEMO -> MemoTab(
-                        memos = uiState.memos,
-                        isLoading = uiState.isLoadingMemos,
-                        onClickAddCanvas = {
-                            onAction(
-                                BookDetailAction.OnOpenCanvasMemoForm(
-                                    uiState.bookId,
-                                    ""
-                                )
-                            )
-                        },
-                        onClickAddText = {
-                            onAction(
-                                BookDetailAction.OnOpenTextMemoForm(
-                                    uiState.bookId,
-                                    ""
-                                )
-                            )
-                        },
-                        onClickMemo = { memo ->
-                            if (memo.memoType == MemoType.CANVAS) {
-                                onAction(BookDetailAction.OnCanvasMemoClick(memo.id))
-                            }
-                        },
-                        onClickDelMemo = { memoId ->
-                            onAction(BookDetailAction.DeleteMemo(memoId))
-                        },
-                        onClickEditMemo = { memo -> // TODO: memoId를 포함하여 수정 화면으로 이동
-                            when (memo.memoType) {
-                                MemoType.TEXT -> onAction(
-                                    BookDetailAction.OnOpenTextMemoForm(
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { selectedTabIndex ->
+                    when (tabs[selectedTabIndex]) {
+                        BookDetailTab.CHARACTER -> CharacterTab(
+                            characters = uiState.characters,
+                            isLoading = uiState.isLoadingCharacters,
+                            onClickAdd = {
+                                onAction(
+                                    BookDetailAction.OnOpenCharacterForm(
                                         uiState.bookId,
-                                        memo.id
+                                        ""
                                     )
                                 )
+                            },
+                            onClickDelete = { characterId ->
+                                onAction(BookDetailAction.DeleteCharacter(characterId))
+                            },
+                            onClickEdit = { characterId ->
+                                onAction(
+                                    BookDetailAction.OnOpenCharacterForm(
+                                        uiState.bookId,
+                                        characterId
+                                    )
+                                )
+                            }
+                        )
 
-                                MemoType.CANVAS -> onAction(
+                        BookDetailTab.QUOTE -> QuoteTab(
+                            quotes = uiState.quotes,
+                            isLoading = uiState.isLoadingQuotes,
+                            onClickAdd = {
+                                onAction(
+                                    BookDetailAction.OnOpenQuoteForm(
+                                        uiState.bookId,
+                                        ""
+                                    )
+                                )
+                            },
+                            onClickDelete = { quoteId ->
+                                onAction(BookDetailAction.DeleteQuote(quoteId))
+                            },
+                            onClickEdit = { quoteId ->
+                                onAction(
+                                    BookDetailAction.OnOpenQuoteForm(
+                                        uiState.bookId,
+                                        quoteId
+                                    )
+                                )
+                            }
+                        )
+
+                        BookDetailTab.MEMO -> MemoTab(
+                            memos = uiState.memos,
+                            isLoading = uiState.isLoadingMemos,
+                            onClickAddCanvas = {
+                                onAction(
                                     BookDetailAction.OnOpenCanvasMemoForm(
                                         uiState.bookId,
-                                        memo.id
+                                        ""
                                     )
                                 )
+                            },
+                            onClickAddText = {
+                                onAction(
+                                    BookDetailAction.OnOpenTextMemoForm(
+                                        uiState.bookId,
+                                        ""
+                                    )
+                                )
+                            },
+                            onClickMemo = { memo ->
+                                if (memo.memoType == MemoType.CANVAS) {
+                                    onAction(BookDetailAction.OnCanvasMemoClick(memo.id))
+                                }
+                            },
+                            onClickDelMemo = { memoId ->
+                                onAction(BookDetailAction.DeleteMemo(memoId))
+                            },
+                            onClickEditMemo = { memo ->
+                                when (memo.memoType) {
+                                    MemoType.TEXT -> onAction(
+                                        BookDetailAction.OnOpenTextMemoForm(
+                                            uiState.bookId,
+                                            memo.id
+                                        )
+                                    )
+
+                                    MemoType.CANVAS -> onAction(
+                                        BookDetailAction.OnOpenCanvasMemoForm(
+                                            uiState.bookId,
+                                            memo.id
+                                        )
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
