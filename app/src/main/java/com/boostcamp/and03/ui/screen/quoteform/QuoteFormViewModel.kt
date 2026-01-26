@@ -25,6 +25,7 @@ class QuoteFormViewModel @Inject constructor(
     private val quoteFormRoute = savedStateHandle.toRoute<Route.QuoteForm>()
     private val bookId = quoteFormRoute.bookId
     private val quoteId = quoteFormRoute.quoteId
+    private val totalPage = quoteFormRoute.totalPage
 
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
@@ -64,21 +65,8 @@ class QuoteFormViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch {
-            loadTotalPage()
-            loadQuote()
-        }
-    }
-
-    private suspend fun loadTotalPage() {
-        val result = bookStorageRepository.getBookDetail(
-            userId = userId,
-            bookId = bookId
-        )
-
-        if (result != null) {
-            _uiState.update { it.copy(totalPage = result.totalPage) }
-        }
+        _uiState.update { it.copy(totalPage = totalPage) }
+        viewModelScope.launch { loadQuote() }
     }
 
     private suspend fun loadQuote() {

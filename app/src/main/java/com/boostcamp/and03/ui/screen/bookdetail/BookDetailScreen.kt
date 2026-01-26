@@ -66,9 +66,9 @@ import kotlinx.coroutines.launch
 fun BookDetailRoute(
     navigateBack: () -> Unit,
     navigateToCharacterForm: (bookId: String, characterId: String) -> Unit,
-    navigateToQuoteForm: (bookId: String, quoteId: String) -> Unit,
-    navigateToTextMemoForm: (bookId: String, memoId: String) -> Unit,
-    navigateToCanvasMemoForm: (bookId: String, memoId: String) -> Unit,
+    navigateToQuoteForm: (bookId: String, quoteId: String, totalPage: Int) -> Unit,
+    navigateToTextMemoForm: (bookId: String, memoId: String, totalPage: Int) -> Unit,
+    navigateToCanvasMemoForm: (bookId: String, memoId: String, totalPage: Int) -> Unit,
     navigateToCanvas: (memoId: String) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
@@ -88,21 +88,24 @@ fun BookDetailRoute(
             is BookDetailEvent.NavigateToQuoteForm -> {
                 navigateToQuoteForm(
                     event.bookId,
-                    event.quoteId
+                    event.quoteId,
+                    event.totalPage
                 )
             }
 
             is BookDetailEvent.NavigateToTextMemoForm -> {
                 navigateToTextMemoForm(
                     event.bookId,
-                    event.memoId
+                    event.memoId,
+                    event.totalPage
                 )
             }
 
             is BookDetailEvent.NavigateToCanvasMemoForm -> {
                 navigateToCanvasMemoForm(
                     event.bookId,
-                    event.memoId
+                    event.memoId,
+                    event.totalPage
                 )
             }
 
