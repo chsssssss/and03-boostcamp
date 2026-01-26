@@ -71,7 +71,19 @@ class QuoteFormViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            loadTotalPage()
             loadQuote()
+        }
+    }
+
+    private suspend fun loadTotalPage() {
+        val result = bookStorageRepository.getBookDetail(
+            userId = userId,
+            bookId = bookId
+        )
+
+        if (result != null) {
+            _uiState.update { it.copy(totalPage = result.totalPage) }
         }
     }
 

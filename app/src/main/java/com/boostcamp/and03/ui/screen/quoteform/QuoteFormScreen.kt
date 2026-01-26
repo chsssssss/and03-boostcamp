@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -71,7 +70,7 @@ fun QuoteFormRoute(
 
 @Composable
 private fun QuoteFormScreen(
-    uiState: QuoteFormUiState = QuoteFormUiState(),
+    uiState: QuoteFormUiState,
     onAction: (QuoteFormAction) -> Unit,
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
@@ -135,7 +134,8 @@ private fun QuoteFormScreen(
 
             PageInputSection(
                 page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) }
+                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it.filter { char -> char.isDigit() })) },
+                totalPage = uiState.totalPage
             )
         }
     }
@@ -196,6 +196,7 @@ private fun QuoteInputSection(
 private fun PageInputSection(
     page: String,
     onPageChange: (String) -> Unit,
+    totalPage: Int,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -211,7 +212,14 @@ private fun PageInputSection(
             value = page,
             onValueChange = onPageChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(id = R.string.add_quote_page_hint)) },
+            placeholder = {
+                Text(
+                    stringResource(
+                        id = R.string.add_quote_page_hint,
+                        totalPage,
+                    )
+                )
+            },
             shape = And03Theme.shapes.defaultCorner,
             singleLine = true,
             keyboardOptions = KeyboardOptions(

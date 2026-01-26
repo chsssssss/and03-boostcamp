@@ -120,7 +120,7 @@
     <string name="add_quote_text_count">%1$d/%2$d</string>
 
     <string name="add_quote_page_label">페이지 *</string>
-    <string name="add_quote_page_hint">구절이 기록된 페이지를 입력하세요</string>
+    <string name="add_quote_page_hint">구절이 기록된 페이지를 입력하세요(총 %1$dp)</string>
 
     <!-- Add Quote - Bottom Sheet -->
     <string name="add_quote_bottom_sheet_title">인상깊은 구절 추가</string>
