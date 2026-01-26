@@ -47,7 +47,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
-import com.boostcamp.and03.ui.component.NodeItem
+import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
