@@ -117,7 +117,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getQuotes(
         userId: String,
         bookId: String
-    ): List<QuoteResponse> {
+    ): Flow<List<QuoteResponse>> {
         return quoteDataSource.getQuotes(
             userId,
             bookId

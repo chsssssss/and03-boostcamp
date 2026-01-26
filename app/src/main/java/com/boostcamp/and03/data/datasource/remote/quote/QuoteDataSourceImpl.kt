@@ -2,44 +2,51 @@ package com.boostcamp.and03.data.datasource.remote.quote
 
 import android.util.Log
 import com.boostcamp.and03.data.model.request.QuoteRequest
+import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.QuoteResponse
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class QuoteDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ): QuoteDataSource {
+
     override suspend fun getQuotes(
         userId: String,
         bookId: String
-    ): List<QuoteResponse> {
-        return try {
-            val snapshot = db
-                .collection("user")
-                .document(userId)
-                .collection("book")
-                .document(bookId)
-                .collection("quote")
-                .get()
-                .await()
+    ): Flow<List<QuoteResponse>> = callbackFlow {
+        val registration = db.collection("user")
+            .document(userId)
+            .collection("book")
+            .document(bookId)
+            .collection("quote")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
 
-            snapshot.documents.mapNotNull { document ->
-                document.data?.let { data ->
-                    Log.d("QuoteDataSourceImpl", "data: $data")
-                    QuoteResponse(
-                        id = document.id,
-                        content = data["content"] as? String ?: "",
-                        page = (data["page"] as? Long)?.toInt() ?: 0,
-                        createdAt = data["createdAt"] as? String ?: "",
-                    )
+                if (snapshot != null) {
+                    val quotes = snapshot.documents.mapNotNull { document ->
+                        document.data?.let { data ->
+                            Log.d("QuoteDataSourceImpl", "data: $data")
+                            QuoteResponse(
+                                id = document.id,
+                                content = data["content"] as? String ?: "",
+                                page = (data["page"] as? Long)?.toInt() ?: 0,
+                                createdAt = data["createdAt"] as? String ?: "",
+                            )
+                        }
+                    }
+                    trySend(quotes)
                 }
             }
-        } catch (e: Exception) {
-            Log.e("QuoteDataSourceImpl", "Failed to get quotes: ${e.message}")
-            throw e
-        }
+        awaitClose { registration.remove() }
     }
 
     override suspend fun getQuote(

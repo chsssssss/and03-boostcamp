@@ -125,7 +125,11 @@ class BookDetailViewModel @Inject constructor(
                 )
             )
 
-            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(BookDetailEvent.NavigateToCanvas(action.memoId))
+            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(
+                BookDetailEvent.NavigateToCanvas(
+                    action.memoId
+                )
+            )
         }
     }
 
@@ -185,19 +189,23 @@ class BookDetailViewModel @Inject constructor(
     }
 
     private suspend fun loadQuotes() {
-        try {
-            val result = bookRepository.getQuotes(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    quotes = result
-                        .map { quote -> quote.toUiModel() }
-                        .toPersistentList(),
-                    quotesLoadState = LoadState.DONE
-                )
+        viewModelScope.launch {
+            try {
+                bookRepository.getQuotes(userId, bookId).collect { result ->
+                    Log.d("BookDetailViewModel", "observeQuotes: $result")
+                    _uiState.update {
+                        it.copy(
+                            quotes = result
+                                .map { quote -> quote.toUiModel() }
+                                .toPersistentList(),
+                            quotesLoadState = LoadState.DONE
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(quotesLoadState = LoadState.ERROR) }
+                Log.e("BookDetailViewModel", "observeQuotes error: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(quotesLoadState = LoadState.ERROR) }
-            Log.d("BookDetailViewModel", "loadQuotes: ${e.message}")
         }
     }
 

@@ -64,7 +64,7 @@ interface BookStorageRepository {
     suspend fun getQuotes(
         userId: String,
         bookId: String
-    ): List<QuoteResponse>
+    ): Flow<List<QuoteResponse>>
 
     suspend fun getQuote(
         userId: String,
