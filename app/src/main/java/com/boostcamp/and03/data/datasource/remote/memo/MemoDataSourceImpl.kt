@@ -19,7 +19,7 @@ import kotlinx.coroutines.tasks.await
 class MemoDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : MemoDataSource {
-    override suspend fun getMemos(
+    override fun getMemos(
         userId: String,
         bookId: String
     ): Flow<List<MemoResponse>> = callbackFlow {

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MemoDataSource {
 
-    suspend fun getMemos(
+    fun getMemos(
         userId: String,
         bookId: String
     ): Flow<List<MemoResponse>>
