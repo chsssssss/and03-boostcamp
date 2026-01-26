@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.repository.book_storage
+package com.boostcamp.and03.data.repository.bookstorage
 
 import com.boostcamp.and03.data.datasource.remote.bookstorage.BookStorageDataSource
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource

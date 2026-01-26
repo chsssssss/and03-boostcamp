@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.repository.booksearch.BookSearchRepository
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SaveFailureReason
 import com.boostcamp.and03.ui.screen.booksearch.model.toUiModel

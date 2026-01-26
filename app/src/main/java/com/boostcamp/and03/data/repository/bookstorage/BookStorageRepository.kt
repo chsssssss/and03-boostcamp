@@ -1,10 +1,6 @@
-package com.boostcamp.and03.data.repository.book_storage
+package com.boostcamp.and03.data.repository.bookstorage
 
 import com.boostcamp.and03.data.model.request.BookStorageRequest
-import com.boostcamp.and03.data.model.request.CanvasMemoRequest
-import com.boostcamp.and03.data.model.request.CharacterRequest
-import com.boostcamp.and03.data.model.request.QuoteRequest
-import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
