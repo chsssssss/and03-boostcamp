@@ -58,13 +58,7 @@ class QuoteFormViewModel @Inject constructor(
             is QuoteFormAction.OnQuoteChange -> _uiState.update { it.copy(quote = action.quote) }
 
             is QuoteFormAction.OnPageChange -> {
-                _uiState.update {
-                    it.copy(
-                        page = action.page.filter {
-                            char -> char.isDigit()
-                        }
-                    )
-                }
+                _uiState.update { it.copy(page = action.page.filter { char -> char.isDigit() }) }
             }
         }
     }

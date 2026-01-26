@@ -39,6 +39,7 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.OCRBottomSheet
+import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -134,7 +135,7 @@ private fun QuoteFormScreen(
 
             PageInputSection(
                 page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it.filter { char -> char.isDigit() })) },
+                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
                 totalPage = uiState.totalPage
             )
         }
