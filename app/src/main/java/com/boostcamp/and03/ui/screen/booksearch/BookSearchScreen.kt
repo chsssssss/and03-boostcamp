@@ -64,8 +64,6 @@ fun BookSearchRoute(
             BookSearchEvent.NavigateBack -> onBackClick()
 
             BookSearchEvent.NavigateToManualAdd -> { /* TODO: 책 정보 입력 화면 구현 */ }
-
-            is BookSearchEvent.SaveFailure -> { /* TODO: 저장 실패 시 동작 구현 */ }
         }
     }
 

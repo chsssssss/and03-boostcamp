@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.booksearch
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -126,7 +127,7 @@ class BookSearchViewModel @Inject constructor(
 
                 _event.trySend(BookSearchEvent.NavigateBack)
             } catch (e: Exception) {
-                _event.trySend(BookSearchEvent.SaveFailure(SaveFailureReason.Unknown))
+                Log.e("SAVE_BOOK", "fail", e)
             } finally {
                 _uiState.update {
                     it.copy(
