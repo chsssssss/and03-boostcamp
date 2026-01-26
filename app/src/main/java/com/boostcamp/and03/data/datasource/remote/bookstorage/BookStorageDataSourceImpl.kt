@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.datasource.remote.book_storage
+package com.boostcamp.and03.data.datasource.remote.bookstorage
 
 import android.util.Log
 import com.boostcamp.and03.data.model.request.BookStorageRequest
