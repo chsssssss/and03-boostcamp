@@ -75,7 +75,6 @@ fun MainNavHost(
             },
             navigateToCanvas = { memoId ->
                 navigator.navigateToCanvas(memoId)
-//                navigator.navigateToCanvasMemo()
             },
         )
 
