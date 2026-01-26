@@ -46,42 +46,50 @@ class BookDetailViewModel @Inject constructor(
 
             is BookDetailAction.OnRetryTab -> {
                 when (action.tab) {
-                    BookDetailTab.CHARACTER -> if (_uiState.value.charactersLoadState == LoadState.ERROR) {
-                        viewModelScope.launch { loadCharacters() }
-                    }
+                    BookDetailTab.CHARACTER ->
+                        if (_uiState.value.charactersLoadState == LoadState.ERROR) {
+                            _uiState.update { it.copy(charactersLoadState = LoadState.LOADING) }
+                            viewModelScope.launch { loadCharacters() }
+                        }
 
-                    BookDetailTab.QUOTE -> if (_uiState.value.quotesLoadState == LoadState.ERROR) {
-                        viewModelScope.launch { loadQuotes() }
-                    }
+                    BookDetailTab.QUOTE ->
+                        if (_uiState.value.quotesLoadState == LoadState.ERROR) {
+                            _uiState.update { it.copy(quotesLoadState = LoadState.LOADING) }
+                            viewModelScope.launch { loadQuotes() }
+                        }
 
-                    BookDetailTab.MEMO -> if (_uiState.value.memosLoadState == LoadState.ERROR) {
-                        viewModelScope.launch { loadMemos() }
-                    }
+                    BookDetailTab.MEMO ->
+                        if (_uiState.value.memosLoadState == LoadState.ERROR) {
+                            _uiState.update { it.copy(memosLoadState = LoadState.LOADING) }
+                            viewModelScope.launch { loadMemos() }
+                        }
                 }
             }
 
             is BookDetailAction.OnTabSelect -> {
                 when (action.tab) {
                     BookDetailTab.CHARACTER -> {
-                        if (_uiState.value.charactersLoadState == LoadState.LOADING) {
+                        if (_uiState.value.charactersLoadState == LoadState.INIT) {
+                            _uiState.update { it.copy(charactersLoadState = LoadState.LOADING) }
                             viewModelScope.launch { loadCharacters() }
                         }
                     }
 
                     BookDetailTab.QUOTE -> {
-                        if (_uiState.value.quotesLoadState == LoadState.LOADING) {
+                        if (_uiState.value.quotesLoadState == LoadState.INIT) {
+                            _uiState.update { it.copy(quotesLoadState = LoadState.LOADING) }
                             viewModelScope.launch { loadQuotes() }
                         }
                     }
 
                     BookDetailTab.MEMO -> {
-                        if (_uiState.value.memosLoadState == LoadState.LOADING) {
+                        if (_uiState.value.memosLoadState == LoadState.INIT) {
+                            _uiState.update { it.copy(memosLoadState = LoadState.LOADING) }
                             viewModelScope.launch { loadMemos() }
                         }
                     }
                 }
             }
-
 
             is BookDetailAction.OnOpenCharacterForm -> _event.trySend(
                 BookDetailEvent.NavigateToCharacterForm(
@@ -122,6 +130,13 @@ class BookDetailViewModel @Inject constructor(
     }
 
     init {
+        _uiState.update {
+            it.copy(
+                bookInfoLoadState = LoadState.LOADING,
+                charactersLoadState = LoadState.LOADING
+            )
+        }
+
         viewModelScope.launch {
             loadBookInfo()
             loadCharacters() // 화면 진입 시 등장인물 탭이 등장
@@ -130,8 +145,7 @@ class BookDetailViewModel @Inject constructor(
 
     private suspend fun loadBookInfo() {
         try {
-            val result = bookRepository.getBookDetail(userId, bookId)
-            if (result != null) {
+            bookRepository.getBookDetail(userId, bookId)?.let { result ->
                 _uiState.update {
                     it.copy(
                         thumbnail = result.thumbnail,
@@ -139,7 +153,7 @@ class BookDetailViewModel @Inject constructor(
                         author = result.author.joinToString(", "),
                         publisher = result.publisher,
                         totalPage = result.totalPage,
-                        bookInfoLoadState = LoadState.IDLE
+                        bookInfoLoadState = LoadState.DONE
                     )
                 }
             }
@@ -157,7 +171,7 @@ class BookDetailViewModel @Inject constructor(
                     characters = result
                         .map { character -> character.toUiModel() }
                         .toPersistentList(),
-                    charactersLoadState = LoadState.IDLE
+                    charactersLoadState = LoadState.DONE
                 )
             }
         } catch (e: Exception) {
@@ -174,7 +188,7 @@ class BookDetailViewModel @Inject constructor(
                     quotes = result
                         .map { quote -> quote.toUiModel() }
                         .toPersistentList(),
-                    quotesLoadState = LoadState.IDLE
+                    quotesLoadState = LoadState.DONE
                 )
             }
         } catch (e: Exception) {
@@ -191,7 +205,7 @@ class BookDetailViewModel @Inject constructor(
                     memos = result
                         .map { memo -> memo.toUiModel() }
                         .toPersistentList(),
-                    memosLoadState = LoadState.IDLE
+                    memosLoadState = LoadState.DONE
                 )
             }
         } catch (e: Exception) {
