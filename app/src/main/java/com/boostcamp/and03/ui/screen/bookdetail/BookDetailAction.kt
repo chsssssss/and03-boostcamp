@@ -1,12 +1,16 @@
 package com.boostcamp.and03.ui.screen.bookdetail
 
+import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
+
 sealed interface BookDetailAction {
 
     data object OnBackClick: BookDetailAction
 
-    data object OnRetryClick: BookDetailAction
+    data object OnRetryBookInfo : BookDetailAction
 
-    data class OnTabSelect(val index: Int): BookDetailAction
+    data class OnRetryTab(val tab: BookDetailTab): BookDetailAction
+
+    data class OnTabSelect(val tab: BookDetailTab): BookDetailAction
 
     data class OnOpenCharacterForm(
         val bookId: String,

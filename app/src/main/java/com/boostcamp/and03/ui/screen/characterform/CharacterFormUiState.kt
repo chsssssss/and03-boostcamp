@@ -8,6 +8,7 @@ data class CharacterFormUiState(
     val description: String = "",
     val imageUrl: String = "",
     val iconColor: Color = Color(0xFF1E88E5),
+    val isSaving: Boolean = false
 ) {
     val isSaveable: Boolean
         get() = name.isNotBlank()

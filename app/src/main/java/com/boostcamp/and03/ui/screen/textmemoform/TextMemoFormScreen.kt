@@ -2,10 +2,16 @@ package com.boostcamp.and03.ui.screen.textmemoform
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,12 +73,21 @@ private fun TextMemoFormScreen(
         },
         bottomBar = {
             And03Button(
-                text = stringResource(id = R.string.add_memo_save_button_text),
+                text = if(!uiState.isSaving) {
+                    stringResource(id = R.string.add_memo_save_button_text)
+                } else {
+                    stringResource(id = R.string.add_memo_saving_button_text)
+                },
                 onClick = { onAction(TextMemoFormAction.OnSaveClick) },
                 variant = ButtonVariant.Primary,
-                enabled = uiState.isSaveable,
+                enabled = uiState.isSaveable && !uiState.isSaving,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(
+                            WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                        )
+                    )
                     .padding(And03Padding.PADDING_L)
                     .height(And03ComponentSize.BUTTON_HEIGHT_L)
             )

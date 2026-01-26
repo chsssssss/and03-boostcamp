@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.toUiModel
-import com.boostcamp.and03.ui.screen.textmemoform.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -47,10 +46,18 @@ class CanvasMemoFormViewModel @Inject constructor(
             CanvasMemoFormAction.OnBackClick -> _event.trySend(CanvasMemoFormEvent.NavigateBack)
 
             CanvasMemoFormAction.OnSaveClick -> {
-                if (uiState.value.isSaveable) {
-                    viewModelScope.launch {
+                viewModelScope.launch {
+                    if (_uiState.value.isSaving) return@launch
+
+                    _uiState.update { it.copy(isSaving = true) }
+
+                    try {
                         saveCanvasMemo()
                         _event.send(CanvasMemoFormEvent.NavigateBack)
+                    } catch (e: Exception) {
+                        // TODO: 오류 메시지 UI 표시 구현
+                    } finally {
+                        _uiState.update { it.copy(isSaving = false) }
                     }
                 }
             }

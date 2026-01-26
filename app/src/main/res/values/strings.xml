@@ -8,6 +8,7 @@
     <string name="empty_message">아직 등록된 내용이 없어요</string>
     <string name="common_cancel">취소</string>
     <string name="common_save">저장</string>
+    <string name="common_error_text">에러가 발생했어요.</string>
 
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
@@ -57,7 +58,6 @@
     <string name="book_search_empty_after_query">검색 결과가 없어요.</string>
     <string name="book_search_button_text">직접 추가</string>
     <string name="book_search_save_failure_text">책 저장에 실패했습니다</string>
-    <string name="book_search_error_text">에러가 발생했어요.</string>
 
     <!-- 메모 추가 화면 공용 텍스트 -->
     <string name="add_memo_title">제목</string>
@@ -67,6 +67,7 @@
     <string name="add_memo_enter_start_page_placeholder">시작</string>
     <string name="add_memo_enter_end_page_placeholder">%1$dp</string>
     <string name="add_memo_save_button_text">저장하기</string>
+    <string name="add_memo_saving_button_text">저장 중입니다...</string>
     <string name="add_memo_page_notice">종료 페이지를 비워두면 단일 페이지로 표시됩니다</string>
     <string name="add_memo_character_count">%1$d/%2$d</string>
     <string name="add_memo_add_by_image">이미지로 추가</string>

@@ -40,11 +40,17 @@ class QuoteFormViewModel @Inject constructor(
 
             QuoteFormAction.OnSaveClick -> {
                 viewModelScope.launch {
+                    if (_uiState.value.isSaving) return@launch
+
+                    _uiState.update { it.copy(isSaving = true) }
+
                     try {
                         saveQuote()
                         _event.trySend(QuoteFormEvent.NavigateBack)
                     } catch (e: Exception) {
                         // TODO: 오류 메시지 UI 구현
+                    } finally {
+                        _uiState.update { it.copy(isSaving = false) }
                     }
                 }
             }
