@@ -39,9 +39,9 @@ class QuoteFormViewModel @Inject constructor(
             QuoteFormAction.OnBackClick -> _event.trySend(QuoteFormEvent.NavigateBack)
 
             QuoteFormAction.OnSaveClick -> {
-                if (_uiState.value.isSaving) return
-
                 viewModelScope.launch {
+                    if (_uiState.value.isSaving) return@launch
+
                     _uiState.update { it.copy(isSaving = true) }
 
                     try {

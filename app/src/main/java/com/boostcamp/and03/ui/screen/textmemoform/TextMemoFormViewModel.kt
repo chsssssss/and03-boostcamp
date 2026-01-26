@@ -46,9 +46,9 @@ class TextMemoFormViewModel @Inject constructor(
             TextMemoFormAction.OnBackClick -> _event.trySend(TextMemoFormEvent.NavigateBack)
 
             TextMemoFormAction.OnSaveClick -> {
-                if (_uiState.value.isSaving) return
-
                 viewModelScope.launch {
+                    if (_uiState.value.isSaving) return@launch
+
                     _uiState.update { it.copy(isSaving = true) }
 
                     try {
