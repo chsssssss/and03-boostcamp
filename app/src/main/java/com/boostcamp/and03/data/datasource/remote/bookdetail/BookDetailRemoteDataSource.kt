@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.datasource.remote.book_detail
+package com.boostcamp.and03.data.datasource.remote.bookdetail
 
 import com.boostcamp.and03.data.model.response.BookLookUpResponse
 
