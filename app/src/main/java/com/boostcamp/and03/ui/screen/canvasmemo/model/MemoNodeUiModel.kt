@@ -30,7 +30,18 @@ fun MemoNode.toUiModel(
     size: IntSize = IntSize.Zero
 ): MemoNodeUiModel {
     return when (this) {
-        is MemoNode.CharacterNode -> MemoNodeUiModel.CharacterNodeUiModel(this, isSelected, isDragging, size)
-        is MemoNode.QuoteNode -> MemoNodeUiModel.QuoteNodeUiModel(this, isSelected, isDragging, size)
+        is MemoNode.CharacterNode -> MemoNodeUiModel.CharacterNodeUiModel(
+            this,
+            isSelected,
+            isDragging,
+            size
+        )
+
+        is MemoNode.QuoteNode -> MemoNodeUiModel.QuoteNodeUiModel(
+            this,
+            isSelected,
+            isDragging,
+            size
+        )
     }
 }
