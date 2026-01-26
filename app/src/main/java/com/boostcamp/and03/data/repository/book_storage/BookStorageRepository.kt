@@ -16,6 +16,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
+import kotlinx.coroutines.flow.Flow
 
 interface BookStorageRepository {
     suspend fun getBooks(userId: String): List<BookStorageResponse>
@@ -33,7 +34,7 @@ interface BookStorageRepository {
     suspend fun getCharacters(
         userId: String,
         bookId: String
-    ): List<CharacterResponse>
+    ): Flow<List<CharacterResponse>>
 
     suspend fun getCharacter(
         userId: String,

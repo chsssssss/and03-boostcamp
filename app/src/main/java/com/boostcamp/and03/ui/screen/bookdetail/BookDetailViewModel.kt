@@ -163,20 +163,24 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadCharacters() {
-        try {
-            val result = bookRepository.getCharacters(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    characters = result
-                        .map { character -> character.toUiModel() }
-                        .toPersistentList(),
-                    charactersLoadState = LoadState.DONE
-                )
+    private fun loadCharacters() {
+        viewModelScope.launch {
+            try {
+                bookRepository.getCharacters(userId, bookId).collect { result ->
+                    Log.d("BookDetailViewModel", "observeCharacters: $result")
+                    _uiState.update {
+                        it.copy(
+                            characters = result
+                                .map { character -> character.toUiModel() }
+                                .toPersistentList(),
+                            charactersLoadState = LoadState.DONE
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(charactersLoadState = LoadState.ERROR) }
+                Log.e("BookDetailViewModel", "observeCharacters error: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(charactersLoadState = LoadState.ERROR) }
-            Log.d("BookDetailViewModel", "loadCharacters: ${e.message}")
         }
     }
 
