@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.repository.booksearch.BookSearchRepository
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SaveFailureReason
 import com.boostcamp.and03.ui.screen.booksearch.model.toUiModel
@@ -41,21 +41,38 @@ class BookSearchViewModel @Inject constructor(
     private val _event: Channel<BookSearchEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
+    private val userId = "O12OmGoVY8FPYFElNjKN"
+
     fun onAction(action: BookSearchAction) {
         when (action) {
             BookSearchAction.OnBackClick -> _event.trySend(BookSearchEvent.NavigateBack)
 
             BookSearchAction.OnManualAddClick -> _event.trySend(BookSearchEvent.NavigateToManualAdd)
 
-            is BookSearchAction.OnQueryChange -> _uiState.update { it.copy(query = action.query) }
-
-            is BookSearchAction.OnItemClick -> _uiState.update {
-                val isSelected = it.selectedBook == action.item
-
-                it.copy(selectedBook = if (isSelected) null else action.item)
+            is BookSearchAction.OnQueryChange -> _uiState.update {
+                it.copy(
+                    query = action.query,
+                    selectedResultIndex = null
+                )
             }
 
-            BookSearchAction.OnSaveClick -> saveItem()
+            is BookSearchAction.OnItemClick -> _uiState.update {
+                it.copy(
+                    selectedResultIndex =
+                        if (it.selectedResultIndex == action.index) {
+                            null
+                        } else {
+                            action.index
+                        }
+                )
+            }
+
+            is BookSearchAction.OnSaveClick -> {
+                saveItem(
+                    selectedSearchResult = action.selectedItem,
+                    userId = userId
+                )
+            }
         }
     }
 
@@ -72,7 +89,9 @@ class BookSearchViewModel @Inject constructor(
             .filter { it.isNotBlank() }
             .flatMapLatest { query ->
                 bookSearchRepository.loadSearchResults(query)
-                    .map { pagingData -> pagingData.map { it.toUiModel() } }
+                    .map { pagingData ->
+                        pagingData.map { it.toUiModel() }
+                    }
             }
             .cachedIn(viewModelScope)
 
@@ -84,10 +103,10 @@ class BookSearchViewModel @Inject constructor(
                 flow { emit(bookSearchRepository.loadTotalSearchResultCount(query)) }
             }
 
-    // 임시 userId 사용
-    private fun saveItem(userId: String = "O12OmGoVY8FPYFElNjKN") {
-        val selectedSearchResult = _uiState.value.selectedBook ?: return
-
+    private fun saveItem(
+        selectedSearchResult: BookSearchResultUiModel,
+        userId: String
+    ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
 
@@ -112,7 +131,7 @@ class BookSearchViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isSaving = false,
-                        selectedBook = null
+                        selectedResultIndex = null
                     )
                 }
             }

@@ -8,9 +8,9 @@ sealed interface BookSearchAction {
 
     data object OnManualAddClick : BookSearchAction
 
-    data class OnItemClick(val item: BookSearchResultUiModel) : BookSearchAction
+    data class OnItemClick(val index: Int) : BookSearchAction
 
-    data object OnSaveClick : BookSearchAction
+    data class OnSaveClick(val selectedItem: BookSearchResultUiModel) : BookSearchAction
 
     data class OnQueryChange(val query: String) : BookSearchAction
 }
