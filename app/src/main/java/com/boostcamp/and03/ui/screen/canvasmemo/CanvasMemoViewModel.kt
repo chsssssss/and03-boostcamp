@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -61,7 +62,14 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
             is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
-            is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
+            is CanvasMemoAction.OnBottomBarClick -> {
+                handleBottomBarClick(action)
+                if (action.type == MainBottomBarType.RELATION) {
+                    onAction(CanvasMemoAction.HideBottomBar)
+                }
+            }
+            CanvasMemoAction.HideBottomBar -> setBottomBarVisible(false)
+            CanvasMemoAction.ShowBottomBar -> setBottomBarVisible(true)
         }
     }
 
@@ -131,6 +139,12 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             it.copy(
                 selectedBottomBarType = action.type
             )
+        }
+    }
+
+    private fun setBottomBarVisible(visible: Boolean) {
+        _uiState.update {
+            it.copy(isBottomBarVisible = visible)
         }
     }
 }

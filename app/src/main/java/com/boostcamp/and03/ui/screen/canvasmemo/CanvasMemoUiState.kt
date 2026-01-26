@@ -15,6 +15,7 @@ data class CanvasMemoUiState(
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),
     val selectedBottomBarType: MainBottomBarType = MainBottomBarType.NODE, // 하단 메인 바텀바 상태 기본값은 노드로 설정함
+    val isBottomBarVisible: Boolean = true,
 )
 
 data class RelationSelection(

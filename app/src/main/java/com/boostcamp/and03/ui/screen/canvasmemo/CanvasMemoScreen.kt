@@ -293,44 +293,62 @@ private fun CanvasMemoScreen(
                     )
                 )
             )
+            if (uiState.isBottomBarVisible) {
+                MainBottomBar(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(bottom = And03Spacing.SPACE_XS),
+                    items = listOf(
+                        MainBottomBarItem(
+                            type = MainBottomBarType.NODE,
+                            label = stringResource(R.string.canvas_bottom_bar_node),
+                            icon = Icons.Default.PersonAdd,
+                            backgroundColor = CanvasMemoColors.Node
+                        ),
+                        MainBottomBarItem(
+                            type = MainBottomBarType.RELATION,
+                            label = stringResource(R.string.canvas_bottom_bar_relation),
+                            icon = Icons.Default.Link,
+                            backgroundColor = CanvasMemoColors.Relation
+                        ),
+                        MainBottomBarItem(
+                            type = MainBottomBarType.QUOTE,
+                            label = stringResource(R.string.canvas_bottom_bar_quote),
+                            icon = Icons.Default.FormatQuote,
+                            backgroundColor = CanvasMemoColors.Quote
+                        ),
+                        MainBottomBarItem(
+                            type = MainBottomBarType.DELETE,
+                            label = stringResource(R.string.canvas_bottom_bar_delete),
+                            icon = Icons.Default.Delete,
+                            backgroundColor = CanvasMemoColors.Delete
+                        )
 
-            MainBottomBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = And03Spacing.SPACE_XS),
-                items = listOf(
-                    MainBottomBarItem(
-                        type = MainBottomBarType.NODE,
-                        label = stringResource(R.string.canvas_bottom_bar_node),
-                        icon = Icons.Default.PersonAdd,
-                        backgroundColor = CanvasMemoColors.Node
                     ),
-                    MainBottomBarItem(
-                        type = MainBottomBarType.RELATION,
-                        label = stringResource(R.string.canvas_bottom_bar_relation),
-                        icon = Icons.Default.Link,
-                        backgroundColor = CanvasMemoColors.Relation
-                    ),
-                    MainBottomBarItem(
-                        type = MainBottomBarType.QUOTE,
-                        label = stringResource(R.string.canvas_bottom_bar_quote),
-                        icon = Icons.Default.FormatQuote,
-                        backgroundColor = CanvasMemoColors.Quote
-                    ),
-                    MainBottomBarItem(
-                        type = MainBottomBarType.DELETE,
-                        label = stringResource(R.string.canvas_bottom_bar_delete),
-                        icon = Icons.Default.Delete,
-                        backgroundColor = CanvasMemoColors.Delete
-                    )
+                    selectedType = uiState.selectedBottomBarType,
+                    onItemClick = { type ->
+                        onAction(CanvasMemoAction.OnBottomBarClick(type))
+                        when (type) {
+                            MainBottomBarType.NODE -> {
 
-                ),
-                selectedType = uiState.selectedBottomBarType,
-                onItemClick = { type ->
-                    onAction(CanvasMemoAction.OnBottomBarClick(type))
-                }
-            )
+                            }
+
+                            MainBottomBarType.RELATION -> {
+
+                            }
+
+                            MainBottomBarType.QUOTE -> {
+
+                            }
+
+                            MainBottomBarType.DELETE -> {
+
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 }
