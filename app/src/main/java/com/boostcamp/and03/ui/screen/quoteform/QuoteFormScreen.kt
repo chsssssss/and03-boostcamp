@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -107,7 +109,8 @@ private fun QuoteFormScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(And03Padding.PADDING_L),
+                .padding(And03Padding.PADDING_L)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
