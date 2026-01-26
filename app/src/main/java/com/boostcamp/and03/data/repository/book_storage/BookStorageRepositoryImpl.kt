@@ -177,7 +177,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getMemos(
         userId: String,
         bookId: String
-    ): List<MemoResponse> {
+    ): Flow<List<MemoResponse>> {
         return memoDataSource.getMemos(
             userId,
             bookId

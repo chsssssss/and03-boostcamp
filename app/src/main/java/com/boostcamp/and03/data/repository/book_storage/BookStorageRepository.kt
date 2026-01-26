@@ -94,7 +94,7 @@ interface BookStorageRepository {
     suspend fun getMemos(
         userId: String,
         bookId: String
-    ): List<MemoResponse>
+    ): Flow<List<MemoResponse>>
 
     suspend fun addTextMemo(
         userId: String,

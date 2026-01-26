@@ -4,12 +4,16 @@ import android.util.Log
 import com.boostcamp.and03.data.mapper.MemoResponseMapper
 import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
+import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class MemoDataSourceImpl @Inject constructor(
@@ -18,26 +22,28 @@ class MemoDataSourceImpl @Inject constructor(
     override suspend fun getMemos(
         userId: String,
         bookId: String
-    ): List<MemoResponse> {
-        return try {
-            val snapshot = db
-                .collection("user")
-                .document(userId)
-                .collection("book")
-                .document(bookId)
-                .collection("memo")
-                .get()
-                .await()
+    ): Flow<List<MemoResponse>> = callbackFlow {
+        val registration = db.collection("user")
+            .document(userId)
+            .collection("book")
+            .document(bookId)
+            .collection("memo")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
 
-            snapshot.documents.mapNotNull { document ->
-                val data = document.data ?: return@mapNotNull null
-                MemoResponseMapper.fromFirebase(document.id, data)
+                if (snapshot != null) {
+                    val memos = snapshot.documents.mapNotNull { document ->
+                        val data = document.data ?: return@mapNotNull null
+                        MemoResponseMapper.fromFirebase(document.id, data)
+                    }
+
+                    trySend(memos)
+                }
             }
-
-        } catch (e: Exception) {
-            Log.e("MemoDataSourceImpl", "Error: ${e.message}")
-            throw e
-        }
+        awaitClose { registration.remove() }
     }
 
     override suspend fun addTextMemo(
@@ -232,7 +238,7 @@ class MemoDataSourceImpl @Inject constructor(
         bookId: String,
         memoId: String
     ): CanvasMemoResponse {
-        return try {
+        try {
             val snapshot = db
                 .collection("user")
                 .document(userId)

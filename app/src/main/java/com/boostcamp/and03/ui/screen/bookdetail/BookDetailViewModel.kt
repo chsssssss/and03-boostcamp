@@ -188,7 +188,7 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadQuotes() {
+    private fun loadQuotes() {
         viewModelScope.launch {
             try {
                 bookRepository.getQuotes(userId, bookId).collect { result ->
@@ -209,20 +209,24 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadMemos() {
-        try {
-            val result = bookRepository.getMemos(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    memos = result
-                        .map { memo -> memo.toUiModel() }
-                        .toPersistentList(),
-                    memosLoadState = LoadState.DONE
-                )
+    private fun loadMemos() {
+        viewModelScope.launch {
+            try {
+                bookRepository.getMemos(userId, bookId).collect { result ->
+                    Log.d("BookDetailViewModel", "observeMemos: $result")
+                    _uiState.update {
+                        it.copy(
+                            memos = result
+                                .map { memo -> memo.toUiModel() }
+                                .toPersistentList(),
+                            memosLoadState = LoadState.DONE
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(memosLoadState = LoadState.ERROR) }
+                Log.e("BookDetailViewModel", "observeMemos error: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(memosLoadState = LoadState.ERROR) }
-            Log.d("BookDetailViewModel", "loadMemos: ${e.message}")
         }
     }
 
