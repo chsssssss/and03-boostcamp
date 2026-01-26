@@ -7,9 +7,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 enum class LoadState {
-    IDLE,
+    INIT,
     LOADING,
-    ERROR
+    ERROR,
+    DONE,
 }
 
 data class BookDetailUiState(
@@ -19,14 +20,14 @@ data class BookDetailUiState(
     val author: String = "",
     val publisher: String = "",
     val totalPage: Int = 0,
-    val bookInfoLoadState: LoadState = LoadState.LOADING,
+    val bookInfoLoadState: LoadState = LoadState.INIT,
 
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
-    val charactersLoadState: LoadState = LoadState.LOADING,
+    val charactersLoadState: LoadState = LoadState.INIT,
 
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
-    val quotesLoadState: LoadState = LoadState.LOADING,
+    val quotesLoadState: LoadState = LoadState.INIT,
 
     val memos: ImmutableList<MemoUiModel> = persistentListOf(),
-    val memosLoadState: LoadState = LoadState.LOADING
+    val memosLoadState: LoadState = LoadState.INIT
 )

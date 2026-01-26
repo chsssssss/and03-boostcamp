@@ -155,11 +155,11 @@ private fun BookDetailScreen(
                 .padding(innerPadding)
         ) {
             when (uiState.bookInfoLoadState) {
-                LoadState.LOADING -> LoadingScreen()
+                LoadState.INIT, LoadState.LOADING -> LoadingScreen()
 
                 LoadState.ERROR -> ErrorScreen(onRetryButtonClick = { onAction(BookDetailAction.OnRetryBookInfo) })
 
-                LoadState.IDLE -> {
+                LoadState.DONE -> {
                     BookInfoSection(
                         thumbnail = uiState.thumbnail,
                         title = uiState.title,
@@ -395,11 +395,11 @@ private fun CharacterTab(
             .padding(And03Padding.PADDING_L)
     ) {
         when (loadState) {
-            LoadState.LOADING -> LoadingScreen()
+            LoadState.INIT, LoadState.LOADING -> LoadingScreen()
 
             LoadState.ERROR -> ErrorScreen(onRetryButtonClick = onRetryButtonClick)
 
-            LoadState.IDLE -> {
+            LoadState.DONE -> {
                 if (characters.isEmpty()) {
                     EmptyDataScreen()
                 } else {
@@ -448,11 +448,11 @@ private fun QuoteTab(
             .padding(And03Padding.PADDING_L)
     ) {
         when (loadState) {
-            LoadState.LOADING -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            LoadState.INIT, LoadState.LOADING -> LoadingScreen()
 
             LoadState.ERROR -> ErrorScreen(onRetryButtonClick = onRetryButtonClick)
 
-            LoadState.IDLE -> {
+            LoadState.DONE -> {
                 if (quotes.isEmpty()) {
                     EmptyDataScreen()
                 } else {
@@ -497,11 +497,11 @@ private fun MemoTab(
             .padding(And03Padding.PADDING_L)
     ) {
         when (loadState) {
-            LoadState.LOADING -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            LoadState.INIT, LoadState.LOADING -> LoadingScreen()
 
             LoadState.ERROR -> ErrorScreen(onRetryButtonClick = onRetryButtonClick)
 
-            LoadState.IDLE -> {
+            LoadState.DONE -> {
                 if (memos.isEmpty()) {
                     EmptyDataScreen()
                 } else {
