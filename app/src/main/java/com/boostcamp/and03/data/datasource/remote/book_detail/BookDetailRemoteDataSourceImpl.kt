@@ -13,8 +13,11 @@ class BookDetailRemoteDataSourceImpl @Inject constructor(
     override suspend fun loadBookPage(itemId: String): BookLookUpResponse {
         val rawResponse = bookDetailApiService.loadBookInfo(itemId = itemId)
 
-        val semicolonRemovedResponse = rawResponse.trim().removeSuffix(";")
+        val sanitizedResponse = rawResponse
+            .trim()
+            .removeSuffix(";")
+            .replace("\\'", "'")
 
-        return json.decodeFromString(semicolonRemovedResponse)
+        return json.decodeFromString(sanitizedResponse)
     }
 }
