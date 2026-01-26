@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 class CharacterDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : CharacterDataSource {
-    override suspend fun getCharacters(
+    override fun getCharacters(
         userId: String,
         bookId: String
     ): Flow<List<CharacterResponse>> = callbackFlow {

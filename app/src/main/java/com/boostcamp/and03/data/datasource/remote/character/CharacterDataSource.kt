@@ -5,7 +5,7 @@ import com.boostcamp.and03.data.model.response.CharacterResponse
 import kotlinx.coroutines.flow.Flow
 
 interface CharacterDataSource {
-    suspend fun getCharacters(
+    fun getCharacters(
         userId: String,
         bookId: String
     ): Flow<List<CharacterResponse>>
