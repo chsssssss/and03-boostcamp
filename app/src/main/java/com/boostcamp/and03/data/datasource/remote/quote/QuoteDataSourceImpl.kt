@@ -16,7 +16,7 @@ class QuoteDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ): QuoteDataSource {
 
-    override suspend fun getQuotes(
+    override fun getQuotes(
         userId: String,
         bookId: String
     ): Flow<List<QuoteResponse>> = callbackFlow {

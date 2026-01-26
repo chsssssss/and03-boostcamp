@@ -5,7 +5,7 @@ import com.boostcamp.and03.data.model.response.QuoteResponse
 import kotlinx.coroutines.flow.Flow
 
 interface QuoteDataSource {
-    suspend fun getQuotes(
+    fun getQuotes(
         userId: String,
         bookId: String
     ): Flow<List<QuoteResponse>>
