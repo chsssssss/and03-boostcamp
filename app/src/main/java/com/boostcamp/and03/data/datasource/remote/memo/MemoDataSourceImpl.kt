@@ -1,13 +1,11 @@
 package com.boostcamp.and03.data.datasource.remote.memo
 
 import android.util.Log
+import com.boostcamp.and03.data.mapper.MemoResponseMapper
 import com.boostcamp.and03.data.model.request.CanvasMemoRequest
 import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
-import com.boostcamp.and03.data.model.response.memo.EdgeResponse
-import com.boostcamp.and03.data.model.response.memo.GraphResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
-import com.boostcamp.and03.data.model.response.memo.NodeResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,7 +14,7 @@ import kotlinx.coroutines.tasks.await
 
 class MemoDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
-): MemoDataSource {
+) : MemoDataSource {
     override suspend fun getMemos(
         userId: String,
         bookId: String
@@ -33,87 +31,13 @@ class MemoDataSourceImpl @Inject constructor(
 
             snapshot.documents.mapNotNull { document ->
                 val data = document.data ?: return@mapNotNull null
-                parseMemo(document.id, data)
+                MemoResponseMapper.fromFirebase(document.id, data)
             }
 
         } catch (e: Exception) {
             Log.e("MemoDataSourceImpl", "Error: ${e.message}")
             throw e
         }
-    }
-
-    private fun parseMemo(
-        documentId: String,
-        data: Map<String, Any>
-    ): MemoResponse? {
-        val type = data["type"] as? String ?: return null
-
-        return when (type) {
-            "TEXT" -> parseTextMemo(documentId, data)
-            "CANVAS" -> parseCanvasMemo(documentId, data)
-            else -> null
-        }
-    }
-
-    private fun parseTextMemo(
-        id: String,
-        data: Map<String, Any>
-    ): TextMemoResponse =
-        TextMemoResponse(
-            id = id,
-            title = data["title"] as? String ?: "",
-            content = data["content"] as? String ?: "",
-            createdAt = data["createdAt"] as? String ?: "",
-            type = "TEXT",
-            startPage = (data["startPage"] as? Long)?.toInt() ?: 0,
-            endPage = (data["endPage"] as? Long)?.toInt() ?: 0,
-        )
-
-    private fun parseCanvasMemo(
-        id: String,
-        data: Map<String, Any>
-    ): CanvasMemoResponse =
-        @Suppress("UNCHECKED_CAST")
-        CanvasMemoResponse(
-            id = id,
-            title = data["title"] as? String ?: "",
-            createdAt = data["createdAt"] as? String ?: "",
-            type = "CANVAS",
-            startPage = (data["startPage"] as? Long)?.toInt() ?: 0,
-            endPage = (data["endPage"] as? Long)?.toInt() ?: 0,
-            graph = parseGraph(data["graph"] as? Map<String, Any>)
-        )
-
-    private fun parseGraph(data: Map<String, Any>?): GraphResponse {
-        if (data == null) {
-            return GraphResponse(emptyList(), emptyList())
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        val nodes = (data["nodes"] as? List<Map<String, Any>>).orEmpty().map {
-            NodeResponse(
-                id = it["id"] as? String ?: "",
-                title = it["title"] as? String ?: "",
-                content = it["content"] as? String ?: "",
-                nodeType = it["nodeType"] as? String ?: "",
-                startPage = (it["startPage"] as? Long)?.toInt(),
-                endPage = (it["endPage"] as? Long)?.toInt(),
-                x = (it["x"] as? Double)?.toFloat() ?: 0f,
-                y = (it["y"] as? Double)?.toFloat() ?: 0f,
-            )
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        val edges = (data["edges"] as? List<Map<String, Any>>).orEmpty().map {
-            EdgeResponse(
-                id = it["id"] as? String ?: "",
-                fromNodeId = it["fromNodeId"] as? String ?: "",
-                toNodeId = it["toNodeId"] as? String ?: "",
-                relationText = it["relationText"] as? String ?: ""
-            )
-        }
-
-        return GraphResponse(nodes, edges)
     }
 
     override suspend fun addTextMemo(
@@ -326,15 +250,14 @@ class MemoDataSourceImpl @Inject constructor(
             val data = snapshot.data
                 ?: throw IllegalStateException("Memo data is null: $memoId")
 
-            CanvasMemoResponse(
-                id = snapshot.id,
-                title = data["title"] as? String ?: "",
-                createdAt = data["createdAt"] as? String ?: "",
-                type = data["type"] as? String ?: "CANVAS",
-                startPage = (data["startPage"] as? Long)?.toInt() ?: 0,
-                endPage = (data["endPage"] as? Long)?.toInt() ?: 0,
-                graph = parseGraph(data["graph"] as? Map<String, Any>)
-            )
+            val response = MemoResponseMapper.fromFirebase(snapshot.id, data)
+                ?: throw IllegalStateException("Invalid memo type: ${data["type"]}")
+
+            if (response !is CanvasMemoResponse) {
+                throw IllegalStateException("Memo is not Canvas type: $memoId")
+            }
+
+            return response
         } catch (e: Exception) {
             Log.e("MemoDataSourceImpl", "getCanvasMemo error: ${e.message}", e)
             throw e

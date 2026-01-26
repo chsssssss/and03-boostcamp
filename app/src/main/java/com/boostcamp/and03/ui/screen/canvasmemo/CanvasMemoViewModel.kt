@@ -2,6 +2,10 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
+import com.boostcamp.and03.domain.editor.CanvasMemoEditor
+import com.boostcamp.and03.domain.factory.MemoGraphFactory
+import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -20,12 +24,43 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     private val _event: Channel<CanvasMemoEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
+    init {
+        createInitialState()
+
+        handleConnectNodes(
+            CanvasMemoAction.ConnectNodes(
+                fromId = "1",
+                toId = "2",
+                name = "로직 테스트 연결"
+            )
+        )
+    }
+
+    private fun createInitialState() {
+        val sampleGraph = MemoGraphFactory.createSample()
+
+        _uiState.update {
+            it.copy(
+                nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
+                edges = sampleGraph.edges.map { it.toUiModel() }
+            )
+        }
+    }
+
+    private fun getCurrentGraph(): MemoGraph {
+        val nodes = _uiState.value.nodes.mapValues { it.value.node }
+        val edges = _uiState.value.edges.map { it.edge }
+        return MemoGraph(nodes, edges)
+    }
+
     fun onAction(action: CanvasMemoAction) {
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
             is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
+            is CanvasMemoAction.MoveNode -> handleMoveNode(action)
+            is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
             is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
         }
     }
@@ -64,6 +99,33 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             characterDescState = TextFieldState()
         )
     }
+
+    private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
+        val editor = CanvasMemoEditor(getCurrentGraph())
+        val updatedGraph = editor.moveNode(action.nodeId, action.newOffset)
+
+        val movedNode = updatedGraph.nodes[action.nodeId] ?: return
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                nodes = currentState.nodes + (action.nodeId to movedNode.toUiModel())
+            )
+        }
+    }
+
+
+    private fun handleConnectNodes(action: CanvasMemoAction.ConnectNodes) {
+        val editor = CanvasMemoEditor(getCurrentGraph())
+        val updatedGraph = editor.connectNode(action.fromId, action.toId, action.name)
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                edges = updatedGraph.edges.map { it.toUiModel() },
+                isRelationDialogVisible = false
+            )
+        }
+    }
+
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
         _uiState.update {
             it.copy(
