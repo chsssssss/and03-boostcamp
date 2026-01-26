@@ -104,9 +104,11 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         val editor = CanvasMemoEditor(getCurrentGraph())
         val updatedGraph = editor.moveNode(action.nodeId, action.newOffset)
 
+        val movedNode = updatedGraph.nodes[action.nodeId] ?: return
+
         _uiState.update { currentState ->
             currentState.copy(
-                nodes = updatedGraph.nodes.mapValues { it.value.toUiModel() }
+                nodes = currentState.nodes + (action.nodeId to movedNode.toUiModel())
             )
         }
     }
@@ -123,6 +125,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             )
         }
     }
+
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
         _uiState.update {
             it.copy(
