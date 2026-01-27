@@ -17,7 +17,8 @@ fun NodeResponse.toDomain(): MemoNode =
             id = id,
             name = title,
             description = content,
-            offset = Offset(x, y)
+            offset = Offset(x, y),
+            imageUrl = imageUrl
         )
 
         "QUOTE" -> MemoNode.QuoteNode(
