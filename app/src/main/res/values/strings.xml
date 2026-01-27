@@ -93,8 +93,9 @@
     <string name="add_character_dialog_name_placeholder">이름을 입력하세요.</string>
     <string name="add_character_dialog_desc_label">설명</string>
     <string name="add_character_dialog_desc_placeholder">설명을 입력하세요</string>
-    <string name="canvas_memo_editor_page_list_scroll_page_range">p.%1$d~%2$d</string>
-    <string name="canvas_memo_editor_page_list_scroll_single_page">p.%1$d</string>
+    <string name="canvas_memo_page_list_scroll_page_range">p.%1$d~%2$d</string>
+    <string name="canvas_memo_page_list_scroll_single_page">p.%1$d</string>
+    <string name="canvas_memo_top_bar_title">캔버스 메모</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
@@ -109,16 +110,12 @@
 
     <!-- Add Quote -->
     <string name="add_quote_title">인상 깊은 구절 추가</string>
-
     <string name="add_quote_info_title">인상 깊은 구절을 기록해보세요</string>
     <string name="add_quote_info_description">책이나 영화, 일상에서 마음에 든 문장을 저장할 수 있습니다.</string>
-
     <string name="add_quote_sentence_label">구절 *</string>
     <string name="add_quote_sentence_hint">인상깊은 구절을 입력하세요</string>
     <string name="add_quote_add_by_image">이미지로 추가</string>
-
     <string name="add_quote_text_count">%1$d/%2$d</string>
-
     <string name="add_quote_page_label">페이지 *</string>
     <string name="add_quote_page_hint">구절이 기록된 페이지를 입력하세요</string>
 
@@ -143,6 +140,7 @@
     <string name="canvas_bottom_bar_relation">관계</string>
     <string name="canvas_bottom_bar_quote">구절</string>
     <string name="canvas_bottom_bar_delete">삭제</string>
+
     <!-- 등장인물 추가 화면 -->
     <string name="character_form_title">등장인물 추가</string>
     <string name="character_form_name">이름 *</string>
