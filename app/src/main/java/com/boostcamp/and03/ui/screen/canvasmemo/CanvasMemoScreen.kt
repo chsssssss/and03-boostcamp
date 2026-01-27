@@ -18,11 +18,14 @@ import androidx.compose.material.icons.filled.FormatQuote
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -92,6 +95,7 @@ fun CanvasMemoRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CanvasMemoScreen(
     uiState: CanvasMemoUiState,
@@ -100,6 +104,10 @@ private fun CanvasMemoScreen(
     var scale by remember { mutableFloatStateOf(1f) }
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }
     var nodeSizes by remember { mutableStateOf<Map<String, IntSize>>(emptyMap()) }
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     fun clampOffset(
         newOffset: Offset,
@@ -240,16 +248,26 @@ private fun CanvasMemoScreen(
                 }
             }
 
-            // BottomSheet 표시
-            if (uiState.isAddCharacterBottomSheetVisible) {
-                // TODO: 등장인물 추가 바텀시트 표시
-            }
+            uiState.bottomSheetType?.let { sheetType ->
+                ModalBottomSheet(
+                    onDismissRequest = { onAction(CanvasMemoAction.CloseBottomSheet) },
+                    sheetState = sheetState
+                ) {
+                    when (sheetType) {
+                        CanvasMemoBottomSheetType.AddCharacter -> {
+                            // TODO: 등장인물 노드 추가 바텀 시트 출력
+                        }
 
-            if (uiState.isQuoteBottomSheetVisible) {
-                AddQuoteBottomSheet(
-                    quotes = uiState.quotes,
-                    onAddClick = { onAction(CanvasMemoAction.AddQuote) },
-                )
+                        CanvasMemoBottomSheetType.AddQuote -> {
+                            AddQuoteBottomSheet(
+                                quotes = uiState.quotes,
+                                onAddClick = { onAction(CanvasMemoAction.AddQuote) },
+                                onNewSentenceClick = { onAction(CanvasMemoAction.AddQuote) },
+                                onSearch = { /* TODO: onAction(CanvasMemoAction.SearchQuote()) 구현 */ }
+                            )
+                        }
+                    }
+                }
             }
 
             // Dialog 표시

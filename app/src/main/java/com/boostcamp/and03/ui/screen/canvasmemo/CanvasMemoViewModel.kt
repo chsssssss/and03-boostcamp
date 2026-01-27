@@ -14,6 +14,7 @@ import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -114,6 +115,8 @@ class CanvasMemoViewModel @Inject constructor(
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
 
+            CanvasMemoAction.CloseBottomSheet -> handleCloseBottomSheet()
+
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
 
             is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
@@ -123,6 +126,8 @@ class CanvasMemoViewModel @Inject constructor(
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
             CanvasMemoAction.AddQuote -> handleAddQuote()
+
+            is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
 
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
 
@@ -134,6 +139,10 @@ class CanvasMemoViewModel @Inject constructor(
 
     private fun handleClickBack() {
         _event.trySend(CanvasMemoEvent.NavToBack)
+    }
+
+    private fun handleCloseBottomSheet() {
+        _uiState.update { it.copy(bottomSheetType = null) }
     }
 
     private fun handleCloseRelationDialog() {
@@ -181,6 +190,10 @@ class CanvasMemoViewModel @Inject constructor(
         // TODO: 새로운 구절 추가 동작 연동
     }
 
+    private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
+        // TODO: 구절 검색 동작 연동
+    }
+
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
         val editor = CanvasMemoEditor(getCurrentGraph())
         val updatedGraph = editor.moveNode(action.nodeId, action.newOffset)
@@ -208,9 +221,16 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
+        val sheetType = when (action.type) {
+            MainBottomBarType.NODE -> CanvasMemoBottomSheetType.AddCharacter
+            MainBottomBarType.QUOTE -> CanvasMemoBottomSheetType.AddQuote
+            else -> null
+        }
+
         _uiState.update {
             it.copy(
-                selectedBottomBarType = action.type
+                selectedBottomBarType = action.type,
+                bottomSheetType = sheetType
             )
         }
     }

@@ -16,8 +16,7 @@ data class CanvasMemoUiState(
     val relationSelection: RelationSelection? = null,
     val relationNameState: TextFieldState = TextFieldState(),
 
-    val isAddCharacterBottomSheetVisible: Boolean = false,
-    val isQuoteBottomSheetVisible: Boolean = false,
+    val bottomSheetType: CanvasMemoBottomSheetType? = null,
 
     val isAddCharacterDialogVisible: Boolean = false,
     val isRelationDialogVisible: Boolean = false,

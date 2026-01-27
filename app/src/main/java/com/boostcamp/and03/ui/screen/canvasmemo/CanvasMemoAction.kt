@@ -8,6 +8,8 @@ sealed interface CanvasMemoAction {
 
     data object ClickBack : CanvasMemoAction
 
+    data object CloseBottomSheet : CanvasMemoAction
+
     data object CloseRelationDialog : CanvasMemoAction
 
     data object CloseAddCharacterDialog : CanvasMemoAction
@@ -15,6 +17,8 @@ sealed interface CanvasMemoAction {
     data object CloseQuoteDialog : CanvasMemoAction
 
     data object AddQuote : CanvasMemoAction
+
+    data class SearchQuote(val query: String) : CanvasMemoAction
 
     data class OpenRelationDialog(
         val fromNodeId: String,
