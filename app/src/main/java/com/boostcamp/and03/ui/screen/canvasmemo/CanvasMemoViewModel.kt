@@ -35,7 +35,8 @@ class CanvasMemoViewModel @Inject constructor(
 ) : ViewModel() {
     private val canvasMemoRoute = savedStateHandle.toRoute< Route.CanvasMemo>()
     private val bookId = canvasMemoRoute.bookId
-    private val memoId = canvasMemoRoute.memoId // TODO: memoId에 해당하는 그래프 로드 구현
+    private val memoId = canvasMemoRoute.memoId
+    private val totalPage = canvasMemoRoute.totalPage
 
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
@@ -81,7 +82,8 @@ class CanvasMemoViewModel @Inject constructor(
                 nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
                 edges = sampleGraph.edges.map { it.toUiModel() },
                 characters = characters,
-                quotes = quotes
+                quotes = quotes,
+                totalPage = totalPage
             )
         }
     }

@@ -37,12 +37,14 @@ class MainNavigator(
 
     fun navigateToCanvas(
         bookId: String,
-        memoId: String
+        memoId: String,
+        totalPage: Int
     ) {
         navController.navigate(
             Route.CanvasMemo(
                 bookId = bookId,
-                memoId = memoId
+                memoId = memoId,
+                totalPage = totalPage
             )
         )
     }

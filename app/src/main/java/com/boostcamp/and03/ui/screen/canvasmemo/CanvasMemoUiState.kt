@@ -34,7 +34,8 @@ data class CanvasMemoUiState(
     val selectedBottomBarType: MainBottomBarType = MainBottomBarType.NODE, // 하단 메인 바텀바 상태 기본값은 노드로 설정함
 
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
-    val quotes: ImmutableList<QuoteUiModel> = persistentListOf()
+    val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
+    val totalPage: Int = 0
 )
 
 data class RelationSelection(

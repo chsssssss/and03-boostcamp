@@ -26,6 +26,7 @@ sealed interface BookDetailEvent {
 
     data class NavigateToCanvas(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ) : BookDetailEvent
 }

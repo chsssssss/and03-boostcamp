@@ -40,6 +40,7 @@ sealed interface BookDetailAction {
 
     data class OnCanvasMemoClick(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ): BookDetailAction
 }
