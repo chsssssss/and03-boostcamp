@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,21 @@ import com.boostcamp.and03.ui.theme.And03Theme
 
 private object AddQuoteDialogValues {
     const val MAX_CHARACTER_COUNT = 500
+}
+
+private object DigitOnlyTransformation : InputTransformation {
+    override fun TextFieldBuffer.transformInput() {
+        val current = toString()
+        val filtered = current.filter { it.isDigit() }
+
+        if (current != filtered) {
+            replace(
+                start = 0,
+                end = length,
+                text = filtered
+            )
+        }
+    }
 }
 
 @Composable
@@ -70,7 +87,8 @@ fun AddQuoteDialog(
                 placeholderRes = R.string.add_quote_page_hint,
                 onSubmit = {},
                 imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
+                inputTransformation = DigitOnlyTransformation
             )
         }
     )
