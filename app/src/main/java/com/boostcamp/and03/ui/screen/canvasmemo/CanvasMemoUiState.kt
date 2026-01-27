@@ -18,6 +18,9 @@ data class CanvasMemoUiState(
 
     val bottomSheetType: CanvasMemoBottomSheetType? = null,
 
+    val isAddingCharacter: Boolean = false,
+    val isAddingQuote: Boolean = false,
+
     val isAddCharacterDialogVisible: Boolean = false,
     val isRelationDialogVisible: Boolean = false,
     val isQuoteDialogVisible: Boolean = false,

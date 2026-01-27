@@ -4,7 +4,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
@@ -125,9 +124,11 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
-            CanvasMemoAction.AddQuote -> handleAddQuote()
+            CanvasMemoAction.AddQuoteItem -> handleAddQuote()
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
+
+            CanvasMemoAction.AddNewQuote -> handleAddNewQuote()
 
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
 
@@ -192,6 +193,17 @@ class CanvasMemoViewModel @Inject constructor(
 
     private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
         // TODO: 구절 검색 동작 연동
+    }
+
+    private fun handleAddNewQuote() {
+        _uiState.update {
+            it.copy(
+                isQuoteDialogVisible = true,
+                bottomSheetType = null,
+                quoteState = TextFieldState(),
+                pageState = TextFieldState()
+            )
+        }
     }
 
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {

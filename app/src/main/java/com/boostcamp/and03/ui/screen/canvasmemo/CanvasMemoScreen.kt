@@ -112,6 +112,14 @@ private fun CanvasMemoScreen(
         skipPartiallyExpanded = true
     )
 
+    LaunchedEffect(uiState.bottomSheetType) {
+        if (uiState.bottomSheetType != null) {
+            sheetState.show()
+        } else {
+            sheetState.hide()
+        }
+    }
+
     fun clampOffset(
         newOffset: Offset,
     ): Offset {
@@ -266,8 +274,8 @@ private fun CanvasMemoScreen(
                         CanvasMemoBottomSheetType.AddQuote -> {
                             AddQuoteBottomSheet(
                                 quotes = uiState.quotes,
-                                onAddClick = { onAction(CanvasMemoAction.AddQuote) },
-                                onNewSentenceClick = { onAction(CanvasMemoAction.AddQuote) },
+                                onAddClick = { onAction(CanvasMemoAction.AddQuoteItem) },
+                                onNewSentenceClick = { onAction(CanvasMemoAction.AddNewQuote) },
                                 onSearch = { /* TODO: onAction(CanvasMemoAction.SearchQuote()) 구현 */ }
                             )
                         }
