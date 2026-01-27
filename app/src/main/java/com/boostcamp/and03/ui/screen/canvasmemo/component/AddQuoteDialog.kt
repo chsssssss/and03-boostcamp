@@ -37,14 +37,14 @@ private object AddQuoteDialogValues {
 
 private object DigitOnlyTransformation : InputTransformation {
     override fun TextFieldBuffer.transformInput() {
-        val current = toString()
-        val filtered = current.filter { it.isDigit() }
+        val currentInputText = toString()
+        val filteredText = currentInputText.filter { it.isDigit() }
 
-        if (current != filtered) {
+        if (currentInputText != filteredText) {
             replace(
                 start = 0,
                 end = length,
-                text = filtered
+                text = filteredText
             )
         }
     }
