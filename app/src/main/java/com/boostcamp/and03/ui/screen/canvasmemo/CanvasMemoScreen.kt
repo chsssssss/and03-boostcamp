@@ -8,10 +8,13 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FormatQuote
@@ -250,8 +253,10 @@ private fun CanvasMemoScreen(
 
             uiState.bottomSheetType?.let { sheetType ->
                 ModalBottomSheet(
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
                     onDismissRequest = { onAction(CanvasMemoAction.CloseBottomSheet) },
-                    sheetState = sheetState
+                    sheetState = sheetState,
+                    containerColor = And03Theme.colors.background
                 ) {
                     when (sheetType) {
                         CanvasMemoBottomSheetType.AddCharacter -> {

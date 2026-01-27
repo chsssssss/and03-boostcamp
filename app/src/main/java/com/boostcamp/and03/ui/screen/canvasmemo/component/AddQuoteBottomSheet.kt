@@ -29,7 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,21 +74,12 @@ fun AddQuoteBottomSheet(
                     topEnd = And03Radius.RADIUS_L
                 )
             )
-            .padding(horizontal = And03Padding.PADDING_L, vertical = And03Padding.PADDING_M),
+            .padding(
+                horizontal = And03Padding.PADDING_L,
+                vertical = And03Padding.PADDING_M
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .width(40.dp)
-                .height(4.dp)
-                .background(
-                    And03Theme.colors.outlineVariant,
-                    RoundedCornerShape(And03Radius.RADIUS_S)
-                )
-        )
-
-        Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
-
         Text(
             text = stringResource(R.string.add_quote_bottom_sheet_title),
             style = And03Theme.typography.titleMedium,
@@ -114,6 +108,7 @@ fun AddQuoteBottomSheet(
             state = listState,
             modifier = Modifier
                 .weight(1f, fill = false)
+                .nestedScroll(rememberNestedScrollInteropConnection())
                 .drawVerticalScrollbar(listState, color = And03Theme.colors.outlineVariant),
             verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S),
             contentPadding = PaddingValues(bottom = And03Padding.PADDING_M)
@@ -135,7 +130,13 @@ fun AddQuoteBottomSheet(
                 ) {
                     QuoteCard(
                         quote = quote,
-                        onClick = { selectedQuoteId = quote.id },
+                        onClick = {
+                            if (selectedQuoteId == null || selectedQuoteId != quote.id) {
+                                selectedQuoteId = quote.id
+                            } else {
+                                selectedQuoteId = null
+                            }
+                        },
                     )
                 }
             }
@@ -150,7 +151,9 @@ fun AddQuoteBottomSheet(
                 contentDescription = null,
                 modifier = Modifier.size(And03IconSize.ICON_SIZE_S)
             )
+
             Spacer(modifier = Modifier.width(And03Spacing.SPACE_XS))
+
             Text(
                 text = stringResource(R.string.add_quote_bottom_sheet_new_sentence),
                 style = And03Theme.typography.labelLarge
@@ -163,12 +166,11 @@ fun AddQuoteBottomSheet(
             variant = ButtonVariant.Primary,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(And03ComponentSize.BUTTON_HEIGHT_L)
+                .height(And03ComponentSize.BUTTON_HEIGHT_L),
+            enabled = selectedQuoteId != null
         )
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
@@ -181,6 +183,7 @@ private fun AddQuoteBottomSheetPreview() {
             date = "2026.01.14"
         )
     }
+
     And03Theme {
         AddQuoteBottomSheet(quotes = dummyQuotes)
     }
