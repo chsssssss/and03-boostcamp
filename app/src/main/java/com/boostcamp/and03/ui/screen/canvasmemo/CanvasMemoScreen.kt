@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,14 +70,15 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
+import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 
 private object CanvasMemoScreenValues {
     val CANVAS_SIZE = 2000.dp
-    val MIN_SCALE = 0.5f
-    val MAX_SCALE = 2f
-    val MAX_OFFSET_RANGE = 1000f
+    const val MIN_SCALE = 0.5f
+    const val MAX_SCALE = 2f
+    const val MAX_OFFSET_RANGE = 1000f
 }
 
 @Composable
@@ -108,17 +110,10 @@ private fun CanvasMemoScreen(
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }
     var nodeSizes by remember { mutableStateOf<Map<String, IntSize>>(emptyMap()) }
 
+    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-
-    LaunchedEffect(uiState.bottomSheetType) {
-        if (uiState.bottomSheetType != null) {
-            sheetState.show()
-        } else {
-            sheetState.hide()
-        }
-    }
 
     fun clampOffset(
         newOffset: Offset,
@@ -274,8 +269,18 @@ private fun CanvasMemoScreen(
                         CanvasMemoBottomSheetType.AddQuote -> {
                             AddQuoteBottomSheet(
                                 quotes = uiState.quotes,
-                                onAddClick = { onAction(CanvasMemoAction.AddQuoteItem) },
-                                onNewSentenceClick = { onAction(CanvasMemoAction.AddNewQuote) },
+                                onAddClick = {
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onAction(CanvasMemoAction.AddQuoteItem)
+                                    }
+                                },
+                                onNewSentenceClick = {
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onAction(CanvasMemoAction.AddNewQuote)
+                                    }
+                                },
                                 onSearch = { /* TODO: onAction(CanvasMemoAction.SearchQuote()) 구현 */ }
                             )
                         }
@@ -314,7 +319,7 @@ private fun CanvasMemoScreen(
                     pageState = uiState.pageState,
                     enabled = uiState.characterNameState.text.isNotBlank() && uiState.quoteState.text.isNotBlank(),
                     onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
-                    onConfirm = { /* TODO: onAction(CanvasMemoAction.AddQuote) 구현 */ }
+                    onConfirm = { onAction(CanvasMemoAction.AddQuoteItem) }
                 )
             }
 

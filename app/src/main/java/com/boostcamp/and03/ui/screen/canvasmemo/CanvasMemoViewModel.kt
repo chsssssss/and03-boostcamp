@@ -188,7 +188,11 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     private fun handleAddQuote() {
-        // TODO: 새로운 구절 추가 동작 연동
+        _uiState.update {
+            it.copy(
+                bottomSheetType = null
+            )
+        }
     }
 
     private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
