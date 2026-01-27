@@ -54,11 +54,11 @@ import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 
 @Composable
 fun AddQuoteBottomSheet(
+    quotes: List<QuoteUiModel>,
+    onAddClick: () -> Unit,
+    onNewSentenceClick: () -> Unit,
+    onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
-    quotes: List<QuoteUiModel> = emptyList(),
-    onAddClick: () -> Unit = {},
-    onNewSentenceClick: () -> Unit = {},
-    onSearch: (String) -> Unit = {},
 ) {
     val searchState = rememberTextFieldState()
     val listState = rememberLazyListState()
@@ -185,6 +185,11 @@ private fun AddQuoteBottomSheetPreview() {
     }
 
     And03Theme {
-        AddQuoteBottomSheet(quotes = dummyQuotes)
+        AddQuoteBottomSheet(
+            quotes = dummyQuotes,
+            onAddClick = {},
+            onNewSentenceClick = {},
+            onSearch = {}
+        )
     }
 }
