@@ -25,7 +25,6 @@ import com.boostcamp.and03.ui.component.And03ActionDialog
 import com.boostcamp.and03.ui.component.EditableTextField
 import com.boostcamp.and03.ui.component.LabelAndEditableTextField
 import com.boostcamp.and03.ui.component.OCRBottomSheet
-import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialogValues.MAX_CHARACTER_COUNT
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -107,14 +106,15 @@ private fun QuoteInputSection(
             onSubmit = {},
             modifier = Modifier
                 .fillMaxWidth()
-                .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L)
+                .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L),
+            maxCharacterCount = AddQuoteDialogValues.MAX_CHARACTER_COUNT
         )
 
         Text(
             text = stringResource(
                 id = R.string.add_quote_text_count,
                 quoteState.text.length,
-                MAX_CHARACTER_COUNT
+                AddQuoteDialogValues.MAX_CHARACTER_COUNT
             ),
             modifier = Modifier.align(Alignment.End),
             style = And03Theme.typography.bodySmall,
