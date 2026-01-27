@@ -252,4 +252,10 @@ class CanvasMemoViewModel @Inject constructor(
             )
         }
     }
+
+    private fun checkPageInput(
+
+    ) {
+        
+    }
 }

@@ -36,7 +36,10 @@ data class CanvasMemoUiState(
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
     val totalPage: Int = 0
-)
+) {
+    val isQuoteSaveable: Boolean
+        get() = pageState.text.toString().toIntOrNull() in 1..totalPage && quoteState.text.isNotBlank()
+}
 
 data class RelationSelection(
     val fromNodeId: String?,
