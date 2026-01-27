@@ -62,6 +62,7 @@ import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
+import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlin.math.max
 import kotlin.math.min
 
@@ -79,11 +80,9 @@ fun CanvasMemoRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is CanvasMemoEvent.NavToBack -> navigateToBack()
-            }
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            is CanvasMemoEvent.NavToBack -> navigateToBack()
         }
     }
 
