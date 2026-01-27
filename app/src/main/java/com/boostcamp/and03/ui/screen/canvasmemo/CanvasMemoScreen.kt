@@ -65,6 +65,13 @@ import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import kotlin.math.max
 import kotlin.math.min
 
+private object CanvasMemoScreenValues {
+    val CANVAS_SIZE = 2000.dp
+    val MIN_SCALE = 0.5f
+    val MAX_SCALE = 2f
+    val MAX_OFFSET_RANGE = 1000f
+}
+
 @Composable
 fun CanvasMemoRoute(
     navigateToBack: () -> Unit,
@@ -93,20 +100,13 @@ private fun CanvasMemoScreen(
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }
-
-    val canvasSize = 2000.dp
-    val minScale = 0.5f
-    val maxScale = 2f
-
-    val maxOffsetRange = 1000f
-
     var nodeSizes by remember { mutableStateOf<Map<String, IntSize>>(emptyMap()) }
 
     fun clampOffset(
         newOffset: Offset,
     ): Offset {
-        val maxOffset = maxOffsetRange
-        val minOffset = -maxOffsetRange
+        val maxOffset = CanvasMemoScreenValues.MAX_OFFSET_RANGE
+        val minOffset = -CanvasMemoScreenValues.MAX_OFFSET_RANGE
 
         return Offset(
             x = max(minOffset, min(maxOffset, newOffset.x)),
@@ -141,7 +141,11 @@ private fun CanvasMemoScreen(
                     .fillMaxSize()
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
-                            val newScale = (scale * zoom).coerceIn(minScale, maxScale)
+                            val newScale = (scale * zoom)
+                                .coerceIn(
+                                    CanvasMemoScreenValues.MIN_SCALE,
+                                    CanvasMemoScreenValues.MAX_SCALE
+                                )
 
                             scale = newScale
                             panOffset = clampOffset(panOffset + pan)
@@ -150,7 +154,7 @@ private fun CanvasMemoScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(canvasSize)
+                        .size(CanvasMemoScreenValues.CANVAS_SIZE)
                         .graphicsLayer {
                             scaleX = scale
                             scaleY = scale
@@ -296,14 +300,22 @@ private fun CanvasMemoScreen(
                         iconRes = R.drawable.ic_add_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
                         onClick = {
-                            scale = (scale * 1.2f).coerceIn(minScale, maxScale)
+                            scale = (scale * 1.2f)
+                                .coerceIn(
+                                    CanvasMemoScreenValues.MIN_SCALE,
+                                    CanvasMemoScreenValues.MAX_SCALE
+                                )
                         }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_remove_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
                         onClick = {
-                            scale = (scale / 1.2f).coerceIn(minScale, maxScale)
+                            scale = (scale / 1.2f)
+                                .coerceIn(
+                                    CanvasMemoScreenValues.MIN_SCALE,
+                                    CanvasMemoScreenValues.MAX_SCALE
+                                )
                         }
                     ),
                     ToolAction(
