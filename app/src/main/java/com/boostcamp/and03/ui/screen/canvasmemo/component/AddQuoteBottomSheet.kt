@@ -107,7 +107,6 @@ fun AddQuoteBottomSheet(
             state = listState,
             modifier = Modifier
                 .weight(1f, fill = false)
-                .nestedScroll(rememberNestedScrollInteropConnection())
                 .drawVerticalScrollbar(listState, color = And03Theme.colors.outlineVariant),
             verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S),
             contentPadding = PaddingValues(bottom = And03Padding.PADDING_M)
