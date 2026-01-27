@@ -48,7 +48,7 @@ fun QuoteCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = And03Padding.PADDING_XL),
+                    .padding(horizontal = And03Padding.PADDING_XL),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
