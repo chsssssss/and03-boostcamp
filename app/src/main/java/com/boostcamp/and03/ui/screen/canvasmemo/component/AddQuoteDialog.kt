@@ -70,8 +70,7 @@ fun AddQuoteDialog(
                 placeholderRes = R.string.add_quote_page_hint,
                 onSubmit = {},
                 imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Number,
-                lineLimits = 1
+                keyboardType = KeyboardType.Number
             )
         }
     )
@@ -107,7 +106,8 @@ private fun QuoteInputSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L),
-            maxCharacterCount = AddQuoteDialogValues.MAX_CHARACTER_COUNT
+            maxCharacterCount = AddQuoteDialogValues.MAX_CHARACTER_COUNT,
+            lineLimits = AddQuoteDialogValues.MAX_CHARACTER_COUNT
         )
 
         Text(
