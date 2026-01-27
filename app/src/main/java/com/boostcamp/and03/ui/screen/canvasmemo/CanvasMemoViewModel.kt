@@ -1,12 +1,23 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.toRoute
+import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
+import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,18 +25,33 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CanvasMemoViewModel @Inject constructor() : ViewModel() {
+class CanvasMemoViewModel @Inject constructor(
+    private val bookStorageRepository: BookStorageRepository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    private val canvasMemoRoute = savedStateHandle.toRoute< Route.CanvasMemo>()
+    private val bookId = canvasMemoRoute.bookId
+    private val memoId = canvasMemoRoute.memoId // TODO: memoId에 해당하는 그래프 로드 구현
+
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
 
     private val _event: Channel<CanvasMemoEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
+    private val userId: String = "O12OmGoVY8FPYFElNjKN"
+
     init {
-        createInitialState()
+        viewModelScope.launch {
+            createInitialState(
+                userId = userId,
+                bookId = bookId
+            )
+        }
 
         handleConnectNodes(
             CanvasMemoAction.ConnectNodes(
@@ -36,13 +62,26 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    private fun createInitialState() {
+    private suspend fun createInitialState(
+        userId: String,
+        bookId: String
+    ) {
         val sampleGraph = MemoGraphFactory.createSample()
+        val characters = getCharacters(
+            userId = userId,
+            bookId = bookId
+        )
+        val quotes = getQuotes(
+            userId = userId,
+            bookId = bookId
+        )
 
         _uiState.update {
             it.copy(
                 nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() }
+                edges = sampleGraph.edges.map { it.toUiModel() },
+                characters = characters,
+                quotes = quotes
             )
         }
     }
@@ -53,14 +92,42 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         return MemoGraph(nodes, edges)
     }
 
+    private suspend fun getCharacters(
+        userId: String,
+        bookId: String
+    ): ImmutableList<CharacterUiModel> {
+        return bookStorageRepository.getCharacters(userId, bookId)
+            .map { it.toUiModel() }
+            .toImmutableList()
+    }
+
+    private suspend fun getQuotes(
+        userId: String,
+        bookId: String
+    ): ImmutableList<QuoteUiModel> {
+        return bookStorageRepository.getQuotes(userId, bookId)
+            .map { it.toUiModel() }
+            .toImmutableList()
+    }
+
     fun onAction(action: CanvasMemoAction) {
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
+
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
+
             is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
+
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
+
+            CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
+
+            CanvasMemoAction.AddQuote -> handleAddQuote()
+
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
+
             is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
+
             is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
         }
     }
@@ -98,6 +165,20 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             characterNameState = TextFieldState(),
             characterDescState = TextFieldState()
         )
+    }
+
+    private fun handleCloseQuoteDialog() {
+        _uiState.update {
+            it.copy(
+                isQuoteDialogVisible = false,
+                quoteState = TextFieldState(),
+                pageState = TextFieldState()
+            )
+        }
+    }
+
+    private fun handleAddQuote() {
+        // TODO: 새로운 구절 추가 동작 연동
     }
 
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {

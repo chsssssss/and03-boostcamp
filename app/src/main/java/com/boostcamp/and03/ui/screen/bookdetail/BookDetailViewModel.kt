@@ -125,7 +125,12 @@ class BookDetailViewModel @Inject constructor(
                 )
             )
 
-            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(BookDetailEvent.NavigateToCanvas(action.memoId))
+            is BookDetailAction.OnCanvasMemoClick -> _event.trySend(
+                BookDetailEvent.NavigateToCanvas(
+                    action.bookId,
+                    action.memoId
+                )
+            )
         }
     }
 

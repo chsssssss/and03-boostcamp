@@ -47,6 +47,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
@@ -115,21 +117,20 @@ private fun CanvasMemoScreen(
     Scaffold(
         topBar = {
             And03AppBar(
-                title = "임시 제목",
+                title = stringResource(R.string.canvas_memo_top_bar_title),
                 onBackClick = { onAction(CanvasMemoAction.ClickBack) }
             ) {
                 IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert_filled),
                         contentDescription = stringResource(
-                            R.string.content_description_more_button
+                            id = R.string.content_description_more_button
                         )
                     )
                 }
             }
         }
     ) { innerPadding ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -158,7 +159,6 @@ private fun CanvasMemoScreen(
                             transformOrigin = TransformOrigin(0f, 0f)
                         }
                 ) {
-
                     Arrows(
                         arrows = uiState.edges,
                         items = uiState.nodes,
@@ -215,6 +215,7 @@ private fun CanvasMemoScreen(
                         }
                     }
                 }
+
                 Card(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -236,7 +237,19 @@ private fun CanvasMemoScreen(
                 }
             }
 
-//
+            // BottomSheet 표시
+            if (uiState.isAddCharacterBottomSheetVisible) {
+                // TODO: 등장인물 추가 바텀시트 표시
+            }
+
+            if (uiState.isQuoteBottomSheetVisible) {
+                AddQuoteBottomSheet(
+                    quotes = uiState.quotes,
+                    onAddClick = { onAction(CanvasMemoAction.AddQuote) },
+                )
+            }
+
+            // Dialog 표시
 //                if (uiState.isRelationDialogVisible) {
 //                    RelationEditorDialog(
 //                        relationNameState = uiState.relationNameState,
@@ -260,6 +273,16 @@ private fun CanvasMemoScreen(
 //                    )
 //                }
 //            }
+
+            if (uiState.isQuoteDialogVisible) {
+                AddQuoteDialog(
+                    quoteState = uiState.quoteState,
+                    pageState = uiState.pageState,
+                    enabled = uiState.characterNameState.text.isNotBlank() && uiState.quoteState.text.isNotBlank(),
+                    onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
+                    onConfirm = { /* TODO: onAction(CanvasMemoAction.AddQuote) 구현 */ }
+                )
+            }
 
             ToolExpandableButton(
                 modifier = Modifier
