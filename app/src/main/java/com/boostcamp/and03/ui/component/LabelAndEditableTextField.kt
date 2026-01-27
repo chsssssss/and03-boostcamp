@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ fun LabelAndEditableTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     maxCharacterCount: Int = 10,
     lineLimits: Int = 1,
+    inputTransformation: InputTransformation = InputTransformation
 ) {
     Column(modifier = modifier) {
         Text(
@@ -47,6 +49,7 @@ fun LabelAndEditableTextField(
             keyboardType = keyboardType,
             maxCharacterCount = maxCharacterCount,
             lineLimits = lineLimits,
+            inputTransformation = inputTransformation,
             modifier = Modifier.fillMaxWidth()
         )
     }

@@ -30,12 +30,13 @@ fun EditableTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     maxCharacterCount: Int = 10,
     lineLimits: Int = 1,
+    inputTransformation: InputTransformation = InputTransformation
 ) {
     OutlinedTextField(
         state = state,
         modifier = modifier,
         placeholder = { Text(text = stringResource(placeholderRes)) },
-        inputTransformation = InputTransformation.maxLength(maxCharacterCount),
+        inputTransformation = inputTransformation.maxLength(maxCharacterCount),
         keyboardOptions = KeyboardOptions(
             autoCorrectEnabled = true,  // 키보드 자동 수정 기능
             keyboardType = keyboardType,
