@@ -29,13 +29,15 @@ object MemoGraphFactory {
             id = "1",
             name = "어린 왕자",
             description = "B612 소행성에서 온 아이",
-            offset = Offset(0f, 0f)
+            offset = Offset(0f, 0f),
+            imageUrl = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg"
         )
         val node2 = MemoNode.CharacterNode(
             id = "2",
             name = "여우",
             description = "길들여짐의 의미를 알려준 친구",
-            offset = Offset(100f, 0f)
+            offset = Offset(100f, 0f),
+            imageUrl = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg"
         )
         val node3 = MemoNode.QuoteNode(
             id = "3",

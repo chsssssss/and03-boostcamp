@@ -19,6 +19,7 @@ data class NodeResponse(
     val id: String,
     val title: String,
     val content: String,
+    val imageUrl: String,
     val nodeType: String,
     val startPage: Int?,
     val endPage: Int?,
