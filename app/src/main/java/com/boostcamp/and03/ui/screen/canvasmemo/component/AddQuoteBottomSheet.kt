@@ -56,8 +56,8 @@ fun AddQuoteBottomSheet(
     onAddClick: () -> Unit,
     onNewSentenceClick: () -> Unit,
     onSearch: (String) -> Unit,
-    isAdding: Boolean = false,
     modifier: Modifier = Modifier,
+    isAdding: Boolean = false,
 ) {
     val searchState = rememberTextFieldState()
     val listState = rememberLazyListState()
