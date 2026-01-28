@@ -73,8 +73,8 @@ fun MainNavHost(
                     memoId = memoId
                 )
             },
-            navigateToCanvas = { memoId ->
-                navigator.navigateToCanvas(memoId)
+            navigateToCanvas = { bookId, memoId ->
+                navigator.navigateToCanvas(bookId, memoId)
             },
         )
 
