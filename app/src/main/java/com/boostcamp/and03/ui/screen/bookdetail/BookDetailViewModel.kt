@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.BookDetailTab
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
@@ -101,7 +101,8 @@ class BookDetailViewModel @Inject constructor(
             is BookDetailAction.OnOpenQuoteForm -> _event.trySend(
                 BookDetailEvent.NavigateToQuoteForm(
                     action.bookId,
-                    action.quoteId
+                    action.quoteId,
+                    uiState.value.totalPage
                 )
             )
 
@@ -114,14 +115,16 @@ class BookDetailViewModel @Inject constructor(
             is BookDetailAction.OnOpenTextMemoForm -> _event.trySend(
                 BookDetailEvent.NavigateToTextMemoForm(
                     action.bookId,
-                    action.memoId
+                    action.memoId,
+                    uiState.value.totalPage
                 )
             )
 
             is BookDetailAction.OnOpenCanvasMemoForm -> _event.trySend(
                 BookDetailEvent.NavigateToCanvasMemoForm(
                     action.bookId,
-                    action.memoId
+                    action.memoId,
+                    uiState.value.totalPage
                 )
             )
 
@@ -168,54 +171,66 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadCharacters() {
-        try {
-            val result = bookRepository.getCharacters(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    characters = result
-                        .map { character -> character.toUiModel() }
-                        .toPersistentList(),
-                    charactersLoadState = LoadState.DONE
-                )
+    private fun loadCharacters() {
+        viewModelScope.launch {
+            try {
+                bookRepository.getCharacters(userId, bookId).collect { result ->
+                    Log.d("BookDetailViewModel", "observeCharacters: $result")
+                    _uiState.update {
+                        it.copy(
+                            characters = result
+                                .map { character -> character.toUiModel() }
+                                .toPersistentList(),
+                            charactersLoadState = LoadState.DONE
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(charactersLoadState = LoadState.ERROR) }
+                Log.e("BookDetailViewModel", "observeCharacters error: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(charactersLoadState = LoadState.ERROR) }
-            Log.d("BookDetailViewModel", "loadCharacters: ${e.message}")
         }
     }
 
-    private suspend fun loadQuotes() {
-        try {
-            val result = bookRepository.getQuotes(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    quotes = result
-                        .map { quote -> quote.toUiModel() }
-                        .toPersistentList(),
-                    quotesLoadState = LoadState.DONE
-                )
+    private fun loadQuotes() {
+        viewModelScope.launch {
+            try {
+                bookRepository.getQuotes(userId, bookId).collect { result ->
+                    Log.d("BookDetailViewModel", "observeQuotes: $result")
+                    _uiState.update {
+                        it.copy(
+                            quotes = result
+                                .map { quote -> quote.toUiModel() }
+                                .toPersistentList(),
+                            quotesLoadState = LoadState.DONE
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(quotesLoadState = LoadState.ERROR) }
+                Log.e("BookDetailViewModel", "observeQuotes error: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(quotesLoadState = LoadState.ERROR) }
-            Log.d("BookDetailViewModel", "loadQuotes: ${e.message}")
         }
     }
 
-    private suspend fun loadMemos() {
-        try {
-            val result = bookRepository.getMemos(userId, bookId)
-            _uiState.update {
-                it.copy(
-                    memos = result
-                        .map { memo -> memo.toUiModel() }
-                        .toPersistentList(),
-                    memosLoadState = LoadState.DONE
-                )
+    private fun loadMemos() {
+        viewModelScope.launch {
+            try {
+                bookRepository.getMemos(userId, bookId).collect { result ->
+                    Log.d("BookDetailViewModel", "observeMemos: $result")
+                    _uiState.update {
+                        it.copy(
+                            memos = result
+                                .map { memo -> memo.toUiModel() }
+                                .toPersistentList(),
+                            memosLoadState = LoadState.DONE
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(memosLoadState = LoadState.ERROR) }
+                Log.e("BookDetailViewModel", "observeMemos error: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(memosLoadState = LoadState.ERROR) }
-            Log.d("BookDetailViewModel", "loadMemos: ${e.message}")
         }
     }
 

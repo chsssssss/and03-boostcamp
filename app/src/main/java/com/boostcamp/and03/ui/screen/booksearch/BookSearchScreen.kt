@@ -36,7 +36,6 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
@@ -47,6 +46,7 @@ import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
+import com.google.common.collect.Multimaps.index
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 
@@ -64,8 +64,6 @@ fun BookSearchRoute(
             BookSearchEvent.NavigateBack -> onBackClick()
 
             BookSearchEvent.NavigateToManualAdd -> { /* TODO: 책 정보 입력 화면 구현 */ }
-
-            is BookSearchEvent.SaveFailure -> { /* TODO: 저장 실패 시 동작 구현 */ }
         }
     }
 
@@ -103,7 +101,12 @@ private fun BookSearchScreen(
                 onBackClick = { onAction(BookSearchAction.OnBackClick) },
                 actions = {
                     IconButton(
-                        onClick = { onAction(BookSearchAction.OnSaveClick) },
+                        onClick = {
+                            val index = uiState.selectedResultIndex ?: return@IconButton
+                            val selectedItem = searchResults[index] ?: return@IconButton
+
+                            onAction(BookSearchAction.OnSaveClick(selectedItem = selectedItem))
+                        },
                         enabled = uiState.isSaveEnabled
                     ) {
                         Icon(
@@ -174,9 +177,11 @@ private fun BookSearchScreen(
                 else -> {
                     BookSearchResultListSection(
                         searchResults = searchResults,
-                        selectedBookISBN = uiState.selectedBook?.isbn,
+                        selectedIndex = uiState.selectedResultIndex,
                         totalResultCount = totalResultCount,
-                        onItemClick = { onAction(BookSearchAction.OnItemClick(item = it)) }
+                        onItemClick = { index ->
+                            onAction(BookSearchAction.OnItemClick(index = index))
+                        }
                     )
                 }
             }
@@ -187,9 +192,9 @@ private fun BookSearchScreen(
 @Composable
 private fun BookSearchResultListSection(
     searchResults: LazyPagingItems<BookSearchResultUiModel>,
-    selectedBookISBN: String?,
+    selectedIndex: Int?,
     totalResultCount: Int,
-    onItemClick: (BookSearchResultUiModel) -> Unit,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -204,7 +209,7 @@ private fun BookSearchResultListSection(
         ) {
             items(
                 count = searchResults.itemCount,
-                key = searchResults.itemKey { it.isbn }
+                key = { index -> index }
             ) { index ->
                 val book = searchResults[index] ?: return@items
                 SearchResultItem(
@@ -212,8 +217,8 @@ private fun BookSearchResultListSection(
                     title = book.title,
                     authors = book.authors,
                     publisher = book.publisher,
-                    isSelected = book.isbn == selectedBookISBN,
-                    onClick = { onItemClick(book) }
+                    isSelected = index == selectedIndex,
+                    onClick = { onItemClick(index) }
                 )
             }
         }
@@ -286,13 +291,7 @@ private fun SearchResultCountText(count: Int) {
 private fun BookSearchScreenPreview() {
     val uiState = BookSearchUiState(
         query = "안드로이드",
-        selectedBook = BookSearchResultUiModel(
-            isbn = "222",
-            title = "안드로이드 Compose 완벽 가이드",
-            authors = persistentListOf("Compose 팀"),
-            publisher = "구글",
-            thumbnail = ""
-        )
+        selectedResultIndex = 1
     )
 
     val previewBooks = listOf(
@@ -331,7 +330,7 @@ private fun BookSearchScreenPreview() {
 private fun BookSearchScreenEmptyBeforeQueryPreview() {
     val uiState = BookSearchUiState(
         query = "",
-        selectedBook = null
+        selectedResultIndex = null
     )
 
     val pagingItems = flowOf(

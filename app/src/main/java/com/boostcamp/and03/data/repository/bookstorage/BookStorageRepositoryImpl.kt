@@ -1,14 +1,10 @@
-package com.boostcamp.and03.data.repository.book_storage
+package com.boostcamp.and03.data.repository.bookstorage
 
-import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSource
+import com.boostcamp.and03.data.datasource.remote.bookstorage.BookStorageDataSource
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.memo.MemoDataSource
 import com.boostcamp.and03.data.datasource.remote.quote.QuoteDataSource
 import com.boostcamp.and03.data.model.request.BookStorageRequest
-import com.boostcamp.and03.data.model.request.CanvasMemoRequest
-import com.boostcamp.and03.data.model.request.CharacterRequest
-import com.boostcamp.and03.data.model.request.QuoteRequest
-import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
@@ -21,6 +17,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BookStorageRepositoryImpl @Inject constructor(
@@ -56,7 +53,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getCharacters(
         userId: String,
         bookId: String
-    ): List<CharacterResponse> {
+    ): Flow<List<CharacterResponse>> {
         return characterDataSource.getCharacters(
             userId,
             bookId
@@ -116,7 +113,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getQuotes(
         userId: String,
         bookId: String
-    ): List<QuoteResponse> {
+    ): Flow<List<QuoteResponse>> {
         return quoteDataSource.getQuotes(
             userId,
             bookId
@@ -176,7 +173,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getMemos(
         userId: String,
         bookId: String
-    ): List<MemoResponse> {
+    ): Flow<List<MemoResponse>> {
         return memoDataSource.getMemos(
             userId,
             bookId

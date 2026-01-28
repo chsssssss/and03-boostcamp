@@ -5,13 +5,14 @@ import com.boostcamp.and03.data.model.request.TextMemoRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.MemoResponse
 import com.boostcamp.and03.data.model.response.memo.TextMemoResponse
+import kotlinx.coroutines.flow.Flow
 
 interface MemoDataSource {
 
-    suspend fun getMemos(
+    fun getMemos(
         userId: String,
         bookId: String
-    ): List<MemoResponse>
+    ): Flow<List<MemoResponse>>
 
     suspend fun addTextMemo(
         userId: String,

@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.boostcamp.and03.data.api.BookSearchApiConstants
 import com.boostcamp.and03.data.datasource.paging.BookSearchPagingSource
-import com.boostcamp.and03.data.datasource.remote.book_detail.BookDetailRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.bookdetail.BookDetailRemoteDataSource
 import com.boostcamp.and03.data.datasource.remote.search.BookSearchRemoteDataSource
 import com.boostcamp.and03.data.model.response.BookSearchResultItem
 import kotlinx.coroutines.flow.Flow
