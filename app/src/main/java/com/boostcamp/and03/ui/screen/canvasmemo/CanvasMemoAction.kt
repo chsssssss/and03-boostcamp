@@ -37,4 +37,5 @@ sealed interface CanvasMemoAction {
     data class ConfirmRelation(val fromId: String, val toId: String, val name: String) :
         CanvasMemoAction
 
+    data class onClickSave(val userId: String, val bookId: String, val memoId: String) : CanvasMemoAction
 }

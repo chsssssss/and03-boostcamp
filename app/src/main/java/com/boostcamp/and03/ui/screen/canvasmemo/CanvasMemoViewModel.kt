@@ -138,6 +138,9 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.ConfirmRelation -> {
                 handleConnectNodes(action)
             }
+            is CanvasMemoAction.onClickSave -> {
+                onSaveCanvasMemo(action.userId, action.bookId, action.memoId)
+            }
         }
     }
 
@@ -246,8 +249,6 @@ class CanvasMemoViewModel @Inject constructor(
                 edges = updatedGraph.edges.map { it.toUiModel() },
             )
         }
-
-        onSaveCanvasMemo(userId, bookId, memoId)
 
         resetRelation()
     }
