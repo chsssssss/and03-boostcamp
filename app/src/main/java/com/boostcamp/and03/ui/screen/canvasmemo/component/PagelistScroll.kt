@@ -27,7 +27,6 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 
 @Composable
 fun PagelistScroll(
@@ -74,12 +73,12 @@ private fun PagelistItem(
 ) {
     val pageText = if (startPage == endPage) {
         stringResource(
-            id = R.string.canvas_memo_editor_page_list_scroll_single_page,
+            id = R.string.canvas_memo_page_list_scroll_single_page,
             startPage
         )
     } else {
         stringResource(
-            id = R.string.canvas_memo_editor_page_list_scroll_page_range,
+            id = R.string.canvas_memo_page_list_scroll_page_range,
             startPage,
             endPage
         )

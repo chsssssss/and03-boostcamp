@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +36,9 @@ fun And03ActionDialog(
             color = And03Theme.colors.surface
         ) {
             Column(
-                modifier = modifier.padding(And03Padding.PADDING_L),
+                modifier = modifier
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
             ) {
