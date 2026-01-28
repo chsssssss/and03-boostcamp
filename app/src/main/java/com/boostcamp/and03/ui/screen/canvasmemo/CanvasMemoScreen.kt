@@ -57,6 +57,8 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.QuoteItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
@@ -66,12 +68,12 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBa
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
-import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
+import com.google.common.math.LinearTransformation.vertical
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -146,47 +148,68 @@ private fun CanvasMemoScreen(
             }
         },
         bottomBar = {
-            if (uiState.isBottomBarVisible) {
-                MainBottomBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .windowInsetsPadding(
-                            WindowInsets.safeDrawing.only(
-                                WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+            when {
+                uiState.isBottomBarVisible -> {
+                    MainBottomBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(
+                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                                )
+                            ),
+                        items = listOf(
+                            MainBottomBarItem(
+                                type = MainBottomBarType.NODE,
+                                label = stringResource(R.string.canvas_bottom_bar_node),
+                                icon = Icons.Default.PersonAdd,
+                                backgroundColor = CanvasMemoColors.Node
+                            ),
+                            MainBottomBarItem(
+                                type = MainBottomBarType.RELATION,
+                                label = stringResource(R.string.canvas_bottom_bar_relation),
+                                icon = Icons.Default.Link,
+                                backgroundColor = CanvasMemoColors.Relation
+                            ),
+                            MainBottomBarItem(
+                                type = MainBottomBarType.QUOTE,
+                                label = stringResource(R.string.canvas_bottom_bar_quote),
+                                icon = Icons.Default.FormatQuote,
+                                backgroundColor = CanvasMemoColors.Quote
+                            ),
+                            MainBottomBarItem(
+                                type = MainBottomBarType.DELETE,
+                                label = stringResource(R.string.canvas_bottom_bar_delete),
+                                icon = Icons.Default.Delete,
+                                backgroundColor = CanvasMemoColors.Delete
+                            )
+
+                        ),
+                        selectedType = uiState.selectedBottomBarType,
+                        onItemClick = { type ->
+                            onAction(CanvasMemoAction.OnBottomBarClick(type))
+                        }
+                    )
+                }
+
+                uiState.quoteToPlace != null -> {
+                    AlertMessageCard(
+                        message = stringResource(R.string.canvas_memo_place_item_message),
+                        actions = listOf(
+                            AlertAction(
+                                text = stringResource(R.string.common_cancel),
+                                onClick = { onAction(CanvasMemoAction.CancelPlaceItem) }
                             )
                         ),
-                    items = listOf(
-                        MainBottomBarItem(
-                            type = MainBottomBarType.NODE,
-                            label = stringResource(R.string.canvas_bottom_bar_node),
-                            icon = Icons.Default.PersonAdd,
-                            backgroundColor = CanvasMemoColors.Node
-                        ),
-                        MainBottomBarItem(
-                            type = MainBottomBarType.RELATION,
-                            label = stringResource(R.string.canvas_bottom_bar_relation),
-                            icon = Icons.Default.Link,
-                            backgroundColor = CanvasMemoColors.Relation
-                        ),
-                        MainBottomBarItem(
-                            type = MainBottomBarType.QUOTE,
-                            label = stringResource(R.string.canvas_bottom_bar_quote),
-                            icon = Icons.Default.FormatQuote,
-                            backgroundColor = CanvasMemoColors.Quote
-                        ),
-                        MainBottomBarItem(
-                            type = MainBottomBarType.DELETE,
-                            label = stringResource(R.string.canvas_bottom_bar_delete),
-                            icon = Icons.Default.Delete,
-                            backgroundColor = CanvasMemoColors.Delete
-                        )
-
-                    ),
-                    selectedType = uiState.selectedBottomBarType,
-                    onItemClick = { type ->
-                        onAction(CanvasMemoAction.OnBottomBarClick(type))
-                    }
-                )
+                        modifier = Modifier
+                            .padding(And03Padding.PADDING_XL)
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(
+                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                                )
+                            )
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -318,10 +341,10 @@ private fun CanvasMemoScreen(
                         CanvasMemoBottomSheetType.AddQuote -> {
                             AddQuoteBottomSheet(
                                 quotes = uiState.quotes,
-                                onAddClick = {
+                                onAddClick = { quote ->
                                     scope.launch {
                                         sheetState.hide()
-                                        onAction(CanvasMemoAction.AddQuoteItem)
+                                        onAction(CanvasMemoAction.PrepareQuotePlacement(quote))
                                     }
                                 },
                                 onNewSentenceClick = {

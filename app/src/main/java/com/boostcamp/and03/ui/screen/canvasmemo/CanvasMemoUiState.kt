@@ -18,9 +18,6 @@ data class CanvasMemoUiState(
 
     val bottomSheetType: CanvasMemoBottomSheetType? = null,
 
-    val isAddingCharacter: Boolean = false,
-    val isAddingQuote: Boolean = false,
-
     val isAddCharacterDialogVisible: Boolean = false,
     val isRelationDialogVisible: Boolean = false,
     val isQuoteDialogVisible: Boolean = false,
@@ -38,7 +35,8 @@ data class CanvasMemoUiState(
     val totalPage: Int = 0,
 
     val isSaving: Boolean = false,
-    val isBottomBarVisible: Boolean = true
+    val isBottomBarVisible: Boolean = true,
+    val quoteToPlace: QuoteUiModel? = null
 ) {
     val isQuoteSaveable: Boolean
         get() = pageState.text.toString().toIntOrNull() in 1..totalPage && quoteState.text.isNotBlank()

@@ -3,6 +3,7 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 
 import androidx.compose.ui.geometry.Offset
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 
 sealed interface CanvasMemoAction {
 
@@ -16,7 +17,7 @@ sealed interface CanvasMemoAction {
 
     data object CloseQuoteDialog : CanvasMemoAction
 
-    data object AddQuoteItem : CanvasMemoAction
+    data class PrepareQuotePlacement(val quote: QuoteUiModel) : CanvasMemoAction
 
     data object SaveQuote : CanvasMemoAction
 
@@ -31,7 +32,16 @@ sealed interface CanvasMemoAction {
 
     data class OnBottomBarClick(val type: MainBottomBarType) : CanvasMemoAction
 
-    data class MoveNode(val nodeId: String, val newOffset: Offset) : CanvasMemoAction
+    data class MoveNode(
+        val nodeId: String,
+        val newOffset: Offset
+    ) : CanvasMemoAction
 
-    data class ConnectNodes(val fromId: String, val toId: String, val name: String) : CanvasMemoAction
+    data class ConnectNodes(
+        val fromId: String,
+        val toId: String,
+        val name: String
+    ) : CanvasMemoAction
+
+    data object CancelPlaceItem : CanvasMemoAction
 }

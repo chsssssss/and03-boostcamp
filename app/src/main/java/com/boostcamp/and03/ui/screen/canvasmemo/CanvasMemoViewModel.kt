@@ -124,7 +124,7 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
-            CanvasMemoAction.AddQuoteItem -> handleAddQuoteItem()
+            is CanvasMemoAction.PrepareQuotePlacement -> handlePrepareQuotePlacement(action.quote)
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
 
@@ -137,6 +137,8 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
 
             is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
+
+            CanvasMemoAction.CancelPlaceItem -> handleCancelPlaceItem()
         }
     }
 
@@ -189,10 +191,14 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    private fun handleAddQuoteItem() {
-        _uiState.update { it.copy(bottomSheetType = null) }
-
-        placeQuoteItem()
+    private fun handlePrepareQuotePlacement(quote: QuoteUiModel) {
+        _uiState.update {
+            it.copy(
+                quoteToPlace = quote,
+                bottomSheetType = null,
+                isBottomBarVisible = false,
+            )
+        }
     }
 
     private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
@@ -280,6 +286,15 @@ class CanvasMemoViewModel @Inject constructor(
             it.copy(
                 selectedBottomBarType = action.type,
                 bottomSheetType = sheetType
+            )
+        }
+    }
+
+    private fun handleCancelPlaceItem() {
+        _uiState.update {
+            it.copy(
+                quoteToPlace = null,
+                isBottomBarVisible = true
             )
         }
     }
