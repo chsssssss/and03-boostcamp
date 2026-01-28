@@ -23,8 +23,7 @@ fun NodeResponse.toDomain(): MemoNode =
         "QUOTE" -> MemoNode.QuoteNode(
             id = id,
             content = content,
-            startPage = startPage ?: 0,
-            endPage = endPage ?: 0,
+            page = requireNotNull(page),
             offset = Offset(x, y)
         )
 
