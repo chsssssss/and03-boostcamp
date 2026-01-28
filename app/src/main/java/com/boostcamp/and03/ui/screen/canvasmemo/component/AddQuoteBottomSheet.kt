@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo.component
 
+import android.R.attr.enabled
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +54,7 @@ import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 @Composable
 fun AddQuoteBottomSheet(
     quotes: List<QuoteUiModel>,
-    onAddClick: () -> Unit,
+    onAddClick: (QuoteUiModel) -> Unit,
     onNewSentenceClick: () -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -61,7 +62,7 @@ fun AddQuoteBottomSheet(
 ) {
     val searchState = rememberTextFieldState()
     val listState = rememberLazyListState()
-    var selectedQuoteId by remember { mutableStateOf<String?>(null) }
+    var selectedQuote by remember { mutableStateOf<QuoteUiModel?>(null) }
 
     Column(
         modifier = modifier
@@ -115,7 +116,7 @@ fun AddQuoteBottomSheet(
                 items = quotes,
                 key = { it.id }
             ) { quote ->
-                val isSelected = selectedQuoteId == quote.id
+                val isSelected = selectedQuote?.id == quote.id
 
                 Box(
                     modifier = Modifier
@@ -129,10 +130,10 @@ fun AddQuoteBottomSheet(
                     QuoteCard(
                         quote = quote,
                         onClick = {
-                            if (selectedQuoteId == null || selectedQuoteId != quote.id) {
-                                selectedQuoteId = quote.id
+                            if (selectedQuote?.id == quote.id) {
+                                selectedQuote = null
                             } else {
-                                selectedQuoteId = null
+                                selectedQuote = quote
                             }
                         },
                     )
@@ -164,12 +165,12 @@ fun AddQuoteBottomSheet(
             } else {
                 stringResource(R.string.add_quote_bottom_sheet_button_adding)
             },
-            onClick = onAddClick,
+            onClick = { selectedQuote?.let(onAddClick) },
             variant = ButtonVariant.Primary,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(And03ComponentSize.BUTTON_HEIGHT_L),
-            enabled = selectedQuoteId != null && !isAdding
+            enabled = selectedQuote != null && !isAdding
         )
     }
 }
