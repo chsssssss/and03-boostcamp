@@ -1,9 +1,15 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,10 +20,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CanvasMemoViewModel @Inject constructor() : ViewModel() {
+class CanvasMemoViewModel @Inject constructor(
+    private val bookStorageRepository: BookStorageRepository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val canvasMemoRoute = savedStateHandle.toRoute<Route.CanvasMemo>()
+
+    private val bookId = canvasMemoRoute.bookId
+    private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
@@ -27,6 +42,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
 
     init {
         createInitialState()
+        loadCharacters()
     }
 
     private fun createInitialState() {
@@ -35,8 +51,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         _uiState.update {
             it.copy(
                 nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() },
-                characters = emptyList() // 추후 서버 연동
+                edges = sampleGraph.edges.map { it.toUiModel() }
             )
         }
     }
@@ -45,6 +60,20 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         val nodes = _uiState.value.nodes.mapValues { it.value.node }
         val edges = _uiState.value.edges.map { it.edge }
         return MemoGraph(nodes, edges)
+    }
+
+    private fun loadCharacters() {
+        viewModelScope.launch {
+            bookStorageRepository
+                .getCharacters(userId = userId, bookId = bookId)
+                .collect { list ->
+                    _uiState.update {
+                        it.copy(
+                            characters = list.map { it.toUiModel() }
+                        )
+                    }
+                }
+        }
     }
 
     fun onAction(action: CanvasMemoAction) {
