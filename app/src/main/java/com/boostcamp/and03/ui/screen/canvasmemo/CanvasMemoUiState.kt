@@ -35,7 +35,10 @@ data class CanvasMemoUiState(
 
     val characters: ImmutableList<CharacterUiModel> = persistentListOf(),
     val quotes: ImmutableList<QuoteUiModel> = persistentListOf(),
-    val totalPage: Int = 0
+    val totalPage: Int = 0,
+
+    val isSaving: Boolean = false
+
 ) {
     val isQuoteSaveable: Boolean
         get() = pageState.text.toString().toIntOrNull() in 1..totalPage && quoteState.text.isNotBlank()

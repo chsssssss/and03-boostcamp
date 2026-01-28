@@ -8,6 +8,7 @@
     <string name="empty_message">아직 등록된 내용이 없어요</string>
     <string name="common_cancel">취소</string>
     <string name="common_save">저장</string>
+    <string name="common_saving">저장 중...</string>
     <string name="common_error_text">에러가 발생했어요.</string>
     <string name="common_touch_item_place">아이템을 추가할 위치를 터치하세요!</string>
 

@@ -54,16 +54,21 @@ private object DigitOnlyTransformation : InputTransformation {
 fun AddQuoteDialog(
     quoteState: TextFieldState,
     pageState: TextFieldState,
-    enabled: Boolean = false,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
+    enabled: Boolean,
+    isSaving: Boolean
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
 
     And03ActionDialog(
         title = stringResource(id = R.string.add_quote_title),
         dismissText = stringResource(id = R.string.common_cancel),
-        confirmText = stringResource(id = R.string.common_save),
+        confirmText = if (!isSaving) {
+            stringResource(R.string.common_save)
+        } else {
+            stringResource(R.string.common_saving)
+        },
         onDismiss = onDismiss,
         onConfirm = onConfirm,
         enabled = enabled,
@@ -149,7 +154,9 @@ private fun AddQuoteDialogPreview() {
             quoteState = TextFieldState(),
             pageState = TextFieldState(),
             onDismiss = {},
-            onConfirm = {}
+            onConfirm = {},
+            enabled = false,
+            isSaving = false
         )
     }
 }

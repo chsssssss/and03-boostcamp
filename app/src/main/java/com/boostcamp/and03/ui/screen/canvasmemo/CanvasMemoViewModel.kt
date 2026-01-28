@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.util.Log.e
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -126,7 +127,7 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
-            CanvasMemoAction.AddQuoteItem -> handleAddQuote()
+            CanvasMemoAction.AddQuoteItem -> handleAddQuoteItem()
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
 
@@ -189,12 +190,13 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    private fun handleAddQuote() {
+    private fun handleAddQuoteItem() {
         _uiState.update {
             it.copy(
                 bottomSheetType = null
             )
         }
+        placeQuoteItem()
     }
 
     private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
@@ -202,6 +204,8 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     private fun handleAddNewQuote() {
+        saveNewQuote()
+
         _uiState.update {
             it.copy(
                 isQuoteDialogVisible = true,
@@ -210,6 +214,40 @@ class CanvasMemoViewModel @Inject constructor(
                 pageState = TextFieldState()
             )
         }
+
+        placeQuoteItem()
+    }
+
+    private fun saveNewQuote() {
+        if (_uiState.value.isSaving || !_uiState.value.isQuoteSaveable) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true) }
+
+            try {
+                val quote = _uiState.value.quoteState.text.toString()
+                val page = _uiState.value.pageState.text.toString().toInt()
+
+                bookStorageRepository.addQuote(
+                    userId = userId,
+                    bookId = bookId,
+                    quote = QuoteUiModel(
+                        content = quote,
+                        page = page
+                    )
+                )
+
+                _uiState.update { it.copy(isQuoteDialogVisible = false) }
+            } catch (e: Exception) {
+                // TODO: 오류 메시지 UI 표시 구현
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
+            }
+        }
+    }
+
+    private fun placeQuoteItem() {
+
     }
 
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
@@ -251,11 +289,5 @@ class CanvasMemoViewModel @Inject constructor(
                 bottomSheetType = sheetType
             )
         }
-    }
-
-    private fun checkPageInput(
-
-    ) {
-        
     }
 }
