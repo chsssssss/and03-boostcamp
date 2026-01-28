@@ -5,18 +5,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.ui.navigation.Route
-import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
-import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -46,12 +43,17 @@ class CanvasMemoViewModel @Inject constructor(
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     init {
-        viewModelScope.launch {
-            createInitialState(
-                userId = userId,
-                bookId = bookId
-            )
-        }
+        createInitialState()
+
+        observeCharacters(
+            userId = userId,
+            bookId = bookId
+        )
+
+        observeQuotes(
+            userId = userId,
+            bookId = bookId
+        )
 
         handleConnectNodes(
             CanvasMemoAction.ConnectNodes(
@@ -62,26 +64,13 @@ class CanvasMemoViewModel @Inject constructor(
         )
     }
 
-    private suspend fun createInitialState(
-        userId: String,
-        bookId: String
-    ) {
+    private fun createInitialState() {
         val sampleGraph = MemoGraphFactory.createSample()
-        val characters = getCharacters(
-            userId = userId,
-            bookId = bookId
-        )
-        val quotes = getQuotes(
-            userId = userId,
-            bookId = bookId
-        )
 
         _uiState.update {
             it.copy(
                 nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() },
-                characters = characters,
-                quotes = quotes
+                edges = sampleGraph.edges.map { it.toUiModel() }
             )
         }
     }
@@ -92,22 +81,30 @@ class CanvasMemoViewModel @Inject constructor(
         return MemoGraph(nodes, edges)
     }
 
-    private suspend fun getCharacters(
+    private fun observeCharacters(
         userId: String,
         bookId: String
-    ): ImmutableList<CharacterUiModel> {
-        return bookStorageRepository.getCharacters(userId, bookId)
-            .map { it.toUiModel() }
-            .toImmutableList()
+    ) {
+        viewModelScope.launch {
+            bookStorageRepository.getCharacters(userId, bookId).collect { result ->
+                _uiState.update { state ->
+                    state.copy(characters = result.map { it.toUiModel() }.toImmutableList())
+                }
+            }
+        }
     }
 
-    private suspend fun getQuotes(
+    private fun observeQuotes(
         userId: String,
         bookId: String
-    ): ImmutableList<QuoteUiModel> {
-        return bookStorageRepository.getQuotes(userId, bookId)
-            .map { it.toUiModel() }
-            .toImmutableList()
+    ) {
+        viewModelScope.launch {
+            bookStorageRepository.getQuotes(userId, bookId).collect { result ->
+                _uiState.update { state ->
+                    state.copy(quotes = result.map { it.toUiModel() }.toImmutableList())
+                }
+            }
+        }
     }
 
     fun onAction(action: CanvasMemoAction) {
