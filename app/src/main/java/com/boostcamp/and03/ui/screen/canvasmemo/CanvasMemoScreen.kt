@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -69,11 +70,9 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBa
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
-import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
-import com.google.common.math.LinearTransformation.vertical
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -221,6 +220,13 @@ private fun CanvasMemoScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .pointerInput(uiState.quoteToPlace) {
+                        if (uiState.quoteToPlace != null) {
+                            detectTapGestures { tapOffset ->
+                                onAction(CanvasMemoAction.TapCanvas(tapOffset))
+                            }
+                        }
+                    }
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
                             val newScale = (scale * zoom)
@@ -513,7 +519,6 @@ fun Arrows(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

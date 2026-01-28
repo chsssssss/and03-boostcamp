@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
@@ -139,6 +141,8 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
 
             CanvasMemoAction.CancelPlaceItem -> handleCancelPlaceItem()
+
+            is CanvasMemoAction.TapCanvas -> handleTapCanvas(action.tapPositionOnScreen)
         }
     }
 
@@ -293,6 +297,33 @@ class CanvasMemoViewModel @Inject constructor(
     private fun handleCancelPlaceItem() {
         _uiState.update {
             it.copy(
+                quoteToPlace = null,
+                isBottomBarVisible = true
+            )
+        }
+    }
+
+    private fun handleTapCanvas(tapPositionOnScreen: Offset) {
+        val quote = _uiState.value.quoteToPlace ?: return
+
+        val zoomScale = _uiState.value.zoomScale
+        val canvasViewOffset = _uiState.value.canvasViewOffset
+
+        val canvasPosition = Offset(
+            x = (tapPositionOnScreen.x - canvasViewOffset.x) / zoomScale,
+            y = (tapPositionOnScreen.y - canvasViewOffset.y) / zoomScale
+        )
+
+        val newQuote = MemoNode.QuoteNode(
+            id = quote.id,
+            content = quote.content,
+            page = quote.page,
+            offset = canvasPosition
+        )
+
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes + (newQuote.id to newQuote.toUiModel()),
                 quoteToPlace = null,
                 isBottomBarVisible = true
             )

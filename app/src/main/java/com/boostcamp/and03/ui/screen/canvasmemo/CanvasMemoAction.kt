@@ -44,4 +44,6 @@ sealed interface CanvasMemoAction {
     ) : CanvasMemoAction
 
     data object CancelPlaceItem : CanvasMemoAction
+
+    data class TapCanvas(val tapPositionOnScreen: Offset) : CanvasMemoAction
 }

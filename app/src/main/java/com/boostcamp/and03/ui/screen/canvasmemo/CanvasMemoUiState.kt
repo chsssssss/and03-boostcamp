@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.ui.geometry.Offset
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
@@ -12,6 +13,9 @@ import kotlinx.collections.immutable.persistentListOf
 data class CanvasMemoUiState(
     val nodes: Map<String, MemoNodeUiModel> = emptyMap(),
     val edges: List<EdgeUiModel> = emptyList(),
+
+    val zoomScale: Float = 1f,
+    val canvasViewOffset: Offset = Offset.Zero, // 손가락으로 화면을 드래그했을 때 캔버스가 이동한 거리
 
     val relationSelection: RelationSelection? = null,
     val relationNameState: TextFieldState = TextFieldState(),
