@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import android.R.attr.action
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
@@ -30,6 +29,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private object CanvasZoomValues {
+    const val MIN_ZOOM = 0.5f
+    const val MAX_ZOOM = 2.0f
+    const val MAX_MOVE_RANGE = 1000f
+}
 
 @HiltViewModel
 class CanvasMemoViewModel @Inject constructor(
@@ -177,6 +182,19 @@ class CanvasMemoViewModel @Inject constructor(
             }
 
             is CanvasMemoAction.UpdateQuoteItemSize -> { handleUpdateQuoteItemSize(action) }
+
+            is CanvasMemoAction.ZoomCanvasByGesture -> {
+                handleZoomCanvasByGesture(
+                    action.moveOffset,
+                    action.zoomChange
+                )
+            }
+
+            CanvasMemoAction.ZoomIn -> handleZoomIn()
+
+            CanvasMemoAction.ZoomOut -> handleZoomOut()
+
+            CanvasMemoAction.ResetZoom -> handleResetZoom()
         }
     }
 
@@ -686,5 +704,78 @@ class CanvasMemoViewModel @Inject constructor(
      */
     private fun handleUpdateQuoteItemSize(action: CanvasMemoAction.UpdateQuoteItemSize) {
         _uiState.update { it.copy(quoteItemSizeDp = action.size) }
+    }
+
+    /**
+     * 손가락으로 캔버스를 확대 또는 축소합니다.
+     * 50%부터 200%까지 조절 가능합니다.
+     */
+    private fun handleZoomCanvasByGesture(
+        moveOffset: Offset,
+        zoomChange: Float
+    ) {
+        _uiState.update {
+            val newZoomScale = (it.zoomScale * zoomChange)
+                .coerceIn(
+                    minimumValue = CanvasZoomValues.MIN_ZOOM,
+                    maximumValue = CanvasZoomValues.MAX_ZOOM
+                )
+
+            val newCanvasViewOffset = clampCanvasViewOffset(
+                it.canvasViewOffset + moveOffset
+            )
+
+            it.copy(
+                zoomScale = newZoomScale,
+                canvasViewOffset = newCanvasViewOffset
+            )
+        }
+    }
+
+    /**
+     * 캔버스를 20% 확대합니다.
+     */
+    private fun handleZoomIn() {
+        _uiState.update { it
+            it.copy(
+                zoomScale = (it.zoomScale + 0.2f)
+                    .coerceIn(
+                        CanvasZoomValues.MIN_ZOOM,
+                        CanvasZoomValues.MAX_ZOOM
+                    )
+            )
+        }
+    }
+
+    /**
+     * 캔버스를 20% 축소합니다.
+     */
+    private fun handleZoomOut() {
+        _uiState.update {
+            it.copy(
+                zoomScale = (it.zoomScale - 0.2f)
+                    .coerceIn(
+                        CanvasZoomValues.MIN_ZOOM,
+                        CanvasZoomValues.MAX_ZOOM
+                    )
+            )
+        }
+    }
+
+    /**
+     * 캔버스의 확대 축소 배율을 초기화합니다.
+     */
+    private fun handleResetZoom() {
+        _uiState.update { it.copy(zoomScale = 1f) }
+    }
+
+    private fun clampCanvasViewOffset(offset: Offset): Offset {
+        val max = CanvasZoomValues.MAX_MOVE_RANGE
+        val min = -CanvasZoomValues.MAX_MOVE_RANGE
+
+        return Offset(
+            x = offset.x.coerceIn(min, max),
+            y = offset.y.coerceIn(min, max)
+        )
     }
 }

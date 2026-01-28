@@ -1,9 +1,11 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.graphics.Canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
+
 
 sealed interface CanvasMemoAction {
 
@@ -60,4 +62,15 @@ sealed interface CanvasMemoAction {
     data class TapCanvas(val tapPositionOnScreen: Offset) : CanvasMemoAction
 
     data class UpdateQuoteItemSize(val size: IntSize) : CanvasMemoAction
+
+    data class ZoomCanvasByGesture(
+        val moveOffset: Offset,
+        val zoomChange: Float
+    ) : CanvasMemoAction
+
+    data object ZoomIn : CanvasMemoAction
+
+    data object ZoomOut : CanvasMemoAction
+
+    data object ResetZoom : CanvasMemoAction
 }

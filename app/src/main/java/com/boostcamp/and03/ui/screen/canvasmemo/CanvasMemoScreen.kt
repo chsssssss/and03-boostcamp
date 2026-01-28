@@ -33,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -87,9 +86,6 @@ import kotlin.math.min
 
 private object CanvasMemoScreenValues {
     val CANVAS_SIZE = 2000.dp
-    const val MIN_SCALE = 0.5f
-    const val MAX_SCALE = 2f
-    const val MAX_OFFSET_RANGE = 1000f
 }
 
 @Composable
@@ -117,26 +113,12 @@ private fun CanvasMemoScreen(
     uiState: CanvasMemoUiState,
     onAction: (CanvasMemoAction) -> Unit,
 ) {
-    var scale by remember { mutableFloatStateOf(1f) }
-    var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }
     var nodeSizes by remember { mutableStateOf<Map<String, IntSize>>(emptyMap()) }
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-
-    fun clampOffset(
-        newOffset: Offset,
-    ): Offset {
-        val maxOffset = CanvasMemoScreenValues.MAX_OFFSET_RANGE
-        val minOffset = -CanvasMemoScreenValues.MAX_OFFSET_RANGE
-
-        return Offset(
-            x = max(minOffset, min(maxOffset, newOffset.x)),
-            y = max(minOffset, min(maxOffset, newOffset.y))
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -249,14 +231,12 @@ private fun CanvasMemoScreen(
                     }
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
-                            val newScale = (scale * zoom)
-                                .coerceIn(
-                                    CanvasMemoScreenValues.MIN_SCALE,
-                                    CanvasMemoScreenValues.MAX_SCALE
+                            onAction(
+                                CanvasMemoAction.ZoomCanvasByGesture(
+                                    moveOffset = pan,
+                                    zoomChange = zoom
                                 )
-
-                            scale = newScale
-                            panOffset = clampOffset(panOffset + pan)
+                            )
                         }
                     }
             ) {
@@ -264,10 +244,10 @@ private fun CanvasMemoScreen(
                     modifier = Modifier
                         .size(CanvasMemoScreenValues.CANVAS_SIZE)
                         .graphicsLayer {
-                            scaleX = scale
-                            scaleY = scale
-                            translationX = panOffset.x
-                            translationY = panOffset.y
+                            scaleX = uiState.zoomScale
+                            scaleY = uiState.zoomScale
+                            translationX = uiState.canvasViewOffset.x
+                            translationY = uiState.canvasViewOffset.y
                             transformOrigin = TransformOrigin(0f, 0f)
                         }
                 ) {
@@ -346,12 +326,12 @@ private fun CanvasMemoScreen(
                 ) {
                     Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
                         Text(
-                            text = "Offset: (${panOffset.x.toInt()}, ${panOffset.y.toInt()})",
+                            text = "Offset: (${uiState.canvasViewOffset.x.toInt()}, ${uiState.canvasViewOffset.y.toInt()})",
                             color = And03Theme.colors.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall
                         )
                         Text(
-                            text = "Scale: ${(scale * 100).toInt()}%",
+                            text = "Scale: ${(uiState.zoomScale * 100).toInt()}%",
                             color = And03Theme.colors.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -500,32 +480,17 @@ private fun CanvasMemoScreen(
                     ToolAction(
                         iconRes = R.drawable.ic_add_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
-                        onClick = {
-                            scale = (scale * 1.2f)
-                                .coerceIn(
-                                    CanvasMemoScreenValues.MIN_SCALE,
-                                    CanvasMemoScreenValues.MAX_SCALE
-                                )
-                        }
+                        onClick = { onAction(CanvasMemoAction.ZoomIn) }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_remove_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
-                        onClick = {
-                            scale = (scale / 1.2f)
-                                .coerceIn(
-                                    CanvasMemoScreenValues.MIN_SCALE,
-                                    CanvasMemoScreenValues.MAX_SCALE
-                                )
-                        }
+                        onClick = { onAction(CanvasMemoAction.ZoomOut) }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_fit_screen,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_fit_screen),
-                        onClick = {
-                            scale = 1f
-                            panOffset = Offset(0f, 0f)
-                        }
+                        onClick = { onAction(CanvasMemoAction.ResetZoom) }
                     )
                 )
             )
