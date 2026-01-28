@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.datasource.remote.book_detail
+package com.boostcamp.and03.data.datasource.remote.bookdetail
 
 import com.boostcamp.and03.data.api.BookDetailApiService
 import com.boostcamp.and03.data.model.response.BookLookUpResponse
@@ -13,8 +13,11 @@ class BookDetailRemoteDataSourceImpl @Inject constructor(
     override suspend fun loadBookPage(itemId: String): BookLookUpResponse {
         val rawResponse = bookDetailApiService.loadBookInfo(itemId = itemId)
 
-        val semicolonRemovedResponse = rawResponse.trim().removeSuffix(";")
+        val sanitizedResponse = rawResponse
+            .trim()
+            .removeSuffix(";")
+            .replace("\\'", "'")
 
-        return json.decodeFromString(semicolonRemovedResponse)
+        return json.decodeFromString(sanitizedResponse)
     }
 }

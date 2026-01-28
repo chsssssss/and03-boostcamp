@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +25,7 @@ class QuoteFormViewModel @Inject constructor(
     private val quoteFormRoute = savedStateHandle.toRoute<Route.QuoteForm>()
     private val bookId = quoteFormRoute.bookId
     private val quoteId = quoteFormRoute.quoteId
+    private val totalPage = quoteFormRoute.totalPage
 
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
@@ -58,21 +59,14 @@ class QuoteFormViewModel @Inject constructor(
             is QuoteFormAction.OnQuoteChange -> _uiState.update { it.copy(quote = action.quote) }
 
             is QuoteFormAction.OnPageChange -> {
-                _uiState.update {
-                    it.copy(
-                        page = action.page.filter {
-                            char -> char.isDigit()
-                        }
-                    )
-                }
+                _uiState.update { it.copy(page = action.page.filter { char -> char.isDigit() }) }
             }
         }
     }
 
     init {
-        viewModelScope.launch {
-            loadQuote()
-        }
+        _uiState.update { it.copy(totalPage = totalPage) }
+        viewModelScope.launch { loadQuote() }
     }
 
     private suspend fun loadQuote() {

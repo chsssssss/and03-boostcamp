@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +39,7 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.OCRBottomSheet
+import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -69,7 +71,7 @@ fun QuoteFormRoute(
 
 @Composable
 private fun QuoteFormScreen(
-    uiState: QuoteFormUiState = QuoteFormUiState(),
+    uiState: QuoteFormUiState,
     onAction: (QuoteFormAction) -> Unit,
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
@@ -107,7 +109,8 @@ private fun QuoteFormScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(And03Padding.PADDING_L),
+                .padding(And03Padding.PADDING_L)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -132,7 +135,8 @@ private fun QuoteFormScreen(
 
             PageInputSection(
                 page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) }
+                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
+                totalPage = uiState.totalPage
             )
         }
     }
@@ -193,6 +197,7 @@ private fun QuoteInputSection(
 private fun PageInputSection(
     page: String,
     onPageChange: (String) -> Unit,
+    totalPage: Int,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -208,7 +213,14 @@ private fun PageInputSection(
             value = page,
             onValueChange = onPageChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(id = R.string.add_quote_page_hint)) },
+            placeholder = {
+                Text(
+                    stringResource(
+                        id = R.string.add_quote_page_hint,
+                        totalPage,
+                    )
+                )
+            },
             shape = And03Theme.shapes.defaultCorner,
             singleLine = true,
             keyboardOptions = KeyboardOptions(

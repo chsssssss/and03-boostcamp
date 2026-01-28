@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.datasource
 
-import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSource
-import com.boostcamp.and03.data.datasource.remote.book_storage.BookStorageDataSourceImpl
+import com.boostcamp.and03.data.datasource.remote.bookstorage.BookStorageDataSource
+import com.boostcamp.and03.data.datasource.remote.bookstorage.BookStorageDataSourceImpl
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSource
 import com.boostcamp.and03.data.datasource.remote.character.CharacterDataSourceImpl
 import com.boostcamp.and03.data.datasource.remote.memo.MemoDataSource

@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.datasource
 
-import com.boostcamp.and03.data.datasource.remote.book_detail.BookDetailRemoteDataSource
-import com.boostcamp.and03.data.datasource.remote.book_detail.BookDetailRemoteDataSourceImpl
+import com.boostcamp.and03.data.datasource.remote.bookdetail.BookDetailRemoteDataSource
+import com.boostcamp.and03.data.datasource.remote.bookdetail.BookDetailRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
