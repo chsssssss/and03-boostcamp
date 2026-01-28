@@ -42,7 +42,6 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.drawVerticalScrollbar
 
-
 @Composable
 fun AddNodeBottomSheet(
     characters: List<CharacterUiModel>,
@@ -73,7 +72,6 @@ fun AddNodeBottomSheet(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Box(
             modifier = Modifier
                 .width(40.dp)
@@ -162,7 +160,6 @@ fun AddNodeBottomSheet(
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
