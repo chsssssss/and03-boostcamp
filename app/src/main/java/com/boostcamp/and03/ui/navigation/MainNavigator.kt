@@ -55,36 +55,42 @@ class MainNavigator(
 
     fun navigateToQuoteForm(
         bookId: String,
-        quoteId: String
+        quoteId: String,
+        totalPage: Int
     ) {
         navController.navigate(
             Route.QuoteForm(
                 bookId = bookId,
-                quoteId = quoteId
+                quoteId = quoteId,
+                totalPage = totalPage
             )
         )
     }
 
     fun navigateToTextMemoForm(
         bookId: String,
-        memoId: String
+        memoId: String,
+        totalPage: Int
     ) {
         navController.navigate(
             Route.TextMemoForm(
                 bookId = bookId,
-                memoId = memoId
+                memoId = memoId,
+                totalPage = totalPage
             )
         )
     }
 
     fun navigateToCanvasMemoForm(
         bookId: String,
-        memoId: String
+        memoId: String,
+        totalPage: Int
     )  {
         navController.navigate(
             Route.CanvasMemoForm(
                 bookId = bookId,
-                memoId = memoId
+                memoId = memoId,
+                totalPage = totalPage
             )
         )
     }

@@ -55,22 +55,25 @@ fun MainNavHost(
                     characterId = characterId
                 )
             },
-            navigateToQuoteForm = { bookId, quoteId ->
+            navigateToQuoteForm = { bookId, quoteId, totalPage ->
                 navigator.navigateToQuoteForm(
                     bookId = bookId,
-                    quoteId = quoteId
+                    quoteId = quoteId,
+                    totalPage = totalPage
                 )
             },
-            navigateToTextMemoForm = { bookId, memoId ->
+            navigateToTextMemoForm = { bookId, memoId, totalPage ->
                 navigator.navigateToTextMemoForm(
                     bookId = bookId,
-                    memoId = memoId
+                    memoId = memoId,
+                    totalPage = totalPage
                 )
             },
-            navigateToCanvasMemoForm = { bookId, memoId ->
+            navigateToCanvasMemoForm = { bookId, memoId, totalPage ->
                 navigator.navigateToCanvasMemoForm(
                     bookId = bookId,
-                    memoId = memoId
+                    memoId = memoId,
+                    totalPage = totalPage
                 )
             },
             navigateToCanvas = { memoId ->

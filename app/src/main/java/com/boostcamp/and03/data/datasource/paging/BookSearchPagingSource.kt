@@ -24,7 +24,7 @@ class BookSearchPagingSource(
         )
 
         return LoadResult.Page(
-            data = result.items,
+            data = result.items.filter { it.isbn.isNotBlank() },
             prevKey = if (start == 1) null else maxOf(1, start - display),
             nextKey = if (result.hasNext) result.nextStart else null
         )
