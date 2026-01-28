@@ -53,10 +53,6 @@ object MemoGraphFactory {
             node3.id to node3
         )
 
-        val edges = listOf(
-            Edge(fromId = node1.id, toId = node2.id, name = "예시 엣지")
-        )
-
-        return MemoGraph(nodes, edges)
+        return MemoGraph(nodes, emptyList())
     }
 }

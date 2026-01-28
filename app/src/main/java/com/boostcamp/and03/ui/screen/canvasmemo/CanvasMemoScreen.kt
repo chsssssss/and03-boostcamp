@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -32,14 +33,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.contentType
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -48,6 +56,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.NodeItem
+import com.boostcamp.and03.ui.screen.canvasmemo.CanvasMemoAction
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
@@ -55,6 +66,8 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBa
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
+import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
+import com.boostcamp.and03.ui.screen.canvasmemo.model.toRelationDialogState
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -99,7 +112,6 @@ private fun CanvasMemoScreen(
     val maxOffsetRange = 1000f
 
     var nodeSizes by remember { mutableStateOf<Map<String, IntSize>>(emptyMap()) }
-
     fun clampOffset(
         newOffset: Offset,
     ): Offset {
@@ -169,6 +181,8 @@ private fun CanvasMemoScreen(
                         when (uiModel) {
 
                             is MemoNodeUiModel.CharacterNodeUiModel -> {
+                                val isDraggable = uiState.relationAddStep == RelationAddStep.NONE
+
                                 DraggableCanvasItem(
                                     nodeId = uiModel.node.id,
                                     worldOffset = uiModel.node.offset,
@@ -180,17 +194,22 @@ private fun CanvasMemoScreen(
                                             )
                                         )
                                     },
+                                    onClick = { nodeId ->
+                                        onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                    },
                                     onSizeChanged = { size ->
                                         nodeSizes = nodeSizes + (uiModel.node.id to size)
+                                    },
+                                    draggable = isDraggable,
+                                    content = {
+                                        NodeItem(
+                                            title = uiModel.node.name,
+                                            content = uiModel.node.description,
+                                            isHighlighted = uiModel.isSelected,
+                                            onMoreClick = {}
+                                        )
                                     }
-                                ) {
-                                    NodeItem(
-                                        title = uiModel.node.name,
-                                        content = uiModel.node.description,
-                                        isHighlighted = uiModel.isSelected,
-                                        onMoreClick = {}
-                                    )
-                                }
+                                )
                             }
 
                             is MemoNodeUiModel.QuoteNodeUiModel -> {
@@ -207,10 +226,11 @@ private fun CanvasMemoScreen(
                                     },
                                     onSizeChanged = { size ->
                                         nodeSizes = nodeSizes + (uiModel.node.id to size)
+                                    },
+                                    content = {
+                                        Text(text = uiModel.node.content)
                                     }
-                                ) {
-                                    Text(text = uiModel.node.content)
-                                }
+                                )
                             }
                         }
                     }
@@ -236,18 +256,55 @@ private fun CanvasMemoScreen(
                 }
             }
 
-//
-//                if (uiState.isRelationDialogVisible) {
-//                    RelationEditorDialog(
-//                        relationNameState = uiState.relationNameState,
-//                        fromName = uiState.fromCharacterName,
-//                        toName = uiState.toCharacterName,
-//                        onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
-//                        onConfirm = { /* 관계 저장 로직 */ },
-//                        onFromImageClick = { /* 인물 선택 로직 */ },
-//                        onToImageClick = { /* 인물 선택 로직 */ }
-//                    )
-//                }
+            if (uiState.isRelationDialogVisible &&
+                uiState.relationAddStep == RelationAddStep.COMPLETE
+            ) {
+                val relationDialogState = uiState.relationDialogUiState
+
+                RelationEditorDialog(
+                    relationNameState = uiState.relationNameState,
+                    fromName = relationDialogState.fromName,
+                    toName = relationDialogState.toName,
+                    fromImageUrl = relationDialogState.fromImageUrl,
+                    toImageUrl = relationDialogState.toImageUrl,
+                    onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
+                    onConfirm = {
+                        onAction(
+                            CanvasMemoAction.OnSaveClick(
+                                fromId = relationDialogState.fromNodeId,
+                                toId = relationDialogState.toNodeId,
+                                name = relationDialogState.relationNameState.text.toString()
+                            )
+                        )
+                    },
+                    onFromImageClick = { /* 인물 선택 로직 */ },
+                    onToImageClick = { /* 인물 선택 로직 */ }
+                )
+            }
+
+            if (uiState.relationAddStep == RelationAddStep.READY) {
+                AlertMessageCard(
+                    message = "관계를 시작할 인물을 선택해 주세요.",
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(
+                            vertical = And03Padding.PADDING_XL,
+                            horizontal = And03Padding.PADDING_L
+                        )
+                )
+            }
+
+            if (uiState.relationAddStep == RelationAddStep.FROM_ONLY) {
+                AlertMessageCard(
+                    message = "연결할 다른 인물을 선택해 주세요.",
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(
+                            vertical = And03Padding.PADDING_XL,
+                            horizontal = And03Padding.PADDING_L
+                        )
+                )
+            }
 //
 //                if (uiState.isAddCharacterDialogVisible) {
 //                    AddCharacterDialog(
@@ -329,23 +386,6 @@ private fun CanvasMemoScreen(
                     selectedType = uiState.selectedBottomBarType,
                     onItemClick = { type ->
                         onAction(CanvasMemoAction.OnBottomBarClick(type))
-                        when (type) {
-                            MainBottomBarType.NODE -> {
-
-                            }
-
-                            MainBottomBarType.RELATION -> {
-
-                            }
-
-                            MainBottomBarType.QUOTE -> {
-
-                            }
-
-                            MainBottomBarType.DELETE -> {
-
-                            }
-                        }
                     }
                 )
             }
@@ -360,7 +400,9 @@ fun DraggableCanvasItem(
     onMove: (Offset) -> Unit,
     onSizeChanged: (IntSize) -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
+    onClick: ((String) -> Unit)? = null,
+    draggable: Boolean = true,
 ) {
     Box(
         modifier = modifier
@@ -371,14 +413,29 @@ fun DraggableCanvasItem(
             .onGloballyPositioned { coords ->
                 onSizeChanged(coords.size)
             }
-            .pointerInput(nodeId) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    Log.d("DraggableCanvasItem", "dragAmount: $dragAmount")
-                    Log.d("DraggableCanvasItem", "worldOffset: $worldOffset")
-                    onMove(dragAmount)
+            .then(
+                if (onClick != null) {
+                    Modifier.pointerInput(nodeId) {
+                        detectTapGestures(
+                            onTap = {
+                                onClick(nodeId)
+                            }
+                        )
+                    }
+                } else {
+                    Modifier
                 }
-            }
+            )
+            .then(
+                if (draggable) {
+                    Modifier.pointerInput(nodeId) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            onMove(dragAmount)
+                        }
+                    }
+                } else Modifier
+            )
     ) {
         content()
     }
@@ -390,6 +447,8 @@ fun Arrows(
     items: Map<String, MemoNodeUiModel>,
     nodeSizes: Map<String, IntSize>,
 ) {
+    val textMeasurer = rememberTextMeasurer()
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         arrows.forEach { edge ->
 
@@ -412,7 +471,7 @@ fun Arrows(
 
                 val midX = (start.x + end.x) / 2
 
-                val path = androidx.compose.ui.graphics.Path().apply {
+                val path = Path().apply {
                     moveTo(start.x, start.y)
                     lineTo(midX, start.y)
                     lineTo(midX, end.y)
@@ -422,8 +481,35 @@ fun Arrows(
                 drawPath(
                     path = path,
                     color = Color.Black,
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4f)
+                    style = Stroke(width = 4f)
                 )
+
+                val label = edge.edge.name // Edge에 저장된 이름
+
+                if (label.isNotEmpty()) {
+                    val textLayoutResult = textMeasurer.measure(label)
+                    val textWidth = textLayoutResult.size.width
+                    val textHeight = textLayoutResult.size.height
+
+                    // 텍스트 위치: 꺾이는 세로선의 중앙 지점
+                    val textPos = Offset(
+                        x = midX - textWidth / 2,
+                        y = (start.y + end.y) / 2 - textHeight / 2
+                    )
+
+                    // 글자 배경 (가독성을 위해 흰색 바탕 추가)
+                    drawRect(
+                        color = Color.White,
+                        topLeft = textPos,
+                        size = Size(textWidth.toFloat(), textHeight.toFloat())
+                    )
+
+                    // 텍스트 그리기
+                    drawText(
+                        textLayoutResult = textLayoutResult,
+                        topLeft = textPos
+                    )
+                }
             }
         }
     }

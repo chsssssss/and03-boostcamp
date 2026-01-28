@@ -2,10 +2,11 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
-import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
+import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
+import com.boostcamp.and03.ui.screen.canvasmemo.model.clearSelection
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -27,14 +28,6 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
 
     init {
         createInitialState()
-
-        handleConnectNodes(
-            CanvasMemoAction.ConnectNodes(
-                fromId = "1",
-                toId = "2",
-                name = "로직 테스트 연결"
-            )
-        )
     }
 
     private fun createInitialState() {
@@ -58,18 +51,21 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
-            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
-            is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
             is CanvasMemoAction.OnBottomBarClick -> {
                 handleBottomBarClick(action)
                 if (action.type == MainBottomBarType.RELATION) {
                     onAction(CanvasMemoAction.HideBottomBar)
                 }
             }
+
             CanvasMemoAction.HideBottomBar -> setBottomBarVisible(false)
             CanvasMemoAction.ShowBottomBar -> setBottomBarVisible(true)
+            is CanvasMemoAction.OnNodeClick -> handleNodeClick(action)
+            is CanvasMemoAction.OnSaveClick -> {
+                handleConnectNodes(action)
+            }
         }
     }
 
@@ -80,22 +76,18 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     private fun handleCloseRelationDialog() {
         _uiState.update {
             it.copy(
+                nodes = it.nodes.mapValues { (_, uiModel) ->
+                    if (uiModel.isSelected) {
+                        uiModel.clearSelection()
+                    } else {
+                        uiModel
+                    }
+                },
                 isRelationDialogVisible = false,
-                relationSelection = null,
-                relationNameState = TextFieldState()
-            )
-        }
-    }
-
-    private fun handleOpenRelationDialog(action: CanvasMemoAction.OpenRelationDialog) {
-        _uiState.update {
-            it.copy(
-                isRelationDialogVisible = true,
-                relationSelection = RelationSelection(
-                    fromNodeId = action.fromNodeId,
-                    toNodeId = action.toNodeId
-                ),
-                relationNameState = TextFieldState()
+                relationSelection = RelationSelection.empty(),
+                relationNameState = TextFieldState(),
+                isBottomBarVisible = true,
+                relationAddStep = RelationAddStep.NONE,
             )
         }
     }
@@ -109,8 +101,8 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
-        val editor = CanvasMemoEditor(getCurrentGraph())
-        val updatedGraph = editor.moveNode(action.nodeId, action.newOffset)
+        val graph = getCurrentGraph()
+        val updatedGraph = graph.moveNode(action.nodeId, action.newOffset)
 
         val movedNode = updatedGraph.nodes[action.nodeId] ?: return
 
@@ -122,24 +114,31 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    private fun handleConnectNodes(action: CanvasMemoAction.ConnectNodes) {
-        val editor = CanvasMemoEditor(getCurrentGraph())
-        val updatedGraph = editor.connectNode(action.fromId, action.toId, action.name)
+    private fun handleConnectNodes(action: CanvasMemoAction.OnSaveClick) {
+        val graph = getCurrentGraph()
+        val updatedGraph = graph.connectNode(action.fromId, action.toId, action.name)
 
         _uiState.update { currentState ->
             currentState.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
-                isRelationDialogVisible = false
             )
         }
+
+        resetRelation()
     }
 
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
-        _uiState.update {
-            it.copy(
-                selectedBottomBarType = action.type
-            )
+        when (action.type) {
+            MainBottomBarType.RELATION -> enterRelationMode()
+            else -> {
+                _uiState.update {
+                    it.copy(
+                        selectedBottomBarType = action.type
+                    )
+                }
+            }
         }
+
     }
 
     private fun setBottomBarVisible(visible: Boolean) {
@@ -147,4 +146,207 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             it.copy(isBottomBarVisible = visible)
         }
     }
+
+    private fun enterRelationMode() {
+        _uiState.update {
+            it.copy(
+                selectedBottomBarType = MainBottomBarType.RELATION,
+                relationSelection = RelationSelection.empty(),
+                relationAddStep = RelationAddStep.READY,
+                isBottomBarVisible = false
+            )
+        }
+    }
+
+    private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
+        when (_uiState.value.relationAddStep) {
+            RelationAddStep.READY ->
+                selectFrom(action.nodeId)
+
+            RelationAddStep.FROM_ONLY ->
+                selectToOrCancel(action.nodeId)
+
+            RelationAddStep.COMPLETE ->
+                handleCompleteStateClick(action.nodeId)
+
+            RelationAddStep.NONE -> Unit
+        }
+    }
+
+    private fun selectFrom(nodeId: String) {
+        val selection = RelationSelection(fromNodeId = nodeId, toNodeId = null)
+
+        _uiState.update {
+            it.copy(
+                relationSelection = selection,
+                relationAddStep = RelationAddStep.FROM_ONLY
+            )
+        }
+        updateNodeSelection(selection)
+    }
+
+    private fun selectToOrCancel(nodeId: String) {
+        val selection = _uiState.value.relationSelection
+
+        // 같은 노드 다시 클릭 → from 취소
+        if (selection.fromNodeId == nodeId) {
+            resetRelation()
+            return
+        }
+
+        val updated = selection.copy(toNodeId = nodeId)
+
+        _uiState.update {
+            it.copy(
+                relationSelection = updated,
+                relationAddStep = RelationAddStep.COMPLETE,
+                isRelationDialogVisible = true,
+                relationNameState = TextFieldState()
+            )
+        }
+        updateNodeSelection(updated)
+    }
+
+    private fun handleCompleteStateClick(nodeId: String) {
+        val selection = _uiState.value.relationSelection
+
+        val updated = when (nodeId) {
+            selection.toNodeId ->
+                selection.copy(toNodeId = null)
+
+            selection.fromNodeId ->
+                selection.copy(
+                    fromNodeId = selection.toNodeId,
+                    toNodeId = null
+                )
+
+            else -> selection
+        }
+
+        _uiState.update {
+            it.copy(
+                relationSelection = updated,
+                relationAddStep = RelationAddStep.FROM_ONLY,
+                isRelationDialogVisible = false
+            )
+        }
+        updateNodeSelection(updated)
+    }
+
+    private fun resetRelation() {
+        _uiState.update {
+            it.copy(
+                relationSelection = RelationSelection.empty(),
+                relationAddStep = RelationAddStep.NONE,
+                isRelationDialogVisible = false,
+                isBottomBarVisible = true
+            )
+        }
+        updateNodeSelection(RelationSelection.empty())
+    }
+
+
+//    private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
+//        val selection = _uiState.value.relationSelection
+//
+//        when {
+//            // from이 아직 없을 때
+//            selection.fromNodeId == null -> {
+//                val updated = selection.copy(fromNodeId = action.nodeId)
+//
+//                _uiState.update {
+//                    it.copy(relationSelection = updated)
+//                }
+//                updateNodeSelection(updated)
+//            }
+//
+//            // from은 있는데 같은 노드를 다시 클릭한 경우
+//            action.nodeId == selection.fromNodeId && selection.toNodeId == null -> {
+//                val updated = selection.copy(fromNodeId = null)
+//
+//                _uiState.update {
+//                    it.copy(relationSelection = updated)
+//                }
+//                updateNodeSelection(updated)
+//            }
+//
+//            // to가 아직 없을 때 + from과 다른 노드
+//            selection.toNodeId == null -> {
+//                val updated = selection.copy(toNodeId = action.nodeId)
+//
+//                _uiState.update {
+//                    it.copy(
+//                        relationSelection = updated,
+//                        isRelationDialogVisible = updated.isComplete,
+//                        relationNameState = TextFieldState()
+//                    )
+//                }
+//
+//                updateNodeSelection(updated)
+//            }
+//
+//            // 둘 다 선택되었고 to와 같은 노드를 클릭한 경우
+//            action.nodeId == selection.toNodeId -> {
+//                val updated = selection.copy(toNodeId = null)
+//
+//                _uiState.update {
+//                    it.copy(
+//                        relationSelection = updated,
+//                    )
+//                }
+//                updateNodeSelection(updated)
+//            }
+//
+//            // 둘 다 선택되었고 from과 같은 노드를 클릭한 경우
+//            action.nodeId == selection.fromNodeId -> {
+//                val updated = selection.copy(fromNodeId = selection.toNodeId, toNodeId = null)
+//
+//                _uiState.update {
+//                    it.copy(
+//                        relationSelection = updated,
+//                    )
+//                }
+//                updateNodeSelection(updated)
+//            }
+//
+//        }
+//        Log.d("CanvasMemoViewModel", "handleNodeClick: ${_uiState.value.relationSelection}")
+//    }
+
+
+    private fun updateNodeSelection(selection: RelationSelection) {
+        _uiState.update { state ->
+            state.copy(
+                nodes = state.nodes.mapValues { (_, uiModel) ->
+                    val isSelected =
+                        selection.fromNodeId == uiModel.node.id ||
+                                selection.toNodeId == uiModel.node.id
+
+                    uiModel.node.toUiModel(
+                        isSelected = isSelected,
+                        isDragging = uiModel.isDragging,
+                        size = uiModel.size
+                    )
+                }
+            )
+        }
+    }
+
+//    private fun addRelation() {
+//        val graph = getCurrentGraph()
+//        if (uiState.value.relationSelection.isComplete) {
+//            val updatedGraph = graph.connectNode(
+//                fromId = uiState.value.relationSelection.fromNodeId!!,
+//                toId = uiState.value.relationSelection.toNodeId!!,
+//                name = uiState.value.relationNameState.text.toString()
+//            )
+//
+//            _uiState.update { currentState ->
+//                currentState.copy(
+//                    edges = updatedGraph.edges.map { it.toUiModel() },
+//                )
+//            }
+//
+//        }
+//    }
 }
