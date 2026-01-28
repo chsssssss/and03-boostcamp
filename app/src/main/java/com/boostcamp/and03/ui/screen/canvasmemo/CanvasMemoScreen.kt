@@ -317,7 +317,7 @@ private fun CanvasMemoScreen(
                     quoteState = uiState.quoteState,
                     pageState = uiState.pageState,
                     onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
-                    onConfirm = { onAction(CanvasMemoAction.AddNewQuote) },
+                    onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
                     enabled = uiState.isQuoteSaveable && !uiState.isSaving,
                     isSaving = uiState.isSaving
                 )

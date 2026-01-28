@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import android.util.Log.e
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -133,6 +132,8 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.AddNewQuote -> handleAddNewQuote()
 
+            CanvasMemoAction.SaveQuote -> handleSaveQuote()
+
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
 
             is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
@@ -191,11 +192,8 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     private fun handleAddQuoteItem() {
-        _uiState.update {
-            it.copy(
-                bottomSheetType = null
-            )
-        }
+        _uiState.update { it.copy(bottomSheetType = null) }
+
         placeQuoteItem()
     }
 
@@ -204,21 +202,17 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     private fun handleAddNewQuote() {
-        saveNewQuote()
-
         _uiState.update {
             it.copy(
-                isQuoteDialogVisible = true,
                 bottomSheetType = null,
+                isQuoteDialogVisible = true,
                 quoteState = TextFieldState(),
                 pageState = TextFieldState()
             )
         }
-
-        placeQuoteItem()
     }
 
-    private fun saveNewQuote() {
+    private fun handleSaveQuote() {
         if (_uiState.value.isSaving || !_uiState.value.isQuoteSaveable) return
 
         viewModelScope.launch {
@@ -227,17 +221,26 @@ class CanvasMemoViewModel @Inject constructor(
             try {
                 val quote = _uiState.value.quoteState.text.toString()
                 val page = _uiState.value.pageState.text.toString().toInt()
+                val newQuoteUiModel = QuoteUiModel(
+                    content = quote,
+                    page = page
+                )
 
                 bookStorageRepository.addQuote(
                     userId = userId,
                     bookId = bookId,
-                    quote = QuoteUiModel(
-                        content = quote,
-                        page = page
-                    )
+                    quote = newQuoteUiModel
                 )
 
-                _uiState.update { it.copy(isQuoteDialogVisible = false) }
+                _uiState.update {
+                    it.copy(
+                        isQuoteDialogVisible = false,
+                        quotes = getQuotes(
+                            userId = userId,
+                            bookId = bookId
+                        )
+                    )
+                }
             } catch (e: Exception) {
                 // TODO: 오류 메시지 UI 표시 구현
             } finally {

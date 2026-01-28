@@ -18,6 +18,8 @@ sealed interface CanvasMemoAction {
 
     data object AddQuoteItem : CanvasMemoAction
 
+    data object SaveQuote : CanvasMemoAction
+
     data class SearchQuote(val query: String) : CanvasMemoAction
 
     data object AddNewQuote : CanvasMemoAction
