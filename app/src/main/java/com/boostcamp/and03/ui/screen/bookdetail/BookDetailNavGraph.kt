@@ -12,7 +12,7 @@ fun NavGraphBuilder.bookDetailNavGraph(
     navigateToQuoteForm: (bookId: String, quoteId: String, totalPage: Int) -> Unit,
     navigateToTextMemoForm: (bookId: String, memoId: String, totalPage: Int) -> Unit,
     navigateToCanvasMemoForm: (bookId: String, memoId: String, totalPage: Int) -> Unit,
-    navigateToCanvas: (String) -> Unit,
+    navigateToCanvas: (bookId:String, memoId:String) -> Unit
 ) {
     composable<Route.BookDetail> {
         BookDetailRoute(

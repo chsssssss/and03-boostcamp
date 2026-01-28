@@ -35,9 +35,12 @@ class MainNavigator(
         )
     }
 
-    fun navigateToCanvas(memoId: String) {
+    fun navigateToCanvas(bookId: String, memoId: String) {
         navController.navigate(
-            Route.CanvasMemo(memoId = memoId)
+            Route.CanvasMemo(
+                bookId = bookId,
+                memoId = memoId
+            )
         )
     }
 
@@ -85,7 +88,7 @@ class MainNavigator(
         bookId: String,
         memoId: String,
         totalPage: Int
-    )  {
+    ) {
         navController.navigate(
             Route.CanvasMemoForm(
                 bookId = bookId,

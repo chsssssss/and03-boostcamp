@@ -38,5 +38,7 @@ sealed interface BookDetailAction {
         val memoId: String
     ): BookDetailAction
 
-    data class OnCanvasMemoClick(val memoId: String): BookDetailAction
-}
+    data class OnCanvasMemoClick(
+        val bookId: String,
+        val memoId: String
+    ) : BookDetailAction}
