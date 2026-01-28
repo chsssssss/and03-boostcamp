@@ -32,34 +32,38 @@ class CanvasMemoDataSourceImpl @Inject constructor(
                 .collection("memo")
                 .document(memoId)
 
-            val nodeSnapshot = collectionRef.collection("node").get().await()
+            val batch = db.batch()
+
+            val nodeCollection = collectionRef.collection("node")
+            val edgeCollection = collectionRef.collection("edge")
+
+            val nodeSnapshot = nodeCollection.get().await()
             nodeSnapshot.documents.forEach { doc ->
-                doc.reference.delete()
+                batch.delete(doc.reference)
             }
 
-            val edgeSnapshot = collectionRef.collection("edge").get().await()
+            val edgeSnapshot = edgeCollection.get().await()
             edgeSnapshot.documents.forEach { doc ->
-                doc.reference.delete()
+                batch.delete(doc.reference)
             }
 
-            collectionRef.set(
+            batch.set(
+                collectionRef,
                 mapOf("updatedTime" to FieldValue.serverTimestamp()),
                 SetOptions.merge()
             )
 
             graph.nodes.forEach { node ->
-                collectionRef
-                    .collection("node")
-                    .document()
-                    .set(node)
+                val newNodeRef = nodeCollection.document()
+                batch.set(newNodeRef, node)
             }
 
             graph.edges.forEach { edge ->
-                collectionRef
-                    .collection("edge")
-                    .document()
-                    .set(edge)
+                val newEdgeRef = edgeCollection.document()
+                batch.set(newEdgeRef, edge)
             }
+
+            batch.commit().await()
 
             Log.d("CharacterDataSourceImpl", "CanvasMemo added: ${collectionRef.id}")
         } catch (e: Exception) {

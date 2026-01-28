@@ -18,7 +18,7 @@ fun MemoNode.toRequest(): NodeRequest {
         )
 
         is MemoNode.QuoteNode -> NodeRequest.Quote(
-            content = "",
+            content = this.content,
             nodeType = "QUOTE",
             page = this.page,
             x = this.offset.x,
