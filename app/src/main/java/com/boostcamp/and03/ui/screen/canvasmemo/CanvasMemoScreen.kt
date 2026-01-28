@@ -56,6 +56,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddNodeBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
@@ -341,7 +342,19 @@ private fun CanvasMemoScreen(
                 ) {
                     when (sheetType) {
                         CanvasMemoBottomSheetType.AddCharacter -> {
-                            // TODO: 등장인물 노드 추가 바텀 시트 출력
+                            AddNodeBottomSheet(
+                                characters = uiState.characters,
+                                infoTitle = stringResource(R.string.add_node_bottom_sheet_info_title),
+                                infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
+                                onSearch = { },
+                                onNewCharacterClick = { },
+                                onAddClick = {
+                                    scope.launch {
+                                        sheetState.hide()
+                                        // TODO: onAction(CanvasMemoAction.AddNodeItem) 구현 필요
+                                    }
+                                }
+                            )
                         }
 
                         CanvasMemoBottomSheetType.AddQuote -> {

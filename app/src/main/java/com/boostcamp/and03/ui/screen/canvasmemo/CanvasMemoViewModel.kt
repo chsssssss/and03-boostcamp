@@ -120,9 +120,9 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
 
-            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
-
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
+
+            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
@@ -158,8 +158,7 @@ class CanvasMemoViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isRelationDialogVisible = false,
-                relationSelection = null,
-                relationNameState = TextFieldState()
+                relationSelection = null
             )
         }
     }
@@ -171,18 +170,19 @@ class CanvasMemoViewModel @Inject constructor(
                 relationSelection = RelationSelection(
                     fromNodeId = action.fromNodeId,
                     toNodeId = action.toNodeId
-                ),
-                relationNameState = TextFieldState()
+                )
             )
         }
     }
 
     private fun handleCloseAddCharacterDialog() {
-        _uiState.value = _uiState.value.copy(
-            isAddCharacterDialogVisible = false,
-            characterNameState = TextFieldState(),
-            characterDescState = TextFieldState()
-        )
+        _uiState.update {
+            it.copy(
+                isAddCharacterDialogVisible = false,
+                characterNameState = TextFieldState(),
+                characterDescState = TextFieldState()
+            )
+        }
     }
 
     private fun handleCloseQuoteDialog() {
@@ -256,12 +256,11 @@ class CanvasMemoViewModel @Inject constructor(
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
         val editor = CanvasMemoEditor(getCurrentGraph())
         val updatedGraph = editor.moveNode(action.nodeId, action.newOffset)
-
         val movedNode = updatedGraph.nodes[action.nodeId] ?: return
 
-        _uiState.update { currentState ->
-            currentState.copy(
-                nodes = currentState.nodes + (action.nodeId to movedNode.toUiModel())
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes + (action.nodeId to movedNode.toUiModel())
             )
         }
     }
@@ -271,8 +270,8 @@ class CanvasMemoViewModel @Inject constructor(
         val editor = CanvasMemoEditor(getCurrentGraph())
         val updatedGraph = editor.connectNode(action.fromId, action.toId, action.name)
 
-        _uiState.update { currentState ->
-            currentState.copy(
+        _uiState.update {
+            it.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
                 isRelationDialogVisible = false
             )
