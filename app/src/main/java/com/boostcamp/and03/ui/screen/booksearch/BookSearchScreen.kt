@@ -110,7 +110,7 @@ private fun BookSearchScreen(
                         enabled = uiState.isSaveEnabled
                     ) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_check_filled),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_save_filled),
                             contentDescription = stringResource(R.string.content_description_save_button)
                         )
                     }

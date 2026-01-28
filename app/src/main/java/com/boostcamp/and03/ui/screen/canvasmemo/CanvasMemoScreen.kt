@@ -139,6 +139,15 @@ private fun CanvasMemoScreen(
             ) {
                 IconButton(onClick = {}) {
                     Icon(
+                        painter = painterResource(R.drawable.ic_save_filled),
+                        contentDescription = stringResource(
+                            id = R.string.content_description_save_button
+                        )
+                    )
+                }
+
+                IconButton(onClick = {}) {
+                    Icon(
                         painter = painterResource(R.drawable.ic_more_vert_filled),
                         contentDescription = stringResource(
                             id = R.string.content_description_more_button
