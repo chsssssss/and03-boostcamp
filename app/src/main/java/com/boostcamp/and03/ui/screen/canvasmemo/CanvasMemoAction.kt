@@ -1,8 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
-
 import androidx.compose.ui.geometry.Offset
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 
 sealed interface CanvasMemoAction {
 

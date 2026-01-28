@@ -91,7 +91,7 @@ class MainNavigator(
         bookId: String,
         memoId: String,
         totalPage: Int
-    )  {
+    ) {
         navController.navigate(
             Route.CanvasMemoForm(
                 bookId = bookId,

@@ -222,7 +222,13 @@ private fun BookDetailScreen(
                                         )
                                     )
                                 },
-                                onRetryButtonClick = { onAction(BookDetailAction.OnRetryTab(BookDetailTab.CHARACTER)) }
+                                onRetryButtonClick = {
+                                    onAction(
+                                        BookDetailAction.OnRetryTab(
+                                            BookDetailTab.CHARACTER
+                                        )
+                                    )
+                                }
                             )
 
                             BookDetailTab.QUOTE -> QuoteTab(
@@ -247,7 +253,13 @@ private fun BookDetailScreen(
                                         )
                                     )
                                 },
-                                onRetryButtonClick = { onAction(BookDetailAction.OnRetryTab(BookDetailTab.QUOTE)) }
+                                onRetryButtonClick = {
+                                    onAction(
+                                        BookDetailAction.OnRetryTab(
+                                            BookDetailTab.QUOTE
+                                        )
+                                    )
+                                }
                             )
 
                             BookDetailTab.MEMO -> MemoTab(
@@ -273,8 +285,8 @@ private fun BookDetailScreen(
                                     if (memo.memoType == MemoType.CANVAS) {
                                         onAction(
                                             BookDetailAction.OnCanvasMemoClick(
-                                                uiState.bookId,
-                                                memo.id
+                                                bookId = uiState.bookId,
+                                                memoId = memo.id
                                             )
                                         )
                                     }
@@ -299,7 +311,13 @@ private fun BookDetailScreen(
                                         )
                                     }
                                 },
-                                onRetryButtonClick = { onAction(BookDetailAction.OnRetryTab(BookDetailTab.MEMO)) }
+                                onRetryButtonClick = {
+                                    onAction(
+                                        BookDetailAction.OnRetryTab(
+                                            BookDetailTab.MEMO
+                                        )
+                                    )
+                                }
                             )
                         }
                     }
