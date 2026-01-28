@@ -72,7 +72,8 @@ class CanvasMemoViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() }
+                edges = sampleGraph.edges.map { it.toUiModel() },
+                totalPage = totalPage
             )
         }
     }
