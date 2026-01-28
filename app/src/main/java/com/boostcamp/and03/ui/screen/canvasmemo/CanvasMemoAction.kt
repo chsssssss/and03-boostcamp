@@ -19,6 +19,6 @@ sealed class CanvasMemoAction {
 
     data class OnNodeClick(val nodeId: String) : CanvasMemoAction()
 
-    data class OnSaveClick(val fromId: String, val toId: String, val name: String) : CanvasMemoAction()
+    data class ConfirmRelation(val fromId: String, val toId: String, val name: String) : CanvasMemoAction()
 
 }

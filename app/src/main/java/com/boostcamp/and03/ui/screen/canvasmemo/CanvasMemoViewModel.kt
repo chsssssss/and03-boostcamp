@@ -1,9 +1,14 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.domain.repository.CanvasMemoRepository
+import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.screen.canvasmemo.model.clearSelection
@@ -16,10 +21,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CanvasMemoViewModel @Inject constructor() : ViewModel() {
+class CanvasMemoViewModel @Inject constructor(
+    private val canvasMemoRepository: CanvasMemoRepository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val canvasMemoRoute = savedStateHandle.toRoute<Route.CanvasMemo>()
+    private val bookId = canvasMemoRoute.bookId
+
+    private val memoId = canvasMemoRoute.memoId
+
+    private val userId: String = "O12OmGoVY8FPYFElNjKN"
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
 
@@ -63,7 +79,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
             CanvasMemoAction.HideBottomBar -> setBottomBarVisible(false)
             CanvasMemoAction.ShowBottomBar -> setBottomBarVisible(true)
             is CanvasMemoAction.OnNodeClick -> handleNodeClick(action)
-            is CanvasMemoAction.OnSaveClick -> {
+            is CanvasMemoAction.ConfirmRelation -> {
                 handleConnectNodes(action)
             }
         }
@@ -114,7 +130,7 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    private fun handleConnectNodes(action: CanvasMemoAction.OnSaveClick) {
+    private fun handleConnectNodes(action: CanvasMemoAction.ConfirmRelation) {
         val graph = getCurrentGraph()
         val updatedGraph = graph.connectNode(action.fromId, action.toId, action.name)
 
@@ -123,6 +139,8 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
                 edges = updatedGraph.edges.map { it.toUiModel() },
             )
         }
+
+        onSaveCanvasMemo(userId, bookId, memoId)
 
         resetRelation()
     }
@@ -138,7 +156,6 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
                 }
             }
         }
-
     }
 
     private fun setBottomBarVisible(visible: Boolean) {
@@ -332,21 +349,24 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-//    private fun addRelation() {
-//        val graph = getCurrentGraph()
-//        if (uiState.value.relationSelection.isComplete) {
-//            val updatedGraph = graph.connectNode(
-//                fromId = uiState.value.relationSelection.fromNodeId!!,
-//                toId = uiState.value.relationSelection.toNodeId!!,
-//                name = uiState.value.relationNameState.text.toString()
-//            )
-//
-//            _uiState.update { currentState ->
-//                currentState.copy(
-//                    edges = updatedGraph.edges.map { it.toUiModel() },
-//                )
-//            }
-//
-//        }
-//    }
+    private fun onSaveCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        viewModelScope.launch {
+            try {
+                val graph = getCurrentGraph()
+                canvasMemoRepository.addCanvasMemo(
+                    userId = userId,
+                    bookId = bookId,
+                    memoId = memoId,
+                    graph = graph
+                )
+            }
+            catch (e: Exception) {
+
+            }
+        }
+    }
 }
