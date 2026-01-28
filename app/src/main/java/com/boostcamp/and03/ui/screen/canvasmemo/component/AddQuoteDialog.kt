@@ -57,7 +57,8 @@ fun AddQuoteDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     enabled: Boolean,
-    isSaving: Boolean
+    isSaving: Boolean,
+    totalPage: Int
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
 
@@ -90,6 +91,7 @@ fun AddQuoteDialog(
                 labelRes = R.string.add_quote_page_label,
                 state = pageState,
                 placeholderRes = R.string.add_quote_page_hint,
+                placeholderArgs = listOf(totalPage),
                 onSubmit = {},
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Number,
@@ -156,7 +158,8 @@ private fun AddQuoteDialogPreview() {
             onDismiss = {},
             onConfirm = {},
             enabled = false,
-            isSaving = false
+            isSaving = false,
+            totalPage = 200
         )
     }
 }

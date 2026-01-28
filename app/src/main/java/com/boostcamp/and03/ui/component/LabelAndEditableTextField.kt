@@ -29,7 +29,8 @@ fun LabelAndEditableTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     maxCharacterCount: Int = 10,
     lineLimits: Int = 1,
-    inputTransformation: InputTransformation = InputTransformation
+    inputTransformation: InputTransformation = InputTransformation,
+    placeholderArgs: List<Any> = emptyList()
 ) {
     Column(modifier = modifier) {
         Text(
@@ -43,6 +44,7 @@ fun LabelAndEditableTextField(
             state = state,
             onSubmit = onSubmit,
             placeholderRes = placeholderRes,
+            placeholderArgs = placeholderArgs,
             imeAction = imeAction,
             keyboardType = keyboardType,
             maxCharacterCount = maxCharacterCount,
