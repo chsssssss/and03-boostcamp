@@ -116,12 +116,8 @@ class CanvasMemoViewModel @Inject constructor(
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
             
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
-            
-            CanvasMemoAction.CloseAddNodeSheet -> handleCloseAddNodeSheet()
 
             is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
-
-            CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
@@ -156,18 +152,6 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    private fun handleCloseAddCharacterDialog() {
-        _uiState.update {
-            it.copy(isAddCharacterDialogVisible = false)
-        }
-    }
-
-    private fun handleCloseAddNodeSheet() {
-        _uiState.update {
-            it.copy(isAddNodeSheetVisible = false)
-        }
-    }
-
     private fun handleOpenRelationDialog(action: CanvasMemoAction.OpenRelationDialog) {
         _uiState.update {
             it.copy(
@@ -181,11 +165,13 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     private fun handleCloseAddCharacterDialog() {
-        _uiState.value = _uiState.value.copy(
-            isAddCharacterDialogVisible = false,
-            characterNameState = TextFieldState(),
-            characterDescState = TextFieldState()
-        )
+        _uiState.update {
+            it.copy(
+                isAddCharacterDialogVisible = false,
+                characterNameState = TextFieldState(),
+                characterDescState = TextFieldState()
+            )
+        }
     }
 
     private fun handleCloseQuoteDialog() {

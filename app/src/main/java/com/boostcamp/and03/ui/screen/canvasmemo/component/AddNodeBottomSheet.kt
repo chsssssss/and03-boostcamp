@@ -73,19 +73,6 @@ fun AddNodeBottomSheet(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Box(
-            modifier = Modifier
-                .width(40.dp)
-                .height(4.dp)
-                .background(
-                    color = And03Theme.colors.outlineVariant,
-                    shape = RoundedCornerShape(And03Radius.RADIUS_S)
-                )
-        )
-
-        Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
-
         Text(
             text = stringResource(R.string.add_node_bottom_sheet_title),
             style = And03Theme.typography.titleMedium,
