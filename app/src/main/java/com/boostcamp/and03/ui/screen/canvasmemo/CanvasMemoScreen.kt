@@ -8,27 +8,33 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FormatQuote
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +55,9 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddNodeBottomSheet
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
+import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
@@ -61,8 +70,17 @@ import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
+import com.boostcamp.and03.ui.util.collectWithLifecycle
+import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
+
+private object CanvasMemoScreenValues {
+    val CANVAS_SIZE = 2000.dp
+    const val MIN_SCALE = 0.5f
+    const val MAX_SCALE = 2f
+    const val MAX_OFFSET_RANGE = 1000f
+}
 
 @Composable
 fun CanvasMemoRoute(
@@ -71,11 +89,9 @@ fun CanvasMemoRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is CanvasMemoEvent.NavToBack -> navigateToBack()
-            }
+    viewModel.event.collectWithLifecycle { event ->
+        when (event) {
+            is CanvasMemoEvent.NavToBack -> navigateToBack()
         }
     }
 
@@ -85,6 +101,7 @@ fun CanvasMemoRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CanvasMemoScreen(
     uiState: CanvasMemoUiState,
@@ -92,20 +109,18 @@ private fun CanvasMemoScreen(
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var panOffset by remember { mutableStateOf(Offset(0f, 0f)) }
-
-    val canvasSize = 2000.dp
-    val minScale = 0.5f
-    val maxScale = 2f
-
-    val maxOffsetRange = 1000f
-
     var nodeSizes by remember { mutableStateOf<Map<String, IntSize>>(emptyMap()) }
+
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     fun clampOffset(
         newOffset: Offset,
     ): Offset {
-        val maxOffset = maxOffsetRange
-        val minOffset = -maxOffsetRange
+        val maxOffset = CanvasMemoScreenValues.MAX_OFFSET_RANGE
+        val minOffset = -CanvasMemoScreenValues.MAX_OFFSET_RANGE
 
         return Offset(
             x = max(minOffset, min(maxOffset, newOffset.x)),
@@ -116,21 +131,20 @@ private fun CanvasMemoScreen(
     Scaffold(
         topBar = {
             And03AppBar(
-                title = "임시 제목",
+                title = stringResource(R.string.canvas_memo_top_bar_title),
                 onBackClick = { onAction(CanvasMemoAction.ClickBack) }
             ) {
                 IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert_filled),
                         contentDescription = stringResource(
-                            R.string.content_description_more_button
+                            id = R.string.content_description_more_button
                         )
                     )
                 }
             }
         }
     ) { innerPadding ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -141,7 +155,11 @@ private fun CanvasMemoScreen(
                     .fillMaxSize()
                     .pointerInput(Unit) {
                         detectTransformGestures { _, pan, zoom, _ ->
-                            val newScale = (scale * zoom).coerceIn(minScale, maxScale)
+                            val newScale = (scale * zoom)
+                                .coerceIn(
+                                    CanvasMemoScreenValues.MIN_SCALE,
+                                    CanvasMemoScreenValues.MAX_SCALE
+                                )
 
                             scale = newScale
                             panOffset = clampOffset(panOffset + pan)
@@ -150,7 +168,7 @@ private fun CanvasMemoScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(canvasSize)
+                        .size(CanvasMemoScreenValues.CANVAS_SIZE)
                         .graphicsLayer {
                             scaleX = scale
                             scaleY = scale
@@ -159,7 +177,6 @@ private fun CanvasMemoScreen(
                             transformOrigin = TransformOrigin(0f, 0f)
                         }
                 ) {
-
                     Arrows(
                         arrows = uiState.edges,
                         items = uiState.nodes,
@@ -216,6 +233,7 @@ private fun CanvasMemoScreen(
                         }
                     }
                 }
+
                 Card(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -237,7 +255,41 @@ private fun CanvasMemoScreen(
                 }
             }
 
-//
+            uiState.bottomSheetType?.let { sheetType ->
+                ModalBottomSheet(
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+                    onDismissRequest = { onAction(CanvasMemoAction.CloseBottomSheet) },
+                    sheetState = sheetState,
+                    containerColor = And03Theme.colors.background
+                ) {
+                    when (sheetType) {
+                        CanvasMemoBottomSheetType.AddCharacter -> {
+                            // TODO: 등장인물 노드 추가 바텀 시트 출력
+                        }
+
+                        CanvasMemoBottomSheetType.AddQuote -> {
+                            AddQuoteBottomSheet(
+                                quotes = uiState.quotes,
+                                onAddClick = {
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onAction(CanvasMemoAction.AddQuoteItem)
+                                    }
+                                },
+                                onNewSentenceClick = {
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onAction(CanvasMemoAction.AddNewQuote)
+                                    }
+                                },
+                                onSearch = { /* TODO: onAction(CanvasMemoAction.SearchQuote()) 구현 */ }
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Dialog 표시
 //                if (uiState.isRelationDialogVisible) {
 //                    RelationEditorDialog(
 //                        relationNameState = uiState.relationNameState,
@@ -262,6 +314,16 @@ private fun CanvasMemoScreen(
 //                }
 //            }
 
+            if (uiState.isQuoteDialogVisible) {
+                AddQuoteDialog(
+                    quoteState = uiState.quoteState,
+                    pageState = uiState.pageState,
+                    enabled = uiState.quoteState.text.isNotBlank() && uiState.pageState.text.isNotBlank(),
+                    onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
+                    onConfirm = { onAction(CanvasMemoAction.AddQuoteItem) }
+                )
+            }
+
             ToolExpandableButton(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -274,14 +336,22 @@ private fun CanvasMemoScreen(
                         iconRes = R.drawable.ic_add_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
                         onClick = {
-                            scale = (scale * 1.2f).coerceIn(minScale, maxScale)
+                            scale = (scale * 1.2f)
+                                .coerceIn(
+                                    CanvasMemoScreenValues.MIN_SCALE,
+                                    CanvasMemoScreenValues.MAX_SCALE
+                                )
                         }
                     ),
                     ToolAction(
                         iconRes = R.drawable.ic_remove_filled,
                         contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
                         onClick = {
-                            scale = (scale / 1.2f).coerceIn(minScale, maxScale)
+                            scale = (scale / 1.2f)
+                                .coerceIn(
+                                    CanvasMemoScreenValues.MIN_SCALE,
+                                    CanvasMemoScreenValues.MAX_SCALE
+                                )
                         }
                     ),
                     ToolAction(

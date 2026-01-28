@@ -19,7 +19,10 @@ sealed interface Route {
     data class BookDetail(val bookId: String) : Route
 
     @Serializable
-    data class CanvasMemo(val bookId: String, val memoId: String) : Route
+    data class CanvasMemo(
+        val bookId: String,
+        val memoId: String
+    ) : Route
 
     @Serializable
     data class CharacterForm(

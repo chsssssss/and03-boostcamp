@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.ui.theme.And03ComponentSize
@@ -50,21 +51,24 @@ fun MainBottomBar(
 private fun MainBottomBarButton(
     item: MainBottomBarItem,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
                 .size(And03ComponentSize.BOTTOM_BAR_ITEM_SIZE)
+                .clip(RoundedCornerShape(And03Radius.RADIUS_L))
                 .background(
                     color = item.backgroundColor.copy(
                         alpha = if (isSelected) 1f else 0.6f
                     ),
                     shape = RoundedCornerShape(And03Radius.RADIUS_L)
-                ),
+                )
+                .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -84,6 +88,7 @@ private fun MainBottomBarButton(
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun MainBottomBarPreview() {

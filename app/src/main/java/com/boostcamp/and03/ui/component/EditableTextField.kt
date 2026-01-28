@@ -49,9 +49,12 @@ fun EditableTextField(
             unfocusedTextColor = And03Theme.colors.onSurface,
             focusedContainerColor = And03Theme.colors.surface,
             unfocusedContainerColor = And03Theme.colors.surface,
-            focusedIndicatorColor = And03Theme.colors.outline,
+            focusedIndicatorColor = And03Theme.colors.primary,
             unfocusedIndicatorColor = And03Theme.colors.outline,
-            disabledIndicatorColor = And03Theme.colors.outline,
+            disabledIndicatorColor = And03Theme.colors.onSurfaceVariant,
+            focusedLabelColor = And03Theme.colors.primary,
+            unfocusedLabelColor = And03Theme.colors.onSurfaceVariant,
+            disabledLabelColor = And03Theme.colors.onSurfaceVariant,
         ),
     )
 }

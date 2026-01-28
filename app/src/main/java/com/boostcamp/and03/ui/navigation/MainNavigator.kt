@@ -35,7 +35,10 @@ class MainNavigator(
         )
     }
 
-    fun navigateToCanvas(bookId: String, memoId: String) {
+    fun navigateToCanvas(
+        bookId: String,
+        memoId: String
+    ) {
         navController.navigate(
             Route.CanvasMemo(
                 bookId = bookId,

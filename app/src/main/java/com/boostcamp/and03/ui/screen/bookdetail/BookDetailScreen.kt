@@ -110,7 +110,10 @@ fun BookDetailRoute(
             }
 
             is BookDetailEvent.NavigateToCanvas -> {
-                navigateToCanvas(event.bookId, event.memoId)
+                navigateToCanvas(
+                    event.bookId,
+                    event.memoId
+                )
             }
         }
     }
