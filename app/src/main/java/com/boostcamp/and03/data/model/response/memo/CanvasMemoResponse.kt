@@ -20,8 +20,7 @@ data class NodeResponse(
     val title: String,
     val content: String,
     val nodeType: String,
-    val startPage: Int,
-    val endPage: Int,
+    val page: Int,
     val x: Float,
     val y: Float,
 )

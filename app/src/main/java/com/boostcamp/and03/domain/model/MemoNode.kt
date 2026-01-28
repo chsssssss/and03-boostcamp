@@ -16,8 +16,7 @@ sealed class MemoNode {
     data class QuoteNode(
         override val id: String,
         val content: String,
-        val startPage: Int,
-        val endPage: Int,
+        val page: Int,
         override val offset: Offset,
     ) : MemoNode()
 }

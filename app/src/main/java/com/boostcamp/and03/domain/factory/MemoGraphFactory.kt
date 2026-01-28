@@ -40,8 +40,7 @@ object MemoGraphFactory {
         val node3 = MemoNode.QuoteNode(
             id = "3",
             content = "가장 중요한 것은 눈에 보이지 않아.",
-            startPage = 82,
-            endPage = 82,
+            page = 82,
             offset = Offset(150f, 0f)
         )
 
