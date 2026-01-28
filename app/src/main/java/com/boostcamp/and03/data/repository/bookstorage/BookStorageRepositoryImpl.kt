@@ -17,6 +17,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.CanvasMemoFormUiModel
 import com.boostcamp.and03.ui.screen.textmemoform.model.TextMemoFormUiModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BookStorageRepositoryImpl @Inject constructor(
@@ -52,7 +53,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getCharacters(
         userId: String,
         bookId: String
-    ): List<CharacterResponse> {
+    ): Flow<List<CharacterResponse>> {
         return characterDataSource.getCharacters(
             userId,
             bookId
@@ -112,7 +113,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getQuotes(
         userId: String,
         bookId: String
-    ): List<QuoteResponse> {
+    ): Flow<List<QuoteResponse>> {
         return quoteDataSource.getQuotes(
             userId,
             bookId
@@ -172,7 +173,7 @@ class BookStorageRepositoryImpl @Inject constructor(
     override suspend fun getMemos(
         userId: String,
         bookId: String
-    ): List<MemoResponse> {
+    ): Flow<List<MemoResponse>> {
         return memoDataSource.getMemos(
             userId,
             bookId
