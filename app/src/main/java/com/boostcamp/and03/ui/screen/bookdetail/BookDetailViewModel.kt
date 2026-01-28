@@ -101,7 +101,8 @@ class BookDetailViewModel @Inject constructor(
             is BookDetailAction.OnOpenQuoteForm -> _event.trySend(
                 BookDetailEvent.NavigateToQuoteForm(
                     action.bookId,
-                    action.quoteId
+                    action.quoteId,
+                    uiState.value.totalPage
                 )
             )
 
@@ -114,21 +115,23 @@ class BookDetailViewModel @Inject constructor(
             is BookDetailAction.OnOpenTextMemoForm -> _event.trySend(
                 BookDetailEvent.NavigateToTextMemoForm(
                     action.bookId,
-                    action.memoId
+                    action.memoId,
+                    uiState.value.totalPage
                 )
             )
 
             is BookDetailAction.OnOpenCanvasMemoForm -> _event.trySend(
                 BookDetailEvent.NavigateToCanvasMemoForm(
                     action.bookId,
-                    action.memoId
+                    action.memoId,
+                    uiState.value.totalPage
                 )
             )
 
             is BookDetailAction.OnCanvasMemoClick -> _event.trySend(
                 BookDetailEvent.NavigateToCanvas(
-                    action.bookId,
-                    action.memoId
+                    bookId = action.bookId,
+                    memoId = action.memoId
                 )
             )
         }

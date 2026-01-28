@@ -5,15 +5,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.domain.repository.CanvasMemoRepository
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.screen.canvasmemo.model.clearSelection
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CanvasMemoViewModel @Inject constructor(
     private val canvasMemoRepository: CanvasMemoRepository,
+    private val bookStorageRepository: BookStorageRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,6 +40,7 @@ class CanvasMemoViewModel @Inject constructor(
     private val memoId = canvasMemoRoute.memoId
 
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
+
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
 
@@ -44,6 +49,16 @@ class CanvasMemoViewModel @Inject constructor(
 
     init {
         createInitialState()
+
+        observeCharacters(
+            userId = userId,
+            bookId = bookId
+        )
+
+        observeQuotes(
+            userId = userId,
+            bookId = bookId
+        )
     }
 
     private fun createInitialState() {
@@ -63,11 +78,52 @@ class CanvasMemoViewModel @Inject constructor(
         return MemoGraph(nodes, edges)
     }
 
+    private fun observeCharacters(
+        userId: String,
+        bookId: String
+    ) {
+        viewModelScope.launch {
+            bookStorageRepository.getCharacters(userId, bookId).collect { result ->
+                _uiState.update { state ->
+                    state.copy(characters = result.map { it.toUiModel() }.toImmutableList())
+                }
+            }
+        }
+    }
+
+    private fun observeQuotes(
+        userId: String,
+        bookId: String
+    ) {
+        viewModelScope.launch {
+            bookStorageRepository.getQuotes(userId, bookId).collect { result ->
+                _uiState.update { state ->
+                    state.copy(quotes = result.map { it.toUiModel() }.toImmutableList())
+                }
+            }
+        }
+    }
+
     fun onAction(action: CanvasMemoAction) {
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
+
+            CanvasMemoAction.CloseBottomSheet -> handleCloseBottomSheet()
+
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
+
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
+
+            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
+
+            CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
+
+            CanvasMemoAction.AddQuoteItem -> handleAddQuote()
+
+            is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
+
+            CanvasMemoAction.AddNewQuote -> handleAddNewQuote()
+
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
             is CanvasMemoAction.OnBottomBarClick -> {
                 handleBottomBarClick(action)
@@ -89,6 +145,10 @@ class CanvasMemoViewModel @Inject constructor(
         _event.trySend(CanvasMemoEvent.NavToBack)
     }
 
+    private fun handleCloseBottomSheet() {
+        _uiState.update { it.copy(bottomSheetType = null) }
+    }
+
     private fun handleCloseRelationDialog() {
         _uiState.update {
             it.copy(
@@ -108,12 +168,59 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    private fun handleOpenRelationDialog(action: CanvasMemoAction.OpenRelationDialog) {
+        _uiState.update {
+            it.copy(
+                isRelationDialogVisible = true,
+                relationSelection = RelationSelection(
+                    fromNodeId = action.fromNodeId,
+                    toNodeId = action.toNodeId
+                )
+            )
+        }
+    }
+
     private fun handleCloseAddCharacterDialog() {
-        _uiState.value = _uiState.value.copy(
-            isAddCharacterDialogVisible = false,
-            characterNameState = TextFieldState(),
-            characterDescState = TextFieldState()
-        )
+        _uiState.update {
+            it.copy(
+                isAddCharacterDialogVisible = false,
+                characterNameState = TextFieldState(),
+                characterDescState = TextFieldState()
+            )
+        }
+    }
+
+    private fun handleCloseQuoteDialog() {
+        _uiState.update {
+            it.copy(
+                isQuoteDialogVisible = false,
+                quoteState = TextFieldState(),
+                pageState = TextFieldState()
+            )
+        }
+    }
+
+    private fun handleAddQuote() {
+        _uiState.update {
+            it.copy(
+                bottomSheetType = null
+            )
+        }
+    }
+
+    private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
+        // TODO: 구절 검색 동작 연동
+    }
+
+    private fun handleAddNewQuote() {
+        _uiState.update {
+            it.copy(
+                isQuoteDialogVisible = true,
+                bottomSheetType = null,
+                quoteState = TextFieldState(),
+                pageState = TextFieldState()
+            )
+        }
     }
 
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
@@ -122,9 +229,9 @@ class CanvasMemoViewModel @Inject constructor(
 
         val movedNode = updatedGraph.nodes[action.nodeId] ?: return
 
-        _uiState.update { currentState ->
-            currentState.copy(
-                nodes = currentState.nodes + (action.nodeId to movedNode.toUiModel())
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes + (action.nodeId to movedNode.toUiModel())
             )
         }
     }
@@ -134,8 +241,8 @@ class CanvasMemoViewModel @Inject constructor(
         val graph = getCurrentGraph()
         val updatedGraph = graph.connectNode(action.fromId, action.toId, action.name)
 
-        _uiState.update { currentState ->
-            currentState.copy(
+        _uiState.update {
+            it.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
             )
         }
@@ -155,6 +262,19 @@ class CanvasMemoViewModel @Inject constructor(
                     )
                 }
             }
+        }
+
+        val sheetType = when (action.type) {
+            MainBottomBarType.NODE -> CanvasMemoBottomSheetType.AddCharacter
+            MainBottomBarType.QUOTE -> CanvasMemoBottomSheetType.AddQuote
+            else -> null
+        }
+
+        _uiState.update {
+            it.copy(
+                selectedBottomBarType = action.type,
+                bottomSheetType = sheetType
+            )
         }
     }
 
