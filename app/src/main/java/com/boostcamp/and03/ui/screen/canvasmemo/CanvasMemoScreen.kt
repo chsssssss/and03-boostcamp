@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -141,6 +143,50 @@ private fun CanvasMemoScreen(
                         )
                     )
                 }
+            }
+        },
+        bottomBar = {
+            if (uiState.isBottomBarVisible) {
+                MainBottomBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(
+                                WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                            )
+                        ),
+                    items = listOf(
+                        MainBottomBarItem(
+                            type = MainBottomBarType.NODE,
+                            label = stringResource(R.string.canvas_bottom_bar_node),
+                            icon = Icons.Default.PersonAdd,
+                            backgroundColor = CanvasMemoColors.Node
+                        ),
+                        MainBottomBarItem(
+                            type = MainBottomBarType.RELATION,
+                            label = stringResource(R.string.canvas_bottom_bar_relation),
+                            icon = Icons.Default.Link,
+                            backgroundColor = CanvasMemoColors.Relation
+                        ),
+                        MainBottomBarItem(
+                            type = MainBottomBarType.QUOTE,
+                            label = stringResource(R.string.canvas_bottom_bar_quote),
+                            icon = Icons.Default.FormatQuote,
+                            backgroundColor = CanvasMemoColors.Quote
+                        ),
+                        MainBottomBarItem(
+                            type = MainBottomBarType.DELETE,
+                            label = stringResource(R.string.canvas_bottom_bar_delete),
+                            icon = Icons.Default.Delete,
+                            backgroundColor = CanvasMemoColors.Delete
+                        )
+
+                    ),
+                    selectedType = uiState.selectedBottomBarType,
+                    onItemClick = { type ->
+                        onAction(CanvasMemoAction.OnBottomBarClick(type))
+                    }
+                )
             }
         }
     ) { innerPadding ->
@@ -331,10 +377,7 @@ private fun CanvasMemoScreen(
             ToolExpandableButton(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(
-                        start = And03Padding.PADDING_XS,
-                        bottom = And03Padding.PADDING_4XL + And03ComponentSize.BOTTOM_BAR_ITEM_SIZE + And03Spacing.SPACE_L
-                    ),
+                    .padding(start = And03Padding.PADDING_XS),
                 actions = listOf(
                     ToolAction(
                         iconRes = R.drawable.ic_add_filled,
@@ -367,44 +410,6 @@ private fun CanvasMemoScreen(
                         }
                     )
                 )
-            )
-
-            MainBottomBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = And03Spacing.SPACE_XS),
-                items = listOf(
-                    MainBottomBarItem(
-                        type = MainBottomBarType.NODE,
-                        label = stringResource(R.string.canvas_bottom_bar_node),
-                        icon = Icons.Default.PersonAdd,
-                        backgroundColor = CanvasMemoColors.Node
-                    ),
-                    MainBottomBarItem(
-                        type = MainBottomBarType.RELATION,
-                        label = stringResource(R.string.canvas_bottom_bar_relation),
-                        icon = Icons.Default.Link,
-                        backgroundColor = CanvasMemoColors.Relation
-                    ),
-                    MainBottomBarItem(
-                        type = MainBottomBarType.QUOTE,
-                        label = stringResource(R.string.canvas_bottom_bar_quote),
-                        icon = Icons.Default.FormatQuote,
-                        backgroundColor = CanvasMemoColors.Quote
-                    ),
-                    MainBottomBarItem(
-                        type = MainBottomBarType.DELETE,
-                        label = stringResource(R.string.canvas_bottom_bar_delete),
-                        icon = Icons.Default.Delete,
-                        backgroundColor = CanvasMemoColors.Delete
-                    )
-
-                ),
-                selectedType = uiState.selectedBottomBarType,
-                onItemClick = { type ->
-                    onAction(CanvasMemoAction.OnBottomBarClick(type))
-                }
             )
         }
     }
