@@ -1,10 +1,10 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import com.boostcamp.and03.domain.editor.CanvasMemoEditor
 import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CanvasMemoViewModel @Inject constructor() : ViewModel() {
+
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
 
@@ -26,14 +27,6 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
 
     init {
         createInitialState()
-
-        handleConnectNodes(
-            CanvasMemoAction.ConnectNodes(
-                fromId = "1",
-                toId = "2",
-                name = "로직 테스트 연결"
-            )
-        )
     }
 
     private fun createInitialState() {
@@ -42,7 +35,8 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         _uiState.update {
             it.copy(
                 nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() }
+                edges = sampleGraph.edges.map { it.toUiModel() },
+                characters = emptyList() // 추후 서버 연동
             )
         }
     }
@@ -57,8 +51,9 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
             CanvasMemoAction.CloseRelationDialog -> handleCloseRelationDialog()
-            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
             CanvasMemoAction.CloseAddCharacterDialog -> handleCloseAddCharacterDialog()
+            CanvasMemoAction.CloseAddNodeSheet -> handleCloseAddNodeSheet()
+            is CanvasMemoAction.OpenRelationDialog -> handleOpenRelationDialog(action)
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
             is CanvasMemoAction.ConnectNodes -> handleConnectNodes(action)
             is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
@@ -73,9 +68,20 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
         _uiState.update {
             it.copy(
                 isRelationDialogVisible = false,
-                relationSelection = null,
-                relationNameState = TextFieldState()
+                relationSelection = null
             )
+        }
+    }
+
+    private fun handleCloseAddCharacterDialog() {
+        _uiState.update {
+            it.copy(isAddCharacterDialogVisible = false)
+        }
+    }
+
+    private fun handleCloseAddNodeSheet() {
+        _uiState.update {
+            it.copy(isAddNodeSheetVisible = false)
         }
     }
 
@@ -86,40 +92,29 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
                 relationSelection = RelationSelection(
                     fromNodeId = action.fromNodeId,
                     toNodeId = action.toNodeId
-                ),
-                relationNameState = TextFieldState()
+                )
             )
         }
-    }
-
-    private fun handleCloseAddCharacterDialog() {
-        _uiState.value = _uiState.value.copy(
-            isAddCharacterDialogVisible = false,
-            characterNameState = TextFieldState(),
-            characterDescState = TextFieldState()
-        )
     }
 
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
         val editor = CanvasMemoEditor(getCurrentGraph())
         val updatedGraph = editor.moveNode(action.nodeId, action.newOffset)
-
         val movedNode = updatedGraph.nodes[action.nodeId] ?: return
 
-        _uiState.update { currentState ->
-            currentState.copy(
-                nodes = currentState.nodes + (action.nodeId to movedNode.toUiModel())
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes + (action.nodeId to movedNode.toUiModel())
             )
         }
     }
-
 
     private fun handleConnectNodes(action: CanvasMemoAction.ConnectNodes) {
         val editor = CanvasMemoEditor(getCurrentGraph())
         val updatedGraph = editor.connectNode(action.fromId, action.toId, action.name)
 
-        _uiState.update { currentState ->
-            currentState.copy(
+        _uiState.update {
+            it.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
                 isRelationDialogVisible = false
             )
@@ -129,7 +124,8 @@ class CanvasMemoViewModel @Inject constructor() : ViewModel() {
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
         _uiState.update {
             it.copy(
-                selectedBottomBarType = action.type
+                selectedBottomBarType = action.type,
+                isAddNodeSheetVisible = action.type == MainBottomBarType.NODE
             )
         }
     }

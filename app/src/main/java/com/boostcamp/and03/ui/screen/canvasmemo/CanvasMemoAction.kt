@@ -1,13 +1,13 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
-
 import androidx.compose.ui.geometry.Offset
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 
 sealed class CanvasMemoAction {
     data object ClickBack : CanvasMemoAction()
     data object CloseRelationDialog : CanvasMemoAction()
     data object CloseAddCharacterDialog : CanvasMemoAction()
+    data object CloseAddNodeSheet : CanvasMemoAction()
     data class OpenRelationDialog(
         val fromNodeId: String,
         val toNodeId: String
