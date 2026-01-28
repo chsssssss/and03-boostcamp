@@ -32,6 +32,16 @@ class CanvasMemoDataSourceImpl @Inject constructor(
                 .collection("memo")
                 .document(memoId)
 
+            val nodeSnapshot = collectionRef.collection("node").get().await()
+            nodeSnapshot.documents.forEach { doc ->
+                doc.reference.delete()
+            }
+
+            val edgeSnapshot = collectionRef.collection("edge").get().await()
+            edgeSnapshot.documents.forEach { doc ->
+                doc.reference.delete()
+            }
+
             collectionRef.set(
                 mapOf("updatedTime" to FieldValue.serverTimestamp()),
                 SetOptions.merge()
