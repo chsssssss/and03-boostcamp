@@ -56,6 +56,7 @@ import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
+import com.boostcamp.and03.ui.screen.canvasmemo.component.QuoteItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
@@ -225,7 +226,10 @@ private fun CanvasMemoScreen(
                                         nodeSizes = nodeSizes + (uiModel.node.id to size)
                                     }
                                 ) {
-                                    Text(text = uiModel.node.content)
+                                    QuoteItem(
+                                        quote = uiModel.node.content,
+                                        page = uiModel.node.page
+                                    )
                                 }
                             }
                         }

@@ -39,7 +39,7 @@ fun PagelistScroll(
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(max = And03ComponentSize.PAGE_LIST_SCROLL)
+            .heightIn(max = And03ComponentSize.PAGE_LIST_SCROLL_MAX_HEIGHT)
             .padding(And03Padding.PADDING_XS)
             .drawVerticalScrollbar(listState, color = And03Theme.colors.outlineVariant),
         verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_M),

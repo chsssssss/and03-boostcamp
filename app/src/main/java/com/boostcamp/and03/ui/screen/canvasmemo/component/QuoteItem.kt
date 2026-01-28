@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
-import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.theme.And03Border
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Radius
@@ -28,13 +27,14 @@ import com.boostcamp.and03.ui.theme.And03ComponentSize
 
 @Composable
 fun QuoteItem(
-    quote: QuoteUiModel,
+    quote: String,
+    page: Int,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
+            .widthIn(max = And03ComponentSize.QUOTE_ITEM_MAX_WIDTH)
             .background(
                 color = Color(0xFFFFFAE8),
                 shape = RoundedCornerShape(And03Radius.RADIUS_L)
@@ -59,11 +59,7 @@ fun QuoteItem(
 
         Spacer(modifier = Modifier.width(And03Spacing.SPACE_M))
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S),
-            modifier = Modifier.weight(1f)
-        ) {
-
+        Column(verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S)) {
             Icon(
                 imageVector = Icons.Default.FormatQuote,
                 contentDescription = null,
@@ -72,7 +68,7 @@ fun QuoteItem(
             )
 
             Text(
-                text = quote.content,
+                text = quote,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Black,
                 maxLines = 2,
@@ -82,7 +78,7 @@ fun QuoteItem(
             Text(
                 text = stringResource(
                     id = R.string.page_indicator,
-                    quote.page
+                    page
                 ),
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.Gray,
@@ -100,12 +96,8 @@ private fun QuoteItemPreview() {
         modifier = Modifier.padding(16.dp)
     ) {
         QuoteItem(
-            quote = QuoteUiModel(
-                id = "1",
-                content = "어른들은 숫자를 좋아한다. 나이를 물으면 그 사람이 어떤 사람인지 알았다고 생각한다.",
-                page = 42,
-                date=""
-            )
+            quote = "어른들은 숫자를 좋아한다. 나이를 물으면 그 사람이 어떤 사람인지 알았다고 생각한다.",
+            page = 42
         )
     }
 }
