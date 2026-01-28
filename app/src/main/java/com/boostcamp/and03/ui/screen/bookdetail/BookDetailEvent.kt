@@ -11,17 +11,20 @@ sealed interface BookDetailEvent {
 
     data class NavigateToQuoteForm(
         val bookId: String,
-        val quoteId: String
+        val quoteId: String,
+        val totalPage: Int
     ) : BookDetailEvent
 
     data class NavigateToTextMemoForm(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ) : BookDetailEvent
 
     data class NavigateToCanvasMemoForm(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ) : BookDetailEvent
 
     data class NavigateToCanvas(

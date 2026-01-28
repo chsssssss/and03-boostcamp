@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.canvasmemoform.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +25,7 @@ class CanvasMemoFormViewModel @Inject constructor(
     private val canvasMemoFormRoute = savedStateHandle.toRoute<Route.CanvasMemoForm>()
     private val bookId = canvasMemoFormRoute.bookId
     private val memoId = canvasMemoFormRoute.memoId
+    private val totalPage = canvasMemoFormRoute.totalPage
 
     private val _uiState = MutableStateFlow(CanvasMemoFormUiState())
     val uiState = _uiState.asStateFlow()
@@ -35,10 +36,8 @@ class CanvasMemoFormViewModel @Inject constructor(
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     init {
-        viewModelScope.launch {
-            loadTotalPage()
-            loadTextMemo()
-        }
+        _uiState.update { it.copy(totalPage = totalPage) }
+        viewModelScope.launch { loadTextMemo() }
     }
 
     fun onAction(action: CanvasMemoFormAction) {
@@ -67,17 +66,6 @@ class CanvasMemoFormViewModel @Inject constructor(
             is CanvasMemoFormAction.OnStartPageChange -> _uiState.update { it.copy(startPage = action.startPage) }
 
             is CanvasMemoFormAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
-        }
-    }
-
-    private suspend fun loadTotalPage() {
-        val result = bookStorageRepository.getBookDetail(
-            userId = userId,
-            bookId = bookId
-        )
-
-        if (result != null) {
-            _uiState.update { it.copy(totalPage = result.totalPage) }
         }
     }
 

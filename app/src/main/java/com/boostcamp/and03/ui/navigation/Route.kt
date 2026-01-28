@@ -34,18 +34,21 @@ sealed interface Route {
     @Serializable
     data class QuoteForm(
         val bookId: String,
-        val quoteId: String
+        val quoteId: String,
+        val totalPage: Int
     ) : Route
 
     @Serializable
     data class TextMemoForm(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ) : Route
 
     @Serializable
     data class CanvasMemoForm(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ) : Route
 }

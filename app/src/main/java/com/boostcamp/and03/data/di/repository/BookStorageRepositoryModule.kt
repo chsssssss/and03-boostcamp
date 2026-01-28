@@ -1,7 +1,7 @@
 package com.boostcamp.and03.data.di.repository
 
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepository
-import com.boostcamp.and03.data.repository.book_storage.BookStorageRepositoryImpl
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
+import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

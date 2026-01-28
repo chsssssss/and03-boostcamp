@@ -1,4 +1,4 @@
-package com.boostcamp.and03.data.datasource.remote.book_storage
+package com.boostcamp.and03.data.datasource.remote.bookstorage
 
 import com.boostcamp.and03.data.model.request.BookStorageRequest
 import com.boostcamp.and03.data.model.response.BookDetailResponse
