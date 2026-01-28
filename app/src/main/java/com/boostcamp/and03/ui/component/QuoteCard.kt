@@ -37,9 +37,8 @@ fun QuoteCard(
     onClickEdit: (() -> Unit)? = null,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = modifier.fillMaxWidth(),
+        onClick = onClick,
         shape = RoundedCornerShape(And03Radius.RADIUS_M),
         colors = CardDefaults.cardColors(containerColor = And03Theme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
