@@ -280,8 +280,7 @@ private fun CanvasMemoScreen(
                                     NodeItem(
                                         title = uiModel.node.name,
                                         content = uiModel.node.description,
-                                        isHighlighted = uiModel.isSelected,
-                                        onMoreClick = {}
+                                        isHighlighted = uiModel.isSelected
                                     )
                                 }
                             }
