@@ -2,7 +2,15 @@ package com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -17,12 +25,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03IconSize
+import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Spacing
+import com.boostcamp.and03.ui.theme.And03Theme
 
 @Composable
 fun MainBottomBar(
@@ -31,10 +44,11 @@ fun MainBottomBar(
     onItemClick: (MainBottomBarType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row( // 추후에 background 설정하기 (가져와서 쓸경우)
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = And03Spacing.SPACE_M),
+            .background(color = And03Theme.colors.background)
+            .padding(vertical = And03Padding.PADDING_M),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items.forEach { item ->

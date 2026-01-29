@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -219,7 +218,10 @@ private fun CanvasMemoScreen(
                             )
                         ),
                         modifier = Modifier
-                            .padding(And03Padding.PADDING_XL)
+                            .padding(
+                                vertical = And03Padding.PADDING_L,
+                                horizontal = And03Padding.PADDING_XL
+                            )
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
