@@ -45,3 +45,12 @@ fun MemoNode.toUiModel(
         )
     }
 }
+
+fun MemoNodeUiModel.clearSelection(): MemoNodeUiModel =
+    when (this) {
+        is MemoNodeUiModel.CharacterNodeUiModel ->
+            copy(isSelected = false)
+
+        is MemoNodeUiModel.QuoteNodeUiModel ->
+            copy(isSelected = false)
+    }

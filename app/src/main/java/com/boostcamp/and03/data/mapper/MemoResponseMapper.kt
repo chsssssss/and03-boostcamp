@@ -54,6 +54,7 @@ object MemoResponseMapper {
                 content = it["content"] as? String ?: "",
                 nodeType = it["nodeType"] as? String ?: "",
                 page = (it["page"] as? Long)?.toInt() ?: 0,
+                imageUrl = it["imageUrl"] as? String ?: "",
                 x = (it["x"] as? Double)?.toFloat() ?: 0f,
                 y = (it["y"] as? Double)?.toFloat() ?: 0f,
             )

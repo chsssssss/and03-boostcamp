@@ -10,6 +10,7 @@ sealed class MemoNode {
         override val id: String,
         val name: String,
         val description: String,
+        val imageUrl: String,
         override val offset: Offset,
     ) : MemoNode()
 
