@@ -32,6 +32,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 private object CanvasZoomValues {
+    const val ZOOM_STEP = 0.2f
     const val MIN_ZOOM = 0.5f
     const val MAX_ZOOM = 2.0f
     const val MAX_MOVE_RANGE = 1000f
@@ -766,7 +767,7 @@ class CanvasMemoViewModel @Inject constructor(
     private fun handleZoomIn() {
         _uiState.update {
             it.copy(
-                zoomScale = (it.zoomScale + 0.2f)
+                zoomScale = (it.zoomScale + CanvasZoomValues.ZOOM_STEP)
                     .coerceIn(
                         CanvasZoomValues.MIN_ZOOM,
                         CanvasZoomValues.MAX_ZOOM
@@ -781,7 +782,7 @@ class CanvasMemoViewModel @Inject constructor(
     private fun handleZoomOut() {
         _uiState.update {
             it.copy(
-                zoomScale = (it.zoomScale - 0.2f)
+                zoomScale = (it.zoomScale - CanvasZoomValues.ZOOM_STEP)
                     .coerceIn(
                         CanvasZoomValues.MIN_ZOOM,
                         CanvasZoomValues.MAX_ZOOM
