@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.booklist
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -47,6 +46,10 @@ fun BooklistRoute(
     onAddBookClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBooks()
+    }
 
     BooklistScreen(
         uiState = uiState,
