@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.quoteform
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -117,39 +119,47 @@ private fun QuoteFormScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(And03Padding.PADDING_L)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            And03InfoSection(
-                title = stringResource(R.string.add_quote_info_title),
-                description = stringResource(R.string.add_quote_info_description)
-            )
-
-            QuoteInputSection(
-                quote = uiState.quote,
-                onQuoteChange = { onAction(QuoteFormAction.OnQuoteChange(quote = it)) },
-                onAddByImageClick = { isOCRBottomSheetVisible = true }
-            )
-
-            if (isOCRBottomSheetVisible) {
-                OCRBottomSheet(
-                    onDismiss = { isOCRBottomSheetVisible = false },
-                    onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
-                    onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.Center)
                 )
             }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                And03InfoSection(
+                    title = stringResource(R.string.add_quote_info_title),
+                    description = stringResource(R.string.add_quote_info_description)
+                )
 
-            PageInputSection(
-                page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
-                totalPage = uiState.totalPage
-            )
+                QuoteInputSection(
+                    quote = uiState.quote,
+                    onQuoteChange = { onAction(QuoteFormAction.OnQuoteChange(quote = it)) },
+                    onAddByImageClick = { isOCRBottomSheetVisible = true }
+                )
+
+                if (isOCRBottomSheetVisible) {
+                    OCRBottomSheet(
+                        onDismiss = { isOCRBottomSheetVisible = false },
+                        onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
+                        onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
+                    )
+                }
+
+                PageInputSection(
+                    page = uiState.page,
+                    onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
+                    totalPage = uiState.totalPage
+                )
+            }
         }
 
         if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {

@@ -36,8 +36,18 @@ class CanvasMemoFormViewModel @Inject constructor(
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     init {
-        _uiState.update { it.copy(totalPage = totalPage) }
-        viewModelScope.launch { loadTextMemo() }
+        _uiState.update {
+            it.copy(
+                isLoading = memoId.isNotBlank(),
+                totalPage = totalPage
+            )
+        }
+
+        if (memoId.isNotBlank()) {
+            viewModelScope.launch {
+                loadCanvasMemo()
+            }
+        }
     }
 
     fun onAction(action: CanvasMemoFormAction) {
@@ -76,9 +86,7 @@ class CanvasMemoFormViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadTextMemo() {
-        if (memoId.isBlank()) return
-
+    private suspend fun loadCanvasMemo() {
         val result = bookStorageRepository.getCanvasMemo(
             userId = userId,
             bookId = bookId,
@@ -94,7 +102,8 @@ class CanvasMemoFormViewModel @Inject constructor(
                 endPage = if (isSamePage) "" else result.endPage.toString(),
                 originalTitle = result.title,
                 originalStartPage = result.startPage.toString(),
-                originalEndPage = if (isSamePage) "" else result.endPage.toString()
+                originalEndPage = if (isSamePage) "" else result.endPage.toString(),
+                totalPage = totalPage
             )
         }
     }

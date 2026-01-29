@@ -73,8 +73,10 @@ class CharacterFormViewModel @Inject constructor (
     }
 
     init {
-        viewModelScope.launch {
-            loadCharacter()
+        _uiState.update { it.copy(isLoading = characterId.isNotBlank()) }
+
+        if (characterId.isNotBlank()) {
+            viewModelScope.launch { loadCharacter() }
         }
     }
 
@@ -94,7 +96,8 @@ class CharacterFormViewModel @Inject constructor (
                 description = result.description,
                 originalName = result.name,
                 originalRole = result.role,
-                originalDescription = result.description
+                originalDescription = result.description,
+                isLoading = false
             )
         }
     }

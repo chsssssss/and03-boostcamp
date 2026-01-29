@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.textmemoform
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -14,12 +15,14 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -107,41 +110,49 @@ private fun TextMemoFormScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(And03Padding.PADDING_L)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
-        ) {
-            TitleInputSection(
-                title = uiState.title,
-                onTitleChange = { onAction(TextMemoFormAction.OnTitleChange(title = it)) }
-            )
-
-            ContentInputSection(
-                label = stringResource(R.string.add_memo_content),
-                content = uiState.content,
-                onContentChange = { onAction(TextMemoFormAction.OnContentChange(content = it)) },
-                onAddByImageClick = { isOCRBottomSheetVisible = true },
-            )
-
-            if (isOCRBottomSheetVisible) {
-                OCRBottomSheet(
-                    onDismiss = { isOCRBottomSheetVisible = false },
-                    onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
-                    onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.Center)
                 )
             }
+        } else {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
+            ) {
+                TitleInputSection(
+                    title = uiState.title,
+                    onTitleChange = { onAction(TextMemoFormAction.OnTitleChange(title = it)) }
+                )
 
-            PageInputSection(
-                startPage = uiState.startPage,
-                endPage = uiState.endPage,
-                onStartPageChange = { onAction(TextMemoFormAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(TextMemoFormAction.OnEndPageChange(endPage = it)) },
-                totalPage = uiState.totalPage
-            )
+                ContentInputSection(
+                    label = stringResource(R.string.add_memo_content),
+                    content = uiState.content,
+                    onContentChange = { onAction(TextMemoFormAction.OnContentChange(content = it)) },
+                    onAddByImageClick = { isOCRBottomSheetVisible = true },
+                )
+
+                if (isOCRBottomSheetVisible) {
+                    OCRBottomSheet(
+                        onDismiss = { isOCRBottomSheetVisible = false },
+                        onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
+                        onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
+                    )
+                }
+
+                PageInputSection(
+                    startPage = uiState.startPage,
+                    endPage = uiState.endPage,
+                    onStartPageChange = { onAction(TextMemoFormAction.OnStartPageChange(startPage = it)) },
+                    onEndPageChange = { onAction(TextMemoFormAction.OnEndPageChange(endPage = it)) },
+                    totalPage = uiState.totalPage
+                )
+            }
         }
 
         if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {

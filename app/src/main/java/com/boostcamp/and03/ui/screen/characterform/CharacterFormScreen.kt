@@ -3,6 +3,7 @@ package com.boostcamp.and03.ui.screen.characterform
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -111,43 +113,51 @@ private fun CharacterFormScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(And03Padding.PADDING_L)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            And03InfoSection(
-                title = stringResource(R.string.info_section_character_title),
-                description = stringResource(R.string.info_section_character_description)
-            )
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.Center)
+                )
+            }
+        } else {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                And03InfoSection(
+                    title = stringResource(R.string.info_section_character_title),
+                    description = stringResource(R.string.info_section_character_description)
+                )
 
-            PersonImagePlaceholder(
-                imageUrl = null,
-                onClick = { onAction(CharacterFormAction.OnAddImageClick) }
-            )
+                PersonImagePlaceholder(
+                    imageUrl = null,
+                    onClick = { onAction(CharacterFormAction.OnAddImageClick) }
+                )
 
-            SingleLineInputSection(
-                value = uiState.name,
-                onValueChange = { onAction(CharacterFormAction.OnNameChange(name = it)) },
-                labelStringRes = R.string.character_form_name,
-                placeholderStringRes = R.string.character_form_enter_name_placeholder
-            )
+                SingleLineInputSection(
+                    value = uiState.name,
+                    onValueChange = { onAction(CharacterFormAction.OnNameChange(name = it)) },
+                    labelStringRes = R.string.character_form_name,
+                    placeholderStringRes = R.string.character_form_enter_name_placeholder
+                )
 
-            SingleLineInputSection(
-                value = uiState.role,
-                onValueChange = { onAction(CharacterFormAction.OnRoleChange(role = it)) },
-                labelStringRes = R.string.character_form_role,
-                placeholderStringRes = R.string.character_form_enter_role_placeholder
-            )
+                SingleLineInputSection(
+                    value = uiState.role,
+                    onValueChange = { onAction(CharacterFormAction.OnRoleChange(role = it)) },
+                    labelStringRes = R.string.character_form_role,
+                    placeholderStringRes = R.string.character_form_enter_role_placeholder
+                )
 
-            DescriptionInputSection(
-                description = uiState.description,
-                onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
-            )
+                DescriptionInputSection(
+                    description = uiState.description,
+                    onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
+                )
+            }
         }
 
         if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {

@@ -11,6 +11,7 @@ data class TextMemoFormUiState(
     val originalStartPage: String = "",
     val originalEndPage: String = "",
 
+    val isLoading: Boolean = false,
     val totalPage: Int = 0,
     val isSaving: Boolean = false,
     val isExitConfirmationDialogVisible: Boolean = false

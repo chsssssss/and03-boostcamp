@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.canvasmemoform
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -103,26 +106,34 @@ private fun CanvasMemoFormScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(And03Padding.PADDING_L)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
-        ) {
-            TitleInputSection(
-                title = uiState.title,
-                onTitleChange = { onAction(CanvasMemoFormAction.OnTitleChange(title = it)) }
-            )
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.Center)
+                )
+            }
+        } else {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L)
+            ) {
+                TitleInputSection(
+                    title = uiState.title,
+                    onTitleChange = { onAction(CanvasMemoFormAction.OnTitleChange(title = it)) }
+                )
 
-            PageInputSection(
-                startPage = uiState.startPage,
-                endPage = uiState.endPage,
-                onStartPageChange = { onAction(CanvasMemoFormAction.OnStartPageChange(startPage = it)) },
-                onEndPageChange = { onAction(CanvasMemoFormAction.OnEndPageChange(endPage = it)) },
-                totalPage = uiState.totalPage
-            )
+                PageInputSection(
+                    startPage = uiState.startPage,
+                    endPage = uiState.endPage,
+                    onStartPageChange = { onAction(CanvasMemoFormAction.OnStartPageChange(startPage = it)) },
+                    onEndPageChange = { onAction(CanvasMemoFormAction.OnEndPageChange(endPage = it)) },
+                    totalPage = uiState.totalPage
+                )
+            }
         }
 
         if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {

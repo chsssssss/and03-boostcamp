@@ -7,6 +7,7 @@ data class QuoteFormUiState(
     val originalQuote: String = "",
     val originalPage: String = "",
 
+    val isLoading: Boolean = false,
     val totalPage: Int = 0,
     val isSaving: Boolean = false,
     val isExitConfirmationDialogVisible: Boolean = false

@@ -36,8 +36,16 @@ class TextMemoFormViewModel @Inject constructor(
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     init {
-        _uiState.update { it.copy(totalPage = totalPage) }
-        viewModelScope.launch { loadTextMemo() }
+        _uiState.update {
+            it.copy(
+                totalPage = totalPage,
+                isLoading = memoId.isNotBlank()
+            )
+        }
+
+        if (memoId.isNotBlank()) {
+            viewModelScope.launch { loadTextMemo() }
+        }
     }
 
     fun onAction(action: TextMemoFormAction) {
@@ -79,8 +87,6 @@ class TextMemoFormViewModel @Inject constructor(
     }
 
     private suspend fun loadTextMemo() {
-        if (memoId.isBlank()) return
-
         val result = bookStorageRepository.getTextMemo(
             userId = userId,
             bookId = bookId,
@@ -98,7 +104,8 @@ class TextMemoFormViewModel @Inject constructor(
                 originalTitle = result.title,
                 originalContent = result.content,
                 originalStartPage = result.startPage.toString(),
-                originalEndPage = if (isSamePage) "" else result.endPage.toString()
+                originalEndPage = if (isSamePage) "" else result.endPage.toString(),
+                isLoading = false
             )
         }
     }

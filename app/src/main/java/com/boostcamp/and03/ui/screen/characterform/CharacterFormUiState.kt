@@ -13,6 +13,7 @@ data class CharacterFormUiState(
     val originalDescription: String = "",
     val originalImageUrl: String = "",
 
+    val isLoading: Boolean = false,
     val iconColor: Color = Color(0xFF1E88E5),
     val isSaving: Boolean = false,
     val isExitConfirmationDialogVisible: Boolean = false

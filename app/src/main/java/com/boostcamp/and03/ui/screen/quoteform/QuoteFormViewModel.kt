@@ -72,8 +72,16 @@ class QuoteFormViewModel @Inject constructor(
     }
 
     init {
-        _uiState.update { it.copy(totalPage = totalPage) }
-        viewModelScope.launch { loadQuote() }
+        _uiState.update {
+            it.copy(
+                totalPage = totalPage,
+                isLoading = quoteId.isNotBlank()
+            )
+        }
+
+        if (quoteId.isNotBlank()) {
+            viewModelScope.launch { loadQuote() }
+        }
     }
 
     private suspend fun loadQuote() {
@@ -90,7 +98,8 @@ class QuoteFormViewModel @Inject constructor(
                 quote = result.content,
                 page = result.page.toString(),
                 originalQuote = result.content,
-                originalPage = result.page.toString()
+                originalPage = result.page.toString(),
+                isLoading = false
             )
         }
     }
