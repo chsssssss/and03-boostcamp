@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.textmemoform
 
-import android.util.Log.i
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -37,7 +35,6 @@ import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
-import com.boostcamp.and03.ui.screen.canvasmemo.CanvasMemoAction
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -74,7 +71,7 @@ private fun TextMemoFormScreen(
     BackHandler {
         if (uiState.isExitConfirmationDialogVisible) {
             onAction(TextMemoFormAction.CloseExitConfirmationDialog)
-        } else if (uiState.isTyped) {
+        } else if (uiState.isEdited) {
             onAction(TextMemoFormAction.OnBackClick)
         } else {
             onAction(TextMemoFormAction.CloseScreen)
@@ -147,7 +144,7 @@ private fun TextMemoFormScreen(
             )
         }
 
-        if (uiState.isTyped && uiState.isExitConfirmationDialogVisible) {
+        if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {
             And03Dialog(
                 iconResId = R.drawable.ic_warning_filled,
                 iconColor = And03Theme.colors.error,

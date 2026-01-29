@@ -29,7 +29,7 @@ data class TextMemoFormUiState(
                     isValidPageRange
         }
 
-    val isTyped: Boolean
+    val isEdited: Boolean
         get() {
             return title.isNotBlank() ||
                     content.isNotBlank() ||

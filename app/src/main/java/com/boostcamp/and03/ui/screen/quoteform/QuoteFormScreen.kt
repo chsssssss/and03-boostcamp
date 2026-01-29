@@ -42,8 +42,6 @@ import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.component.OCRBottomSheet
-import com.boostcamp.and03.ui.component.PageInputSection
-import com.boostcamp.and03.ui.screen.textmemoform.TextMemoFormAction
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -83,7 +81,7 @@ private fun QuoteFormScreen(
     BackHandler {
         if (uiState.isExitConfirmationDialogVisible) {
             onAction(QuoteFormAction.CloseExitConfirmationDialog)
-        } else if (uiState.isTyped) {
+        } else if (uiState.isEdited) {
             onAction(QuoteFormAction.OnBackClick)
         } else {
             onAction(QuoteFormAction.CloseScreen)
@@ -154,7 +152,7 @@ private fun QuoteFormScreen(
             )
         }
 
-        if (uiState.isTyped && uiState.isExitConfirmationDialogVisible) {
+        if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {
             And03Dialog(
                 iconResId = R.drawable.ic_warning_filled,
                 iconColor = And03Theme.colors.error,

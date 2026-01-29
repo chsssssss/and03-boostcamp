@@ -13,6 +13,6 @@ data class QuoteFormUiState(
     val isSaveable: Boolean
         get() = quote.isNotBlank() && isValidPage
 
-    val isTyped: Boolean
+    val isEdited: Boolean
         get() = quote.isNotBlank() || page.isNotBlank()
 }
