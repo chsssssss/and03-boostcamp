@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -56,10 +57,8 @@ fun CharacterCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = And03Theme.colors.surface,
-                shape = RoundedCornerShape(And03Radius.RADIUS_S)
-            )
+            .background(color = And03Theme.colors.surface)
+            .clip(shape = RoundedCornerShape(And03Radius.RADIUS_S))
             .border(
                 width = 1.dp,
                 color = borderColor,

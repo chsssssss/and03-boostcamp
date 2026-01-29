@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.CharacterCard
 import com.boostcamp.and03.ui.component.SearchTextField
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
+import com.boostcamp.and03.ui.theme.And03BorderWidth
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
@@ -111,16 +113,34 @@ fun AddNodeBottomSheet(
                 items = characters,
                 key = { it.id }
             ) { character ->
-                CharacterCard(
-                    name = character.name,
-                    role = character.role,
-                    iconColor = character.iconColor,
-                    description = character.description,
-                    selected = selectedCharacterId == character.id,
-                    onClick = { selectedCharacterId = character.id },
-                    onEditClick = {},
-                    onDeleteClick = {}
-                )
+                val isSelected = selectedCharacterId == character.id
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = And03BorderWidth.BORDER_2,
+                            color = if (isSelected) And03Theme.colors.primary else Color.Transparent,
+                            shape = RoundedCornerShape(And03Radius.RADIUS_S)
+                        )
+                ) {
+                    CharacterCard(
+                        name = character.name,
+                        role = character.role,
+                        iconColor = character.iconColor,
+                        description = character.description,
+                        selected = isSelected,
+                        onClick = {
+                            if (isSelected) {
+                                selectedCharacterId = null
+                            } else {
+                                selectedCharacterId = character.id
+                            }
+                        },
+                        onEditClick = {},
+                        onDeleteClick = {}
+                    )
+                }
             }
         }
 

@@ -124,13 +124,13 @@ fun AddQuoteBottomSheet(
                         .border(
                             width = And03BorderWidth.BORDER_2,
                             color = if (isSelected) And03Theme.colors.primary else Color.Transparent,
-                            shape = RoundedCornerShape(And03Radius.RADIUS_M)
+                            shape = RoundedCornerShape(And03Radius.RADIUS_S)
                         )
                 ) {
                     QuoteCard(
                         quote = quote,
                         onClick = {
-                            if (selectedQuote?.id == quote.id) {
+                            if (isSelected) {
                                 selectedQuote = null
                             } else {
                                 selectedQuote = quote
