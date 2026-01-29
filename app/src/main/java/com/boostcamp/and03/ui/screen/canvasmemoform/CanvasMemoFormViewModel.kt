@@ -103,7 +103,8 @@ class CanvasMemoFormViewModel @Inject constructor(
                 originalTitle = result.title,
                 originalStartPage = result.startPage.toString(),
                 originalEndPage = if (isSamePage) "" else result.endPage.toString(),
-                totalPage = totalPage
+                totalPage = totalPage,
+                isLoading = false
             )
         }
     }
