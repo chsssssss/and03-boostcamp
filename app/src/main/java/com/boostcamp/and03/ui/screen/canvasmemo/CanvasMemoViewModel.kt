@@ -688,7 +688,7 @@ class CanvasMemoViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val graph = getCurrentGraph()
-                canvasMemoRepository.addCanvasMemo(
+                canvasMemoRepository.saveCanvasMemo(
                     userId = userId,
                     bookId = bookId,
                     memoId = memoId,

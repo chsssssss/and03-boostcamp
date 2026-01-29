@@ -10,7 +10,7 @@ interface CanvasMemoDataSource {
         memoId: String
     ): CanvasMemoResponse
 
-    suspend fun addCanvasMemo(
+    suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,

@@ -35,7 +35,8 @@ class CanvasMemoDataSourceImpl @Inject constructor(
                 throw IllegalStateException("CanvasMemo not found: $memoId")
             }
 
-            val data = canvasMemoSnapshot.data ?: throw IllegalStateException("CanvasMemo data is null: $memoId")
+            val data = canvasMemoSnapshot.data
+                ?: throw IllegalStateException("CanvasMemo data is null: $memoId")
 
             val nodeSnapshot = canvasMemoSnapshot
                 .reference
@@ -67,8 +68,8 @@ class CanvasMemoDataSourceImpl @Inject constructor(
                 val edgeData = document.data ?: emptyMap()
                 EdgeResponse(
                     id = document.id,
-                    fromNodeId = edgeData["fromNodeId"] as? String ?: "",
-                    toNodeId = edgeData["toNodeId"] as? String ?: "",
+                    fromNodeId = edgeData["fromId"] as? String ?: "",
+                    toNodeId = edgeData["toId"] as? String ?: "",
                     relationText = edgeData["relationText"] as? String ?: ""
                 )
             }
@@ -92,7 +93,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun addCanvasMemo(
+    override suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,
