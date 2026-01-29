@@ -88,7 +88,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
             )
 
         } catch (e: Exception) {
-            Log.e("CharacterDataSourceImpl", "Failed to get canvas memo: ${e.message}")
+            Log.e("CanvasMemoDataSourceImpl", "Failed to get canvas memo: ${e.message}")
             throw e
         }
     }
@@ -141,9 +141,9 @@ class CanvasMemoDataSourceImpl @Inject constructor(
 
             batch.commit().await()
 
-            Log.d("CharacterDataSourceImpl", "CanvasMemo added: ${collectionRef.id}")
+            Log.d("CanvasMemoDataSourceImpl", "CanvasMemo added: ${collectionRef.id}")
         } catch (e: Exception) {
-            Log.e("CharacterDataSourceImpl", "Failed to add canvas memo: ${e.message}")
+            Log.e("CanvasMemoDataSourceImpl", "Failed to add canvas memo: ${e.message}")
             throw e
         }
     }
