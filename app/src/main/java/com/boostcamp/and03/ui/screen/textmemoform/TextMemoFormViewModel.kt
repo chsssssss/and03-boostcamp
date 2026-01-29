@@ -94,7 +94,11 @@ class TextMemoFormViewModel @Inject constructor(
                 title = result.title,
                 content = result.content,
                 startPage = result.startPage.toString(),
-                endPage = if (isSamePage) "" else result.endPage.toString()
+                endPage = if (isSamePage) "" else result.endPage.toString(),
+                originalTitle = result.title,
+                originalContent = result.content,
+                originalStartPage = result.startPage.toString(),
+                originalEndPage = if (isSamePage) "" else result.endPage.toString()
             )
         }
     }

@@ -3,6 +3,10 @@ package com.boostcamp.and03.ui.screen.quoteform
 data class QuoteFormUiState(
     val quote: String = "",
     val page: String = "",
+
+    val originalQuote: String = "",
+    val originalPage: String = "",
+
     val totalPage: Int = 0,
     val isSaving: Boolean = false,
     val isExitConfirmationDialogVisible: Boolean = false
@@ -14,5 +18,5 @@ data class QuoteFormUiState(
         get() = quote.isNotBlank() && isValidPage
 
     val isEdited: Boolean
-        get() = quote.isNotBlank() || page.isNotBlank()
+        get() = quote != originalQuote || page != originalPage
 }

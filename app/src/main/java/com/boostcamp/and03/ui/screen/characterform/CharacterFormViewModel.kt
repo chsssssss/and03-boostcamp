@@ -91,7 +91,10 @@ class CharacterFormViewModel @Inject constructor (
             it.copy(
                 name = result.name,
                 role = result.role,
-                description = result.description
+                description = result.description,
+                originalName = result.name,
+                originalRole = result.role,
+                originalDescription = result.description
             )
         }
     }

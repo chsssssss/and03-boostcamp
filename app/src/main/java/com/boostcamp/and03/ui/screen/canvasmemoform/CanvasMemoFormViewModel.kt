@@ -91,7 +91,10 @@ class CanvasMemoFormViewModel @Inject constructor(
             it.copy(
                 title = result.title,
                 startPage = result.startPage.toString(),
-                endPage = if (isSamePage) "" else result.endPage.toString()
+                endPage = if (isSamePage) "" else result.endPage.toString(),
+                originalTitle = result.title,
+                originalStartPage = result.startPage.toString(),
+                originalEndPage = if (isSamePage) "" else result.endPage.toString()
             )
         }
     }

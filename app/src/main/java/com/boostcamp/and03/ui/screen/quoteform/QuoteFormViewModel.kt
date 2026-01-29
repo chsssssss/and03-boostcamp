@@ -88,7 +88,9 @@ class QuoteFormViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 quote = result.content,
-                page = result.page.toString()
+                page = result.page.toString(),
+                originalQuote = result.content,
+                originalPage = result.page.toString()
             )
         }
     }
