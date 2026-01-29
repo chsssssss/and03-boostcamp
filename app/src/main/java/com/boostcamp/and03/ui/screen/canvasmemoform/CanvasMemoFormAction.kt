@@ -11,4 +11,8 @@ sealed interface CanvasMemoFormAction {
     data class OnStartPageChange(val startPage: String) : CanvasMemoFormAction
 
     data class OnEndPageChange(val endPage: String) : CanvasMemoFormAction
+
+    data object CloseExitConfirmationDialog : CanvasMemoFormAction
+
+    data object CloseScreen : CanvasMemoFormAction
 }

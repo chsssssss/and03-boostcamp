@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemoform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,9 +25,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
+import com.boostcamp.and03.ui.screen.textmemoform.TextMemoFormAction
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -60,6 +64,16 @@ private fun CanvasMemoFormScreen(
     onAction: (CanvasMemoFormAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(CanvasMemoFormAction.CloseExitConfirmationDialog)
+        } else if (uiState.isEdited) {
+            onAction(CanvasMemoFormAction.OnBackClick)
+        } else {
+            onAction(CanvasMemoFormAction.CloseScreen)
+        }
+    }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -108,6 +122,21 @@ private fun CanvasMemoFormScreen(
                 onStartPageChange = { onAction(CanvasMemoFormAction.OnStartPageChange(startPage = it)) },
                 onEndPageChange = { onAction(CanvasMemoFormAction.OnEndPageChange(endPage = it)) },
                 totalPage = uiState.totalPage
+            )
+        }
+
+        if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {
+            And03Dialog(
+                iconResId = R.drawable.ic_warning_filled,
+                iconColor = And03Theme.colors.error,
+                iconContentDescription = stringResource(id = R.string.content_description_caution),
+                title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                onDismiss = { onAction(CanvasMemoFormAction.CloseScreen) },
+                onConfirm = { onAction(CanvasMemoFormAction.CloseExitConfirmationDialog) },
+                description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                dismissAction = DialogDismissAction.Confirm
             )
         }
     }

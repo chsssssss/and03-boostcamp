@@ -42,7 +42,7 @@ class CanvasMemoFormViewModel @Inject constructor(
 
     fun onAction(action: CanvasMemoFormAction) {
         when (action) {
-            CanvasMemoFormAction.OnBackClick -> _event.trySend(CanvasMemoFormEvent.NavigateBack)
+            CanvasMemoFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
 
             CanvasMemoFormAction.OnSaveClick -> {
                 viewModelScope.launch {
@@ -66,6 +66,13 @@ class CanvasMemoFormViewModel @Inject constructor(
             is CanvasMemoFormAction.OnStartPageChange -> _uiState.update { it.copy(startPage = action.startPage) }
 
             is CanvasMemoFormAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
+
+            CanvasMemoFormAction.CloseExitConfirmationDialog -> _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+
+            CanvasMemoFormAction.CloseScreen -> {
+                _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+                _event.trySend(CanvasMemoFormEvent.NavigateBack)
+            }
         }
     }
 
