@@ -1,5 +1,7 @@
 package com.boostcamp.and03.ui.screen.textmemoform
 
+import android.util.Log.i
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -28,11 +30,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.ContentInputSection
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.component.TitleInputSection
+import com.boostcamp.and03.ui.screen.canvasmemo.CanvasMemoAction
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -65,6 +70,16 @@ private fun TextMemoFormScreen(
     modifier: Modifier = Modifier
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
+
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(TextMemoFormAction.CloseExitConfirmationDialog)
+        } else if (uiState.isTyped) {
+            onAction(TextMemoFormAction.OnBackClick)
+        } else {
+            onAction(TextMemoFormAction.CloseScreen)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -129,6 +144,21 @@ private fun TextMemoFormScreen(
                 onStartPageChange = { onAction(TextMemoFormAction.OnStartPageChange(startPage = it)) },
                 onEndPageChange = { onAction(TextMemoFormAction.OnEndPageChange(endPage = it)) },
                 totalPage = uiState.totalPage
+            )
+        }
+
+        if (uiState.isTyped && uiState.isExitConfirmationDialogVisible) {
+            And03Dialog(
+                iconResId = R.drawable.ic_warning_filled,
+                iconColor = And03Theme.colors.error,
+                iconContentDescription = stringResource(id = R.string.content_description_caution),
+                title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                onDismiss = { onAction(TextMemoFormAction.CloseScreen) },
+                onConfirm = { onAction(TextMemoFormAction.CloseExitConfirmationDialog) },
+                description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                dismissAction = DialogDismissAction.Confirm
             )
         }
     }

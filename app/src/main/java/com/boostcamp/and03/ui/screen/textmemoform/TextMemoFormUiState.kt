@@ -6,7 +6,8 @@ data class TextMemoFormUiState(
     val startPage: String = "",
     val endPage: String = "",
     val totalPage: Int = 0,
-    val isSaving: Boolean = false
+    val isSaving: Boolean = false,
+    val isExitConfirmationDialogVisible: Boolean = false
 ) {
     val isValidPageRange: Boolean
         get() {
@@ -26,5 +27,13 @@ data class TextMemoFormUiState(
             return title.isNotBlank() &&
                     content.isNotBlank() &&
                     isValidPageRange
+        }
+
+    val isTyped: Boolean
+        get() {
+            return title.isNotBlank() ||
+                    content.isNotBlank() ||
+                    startPage.isNotBlank() ||
+                    endPage.isNotBlank()
         }
 }

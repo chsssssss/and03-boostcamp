@@ -42,7 +42,7 @@ class TextMemoFormViewModel @Inject constructor(
 
     fun onAction(action: TextMemoFormAction) {
         when (action) {
-            TextMemoFormAction.OnBackClick -> _event.trySend(TextMemoFormEvent.NavigateBack)
+            TextMemoFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
 
             TextMemoFormAction.OnSaveClick -> {
                 viewModelScope.launch {
@@ -68,6 +68,13 @@ class TextMemoFormViewModel @Inject constructor(
             is TextMemoFormAction.OnStartPageChange -> _uiState.update { it.copy(startPage = action.startPage) }
 
             is TextMemoFormAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
+
+            TextMemoFormAction.CloseExitConfirmationDialog -> _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+
+            TextMemoFormAction.CloseScreen -> {
+                _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+                _event.trySend(TextMemoFormEvent.NavigateBack)
+            }
         }
     }
 
