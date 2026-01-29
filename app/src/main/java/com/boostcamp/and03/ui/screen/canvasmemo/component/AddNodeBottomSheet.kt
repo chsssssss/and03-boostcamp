@@ -115,7 +115,21 @@ fun AddNodeBottomSheet(
             ) { character ->
                 val isSelected = selectedCharacterId == character.id
 
-                Box(
+                CharacterCard(
+                    name = character.name,
+                    role = character.role,
+                    iconColor = character.iconColor,
+                    description = character.description,
+                    selected = isSelected,
+                    onClick = {
+                        if (isSelected) {
+                            selectedCharacterId = null
+                        } else {
+                            selectedCharacterId = character.id
+                        }
+                    },
+                    onEditClick = {},
+                    onDeleteClick = {},
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
@@ -123,24 +137,7 @@ fun AddNodeBottomSheet(
                             color = if (isSelected) And03Theme.colors.primary else Color.Transparent,
                             shape = RoundedCornerShape(And03Radius.RADIUS_S)
                         )
-                ) {
-                    CharacterCard(
-                        name = character.name,
-                        role = character.role,
-                        iconColor = character.iconColor,
-                        description = character.description,
-                        selected = isSelected,
-                        onClick = {
-                            if (isSelected) {
-                                selectedCharacterId = null
-                            } else {
-                                selectedCharacterId = character.id
-                            }
-                        },
-                        onEditClick = {},
-                        onDeleteClick = {}
-                    )
-                }
+                )
             }
         }
 

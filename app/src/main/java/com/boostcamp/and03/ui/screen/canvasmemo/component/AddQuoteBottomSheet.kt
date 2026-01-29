@@ -118,7 +118,15 @@ fun AddQuoteBottomSheet(
             ) { quote ->
                 val isSelected = selectedQuote?.id == quote.id
 
-                Box(
+                QuoteCard(
+                    quote = quote,
+                    onClick = {
+                        if (isSelected) {
+                            selectedQuote = null
+                        } else {
+                            selectedQuote = quote
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
@@ -126,18 +134,7 @@ fun AddQuoteBottomSheet(
                             color = if (isSelected) And03Theme.colors.primary else Color.Transparent,
                             shape = RoundedCornerShape(And03Radius.RADIUS_S)
                         )
-                ) {
-                    QuoteCard(
-                        quote = quote,
-                        onClick = {
-                            if (isSelected) {
-                                selectedQuote = null
-                            } else {
-                                selectedQuote = quote
-                            }
-                        },
-                    )
-                }
+                )
             }
         }
 
