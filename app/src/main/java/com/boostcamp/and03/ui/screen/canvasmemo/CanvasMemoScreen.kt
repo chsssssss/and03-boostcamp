@@ -1,5 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.R.attr.onClick
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -119,6 +121,8 @@ private fun CanvasMemoScreen(
         skipPartiallyExpanded = true
     )
 
+    BackHandler(onBack = { onAction(CanvasMemoAction.ClickBack) })
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -126,6 +130,7 @@ private fun CanvasMemoScreen(
                 onBackClick = { onAction(CanvasMemoAction.ClickBack) }
             ) {
                 IconButton(
+                    enabled = uiState.hasUnsavedChanges,
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_save_filled),

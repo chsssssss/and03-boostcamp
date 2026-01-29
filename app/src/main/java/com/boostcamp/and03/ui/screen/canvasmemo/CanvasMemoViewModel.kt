@@ -169,6 +169,8 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
+            CanvasMemoAction.CloseExitConfirmationDialog -> handleCloseExitConfirmationDialog()
+
             is CanvasMemoAction.PrepareQuotePlacement -> handlePrepareQuotePlacement(action.quote)
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
@@ -221,10 +223,15 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
-     * 뒤로 가기 - 현재 화면에서 벗어나 책 상세 화면의 메모 탭으로 복귀합니다.
+     * 저장되지 않은 요소가 있는지에 대한 여부에 따라
+     * 확인용 다이얼로그가 표시되거나 화면을 이동합니다.
      */
     private fun handleClickBack() {
-        _event.trySend(CanvasMemoEvent.NavToBack)
+        if (_uiState.value.hasUnsavedChanges) {
+            _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+        } else {
+            _event.trySend(CanvasMemoEvent.NavToBack)
+        }
     }
 
     /**
@@ -297,6 +304,16 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    private fun handleCloseExitConfirmationDialog() {
+        _uiState.update {
+            it.copy(
+                isExitConfirmationDialogVisible = false,
+                hasUnsavedChanges = false
+            )
+        }
+        _event.trySend(CanvasMemoEvent.NavToBack)
+    }
+
     /**
      * 캔버스에 추가할 구절 데이터를 uiState에 저장합니다.
      * 바텀 시트와 바텀 바를 숨기고 다음 행동을 알려주는 AlertMessageCard를 표시합니다.
@@ -362,13 +379,13 @@ class CanvasMemoViewModel @Inject constructor(
                         isQuoteDialogVisible = false,
                         bottomSheetType = CanvasMemoBottomSheetType.AddQuote,
                         quoteState = TextFieldState(),
-                        pageState = TextFieldState()
+                        pageState = TextFieldState(),
+                        hasUnsavedChanges = false
                     )
                 }
             } catch (e: Exception) {
                 // TODO: 오류 메시지 UI 표시 구현
-            } finally {
-                _uiState.update { it.copy(isSaving = false) }
+                _uiState.update { it.copy(hasUnsavedChanges = true) }
             }
         }
     }
@@ -384,7 +401,8 @@ class CanvasMemoViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                nodes = it.nodes + (action.nodeId to movedNode.toUiModel())
+                nodes = it.nodes + (action.nodeId to movedNode.toUiModel()),
+                hasUnsavedChanges = true
             )
         }
     }
@@ -399,6 +417,7 @@ class CanvasMemoViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
+                hasUnsavedChanges = true
             )
         }
 
@@ -481,7 +500,8 @@ class CanvasMemoViewModel @Inject constructor(
                 nodes = it.nodes + (newQuote.id to newQuote.toUiModel()),
                 quoteToPlace = null,
                 quoteItemSizePx = null,
-                isBottomBarVisible = true
+                isBottomBarVisible = true,
+                hasUnsavedChanges = true
             )
         }
     }
@@ -716,9 +736,12 @@ class CanvasMemoViewModel @Inject constructor(
                     memoId = memoId,
                     graph = graph
                 )
+
+                _uiState.update { it.copy(hasUnsavedChanges = false) }
             }
             catch (e: Exception) {
-                // TODO: 저장 시 오류 수정
+                // TODO: 오류 표시 UI 구현
+                _uiState.update { it.copy(hasUnsavedChanges = true) }
             }
         }
     }

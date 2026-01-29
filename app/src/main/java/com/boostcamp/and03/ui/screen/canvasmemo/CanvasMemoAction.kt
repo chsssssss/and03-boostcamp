@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import android.graphics.Canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
@@ -18,6 +17,8 @@ sealed interface CanvasMemoAction {
     data object CloseBottomSheet : CanvasMemoAction
 
     data object CloseQuoteDialog : CanvasMemoAction
+
+    data object CloseExitConfirmationDialog : CanvasMemoAction
 
     data class PrepareQuotePlacement(val quote: QuoteUiModel) : CanvasMemoAction
 

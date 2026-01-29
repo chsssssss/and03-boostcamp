@@ -34,6 +34,7 @@ data class CanvasMemoUiState(
     val isAddCharacterDialogVisible: Boolean = false,
     val isRelationDialogVisible: Boolean = false,
     val isQuoteDialogVisible: Boolean = false,
+    val isExitConfirmationDialogVisible: Boolean = false,
 
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),
@@ -51,7 +52,9 @@ data class CanvasMemoUiState(
 
     val isSaving: Boolean = false,
     val quoteToPlace: QuoteUiModel? = null,
-    val quoteItemSizePx: IntSize? = null
+    val quoteItemSizePx: IntSize? = null,
+
+    val hasUnsavedChanges: Boolean = false
 ) {
     val relationDialogUiState: RelationDialogUiState
         get() = toRelationDialogState()
