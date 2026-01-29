@@ -25,12 +25,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
@@ -52,14 +56,13 @@ fun QuoteItem(
     onClick: (() -> Unit)? = null,
     onEditClick: (() -> Unit)? = null,
     onDeleteClick: (() -> Unit)? = null,
+    onSizeChanged: ((IntSize) -> Unit)? = null
 ) {
     Box(
         modifier = modifier
             .widthIn(max = And03ComponentSize.QUOTE_ITEM_MAX_WIDTH)
-            .background(
-                color = Color(0xFFFFFAE8),
-                shape = RoundedCornerShape(And03Radius.RADIUS_L)
-            )
+            .clip(shape = RoundedCornerShape(And03Radius.RADIUS_L))
+            .background(color = Color(0xFFFFFAE8))
             .then(
                 if (onClick != null) {
                     Modifier.clickable { onClick() }
@@ -67,15 +70,17 @@ fun QuoteItem(
                     Modifier
                 }
             )
-            .padding(And03Spacing.SPACE_L)
+            .onGloballyPositioned { coordinates ->
+                onSizeChanged?.invoke(
+                    IntSize(
+                        width = coordinates.size.width,
+                        height = coordinates.size.height
+                    )
+                )
+            }
     ) {
         DropdownMenuContainer(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .offset(
-                    x = And03Spacing.SPACE_L,
-                    y = (-And03Spacing.SPACE_L)
-                ),
+            modifier = Modifier.align(Alignment.TopEnd),
             trigger = { onMenuClick ->
                 IconButton(onClick = onMenuClick) {
                     Icon(
@@ -105,6 +110,7 @@ fun QuoteItem(
         )
 
         Row(
+            modifier = Modifier.padding(And03Spacing.SPACE_L),
             verticalAlignment = Alignment.Top
         ) {
             Box(

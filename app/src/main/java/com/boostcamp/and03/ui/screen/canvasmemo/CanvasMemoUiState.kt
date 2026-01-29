@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntSize
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
@@ -47,7 +48,8 @@ data class CanvasMemoUiState(
     val totalPage: Int = 0,
 
     val isSaving: Boolean = false,
-    val quoteToPlace: QuoteUiModel? = null
+    val quoteToPlace: QuoteUiModel? = null,
+    val quoteItemSizeDp: IntSize? = null
 ) {
     val relationDialogUiState: RelationDialogUiState
         get() = toRelationDialogState()

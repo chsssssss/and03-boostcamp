@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -40,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -525,6 +527,22 @@ private fun CanvasMemoScreen(
                     )
                 )
             )
+
+            // QuoteItem의 크기 측정을 위해 별도의 Box에서 QuoteItem 생성
+            if (uiState.quoteToPlace != null && uiState.quoteItemSizeDp == null) {
+                Box(
+                    modifier = Modifier
+                        .alpha(0f)
+                ) {
+                    QuoteItem(
+                        quote = uiState.quoteToPlace.content,
+                        page = uiState.quoteToPlace.page,
+                        onSizeChanged = { size ->
+                            onAction(CanvasMemoAction.UpdateQuoteItemSize(size))
+                        }
+                    )
+                }
+            }
         }
     }
 }

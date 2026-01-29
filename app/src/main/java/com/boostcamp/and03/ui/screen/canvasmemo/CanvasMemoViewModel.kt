@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.R.attr.action
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
@@ -174,6 +175,8 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.OnClickSave -> {
                 onSaveCanvasMemo(action.userId, action.bookId, action.memoId)
             }
+
+            is CanvasMemoAction.UpdateQuoteItemSize -> { handleUpdateQuoteItemSize(action) }
         }
     }
 
@@ -264,6 +267,7 @@ class CanvasMemoViewModel @Inject constructor(
                 quoteToPlace = quote,
                 bottomSheetType = null,
                 isBottomBarVisible = false,
+                quoteItemSizeDp = null
             )
         }
     }
@@ -392,19 +396,30 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
-     * 구절 아이템을 캔버스에 탭한 위치에 배치, 렌더링합니다.
-     * _uiState의 노드 리스트 데이터에 업데이트하고, 캔버스에 표시할 구절 데이터를 초기화합니다.
-     * 바텀바를 다시 표시합니다.
+     * 구절 아이템을 배치, 렌더링합니다.
+     *
+     * 배치할 QuoteUiModel이 준비되었는지와 해당 데이터를 토대로 그려진 컴포저블의 크기가 계산되었는지 검사합니다.
+     * 계산되었다면 해당 아이템의 너비와 높이의 절반 값을 구합니다.
+     *
+     * 확대/축소 비율과 캔버스의 이동 오프셋을 고려해
+     * 화면 좌표(tapPositionOnScreen)를 캔버스 좌표계로 변환합니다.
+     * 이후 바텀바를 다시 표시합니다.
      */
     private fun handleTapCanvas(tapPositionOnScreen: Offset) {
         val quote = _uiState.value.quoteToPlace ?: return
+        val sizeDp = _uiState.value.quoteItemSizeDp ?: return
+
+        val centerItemPosition = Offset(
+            x = sizeDp.width / 2f,
+            y = sizeDp.height / 2f
+        )
 
         val zoomScale = _uiState.value.zoomScale
         val canvasViewOffset = _uiState.value.canvasViewOffset
 
         val canvasPosition = Offset(
-            x = (tapPositionOnScreen.x - canvasViewOffset.x) / zoomScale,
-            y = (tapPositionOnScreen.y - canvasViewOffset.y) / zoomScale
+            x = (tapPositionOnScreen.x - canvasViewOffset.x) / zoomScale - centerItemPosition.x,
+            y = (tapPositionOnScreen.y - canvasViewOffset.y) / zoomScale - centerItemPosition.y
         )
 
         val newQuote = MemoNode.QuoteNode(
@@ -418,6 +433,7 @@ class CanvasMemoViewModel @Inject constructor(
             it.copy(
                 nodes = it.nodes + (newQuote.id to newQuote.toUiModel()),
                 quoteToPlace = null,
+                quoteItemSizeDp = null,
                 isBottomBarVisible = true
             )
         }
@@ -662,5 +678,13 @@ class CanvasMemoViewModel @Inject constructor(
 
             }
         }
+    }
+
+    /**
+     * `QuoteItem`의 onGloballyPositioned을 실행,
+     * 해당 컴포저블의 너비와 높이 값 IntSize를 가져옵니다.
+     */
+    private fun handleUpdateQuoteItemSize(action: CanvasMemoAction.UpdateQuoteItemSize) {
+        _uiState.update { it.copy(quoteItemSizeDp = action.size) }
     }
 }
