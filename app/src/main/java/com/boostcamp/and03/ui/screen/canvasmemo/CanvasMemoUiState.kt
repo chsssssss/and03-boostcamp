@@ -15,6 +15,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class CanvasMemoUiState(
+    val isLoading: Boolean = true,
+
     val nodes: Map<String, MemoNodeUiModel> = emptyMap(),
     val edges: List<EdgeUiModel> = emptyList(),
 

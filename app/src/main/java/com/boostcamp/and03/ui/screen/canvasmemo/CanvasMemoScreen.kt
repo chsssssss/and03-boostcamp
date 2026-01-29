@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.FormatQuote
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -220,224 +221,228 @@ private fun CanvasMemoScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(uiState.quoteToPlace) {
-                        if (uiState.quoteToPlace != null) {
-                            detectTapGestures { tapOffset ->
-                                onAction(CanvasMemoAction.TapCanvas(tapOffset))
-                            }
-                        }
-                    }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { centroid, pan, zoom, _ ->
-                            onAction(
-                                CanvasMemoAction.ZoomCanvasByGesture(
-                                    centroid = centroid, // 터치 포인트들의 중심점
-                                    moveOffset = pan,    // 사용자가 움직인 방향과 거리
-                                    zoomChange = zoom    // 확대/축소 비율
-                                )
-                            )
-                        }
-                    }
-            ) {
+            if (uiState.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
                 Box(
                     modifier = Modifier
-                        .size(CanvasMemoScreenValues.CANVAS_SIZE)
-                        .graphicsLayer {
-                            scaleX = uiState.zoomScale
-                            scaleY = uiState.zoomScale
-                            translationX = uiState.canvasViewOffset.x
-                            translationY = uiState.canvasViewOffset.y
-                            transformOrigin = TransformOrigin(0f, 0f)
-                        }
-                ) {
-                    Arrows(
-                        arrows = uiState.edges,
-                        items = uiState.nodes,
-                        nodeSizes = nodeSizes
-                    )
-
-                    uiState.nodes.forEach { (_, uiModel) ->
-                        when (uiModel) {
-
-                            is MemoNodeUiModel.CharacterNodeUiModel -> {
-                                val isDraggable = uiState.relationAddStep == RelationAddStep.NONE
-
-                                DraggableCanvasItem(
-                                    nodeId = uiModel.node.id,
-                                    worldOffset = uiModel.node.offset,
-                                    onMove = { delta ->
-                                        onAction(
-                                            CanvasMemoAction.MoveNode(
-                                                nodeId = uiModel.node.id,
-                                                newOffset = delta
-                                            )
-                                        )
-                                    },
-                                    onClick = { nodeId ->
-                                        onAction(CanvasMemoAction.OnNodeClick(nodeId))
-                                    },
-                                    onSizeChanged = { size ->
-                                        nodeSizes = nodeSizes + (uiModel.node.id to size)
-                                    },
-                                    draggable = isDraggable,
-                                    content = {
-                                        NodeItem(
-                                            title = uiModel.node.name,
-                                            content = uiModel.node.description,
-                                            isHighlighted = uiModel.isSelected
-                                        )
-                                    }
-                                )
-                            }
-
-                            is MemoNodeUiModel.QuoteNodeUiModel -> {
-                                DraggableCanvasItem(
-                                    nodeId = uiModel.node.id,
-                                    worldOffset = uiModel.node.offset,
-                                    onMove = { delta ->
-                                        onAction(
-                                            CanvasMemoAction.MoveNode(
-                                                nodeId = uiModel.node.id,
-                                                newOffset = delta
-                                            )
-                                        )
-                                    },
-                                    onSizeChanged = { size ->
-                                        nodeSizes = nodeSizes + (uiModel.node.id to size)
-                                    },
-                                    content = {
-                                        QuoteItem(
-                                            quote = uiModel.node.content,
-                                            page = uiModel.node.page
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-
-                Card(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(And03Padding.PADDING_L)
-                        .background(And03Theme.colors.surfaceVariant),
-                ) {
-                    Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
-                        Text(
-                            text = "Offset: (${uiState.canvasViewOffset.x.toInt()}, ${uiState.canvasViewOffset.y.toInt()})",
-                            color = And03Theme.colors.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Text(
-                            text = "Scale: ${(uiState.zoomScale * 100).toInt()}%",
-                            color = And03Theme.colors.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                }
-            }
-
-            if (uiState.isRelationDialogVisible &&
-                uiState.relationAddStep == RelationAddStep.COMPLETE
-            ) {
-                val relationDialogState = uiState.relationDialogUiState
-
-                RelationEditorDialog(
-                    relationNameState = uiState.relationNameState,
-                    fromName = relationDialogState.fromName,
-                    toName = relationDialogState.toName,
-                    fromImageUrl = relationDialogState.fromImageUrl,
-                    toImageUrl = relationDialogState.toImageUrl,
-                    onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
-                    onConfirm = {
-                        onAction(
-                            CanvasMemoAction.ConfirmRelation(
-                                fromId = relationDialogState.fromNodeId,
-                                toId = relationDialogState.toNodeId,
-                                name = relationDialogState.relationNameState.text.toString()
-                            )
-                        )
-                    },
-                    onFromImageClick = { /* 인물 선택 로직 */ },
-                    onToImageClick = { /* 인물 선택 로직 */ }
-                )
-            }
-
-            if (uiState.relationAddStep == RelationAddStep.READY) {
-                AlertMessageCard(
-                    message = "관계를 시작할 인물을 선택해 주세요.",
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(
-                            vertical = And03Padding.PADDING_XL,
-                            horizontal = And03Padding.PADDING_L
-                        )
-                )
-            }
-
-            if (uiState.relationAddStep == RelationAddStep.FROM_ONLY) {
-                AlertMessageCard(
-                    message = "연결할 다른 인물을 선택해 주세요.",
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(
-                            vertical = And03Padding.PADDING_XL,
-                            horizontal = And03Padding.PADDING_L
-                        )
-                )
-            }
-
-            uiState.bottomSheetType?.let { sheetType ->
-                ModalBottomSheet(
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-                    onDismissRequest = { onAction(CanvasMemoAction.CloseBottomSheet) },
-                    sheetState = sheetState,
-                    containerColor = And03Theme.colors.background
-                ) {
-                    when (sheetType) {
-                        CanvasMemoBottomSheetType.AddCharacter -> {
-                            AddNodeBottomSheet(
-                                characters = uiState.characters,
-                                infoTitle = stringResource(R.string.add_node_bottom_sheet_info_title),
-                                infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
-                                onSearch = { },
-                                onNewCharacterClick = { },
-                                onAddClick = {
-                                    scope.launch {
-                                        sheetState.hide()
-                                        // TODO: onAction(CanvasMemoAction.AddNodeItem) 구현 필요
-                                    }
+                        .fillMaxSize()
+                        .pointerInput(uiState.quoteToPlace) {
+                            if (uiState.quoteToPlace != null) {
+                                detectTapGestures { tapOffset ->
+                                    onAction(CanvasMemoAction.TapCanvas(tapOffset))
                                 }
-                            )
+                            }
                         }
+                        .pointerInput(Unit) {
+                            detectTransformGestures { centroid, pan, zoom, _ ->
+                                onAction(
+                                    CanvasMemoAction.ZoomCanvasByGesture(
+                                        centroid = centroid, // 터치 포인트들의 중심점
+                                        moveOffset = pan,    // 사용자가 움직인 방향과 거리
+                                        zoomChange = zoom    // 확대/축소 비율
+                                    )
+                                )
+                            }
+                        }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(CanvasMemoScreenValues.CANVAS_SIZE)
+                            .graphicsLayer {
+                                scaleX = uiState.zoomScale
+                                scaleY = uiState.zoomScale
+                                translationX = uiState.canvasViewOffset.x
+                                translationY = uiState.canvasViewOffset.y
+                                transformOrigin = TransformOrigin(0f, 0f)
+                            }
+                    ) {
+                        Arrows(
+                            arrows = uiState.edges,
+                            items = uiState.nodes,
+                            nodeSizes = nodeSizes
+                        )
 
-                        CanvasMemoBottomSheetType.AddQuote -> {
-                            AddQuoteBottomSheet(
-                                quotes = uiState.quotes,
-                                onAddClick = { quote ->
-                                    scope.launch {
-                                        sheetState.hide()
-                                        onAction(CanvasMemoAction.PrepareQuotePlacement(quote))
-                                    }
-                                },
-                                onNewSentenceClick = {
-                                    scope.launch {
-                                        sheetState.hide()
-                                        onAction(CanvasMemoAction.AddNewQuote)
-                                    }
-                                },
-                                onSearch = { /* TODO: onAction(CanvasMemoAction.SearchQuote()) 구현 */ }
+                        uiState.nodes.forEach { (_, uiModel) ->
+                            when (uiModel) {
+
+                                is MemoNodeUiModel.CharacterNodeUiModel -> {
+                                    val isDraggable =
+                                        uiState.relationAddStep == RelationAddStep.NONE
+
+                                    DraggableCanvasItem(
+                                        nodeId = uiModel.node.id,
+                                        worldOffset = uiModel.node.offset,
+                                        onMove = { delta ->
+                                            onAction(
+                                                CanvasMemoAction.MoveNode(
+                                                    nodeId = uiModel.node.id,
+                                                    newOffset = delta
+                                                )
+                                            )
+                                        },
+                                        onClick = { nodeId ->
+                                            onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                        },
+                                        onSizeChanged = { size ->
+                                            nodeSizes = nodeSizes + (uiModel.node.id to size)
+                                        },
+                                        draggable = isDraggable,
+                                        content = {
+                                            NodeItem(
+                                                title = uiModel.node.name,
+                                                content = uiModel.node.description,
+                                                isHighlighted = uiModel.isSelected
+                                            )
+                                        }
+                                    )
+                                }
+
+                                is MemoNodeUiModel.QuoteNodeUiModel -> {
+                                    DraggableCanvasItem(
+                                        nodeId = uiModel.node.id,
+                                        worldOffset = uiModel.node.offset,
+                                        onMove = { delta ->
+                                            onAction(
+                                                CanvasMemoAction.MoveNode(
+                                                    nodeId = uiModel.node.id,
+                                                    newOffset = delta
+                                                )
+                                            )
+                                        },
+                                        onSizeChanged = { size ->
+                                            nodeSizes = nodeSizes + (uiModel.node.id to size)
+                                        },
+                                        content = {
+                                            QuoteItem(
+                                                quote = uiModel.node.content,
+                                                page = uiModel.node.page
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(And03Padding.PADDING_L)
+                            .background(And03Theme.colors.surfaceVariant),
+                    ) {
+                        Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
+                            Text(
+                                text = "Offset: (${uiState.canvasViewOffset.x.toInt()}, ${uiState.canvasViewOffset.y.toInt()})",
+                                color = And03Theme.colors.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text(
+                                text = "Scale: ${(uiState.zoomScale * 100).toInt()}%",
+                                color = And03Theme.colors.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodySmall
                             )
                         }
                     }
                 }
-            }
 
-            // Dialog 표시
+                if (uiState.isRelationDialogVisible &&
+                    uiState.relationAddStep == RelationAddStep.COMPLETE
+                ) {
+                    val relationDialogState = uiState.relationDialogUiState
+
+                    RelationEditorDialog(
+                        relationNameState = uiState.relationNameState,
+                        fromName = relationDialogState.fromName,
+                        toName = relationDialogState.toName,
+                        fromImageUrl = relationDialogState.fromImageUrl,
+                        toImageUrl = relationDialogState.toImageUrl,
+                        onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
+                        onConfirm = {
+                            onAction(
+                                CanvasMemoAction.ConfirmRelation(
+                                    fromId = relationDialogState.fromNodeId,
+                                    toId = relationDialogState.toNodeId,
+                                    name = relationDialogState.relationNameState.text.toString()
+                                )
+                            )
+                        },
+                        onFromImageClick = { /* 인물 선택 로직 */ },
+                        onToImageClick = { /* 인물 선택 로직 */ }
+                    )
+                }
+
+                if (uiState.relationAddStep == RelationAddStep.READY) {
+                    AlertMessageCard(
+                        message = "관계를 시작할 인물을 선택해 주세요.",
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(
+                                vertical = And03Padding.PADDING_XL,
+                                horizontal = And03Padding.PADDING_L
+                            )
+                    )
+                }
+
+                if (uiState.relationAddStep == RelationAddStep.FROM_ONLY) {
+                    AlertMessageCard(
+                        message = "연결할 다른 인물을 선택해 주세요.",
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(
+                                vertical = And03Padding.PADDING_XL,
+                                horizontal = And03Padding.PADDING_L
+                            )
+                    )
+                }
+
+                uiState.bottomSheetType?.let { sheetType ->
+                    ModalBottomSheet(
+                        modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+                        onDismissRequest = { onAction(CanvasMemoAction.CloseBottomSheet) },
+                        sheetState = sheetState,
+                        containerColor = And03Theme.colors.background
+                    ) {
+                        when (sheetType) {
+                            CanvasMemoBottomSheetType.AddCharacter -> {
+                                AddNodeBottomSheet(
+                                    characters = uiState.characters,
+                                    infoTitle = stringResource(R.string.add_node_bottom_sheet_info_title),
+                                    infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
+                                    onSearch = { },
+                                    onNewCharacterClick = { },
+                                    onAddClick = {
+                                        scope.launch {
+                                            sheetState.hide()
+                                            // TODO: onAction(CanvasMemoAction.AddNodeItem) 구현 필요
+                                        }
+                                    }
+                                )
+                            }
+
+                            CanvasMemoBottomSheetType.AddQuote -> {
+                                AddQuoteBottomSheet(
+                                    quotes = uiState.quotes,
+                                    onAddClick = { quote ->
+                                        scope.launch {
+                                            sheetState.hide()
+                                            onAction(CanvasMemoAction.PrepareQuotePlacement(quote))
+                                        }
+                                    },
+                                    onNewSentenceClick = {
+                                        scope.launch {
+                                            sheetState.hide()
+                                            onAction(CanvasMemoAction.AddNewQuote)
+                                        }
+                                    },
+                                    onSearch = { /* TODO: onAction(CanvasMemoAction.SearchQuote()) 구현 */ }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Dialog 표시
 //                if (uiState.isRelationDialogVisible) {
 //                    RelationEditorDialog(
 //                        relationNameState = uiState.relationNameState,
@@ -462,54 +467,55 @@ private fun CanvasMemoScreen(
 //                }
 //            }
 
-            if (uiState.isQuoteDialogVisible) {
-                AddQuoteDialog(
-                    quoteState = uiState.quoteState,
-                    pageState = uiState.pageState,
-                    onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
-                    onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
-                    enabled = uiState.isQuoteSaveable && !uiState.isSaving,
-                    isSaving = uiState.isSaving,
-                    totalPage = uiState.totalPage
-                )
-            }
-
-            ToolExpandableButton(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = And03Padding.PADDING_XS),
-                actions = listOf(
-                    ToolAction(
-                        iconRes = R.drawable.ic_add_filled,
-                        contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
-                        onClick = { onAction(CanvasMemoAction.ZoomIn) }
-                    ),
-                    ToolAction(
-                        iconRes = R.drawable.ic_remove_filled,
-                        contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
-                        onClick = { onAction(CanvasMemoAction.ZoomOut) }
-                    ),
-                    ToolAction(
-                        iconRes = R.drawable.ic_fit_screen,
-                        contentDescription = stringResource(R.string.tool_ic_content_desc_fit_screen),
-                        onClick = { onAction(CanvasMemoAction.ResetZoom) }
+                if (uiState.isQuoteDialogVisible) {
+                    AddQuoteDialog(
+                        quoteState = uiState.quoteState,
+                        pageState = uiState.pageState,
+                        onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
+                        onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
+                        enabled = uiState.isQuoteSaveable && !uiState.isSaving,
+                        isSaving = uiState.isSaving,
+                        totalPage = uiState.totalPage
                     )
-                )
-            )
+                }
 
-            // QuoteItem의 크기 측정을 위해 별도의 Box에서 QuoteItem 생성
-            if (uiState.quoteToPlace != null && uiState.quoteItemSizeDp == null) {
-                Box(
+                ToolExpandableButton(
                     modifier = Modifier
-                        .alpha(0f)
-                ) {
-                    QuoteItem(
-                        quote = uiState.quoteToPlace.content,
-                        page = uiState.quoteToPlace.page,
-                        onSizeChanged = { size ->
-                            onAction(CanvasMemoAction.UpdateQuoteItemSize(size))
-                        }
+                        .align(Alignment.BottomStart)
+                        .padding(start = And03Padding.PADDING_XS),
+                    actions = listOf(
+                        ToolAction(
+                            iconRes = R.drawable.ic_add_filled,
+                            contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_in),
+                            onClick = { onAction(CanvasMemoAction.ZoomIn) }
+                        ),
+                        ToolAction(
+                            iconRes = R.drawable.ic_remove_filled,
+                            contentDescription = stringResource(R.string.tool_ic_content_desc_zoom_out),
+                            onClick = { onAction(CanvasMemoAction.ZoomOut) }
+                        ),
+                        ToolAction(
+                            iconRes = R.drawable.ic_fit_screen,
+                            contentDescription = stringResource(R.string.tool_ic_content_desc_fit_screen),
+                            onClick = { onAction(CanvasMemoAction.ResetZoom) }
+                        )
                     )
+                )
+
+                // QuoteItem의 크기 측정을 위해 별도의 Box에서 QuoteItem 생성
+                if (uiState.quoteToPlace != null && uiState.quoteItemSizeDp == null) {
+                    Box(
+                        modifier = Modifier
+                            .alpha(0f)
+                    ) {
+                        QuoteItem(
+                            quote = uiState.quoteToPlace.content,
+                            page = uiState.quoteToPlace.page,
+                            onSizeChanged = { size ->
+                                onAction(CanvasMemoAction.UpdateQuoteItemSize(size))
+                            }
+                        )
+                    }
                 }
             }
         }

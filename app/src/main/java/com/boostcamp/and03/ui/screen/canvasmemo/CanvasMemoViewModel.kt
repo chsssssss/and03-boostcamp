@@ -91,6 +91,8 @@ class CanvasMemoViewModel @Inject constructor(
                         totalPage = totalPage
                     )
                 }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
 
