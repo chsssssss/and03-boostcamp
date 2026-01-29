@@ -126,7 +126,8 @@ private fun CanvasMemoScreen(
                 title = stringResource(R.string.canvas_memo_top_bar_title),
                 onBackClick = { onAction(CanvasMemoAction.ClickBack) }
             ) {
-                IconButton(onClick = {}) {
+                IconButton(
+                    onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_save_filled),
                         contentDescription = stringResource(

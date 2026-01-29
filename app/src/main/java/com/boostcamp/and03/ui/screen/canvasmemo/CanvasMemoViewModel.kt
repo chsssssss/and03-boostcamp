@@ -178,9 +178,7 @@ class CanvasMemoViewModel @Inject constructor(
                 handleConnectNodes(action)
             }
 
-            is CanvasMemoAction.OnClickSave -> {
-                onSaveCanvasMemo(action.userId, action.bookId, action.memoId)
-            }
+            is CanvasMemoAction.OnClickSave ->  onSaveCanvasMemo()
 
             is CanvasMemoAction.UpdateQuoteItemSize -> { handleUpdateQuoteItemSize(action) }
 
@@ -337,7 +335,14 @@ class CanvasMemoViewModel @Inject constructor(
                     quote = newQuoteUiModel
                 )
 
-                _uiState.update { it.copy(isQuoteDialogVisible = false) }
+                _uiState.update {
+                    it.copy(
+                        isQuoteDialogVisible = false,
+                        bottomSheetType = CanvasMemoBottomSheetType.AddQuote,
+                        quoteState = TextFieldState(),
+                        pageState = TextFieldState()
+                    )
+                }
             } catch (e: Exception) {
                 // TODO: 오류 메시지 UI 표시 구현
             } finally {
@@ -679,11 +684,7 @@ class CanvasMemoViewModel @Inject constructor(
     /**
      * 캔버스에 있는 아이템 데이터들을 저장합니다.
      */
-    private fun onSaveCanvasMemo(
-        userId: String,
-        bookId: String,
-        memoId: String
-    ) {
+    private fun onSaveCanvasMemo() {
         viewModelScope.launch {
             try {
                 val graph = getCurrentGraph()
@@ -695,7 +696,7 @@ class CanvasMemoViewModel @Inject constructor(
                 )
             }
             catch (e: Exception) {
-
+                // TODO: 저장 시 오류 수정
             }
         }
     }

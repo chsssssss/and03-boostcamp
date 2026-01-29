@@ -49,11 +49,7 @@ sealed interface CanvasMemoAction {
         val name: String
     ) : CanvasMemoAction
 
-    data class OnClickSave(
-        val userId: String,
-        val bookId: String,
-        val memoId: String
-    ) : CanvasMemoAction
+    data object OnClickSave : CanvasMemoAction
 
     data class OnBottomBarClick(val type: MainBottomBarType) : CanvasMemoAction
 
