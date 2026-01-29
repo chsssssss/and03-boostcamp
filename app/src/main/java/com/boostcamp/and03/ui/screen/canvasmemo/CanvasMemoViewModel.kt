@@ -65,14 +65,33 @@ class CanvasMemoViewModel @Inject constructor(
      * 그래프(노드, 엣지), 등장인물, 구절 데이터를 불러옵니다.
      */
     private fun createInitialState() {
-        val sampleGraph = MemoGraphFactory.createSample()
+        viewModelScope.launch {
+            try {
+                val graph = canvasMemoRepository.loadCanvasMemo(
+                    userId = userId,
+                    bookId = bookId,
+                    memoId = memoId
+                )
 
-        _uiState.update {
-            it.copy(
-                nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() },
-                totalPage = totalPage
-            )
+                _uiState.update {
+                    it.copy(
+                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
+                        edges = graph.edges.map { it.toUiModel() },
+                        totalPage = totalPage
+                    )
+                }
+            } catch (e: Exception) {
+                // TODO: 에러 처리
+                val graph = MemoGraphFactory.empty()
+
+                _uiState.update {
+                    it.copy(
+                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
+                        edges = graph.edges.map { it.toUiModel() },
+                        totalPage = totalPage
+                    )
+                }
+            }
         }
 
         observeCharacters(
