@@ -1,6 +1,7 @@
 package com.boostcamp.and03.domain.repository
 
 import com.boostcamp.and03.domain.model.MemoGraph
+import kotlinx.coroutines.flow.Flow
 
 interface CanvasMemoRepository {
 
@@ -14,12 +15,19 @@ interface CanvasMemoRepository {
         userId: String,
         bookId: String,
         memoId: String
-    ): MemoGraph
+    ): Flow<MemoGraph>
 
     suspend fun addCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,
         graph: MemoGraph
+    )
+
+    suspend fun removeNode(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        nodeIds: List<String>
     )
 }

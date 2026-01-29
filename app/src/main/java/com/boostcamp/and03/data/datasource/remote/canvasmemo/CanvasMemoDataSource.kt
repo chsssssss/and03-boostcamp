@@ -4,6 +4,7 @@ import com.boostcamp.and03.data.model.request.GraphRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.EdgeResponse
 import com.boostcamp.and03.data.model.response.memo.NodeResponse
+import kotlinx.coroutines.flow.Flow
 
 interface CanvasMemoDataSource {
     suspend fun getCanvasMemo(
@@ -16,13 +17,13 @@ interface CanvasMemoDataSource {
         userId: String,
         bookId: String,
         memoId: String
-    ): List<NodeResponse>
+    ): Flow<List<NodeResponse>>
 
     suspend fun getCanvasMemoEdges(
         userId: String,
         bookId: String,
         memoId: String
-    ): List<EdgeResponse>
+    ): Flow<List<EdgeResponse>>
 
     suspend fun addCanvasMemo(
         userId: String,
@@ -31,4 +32,10 @@ interface CanvasMemoDataSource {
         graph: GraphRequest
     )
 
+    suspend fun removeNode(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        nodeIds: List<String>
+    )
 }

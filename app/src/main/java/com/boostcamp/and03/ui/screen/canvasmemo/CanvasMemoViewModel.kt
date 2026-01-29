@@ -49,7 +49,7 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
-//        createInitialState()
+        createInitialState()
         loadCanvasMemo(
             userId = userId,
             bookId = bookId,
@@ -504,24 +504,39 @@ class CanvasMemoViewModel @Inject constructor(
         memoId: String
     ) {
         viewModelScope.launch {
-            val response = canvasMemoRepository.loadCanvasMemoDetail(
+            canvasMemoRepository.loadCanvasMemoDetail(
                 userId = userId,
                 bookId = bookId,
                 memoId = memoId,
-            )
-            Log.d("CanvasMemoViewModel", "loadCanvasMemo: $response")
-            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${response.nodes}")
-            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${response.edges}")
-
-            _uiState.update {
-                it.copy(
-                    nodes = response.nodes.mapValues { it.value.toUiModel() },
-                    edges = response.edges.map { it.toUiModel() }
-                )
+            ).collect { graph ->
+                _uiState.update {
+                    it.copy(
+                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
+                        edges = graph.edges.map { it.toUiModel() }
+                    )
+                }
             }
-            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${_uiState.value.nodes}")
-            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${_uiState.value.edges}")
         }
+    }
 
+    private fun deleteCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        nodeIds: List<String>
+    ) {
+        viewModelScope.launch {
+            try {
+                canvasMemoRepository.removeNode(
+                    userId = userId,
+                    bookId = bookId,
+                    memoId = memoId,
+                    nodeIds = nodeIds
+                )
+            } catch (e: Exception) {
+                Log.d("CanvasMemoViewModel", "onSaveCanvasMemo: $e")
+
+            }
+        }
     }
 }
