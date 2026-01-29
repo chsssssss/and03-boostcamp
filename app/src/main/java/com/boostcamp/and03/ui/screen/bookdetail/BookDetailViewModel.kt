@@ -202,6 +202,7 @@ class BookDetailViewModel @Inject constructor(
                         it.copy(
                             quotes = result
                                 .map { quote -> quote.toUiModel() }
+                                .sortedBy { quote -> quote.page }
                                 .toPersistentList(),
                             quotesLoadState = LoadState.DONE
                         )
