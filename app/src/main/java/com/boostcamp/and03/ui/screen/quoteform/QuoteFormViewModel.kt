@@ -37,7 +37,7 @@ class QuoteFormViewModel @Inject constructor(
 
     fun onAction(action: QuoteFormAction) {
         when (action) {
-            QuoteFormAction.OnBackClick -> _event.trySend(QuoteFormEvent.NavigateBack)
+            QuoteFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
 
             QuoteFormAction.OnSaveClick -> {
                 viewModelScope.launch {
@@ -60,6 +60,13 @@ class QuoteFormViewModel @Inject constructor(
 
             is QuoteFormAction.OnPageChange -> {
                 _uiState.update { it.copy(page = action.page.filter { char -> char.isDigit() }) }
+            }
+
+            QuoteFormAction.CloseExitConfirmationDialog -> _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+
+            QuoteFormAction.CloseScreen -> {
+                _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+                _event.trySend(QuoteFormEvent.NavigateBack)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.quoteform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,10 +37,13 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.AddTextByImageButton
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.component.OCRBottomSheet
 import com.boostcamp.and03.ui.component.PageInputSection
+import com.boostcamp.and03.ui.screen.textmemoform.TextMemoFormAction
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -75,6 +79,16 @@ private fun QuoteFormScreen(
     onAction: (QuoteFormAction) -> Unit,
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
+
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(QuoteFormAction.CloseExitConfirmationDialog)
+        } else if (uiState.isTyped) {
+            onAction(QuoteFormAction.OnBackClick)
+        } else {
+            onAction(QuoteFormAction.CloseScreen)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -137,6 +151,21 @@ private fun QuoteFormScreen(
                 page = uiState.page,
                 onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
                 totalPage = uiState.totalPage
+            )
+        }
+
+        if (uiState.isTyped && uiState.isExitConfirmationDialogVisible) {
+            And03Dialog(
+                iconResId = R.drawable.ic_warning_filled,
+                iconColor = And03Theme.colors.error,
+                iconContentDescription = stringResource(id = R.string.content_description_caution),
+                title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                onDismiss = { onAction(QuoteFormAction.CloseScreen) },
+                onConfirm = { onAction(QuoteFormAction.CloseExitConfirmationDialog) },
+                description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                dismissAction = DialogDismissAction.Confirm
             )
         }
     }
