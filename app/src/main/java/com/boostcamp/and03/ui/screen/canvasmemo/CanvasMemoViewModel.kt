@@ -171,6 +171,8 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseExitConfirmationDialog -> handleCloseExitConfirmationDialog()
 
+            CanvasMemoAction.CloseScreen -> handleCloseScreen()
+
             is CanvasMemoAction.PrepareQuotePlacement -> handlePrepareQuotePlacement(action.quote)
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
@@ -304,7 +306,17 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 나가기 확인 다이얼로그를 닫고, 캔버스 메모 화면에 잔류합니다.
+     */
     private fun handleCloseExitConfirmationDialog() {
+        _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+    }
+
+    /**
+     * 나가기 확인 다이얼로그를 닫고, 이전 화면으로 이동합니다.
+     */
+    private fun handleCloseScreen() {
         _uiState.update {
             it.copy(
                 isExitConfirmationDialogVisible = false,

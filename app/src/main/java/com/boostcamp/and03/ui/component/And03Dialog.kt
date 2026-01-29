@@ -15,10 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+
+enum class DialogDismissAction {
+    Dismiss,
+    Confirm
+}
 
 @Composable
 fun And03Dialog(
@@ -31,9 +37,17 @@ fun And03Dialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-    description: String = ""
+    description: String = "",
+    dismissAction: DialogDismissAction = DialogDismissAction.Dismiss,
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        onDismissRequest = {
+            when (dismissAction) {
+                DialogDismissAction.Dismiss -> onDismiss()
+                DialogDismissAction.Confirm -> onConfirm()
+            }
+        },
+    ) {
         Surface(
             shape = And03Theme.shapes.dialogCorner,
             color = And03Theme.colors.surface

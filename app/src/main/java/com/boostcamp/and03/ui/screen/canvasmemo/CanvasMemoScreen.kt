@@ -63,6 +63,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.component.And03Dialog
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddNodeBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
@@ -121,7 +123,13 @@ private fun CanvasMemoScreen(
         skipPartiallyExpanded = true
     )
 
-    BackHandler(onBack = { onAction(CanvasMemoAction.ClickBack) })
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(CanvasMemoAction.CloseExitConfirmationDialog)
+        } else {
+            onAction(CanvasMemoAction.ClickBack)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -479,6 +487,21 @@ private fun CanvasMemoScreen(
                         enabled = uiState.isQuoteSaveable && !uiState.isSaving,
                         isSaving = uiState.isSaving,
                         totalPage = uiState.totalPage
+                    )
+                }
+
+                if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
+                    And03Dialog(
+                        iconResId = R.drawable.ic_warning_filled,
+                        iconColor = And03Theme.colors.error,
+                        iconContentDescription = stringResource(id = R.string.content_description_caution),
+                        title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                        dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                        confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                        onDismiss = { onAction(CanvasMemoAction.CloseScreen) },
+                        onConfirm = { onAction(CanvasMemoAction.CloseExitConfirmationDialog) },
+                        description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                        dismissAction = DialogDismissAction.Confirm
                     )
                 }
 

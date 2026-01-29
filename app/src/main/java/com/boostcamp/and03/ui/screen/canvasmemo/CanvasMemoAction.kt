@@ -20,6 +20,8 @@ sealed interface CanvasMemoAction {
 
     data object CloseExitConfirmationDialog : CanvasMemoAction
 
+    data object CloseScreen : CanvasMemoAction
+
     data class PrepareQuotePlacement(val quote: QuoteUiModel) : CanvasMemoAction
 
     data object SaveQuote : CanvasMemoAction
