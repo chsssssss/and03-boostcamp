@@ -48,16 +48,14 @@ fun BooklistRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.resetSearch()
-        viewModel.loadBooks()
-    }
-
     BooklistScreen(
         uiState = uiState,
         onSearch = viewModel::onSearchQueryChange,
         onBookClick = onBookClick,
-        onAddBookClick = onAddBookClick
+        onAddBookClick = {
+            onAddBookClick()
+            viewModel.resetSearch()
+        }
     )
 }
 
@@ -82,7 +80,8 @@ private fun BooklistScreen(
             And03AppBar(
                 title = stringResource(R.string.book_list_title),
                 actions = {
-                    IconButton(onClick = onAddBookClick) {
+                    IconButton(
+                        onClick = { onAddBookClick() }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_add_filled),
                             contentDescription = stringResource(R.string.content_description_add_book_button)
