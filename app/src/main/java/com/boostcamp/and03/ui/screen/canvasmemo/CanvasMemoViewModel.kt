@@ -764,7 +764,7 @@ class CanvasMemoViewModel @Inject constructor(
      * 캔버스를 20% 확대합니다.
      */
     private fun handleZoomIn() {
-        _uiState.update { it
+        _uiState.update {
             it.copy(
                 zoomScale = (it.zoomScale + 0.2f)
                     .coerceIn(
