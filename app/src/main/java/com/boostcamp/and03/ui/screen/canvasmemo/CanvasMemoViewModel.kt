@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 private object CanvasZoomValues {
@@ -185,6 +186,7 @@ class CanvasMemoViewModel @Inject constructor(
 
             is CanvasMemoAction.ZoomCanvasByGesture -> {
                 handleZoomCanvasByGesture(
+                    action.centroid,
                     action.moveOffset,
                     action.zoomChange
                 )
@@ -441,7 +443,7 @@ class CanvasMemoViewModel @Inject constructor(
         )
 
         val newQuote = MemoNode.QuoteNode(
-            id = quote.id,
+            id = UUID.randomUUID().toString(),
             content = quote.content,
             page = quote.page,
             offset = canvasPosition
@@ -707,22 +709,26 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
-     * 손가락으로 캔버스를 확대 또는 축소합니다.
-     * 50%부터 200%까지 조절 가능합니다.
+     * 두 손가락의 중심점을 기준으로 캔버스를 확대 또는 축소합니다.
+     * (캔버스 위치 - 두 손가락의 중심점) * 확대 or 축소 비율 + 두 손가락의 중심점 + 제스처 이동량
      */
     private fun handleZoomCanvasByGesture(
+        centroid: Offset,
         moveOffset: Offset,
         zoomChange: Float
     ) {
         _uiState.update {
-            val newZoomScale = (it.zoomScale * zoomChange)
+            val oldZoomScale = it.zoomScale
+            val newZoomScale = (oldZoomScale * zoomChange)
                 .coerceIn(
                     minimumValue = CanvasZoomValues.MIN_ZOOM,
                     maximumValue = CanvasZoomValues.MAX_ZOOM
                 )
 
+            val scaleRatio = newZoomScale / oldZoomScale
+
             val newCanvasViewOffset = clampCanvasViewOffset(
-                it.canvasViewOffset + moveOffset
+                (it.canvasViewOffset - centroid) * scaleRatio + centroid + moveOffset
             )
 
             it.copy(

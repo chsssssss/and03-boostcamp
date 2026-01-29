@@ -64,6 +64,7 @@ sealed interface CanvasMemoAction {
     data class UpdateQuoteItemSize(val size: IntSize) : CanvasMemoAction
 
     data class ZoomCanvasByGesture(
+        val centroid: Offset,
         val moveOffset: Offset,
         val zoomChange: Float
     ) : CanvasMemoAction

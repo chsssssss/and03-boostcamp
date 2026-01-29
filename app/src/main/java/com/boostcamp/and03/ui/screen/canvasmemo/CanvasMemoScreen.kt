@@ -230,11 +230,12 @@ private fun CanvasMemoScreen(
                         }
                     }
                     .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
+                        detectTransformGestures { centroid, pan, zoom, _ ->
                             onAction(
                                 CanvasMemoAction.ZoomCanvasByGesture(
-                                    moveOffset = pan,
-                                    zoomChange = zoom
+                                    centroid = centroid, // 터치 포인트들의 중심점
+                                    moveOffset = pan,    // 사용자가 움직인 방향과 거리
+                                    zoomChange = zoom    // 확대/축소 비율
                                 )
                             )
                         }
