@@ -82,8 +82,6 @@ import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.coroutines.launch
-import kotlin.math.max
-import kotlin.math.min
 
 private object CanvasMemoScreenValues {
     val CANVAS_SIZE = 2000.dp
@@ -503,7 +501,7 @@ private fun CanvasMemoScreen(
                 )
 
                 // QuoteItem의 크기 측정을 위해 별도의 Box에서 QuoteItem 생성
-                if (uiState.quoteToPlace != null && uiState.quoteItemSizeDp == null) {
+                if (uiState.quoteToPlace != null && uiState.quoteItemSizePx == null) {
                     Box(
                         modifier = Modifier
                             .alpha(0f)

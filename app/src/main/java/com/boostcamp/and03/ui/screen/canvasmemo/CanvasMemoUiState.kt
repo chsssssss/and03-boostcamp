@@ -51,7 +51,7 @@ data class CanvasMemoUiState(
 
     val isSaving: Boolean = false,
     val quoteToPlace: QuoteUiModel? = null,
-    val quoteItemSizeDp: IntSize? = null
+    val quoteItemSizePx: IntSize? = null
 ) {
     val relationDialogUiState: RelationDialogUiState
         get() = toRelationDialogState()

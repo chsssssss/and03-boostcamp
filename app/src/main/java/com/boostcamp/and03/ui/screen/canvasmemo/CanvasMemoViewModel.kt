@@ -307,7 +307,7 @@ class CanvasMemoViewModel @Inject constructor(
                 quoteToPlace = quote,
                 bottomSheetType = null,
                 isBottomBarVisible = false,
-                quoteItemSizeDp = null
+                quoteItemSizePx = null
             )
         }
     }
@@ -454,7 +454,7 @@ class CanvasMemoViewModel @Inject constructor(
      */
     private fun handleTapCanvas(tapPositionOnScreen: Offset) {
         val quote = _uiState.value.quoteToPlace ?: return
-        val sizeDp = _uiState.value.quoteItemSizeDp ?: return
+        val sizeDp = _uiState.value.quoteItemSizePx ?: return
 
         val centerItemPosition = Offset(
             x = sizeDp.width / 2f,
@@ -480,7 +480,7 @@ class CanvasMemoViewModel @Inject constructor(
             it.copy(
                 nodes = it.nodes + (newQuote.id to newQuote.toUiModel()),
                 quoteToPlace = null,
-                quoteItemSizeDp = null,
+                quoteItemSizePx = null,
                 isBottomBarVisible = true
             )
         }
@@ -728,7 +728,7 @@ class CanvasMemoViewModel @Inject constructor(
      * 해당 컴포저블의 너비와 높이 값 IntSize를 가져옵니다.
      */
     private fun handleUpdateQuoteItemSize(action: CanvasMemoAction.UpdateQuoteItemSize) {
-        _uiState.update { it.copy(quoteItemSizeDp = action.size) }
+        _uiState.update { it.copy(quoteItemSizePx = action.size) }
     }
 
     /**
