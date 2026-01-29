@@ -40,18 +40,19 @@ sealed interface CanvasMemoAction {
 
     data class OnNodeClick(val nodeId: String) : CanvasMemoAction
 
-    data class ConfirmRelation(val fromId: String, val toId: String, val name: String) :
-        CanvasMemoAction
-
-    data class onClickSave(val userId: String, val bookId: String, val memoId: String) : CanvasMemoAction
-
-    data class OnBottomBarClick(val type: MainBottomBarType) : CanvasMemoAction
-
-    data class ConnectNodes(
+    data class ConfirmRelation(
         val fromId: String,
         val toId: String,
         val name: String
     ) : CanvasMemoAction
+
+    data class OnClickSave(
+        val userId: String,
+        val bookId: String,
+        val memoId: String
+    ) : CanvasMemoAction
+
+    data class OnBottomBarClick(val type: MainBottomBarType) : CanvasMemoAction
 
     data object CancelPlaceItem : CanvasMemoAction
 

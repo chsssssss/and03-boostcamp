@@ -76,7 +76,6 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBa
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
-import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
@@ -302,8 +301,7 @@ private fun CanvasMemoScreen(
                                         NodeItem(
                                             title = uiModel.node.name,
                                             content = uiModel.node.description,
-                                            isHighlighted = uiModel.isSelected,
-                                            onMoreClick = {}
+                                            isHighlighted = uiModel.isSelected
                                         )
                                     }
                                 )
@@ -323,13 +321,14 @@ private fun CanvasMemoScreen(
                                     },
                                     onSizeChanged = { size ->
                                         nodeSizes = nodeSizes + (uiModel.node.id to size)
+                                    },
+                                    content = {
+                                        QuoteItem(
+                                            quote = uiModel.node.content,
+                                            page = uiModel.node.page
+                                        )
                                     }
-                                ) {
-                                    QuoteItem(
-                                        quote = uiModel.node.content,
-                                        page = uiModel.node.page
-                                    )
-                                }
+                                )
                             }
                         }
                     }
