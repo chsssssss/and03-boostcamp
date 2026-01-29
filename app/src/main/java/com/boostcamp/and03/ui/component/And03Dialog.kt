@@ -72,7 +72,7 @@ fun And03Dialog(
                     And03Button(
                         text = dismissText,
                         onClick = onDismiss,
-                        variant = ButtonVariant.Secondary,
+                        variant = ButtonVariant.SurfaceVariant,
                         modifier = Modifier.weight(1f)
                     )
 
