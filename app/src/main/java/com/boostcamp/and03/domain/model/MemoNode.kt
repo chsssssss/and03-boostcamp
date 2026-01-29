@@ -10,14 +10,14 @@ sealed class MemoNode {
         override val id: String,
         val name: String,
         val description: String,
+        val imageUrl: String,
         override val offset: Offset,
     ) : MemoNode()
 
     data class QuoteNode(
         override val id: String,
         val content: String,
-        val startPage: Int,
-        val endPage: Int,
+        val page: Int,
         override val offset: Offset,
     ) : MemoNode()
 }

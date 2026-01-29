@@ -6,12 +6,13 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBa
 sealed interface CanvasMemoAction {
 
     data object ClickBack : CanvasMemoAction
+    data object CloseRelationDialog : CanvasMemoAction
+    data object CloseAddCharacterDialog : CanvasMemoAction
+    data class OnBottomBarClick(
+        val type: MainBottomBarType
+    ) : CanvasMemoAction
 
     data object CloseBottomSheet : CanvasMemoAction
-
-    data object CloseRelationDialog : CanvasMemoAction
-
-    data object CloseAddCharacterDialog : CanvasMemoAction
 
     data object CloseQuoteDialog : CanvasMemoAction
 
@@ -26,9 +27,15 @@ sealed interface CanvasMemoAction {
         val toNodeId: String
     ) : CanvasMemoAction
 
-    data class OnBottomBarClick(val type: MainBottomBarType) : CanvasMemoAction
-
     data class MoveNode(val nodeId: String, val newOffset: Offset) : CanvasMemoAction
+    object HideBottomBar : CanvasMemoAction
 
-    data class ConnectNodes(val fromId: String, val toId: String, val name: String) : CanvasMemoAction
+    object ShowBottomBar : CanvasMemoAction
+
+    data class OnNodeClick(val nodeId: String) : CanvasMemoAction
+
+    data class ConfirmRelation(val fromId: String, val toId: String, val name: String) :
+        CanvasMemoAction
+
+    data class onClickSave(val userId: String, val bookId: String, val memoId: String) : CanvasMemoAction
 }
