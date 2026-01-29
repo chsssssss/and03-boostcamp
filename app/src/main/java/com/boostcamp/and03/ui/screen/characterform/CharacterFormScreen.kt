@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.characterform
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,8 +9,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -33,8 +32,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.PersonImagePlaceholder
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
@@ -71,6 +72,16 @@ private fun CharacterFormScreen(
     onAction: (CharacterFormAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(CharacterFormAction.CloseExitConfirmationDialog)
+        } else if (uiState.isEdited) {
+            onAction(CharacterFormAction.OnBackClick)
+        } else {
+            onAction(CharacterFormAction.CloseScreen)
+        }
+    }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -136,6 +147,21 @@ private fun CharacterFormScreen(
             DescriptionInputSection(
                 description = uiState.description,
                 onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
+            )
+        }
+
+        if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {
+            And03Dialog(
+                iconResId = R.drawable.ic_warning_filled,
+                iconColor = And03Theme.colors.error,
+                iconContentDescription = stringResource(id = R.string.content_description_caution),
+                title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                onDismiss = { onAction(CharacterFormAction.CloseScreen) },
+                onConfirm = { onAction(CharacterFormAction.CloseExitConfirmationDialog) },
+                description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                dismissAction = DialogDismissAction.Confirm
             )
         }
     }
