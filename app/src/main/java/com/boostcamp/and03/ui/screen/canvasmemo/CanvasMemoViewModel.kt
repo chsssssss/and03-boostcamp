@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -48,7 +49,12 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
-        createInitialState()
+//        createInitialState()
+        loadCanvasMemo(
+            userId = userId,
+            bookId = bookId,
+            memoId = memoId
+        )
 
         observeCharacters(
             userId = userId,
@@ -137,7 +143,9 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.OnNodeClick -> handleNodeClick(action)
             is CanvasMemoAction.ConfirmRelation -> {
                 handleConnectNodes(action)
+                onSaveCanvasMemo(userId, bookId, memoId)
             }
+
             is CanvasMemoAction.onClickSave -> {
                 onSaveCanvasMemo(action.userId, action.bookId, action.memoId)
             }
@@ -484,10 +492,36 @@ class CanvasMemoViewModel @Inject constructor(
                     memoId = memoId,
                     graph = graph
                 )
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
 
             }
         }
+    }
+
+    private fun loadCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        viewModelScope.launch {
+            val response = canvasMemoRepository.loadCanvasMemoDetail(
+                userId = userId,
+                bookId = bookId,
+                memoId = memoId,
+            )
+            Log.d("CanvasMemoViewModel", "loadCanvasMemo: $response")
+            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${response.nodes}")
+            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${response.edges}")
+
+            _uiState.update {
+                it.copy(
+                    nodes = response.nodes.mapValues { it.value.toUiModel() },
+                    edges = response.edges.map { it.toUiModel() }
+                )
+            }
+            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${_uiState.value.nodes}")
+            Log.d("CanvasMemoViewModel", "loadCanvasMemo: ${_uiState.value.edges}")
+        }
+
     }
 }

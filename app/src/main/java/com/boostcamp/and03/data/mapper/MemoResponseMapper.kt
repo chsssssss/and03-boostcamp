@@ -1,10 +1,12 @@
 package com.boostcamp.and03.data.mapper
 
+import android.util.Log
 import com.boostcamp.and03.data.model.response.memo.*
 
 object MemoResponseMapper {
     fun fromFirebase(documentId: String, data: Map<String, Any>): MemoResponse? {
         val type = data["type"] as? String ?: return null
+        Log.d("MemoResponseMapper", "Parsing memo type: $type")
         return when (type) {
             "TEXT" -> parseTextMemo(documentId, data)
             "CANVAS" -> parseCanvasMemo(documentId, data)
@@ -73,4 +75,35 @@ object MemoResponseMapper {
 
         return GraphResponse(nodes, edges)
     }
+}
+
+object MemoNodeMapper {
+    fun fromFirebase(
+        id: String,
+        data: Map<String, Any>
+    ): NodeResponse =
+        NodeResponse(
+            id = id,
+            title = data["title"] as? String ?: "",
+            content = data["content"] as? String ?: "",
+            nodeType = data["nodeType"] as? String ?: "",
+            startPage = (data["startPage"] as? Long)?.toInt(),
+            endPage = (data["endPage"] as? Long)?.toInt(),
+            imageUrl = data["imageUrl"] as? String ?: "",
+            x = (data["x"] as? Double)?.toFloat() ?: 0f,
+            y = (data["y"] as? Double)?.toFloat() ?: 0f
+        )
+}
+
+object MemoEdgeMapper {
+    fun fromFirebase(
+        id: String,
+        data: Map<String, Any>
+    ): EdgeResponse =
+        EdgeResponse(
+            id = id,
+            fromNodeId = data["fromId"] as? String ?: "",
+            toNodeId = data["toId"] as? String ?: "",
+            relationText = data["relationText"] as? String ?: ""
+        )
 }

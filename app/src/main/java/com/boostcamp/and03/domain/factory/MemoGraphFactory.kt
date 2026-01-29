@@ -3,8 +3,12 @@ package com.boostcamp.and03.domain.factory
 import androidx.compose.ui.geometry.Offset
 import com.boostcamp.and03.data.mapper.toDomain
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
+import com.boostcamp.and03.data.model.response.memo.EdgeResponse
+import com.boostcamp.and03.data.model.response.memo.NodeResponse
+import com.boostcamp.and03.domain.model.Edge
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.domain.model.MemoNode
+import kotlin.collections.associate
 
 object MemoGraphFactory {
 
@@ -20,6 +24,63 @@ object MemoGraphFactory {
         return MemoGraph(
             nodes = response.graph.nodes.associate { it.id to it.toDomain() },
             edges = response.graph.edges.map { it.toDomain() }
+        )
+    }
+
+    fun from(
+        nodes: List<MemoNode>,
+        edges: List<Edge>
+    ): MemoGraph {
+        return MemoGraph(
+            nodes = nodes.associateBy { it.id },
+            edges = edges
+        )
+    }
+
+    fun fromNodesAndEdges(
+        nodes: List<NodeResponse>,
+        edges: List<EdgeResponse>
+    ): MemoGraph {
+
+        val nodeMap: Map<String, MemoNode> = nodes.associate { node ->
+            val offset = Offset(node.x, node.y)
+
+            val memoNode = when (node.nodeType) {
+                "CHARACTER" -> MemoNode.CharacterNode(
+                    id = node.id,
+                    name = node.title,
+                    description = node.content,
+                    imageUrl = node.imageUrl,
+                    offset = offset
+                )
+
+                "QUOTE" -> MemoNode.QuoteNode(
+                    id = node.id,
+                    content = node.content,
+                    page = node.startPage ?: 0,
+                    offset = offset
+                )
+
+                else -> throw IllegalArgumentException(
+                    "Unknown nodeType: ${node.nodeType}"
+                )
+            }
+
+            node.id to memoNode
+        }
+
+        val edgeList = edges.map {
+            Edge(
+                id = it.id,
+                fromId = it.fromNodeId,
+                toId = it.toNodeId,
+                name = it.relationText
+            )
+        }
+
+        return MemoGraph(
+            nodes = nodeMap,
+            edges = edgeList
         )
     }
 
