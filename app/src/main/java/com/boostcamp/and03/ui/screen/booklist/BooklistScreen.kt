@@ -80,8 +80,7 @@ private fun BooklistScreen(
             And03AppBar(
                 title = stringResource(R.string.book_list_title),
                 actions = {
-                    IconButton(
-                        onClick = { onAddBookClick() }) {
+                    IconButton(onClick = { onAddBookClick() }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_add_filled),
                             contentDescription = stringResource(R.string.content_description_add_book_button)
