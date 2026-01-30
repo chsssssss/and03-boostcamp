@@ -49,7 +49,6 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
-        createInitialState()
         loadCanvasMemo(
             userId = userId,
             bookId = bookId,
