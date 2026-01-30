@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
@@ -7,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
-import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.domain.repository.CanvasMemoRepository
@@ -58,44 +58,11 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
-        createInitialState()
-    }
-
-    /**
-     * _uiState에 CanvasMemoScreen에 필요한 데이터를 초기화합니다.
-     * 그래프(노드, 엣지), 등장인물, 구절 데이터를 불러옵니다.
-     */
-    private fun createInitialState() {
-        viewModelScope.launch {
-            try {
-                val graph = canvasMemoRepository.loadCanvasMemo(
-                    userId = userId,
-                    bookId = bookId,
-                    memoId = memoId
-                )
-
-                _uiState.update {
-                    it.copy(
-                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
-                        edges = graph.edges.map { it.toUiModel() },
-                        totalPage = totalPage
-                    )
-                }
-            } catch (e: Exception) {
-                // TODO: 에러 처리
-                val graph = MemoGraphFactory.empty()
-
-                _uiState.update {
-                    it.copy(
-                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
-                        edges = graph.edges.map { it.toUiModel() },
-                        totalPage = totalPage
-                    )
-                }
-            } finally {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-        }
+        loadCanvasMemo(
+            userId = userId,
+            bookId = bookId,
+            memoId = memoId
+        )
 
         observeCharacters(
             userId = userId,
@@ -200,9 +167,13 @@ class CanvasMemoViewModel @Inject constructor(
                 handleConnectNodes(action)
             }
 
-            is CanvasMemoAction.OnClickSave ->  onSaveCanvasMemo()
+            is CanvasMemoAction.OnClickSave -> {
+                onSaveCanvasMemo()
+            }
 
-            is CanvasMemoAction.UpdateQuoteItemSize -> { handleUpdateQuoteItemSize(action) }
+            is CanvasMemoAction.UpdateQuoteItemSize -> {
+                handleUpdateQuoteItemSize(action)
+            }
 
             is CanvasMemoAction.ZoomCanvasByGesture -> {
                 handleZoomCanvasByGesture(
@@ -416,6 +387,7 @@ class CanvasMemoViewModel @Inject constructor(
             else -> null
         }
 
+
         when (action.type) {
             MainBottomBarType.RELATION -> enterRelationMode()
             else -> {
@@ -426,6 +398,14 @@ class CanvasMemoViewModel @Inject constructor(
                     )
                 }
             }
+        }
+
+
+        _uiState.update {
+            it.copy(
+                selectedBottomBarType = action.type,
+                bottomSheetType = sheetType
+            )
         }
     }
 
@@ -495,9 +475,6 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 관계 추가 준비를 위한 _uiState의 상태를 업데이트합니다.
-     */
     private fun enterRelationMode() {
         _uiState.update {
             it.copy(
@@ -509,9 +486,6 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 관계를 추가할 때 클릭한 노드에 대한 처리를 진행합니다.
-     */
     private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
         when (_uiState.value.relationAddStep) {
             RelationAddStep.READY ->
@@ -527,9 +501,6 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 관계를 추가할 때 첫 번째로 클릭한 노드의 id를 fromId으로 설정합니다.
-     */
     private fun selectFrom(nodeId: String) {
         val selection = RelationSelection(fromNodeId = nodeId, toNodeId = null)
 
@@ -542,11 +513,6 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(selection)
     }
 
-    /**
-     * 관계를 추가할 때 두 번째로 클릭한 노드의 id 값을 확인,
-     * 같은 id면 취소(자기 자신을 관계로 연결할 수 없음), 다른 id면 toId로 설정합니다.
-     * toId까지 설정되었을 경우 관계 추가 다이얼로그를 엽니다.
-     */
     private fun selectToOrCancel(nodeId: String) {
         val selection = _uiState.value.relationSelection
 
@@ -569,10 +535,6 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(updated)
     }
 
-    /**
-     * 관계를 추가할 때 완료 버튼을 클릭한 경우, 관계 데이터를 추가하고 업데이트합니다.
-     * 관계 추가 다이얼로그를 닫습니다.
-     */
     private fun handleCompleteStateClick(nodeId: String) {
         val selection = _uiState.value.relationSelection
 
@@ -599,10 +561,6 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(updated)
     }
 
-    /**
-     * 관계 선택 단계 - 관계 선택 관련 필드 값을 초기화합니다.
-     * 바텀 시트를 숨기고 바텀 바를 드러냅니다.
-     */
     private fun resetRelation() {
         _uiState.update {
             it.copy(
@@ -614,6 +572,7 @@ class CanvasMemoViewModel @Inject constructor(
         }
         updateNodeSelection(RelationSelection.empty())
     }
+
 
 //    private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
 //        val selection = _uiState.value.relationSelection
@@ -682,9 +641,7 @@ class CanvasMemoViewModel @Inject constructor(
 //        Log.d("CanvasMemoViewModel", "handleNodeClick: ${_uiState.value.relationSelection}")
 //    }
 
-    /**
-     * 관계 추가 시 지정했던 Id 데이터를 토대로 MemoNodeUiModel을 생성합니다.
-     */
+
     private fun updateNodeSelection(selection: RelationSelection) {
         _uiState.update { state ->
             state.copy(
@@ -716,9 +673,50 @@ class CanvasMemoViewModel @Inject constructor(
                     memoId = memoId,
                     graph = graph
                 )
+            } catch (e: Exception) {
+
             }
-            catch (e: Exception) {
-                // TODO: 저장 시 오류 수정
+        }
+    }
+
+    private fun loadCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        viewModelScope.launch {
+            canvasMemoRepository.loadCanvasMemoDetail(
+                userId = userId,
+                bookId = bookId,
+                memoId = memoId,
+            ).collect { graph ->
+                _uiState.update {
+                    it.copy(
+                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
+                        edges = graph.edges.map { it.toUiModel() },
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        nodeIds: List<String>
+    ) {
+        viewModelScope.launch {
+            try {
+                canvasMemoRepository.removeNode(
+                    userId = userId,
+                    bookId = bookId,
+                    memoId = memoId,
+                    nodeIds = nodeIds
+                )
+            } catch (e: Exception) {
+                Log.d("CanvasMemoViewModel", "onSaveCanvasMemo: $e")
             }
         }
     }
