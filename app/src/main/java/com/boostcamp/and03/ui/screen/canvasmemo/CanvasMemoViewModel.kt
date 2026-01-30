@@ -136,6 +136,10 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
+            CanvasMemoAction.CloseExitConfirmationDialog -> handleCloseExitConfirmationDialog()
+
+            CanvasMemoAction.CloseScreen -> handleCloseScreen()
+
             is CanvasMemoAction.PrepareQuotePlacement -> handlePrepareQuotePlacement(action.quote)
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
@@ -192,10 +196,15 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
-     * 뒤로 가기 - 현재 화면에서 벗어나 책 상세 화면의 메모 탭으로 복귀합니다.
+     * 저장되지 않은 요소가 있는지에 대한 여부에 따라
+     * 확인용 다이얼로그가 표시되거나 화면을 이동합니다.
      */
     private fun handleClickBack() {
-        _event.trySend(CanvasMemoEvent.NavToBack)
+        if (_uiState.value.hasUnsavedChanges) {
+            _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+        } else {
+            _event.trySend(CanvasMemoEvent.NavToBack)
+        }
     }
 
     /**
@@ -269,6 +278,26 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
+     * 나가기 확인 다이얼로그를 닫고, 캔버스 메모 화면에 잔류합니다.
+     */
+    private fun handleCloseExitConfirmationDialog() {
+        _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+    }
+
+    /**
+     * 나가기 확인 다이얼로그를 닫고, 이전 화면으로 이동합니다.
+     */
+    private fun handleCloseScreen() {
+        _uiState.update {
+            it.copy(
+                isExitConfirmationDialogVisible = false,
+                hasUnsavedChanges = false
+            )
+        }
+        _event.trySend(CanvasMemoEvent.NavToBack)
+    }
+
+    /**
      * 캔버스에 추가할 구절 데이터를 uiState에 저장합니다.
      * 바텀 시트와 바텀 바를 숨기고 다음 행동을 알려주는 AlertMessageCard를 표시합니다.
      */
@@ -333,13 +362,13 @@ class CanvasMemoViewModel @Inject constructor(
                         isQuoteDialogVisible = false,
                         bottomSheetType = CanvasMemoBottomSheetType.AddQuote,
                         quoteState = TextFieldState(),
-                        pageState = TextFieldState()
+                        pageState = TextFieldState(),
+                        hasUnsavedChanges = false
                     )
                 }
             } catch (e: Exception) {
                 // TODO: 오류 메시지 UI 표시 구현
-            } finally {
-                _uiState.update { it.copy(isSaving = false) }
+                _uiState.update { it.copy(hasUnsavedChanges = true) }
             }
         }
     }
@@ -355,7 +384,8 @@ class CanvasMemoViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                nodes = it.nodes + (action.nodeId to movedNode.toUiModel())
+                nodes = it.nodes + (action.nodeId to movedNode.toUiModel()),
+                hasUnsavedChanges = true
             )
         }
     }
@@ -370,6 +400,7 @@ class CanvasMemoViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 edges = updatedGraph.edges.map { it.toUiModel() },
+                hasUnsavedChanges = true
             )
         }
 
@@ -387,7 +418,6 @@ class CanvasMemoViewModel @Inject constructor(
             else -> null
         }
 
-
         when (action.type) {
             MainBottomBarType.RELATION -> enterRelationMode()
             else -> {
@@ -399,7 +429,6 @@ class CanvasMemoViewModel @Inject constructor(
                 }
             }
         }
-
 
         _uiState.update {
             it.copy(
@@ -461,7 +490,8 @@ class CanvasMemoViewModel @Inject constructor(
                 nodes = it.nodes + (newQuote.id to newQuote.toUiModel()),
                 quoteToPlace = null,
                 quoteItemSizePx = null,
-                isBottomBarVisible = true
+                isBottomBarVisible = true,
+                hasUnsavedChanges = true
             )
         }
     }
@@ -475,6 +505,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 관계 추가 준비를 위한 _uiState의 상태를 업데이트합니다.
+     */
     private fun enterRelationMode() {
         _uiState.update {
             it.copy(
@@ -486,6 +519,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 관계를 추가할 때 클릭한 노드에 대한 처리를 진행합니다.
+     */
     private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
         when (_uiState.value.relationAddStep) {
             RelationAddStep.READY ->
@@ -501,6 +537,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 관계를 추가할 때 첫 번째로 클릭한 노드의 id를 fromId으로 설정합니다.
+     */
     private fun selectFrom(nodeId: String) {
         val selection = RelationSelection(fromNodeId = nodeId, toNodeId = null)
 
@@ -513,6 +552,11 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(selection)
     }
 
+    /**
+     * 관계를 추가할 때 두 번째로 클릭한 노드의 id 값을 확인,
+     * 같은 id면 취소(자기 자신을 관계로 연결할 수 없음), 다른 id면 toId로 설정합니다.
+     * toId까지 설정되었을 경우 관계 추가 다이얼로그를 엽니다.
+     */
     private fun selectToOrCancel(nodeId: String) {
         val selection = _uiState.value.relationSelection
 
@@ -535,6 +579,10 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(updated)
     }
 
+    /**
+     * 관계를 추가할 때 완료 버튼을 클릭한 경우, 관계 데이터를 추가하고 업데이트합니다.
+     * 관계 추가 다이얼로그를 닫습니다.
+     */
     private fun handleCompleteStateClick(nodeId: String) {
         val selection = _uiState.value.relationSelection
 
@@ -561,6 +609,10 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(updated)
     }
 
+    /**
+     * 관계 선택 단계 - 관계 선택 관련 필드 값을 초기화합니다.
+     * 바텀 시트를 숨기고 바텀 바를 드러냅니다.
+     */
     private fun resetRelation() {
         _uiState.update {
             it.copy(
@@ -572,7 +624,6 @@ class CanvasMemoViewModel @Inject constructor(
         }
         updateNodeSelection(RelationSelection.empty())
     }
-
 
 //    private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
 //        val selection = _uiState.value.relationSelection
@@ -641,7 +692,9 @@ class CanvasMemoViewModel @Inject constructor(
 //        Log.d("CanvasMemoViewModel", "handleNodeClick: ${_uiState.value.relationSelection}")
 //    }
 
-
+    /**
+     * 관계 추가 시 지정했던 Id 데이터를 토대로 MemoNodeUiModel을 생성합니다.
+     */
     private fun updateNodeSelection(selection: RelationSelection) {
         _uiState.update { state ->
             state.copy(
@@ -673,8 +726,10 @@ class CanvasMemoViewModel @Inject constructor(
                     memoId = memoId,
                     graph = graph
                 )
+                _uiState.update { it.copy(hasUnsavedChanges = false) }
             } catch (e: Exception) {
-
+                // TODO: 오류 표시 UI 구현
+                _uiState.update { it.copy(hasUnsavedChanges = true) }
             }
         }
     }

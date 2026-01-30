@@ -4,8 +4,15 @@ data class CanvasMemoFormUiState(
     val title: String = "",
     val startPage: String = "",
     val endPage: String = "",
+
+    val originalTitle: String = "",
+    val originalStartPage: String = "",
+    val originalEndPage: String = "",
+
+    val isLoading: Boolean = false,
     val totalPage: Int = 0,
-    val isSaving: Boolean = false
+    val isSaving: Boolean = false,
+    val isExitConfirmationDialogVisible: Boolean = false
 ) {
     val isValidPageRange: Boolean
         get() {
@@ -24,4 +31,9 @@ data class CanvasMemoFormUiState(
         get() {
             return title.isNotBlank() && isValidPageRange
         }
+
+    val isEdited: Boolean
+        get() = title != originalTitle ||
+                startPage != originalStartPage ||
+                endPage != originalEndPage
 }
