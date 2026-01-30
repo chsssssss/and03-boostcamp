@@ -35,6 +35,7 @@ fun NodeResponse.toDomain(): MemoNode =
 // EdgeResponse → Edge
 fun EdgeResponse.toDomain(): Edge =
     Edge(
+        id = id,
         fromId = fromNodeId,
         toId = toNodeId,
         name = relationText

@@ -1,6 +1,7 @@
 package com.boostcamp.and03.domain.model
 
 import androidx.compose.ui.geometry.Offset
+import java.util.UUID
 
 data class MemoGraph(
     val nodes: Map<String, MemoNode> = emptyMap(),
@@ -22,9 +23,18 @@ data class MemoGraph(
         )
     }
 
-    fun connectNode(fromId: String, toId: String, name: String = ""): MemoGraph {
+    fun connectNode(fromId: String, toId: String, name: String): MemoGraph {
         if (fromId == toId || edges.any { it.fromId == fromId && it.toId == toId }) return this
-        return copy(edges = edges + Edge(fromId, toId, name))
+
+        val edgeId = UUID.randomUUID().toString()
+        return copy(
+            edges = edges + Edge(
+                id = edgeId,
+                toId = toId,
+                fromId = fromId,
+                name = name
+            )
+        )
     }
 
     fun disconnectNodes(fromId: String, toId: String): MemoGraph {

@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
@@ -7,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
-import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.domain.repository.CanvasMemoRepository
@@ -58,44 +58,11 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
-        createInitialState()
-    }
-
-    /**
-     * _uiState에 CanvasMemoScreen에 필요한 데이터를 초기화합니다.
-     * 그래프(노드, 엣지), 등장인물, 구절 데이터를 불러옵니다.
-     */
-    private fun createInitialState() {
-        viewModelScope.launch {
-            try {
-                val graph = canvasMemoRepository.loadCanvasMemo(
-                    userId = userId,
-                    bookId = bookId,
-                    memoId = memoId
-                )
-
-                _uiState.update {
-                    it.copy(
-                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
-                        edges = graph.edges.map { it.toUiModel() },
-                        totalPage = totalPage
-                    )
-                }
-            } catch (e: Exception) {
-                // TODO: 에러 처리
-                val graph = MemoGraphFactory.empty()
-
-                _uiState.update {
-                    it.copy(
-                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
-                        edges = graph.edges.map { it.toUiModel() },
-                        totalPage = totalPage
-                    )
-                }
-            } finally {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-        }
+        loadCanvasMemo(
+            userId = userId,
+            bookId = bookId,
+            memoId = memoId
+        )
 
         observeCharacters(
             userId = userId,
@@ -204,9 +171,13 @@ class CanvasMemoViewModel @Inject constructor(
                 handleConnectNodes(action)
             }
 
-            is CanvasMemoAction.OnClickSave ->  onSaveCanvasMemo()
+            is CanvasMemoAction.OnClickSave -> {
+                onSaveCanvasMemo()
+            }
 
-            is CanvasMemoAction.UpdateQuoteItemSize -> { handleUpdateQuoteItemSize(action) }
+            is CanvasMemoAction.UpdateQuoteItemSize -> {
+                handleUpdateQuoteItemSize(action)
+            }
 
             is CanvasMemoAction.ZoomCanvasByGesture -> {
                 handleZoomCanvasByGesture(
@@ -457,6 +428,13 @@ class CanvasMemoViewModel @Inject constructor(
                     )
                 }
             }
+        }
+
+        _uiState.update {
+            it.copy(
+                selectedBottomBarType = action.type,
+                bottomSheetType = sheetType
+            )
         }
     }
 
@@ -748,12 +726,52 @@ class CanvasMemoViewModel @Inject constructor(
                     memoId = memoId,
                     graph = graph
                 )
-
                 _uiState.update { it.copy(hasUnsavedChanges = false) }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 // TODO: 오류 표시 UI 구현
                 _uiState.update { it.copy(hasUnsavedChanges = true) }
+            }
+        }
+    }
+
+    private fun loadCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ) {
+        viewModelScope.launch {
+            canvasMemoRepository.loadCanvasMemoDetail(
+                userId = userId,
+                bookId = bookId,
+                memoId = memoId,
+            ).collect { graph ->
+                _uiState.update {
+                    it.copy(
+                        nodes = graph.nodes.mapValues { it.value.toUiModel() },
+                        edges = graph.edges.map { it.toUiModel() },
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        nodeIds: List<String>
+    ) {
+        viewModelScope.launch {
+            try {
+                canvasMemoRepository.removeNode(
+                    userId = userId,
+                    bookId = bookId,
+                    memoId = memoId,
+                    nodeIds = nodeIds
+                )
+            } catch (e: Exception) {
+                Log.d("CanvasMemoViewModel", "onSaveCanvasMemo: $e")
             }
         }
     }

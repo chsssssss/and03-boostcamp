@@ -10,6 +10,7 @@ import com.boostcamp.and03.domain.model.MemoNode
 fun MemoNode.toRequest(): NodeRequest {
     return when (this) {
         is MemoNode.CharacterNode -> NodeRequest.Character(
+            id = this.id,
             title = this.name,
             content = this.description,
             nodeType = "CHARACTER",
@@ -18,6 +19,7 @@ fun MemoNode.toRequest(): NodeRequest {
         )
 
         is MemoNode.QuoteNode -> NodeRequest.Quote(
+            id = this.id,
             content = this.content,
             nodeType = "QUOTE",
             page = this.page,
@@ -29,6 +31,7 @@ fun MemoNode.toRequest(): NodeRequest {
 
 fun Edge.toRequest(): EdgeRequest {
     return EdgeRequest(
+        id = this.id,
         fromId = this.fromId,
         toId = this.toId,
         relationText = this.name

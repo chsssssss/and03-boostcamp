@@ -1,17 +1,22 @@
 package com.boostcamp.and03.data.datasource.remote.canvasmemo
 
 import android.util.Log
+import com.boostcamp.and03.data.mapper.MemoEdgeMapper
+import com.boostcamp.and03.data.mapper.MemoNodeMapper
 import com.boostcamp.and03.data.model.request.GraphRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.EdgeResponse
-import com.boostcamp.and03.data.model.response.memo.GraphResponse
 import com.boostcamp.and03.data.model.response.memo.NodeResponse
+import com.boostcamp.and03.data.model.response.memo.GraphResponse
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 
 class CanvasMemoDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
@@ -59,6 +64,79 @@ class CanvasMemoDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCanvasMemoNodes(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): Flow<List<NodeResponse>> = callbackFlow {
+        val snapshot = db
+            .collection("user")
+            .document(userId)
+            .collection("book")
+            .document(bookId)
+            .collection("memo")
+            .document(memoId)
+            .collection("node")
+            .addSnapshotListener { snapshot, error ->
+
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot == null) return@addSnapshotListener
+
+                val nodes = snapshot.documents.mapNotNull { doc ->
+                    Log.d("CanvasMemoDataSourceImpl", "node snapshot: ${doc.id}")
+                    MemoNodeMapper.fromFirebase(
+                        doc.id,
+                        doc.data ?: return@mapNotNull null
+                    )
+                }
+
+                trySend(nodes)
+            }
+
+        awaitClose { snapshot.remove() }
+    }
+
+    override suspend fun getCanvasMemoEdges(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): Flow<List<EdgeResponse>> = callbackFlow {
+        val snapshot = db
+            .collection("user")
+            .document(userId)
+            .collection("book")
+            .document(bookId)
+            .collection("memo")
+            .document(memoId)
+            .collection("edge")
+            .addSnapshotListener { snapshot, error ->
+
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot == null) return@addSnapshotListener
+
+                val edges = snapshot.documents.mapNotNull { doc ->
+                    Log.d("CanvasMemoDataSourceImpl", "edge snapshot: ${doc.id}")
+                    MemoEdgeMapper.fromFirebase(
+                        doc.id,
+                        doc.data ?: return@mapNotNull null
+                    )
+                }
+
+                trySend(edges)
+            }
+
+        awaitClose { snapshot.remove() }
+    }
+
+
     override suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
@@ -79,16 +157,6 @@ class CanvasMemoDataSourceImpl @Inject constructor(
             val nodeCollection = collectionRef.collection("node")
             val edgeCollection = collectionRef.collection("edge")
 
-            val nodeSnapshot = nodeCollection.get().await()
-            nodeSnapshot.documents.forEach { doc ->
-                batch.delete(doc.reference)
-            }
-
-            val edgeSnapshot = edgeCollection.get().await()
-            edgeSnapshot.documents.forEach { doc ->
-                batch.delete(doc.reference)
-            }
-
             batch.set(
                 collectionRef,
                 mapOf("updatedTime" to FieldValue.serverTimestamp()),
@@ -96,12 +164,12 @@ class CanvasMemoDataSourceImpl @Inject constructor(
             )
 
             graph.nodes.forEach { node ->
-                val newNodeRef = nodeCollection.document()
+                val newNodeRef = nodeCollection.document(node.id)
                 batch.set(newNodeRef, node)
             }
 
             graph.edges.forEach { edge ->
-                val newEdgeRef = edgeCollection.document()
+                val newEdgeRef = edgeCollection.document(edge.id)
                 batch.set(newEdgeRef, edge)
             }
 
@@ -113,6 +181,49 @@ class CanvasMemoDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun removeNode(
+        userId: String,
+        bookId: String,
+        memoId: String,
+        nodeIds: List<String>
+    ) {
+        val memoRef = db
+            .collection("user")
+            .document(userId)
+            .collection("book")
+            .document(bookId)
+            .collection("memo")
+            .document(memoId)
+
+        val nodeCollection = memoRef.collection("node")
+        val edgeCollection = memoRef.collection("edge")
+
+        val batch = db.batch()
+
+        nodeIds.forEach { nodeId ->
+            batch.delete(nodeCollection.document(nodeId))
+        }
+
+        val edgeFrom = edgeCollection
+            .whereIn("fromId", nodeIds)
+            .get()
+            .await()
+
+        val edgeTo = edgeCollection
+            .whereIn("toId", nodeIds)
+            .get()
+            .await()
+
+        (edgeFrom.documents + edgeTo.documents)
+            .distinctBy { it.id }
+            .forEach { doc ->
+                batch.delete(doc.reference)
+            }
+
+        batch.commit().await()
+    }
+
 
     private suspend fun getNodes(memoRef: DocumentReference): List<NodeResponse> {
         val nodeSnapshot = memoRef
@@ -156,7 +267,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
         userId: String,
         bookId: String,
         memoId: String
-    ) : DocumentReference {
+    ): DocumentReference {
         return db
             .collection("user")
             .document(userId)
