@@ -25,7 +25,7 @@ interface CanvasMemoDataSource {
         memoId: String
     ): Flow<List<EdgeResponse>>
 
-    suspend fun addCanvasMemo(
+    suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,

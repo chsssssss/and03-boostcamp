@@ -57,7 +57,7 @@ object MemoGraphFactory {
                 "QUOTE" -> MemoNode.QuoteNode(
                     id = node.id,
                     content = node.content,
-                    page = node.startPage ?: 0,
+                    page = node.page,
                     offset = offset
                 )
 

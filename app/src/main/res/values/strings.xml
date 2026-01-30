@@ -8,8 +8,9 @@
     <string name="empty_message">아직 등록된 내용이 없어요</string>
     <string name="common_cancel">취소</string>
     <string name="common_save">저장</string>
+    <string name="common_saving">저장 중...</string>
     <string name="common_error_text">에러가 발생했어요.</string>
-    <string name="common_touch_item_place">아이템을 추가할 위치를 터치하세요!</string>
+
 
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
@@ -97,6 +98,7 @@
     <string name="canvas_memo_page_list_scroll_page_range">p.%1$d~%2$d</string>
     <string name="canvas_memo_page_list_scroll_single_page">p.%1$d</string>
     <string name="canvas_memo_top_bar_title">캔버스 메모</string>
+    <string name="canvas_memo_place_item_message">아이템을 추가할 위치를 터치해주세요.</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>

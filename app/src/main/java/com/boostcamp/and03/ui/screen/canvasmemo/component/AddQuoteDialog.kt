@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,20 +35,41 @@ private object AddQuoteDialogValues {
     const val MAX_CHARACTER_COUNT = 500
 }
 
+private object DigitOnlyTransformation : InputTransformation {
+    override fun TextFieldBuffer.transformInput() {
+        val currentInputText = toString()
+        val filteredText = currentInputText.filter { it.isDigit() }
+
+        if (currentInputText != filteredText) {
+            replace(
+                start = 0,
+                end = length,
+                text = filteredText
+            )
+        }
+    }
+}
+
 @Composable
 fun AddQuoteDialog(
     quoteState: TextFieldState,
     pageState: TextFieldState,
-    enabled: Boolean = false,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
+    enabled: Boolean,
+    isSaving: Boolean,
+    totalPage: Int
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
 
     And03ActionDialog(
         title = stringResource(id = R.string.add_quote_title),
         dismissText = stringResource(id = R.string.common_cancel),
-        confirmText = stringResource(id = R.string.common_save),
+        confirmText = if (!isSaving) {
+            stringResource(R.string.common_save)
+        } else {
+            stringResource(R.string.common_saving)
+        },
         onDismiss = onDismiss,
         onConfirm = onConfirm,
         enabled = enabled,
@@ -68,9 +91,11 @@ fun AddQuoteDialog(
                 labelRes = R.string.add_quote_page_label,
                 state = pageState,
                 placeholderRes = R.string.add_quote_page_hint,
+                placeholderArgs = listOf(totalPage),
                 onSubmit = {},
                 imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
+                inputTransformation = DigitOnlyTransformation
             )
         }
     )
@@ -131,7 +156,10 @@ private fun AddQuoteDialogPreview() {
             quoteState = TextFieldState(),
             pageState = TextFieldState(),
             onDismiss = {},
-            onConfirm = {}
+            onConfirm = {},
+            enabled = false,
+            isSaving = false,
+            totalPage = 200
         )
     }
 }

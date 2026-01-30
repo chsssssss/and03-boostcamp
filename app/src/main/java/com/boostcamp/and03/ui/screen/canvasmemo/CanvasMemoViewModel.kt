@@ -2,15 +2,17 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 
 import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
-import com.boostcamp.and03.domain.factory.MemoGraphFactory
 import com.boostcamp.and03.domain.model.MemoGraph
+import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.domain.repository.CanvasMemoRepository
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
@@ -26,7 +28,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
+
+private object CanvasZoomValues {
+    const val ZOOM_STEP = 0.2f
+    const val MIN_ZOOM = 0.5f
+    const val MAX_ZOOM = 2.0f
+    const val MAX_MOVE_RANGE = 1000f
+}
 
 @HiltViewModel
 class CanvasMemoViewModel @Inject constructor(
@@ -37,10 +47,9 @@ class CanvasMemoViewModel @Inject constructor(
 
     private val canvasMemoRoute = savedStateHandle.toRoute<Route.CanvasMemo>()
     private val bookId = canvasMemoRoute.bookId
-
     private val memoId = canvasMemoRoute.memoId
-
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
+    private val totalPage = canvasMemoRoute.totalPage
 
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
@@ -66,23 +75,20 @@ class CanvasMemoViewModel @Inject constructor(
         )
     }
 
-    private fun createInitialState() {
-        val sampleGraph = MemoGraphFactory.createSample()
-
-        _uiState.update {
-            it.copy(
-                nodes = sampleGraph.nodes.mapValues { it.value.toUiModel() },
-                edges = sampleGraph.edges.map { it.toUiModel() }
-            )
-        }
-    }
-
+    /**
+     * 현재 그래프 데이터를 가져옵니다.
+     *
+     */
     private fun getCurrentGraph(): MemoGraph {
         val nodes = _uiState.value.nodes.mapValues { it.value.node }
         val edges = _uiState.value.edges.map { it.edge }
         return MemoGraph(nodes, edges)
     }
 
+    /**
+     * 파이어베이스의 등장인물 데이터를 수집합니다.
+     * 수정, 삭제 시 최신 상태가 반영됩니다.
+     */
     private fun observeCharacters(
         userId: String,
         bookId: String
@@ -96,6 +102,10 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 파이어베이스의 구절 데이터를 수집합니다.
+     * 수정, 삭제 시 최신 상태가 반영됩니다.
+     */
     private fun observeQuotes(
         userId: String,
         bookId: String
@@ -109,6 +119,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 사용자의 동작(Intent, 의도)에 따른 처리를 하는 함수입니다.
+     */
     fun onAction(action: CanvasMemoAction) {
         when (action) {
             CanvasMemoAction.ClickBack -> handleClickBack()
@@ -123,13 +136,16 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseQuoteDialog -> handleCloseQuoteDialog()
 
-            CanvasMemoAction.AddQuoteItem -> handleAddQuote()
+            is CanvasMemoAction.PrepareQuotePlacement -> handlePrepareQuotePlacement(action.quote)
 
             is CanvasMemoAction.SearchQuote -> handleSearchQuote(action)
 
-            CanvasMemoAction.AddNewQuote -> handleAddNewQuote()
+            CanvasMemoAction.AddNewQuote -> handleOpenQuoteDialog()
+
+            CanvasMemoAction.SaveQuote -> handleSaveQuote()
 
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
+
             is CanvasMemoAction.OnBottomBarClick -> {
                 handleBottomBarClick(action)
                 if (action.type == MainBottomBarType.RELATION) {
@@ -137,28 +153,61 @@ class CanvasMemoViewModel @Inject constructor(
                 }
             }
 
+            CanvasMemoAction.CancelPlaceItem -> handleCancelPlaceItem()
+
+            is CanvasMemoAction.TapCanvas -> handleTapCanvas(action.tapPositionOnScreen)
+
             CanvasMemoAction.HideBottomBar -> setBottomBarVisible(false)
+
             CanvasMemoAction.ShowBottomBar -> setBottomBarVisible(true)
+
             is CanvasMemoAction.OnNodeClick -> handleNodeClick(action)
+
             is CanvasMemoAction.ConfirmRelation -> {
                 handleConnectNodes(action)
-                onSaveCanvasMemo(userId, bookId, memoId)
             }
 
-            is CanvasMemoAction.onClickSave -> {
-                onSaveCanvasMemo(action.userId, action.bookId, action.memoId)
+            is CanvasMemoAction.OnClickSave -> {
+                onSaveCanvasMemo()
             }
+
+            is CanvasMemoAction.UpdateQuoteItemSize -> {
+                handleUpdateQuoteItemSize(action)
+            }
+
+            is CanvasMemoAction.ZoomCanvasByGesture -> {
+                handleZoomCanvasByGesture(
+                    action.centroid,
+                    action.moveOffset,
+                    action.zoomChange
+                )
+            }
+
+            CanvasMemoAction.ZoomIn -> handleZoomIn()
+
+            CanvasMemoAction.ZoomOut -> handleZoomOut()
+
+            CanvasMemoAction.ResetZoom -> handleResetZoom()
         }
     }
 
+    /**
+     * 뒤로 가기 - 현재 화면에서 벗어나 책 상세 화면의 메모 탭으로 복귀합니다.
+     */
     private fun handleClickBack() {
         _event.trySend(CanvasMemoEvent.NavToBack)
     }
 
+    /**
+     * 바텀 시트를 가립니다.
+     */
     private fun handleCloseBottomSheet() {
         _uiState.update { it.copy(bottomSheetType = null) }
     }
 
+    /**
+     * 관계 추가 다이얼로그를 닫습니다.
+     */
     private fun handleCloseRelationDialog() {
         _uiState.update {
             it.copy(
@@ -178,6 +227,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 관계 추가 다이얼로그를 엽니다.
+     */
     private fun handleOpenRelationDialog(action: CanvasMemoAction.OpenRelationDialog) {
         _uiState.update {
             it.copy(
@@ -190,6 +242,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 등장인물 추가 다이얼로그를 닫습니다.
+     */
     private fun handleCloseAddCharacterDialog() {
         _uiState.update {
             it.copy(
@@ -200,6 +255,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 구절 추가 다이얼로그를 닫습니다.
+     */
     private fun handleCloseQuoteDialog() {
         _uiState.update {
             it.copy(
@@ -210,29 +268,85 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    private fun handleAddQuote() {
+    /**
+     * 캔버스에 추가할 구절 데이터를 uiState에 저장합니다.
+     * 바텀 시트와 바텀 바를 숨기고 다음 행동을 알려주는 AlertMessageCard를 표시합니다.
+     */
+    private fun handlePrepareQuotePlacement(quote: QuoteUiModel) {
         _uiState.update {
             it.copy(
-                bottomSheetType = null
+                quoteToPlace = quote,
+                bottomSheetType = null,
+                isBottomBarVisible = false,
+                quoteItemSizePx = null
             )
         }
     }
 
+    /**
+     * 구절 바텀 시트에서 검색어를 입력하여 원하는 구절을 찾습니다.
+     */
     private fun handleSearchQuote(action: CanvasMemoAction.SearchQuote) {
         // TODO: 구절 검색 동작 연동
     }
 
-    private fun handleAddNewQuote() {
+    /**
+     * 새로운 구절 추가 다이얼로그를 엽니다.
+     */
+    private fun handleOpenQuoteDialog() {
         _uiState.update {
             it.copy(
-                isQuoteDialogVisible = true,
                 bottomSheetType = null,
+                isQuoteDialogVisible = true,
                 quoteState = TextFieldState(),
                 pageState = TextFieldState()
             )
         }
     }
 
+    /**
+     * 캔버스에 추가할 구절 데이터를 uiState에 저장합니다.
+     * 바텀 시트와 바텀 바를 숨기고 다음 행동을 알려주는 AlertMessageCard를 표시합니다.
+     */
+    private fun handleSaveQuote() {
+        if (_uiState.value.isSaving || !_uiState.value.isQuoteSaveable) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true) }
+
+            try {
+                val quote = _uiState.value.quoteState.text.toString()
+                val page = _uiState.value.pageState.text.toString().toInt()
+                val newQuoteUiModel = QuoteUiModel(
+                    content = quote,
+                    page = page
+                )
+
+                bookStorageRepository.addQuote(
+                    userId = userId,
+                    bookId = bookId,
+                    quote = newQuoteUiModel
+                )
+
+                _uiState.update {
+                    it.copy(
+                        isQuoteDialogVisible = false,
+                        bottomSheetType = CanvasMemoBottomSheetType.AddQuote,
+                        quoteState = TextFieldState(),
+                        pageState = TextFieldState()
+                    )
+                }
+            } catch (e: Exception) {
+                // TODO: 오류 메시지 UI 표시 구현
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
+            }
+        }
+    }
+
+    /**
+     * 노드를 움직이고, 해당 노드를 uiState의 노드 리스트 데이터에 반영합니다.
+     */
     private fun handleMoveNode(action: CanvasMemoAction.MoveNode) {
         val graph = getCurrentGraph()
         val updatedGraph = graph.moveNode(action.nodeId, action.newOffset)
@@ -246,7 +360,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-
+    /**
+     * 노드를 연결하고, 해당 엣지를 uiState의 엣지 리스트 데이터에 반영합니다.
+     */
     private fun handleConnectNodes(action: CanvasMemoAction.ConfirmRelation) {
         val graph = getCurrentGraph()
         val updatedGraph = graph.connectNode(action.fromId, action.toId, action.name)
@@ -260,23 +376,30 @@ class CanvasMemoViewModel @Inject constructor(
         resetRelation()
     }
 
+    /**
+     * 바텀 바의 버튼을 클릭하여, 버튼에 해당하는 동작을 처리합니다.
+     * 등장인물과 구절의 경우 바텀 시트 상태를 활성화합니다.
+     */
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
-        when (action.type) {
-            MainBottomBarType.RELATION -> enterRelationMode()
-            else -> {
-                _uiState.update {
-                    it.copy(
-                        selectedBottomBarType = action.type
-                    )
-                }
-            }
-        }
-
         val sheetType = when (action.type) {
             MainBottomBarType.NODE -> CanvasMemoBottomSheetType.AddCharacter
             MainBottomBarType.QUOTE -> CanvasMemoBottomSheetType.AddQuote
             else -> null
         }
+
+
+        when (action.type) {
+            MainBottomBarType.RELATION -> enterRelationMode()
+            else -> {
+                _uiState.update {
+                    it.copy(
+                        selectedBottomBarType = action.type,
+                        bottomSheetType = sheetType
+                    )
+                }
+            }
+        }
+
 
         _uiState.update {
             it.copy(
@@ -286,6 +409,66 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 구절의 아이템을 배치하지 않고 취소합니다.
+     * 바텀 바를 다시 표시합니다.
+     */
+    private fun handleCancelPlaceItem() {
+        _uiState.update {
+            it.copy(
+                quoteToPlace = null,
+                isBottomBarVisible = true
+            )
+        }
+    }
+
+    /**
+     * 구절 아이템을 배치, 렌더링합니다.
+     *
+     * 배치할 QuoteUiModel이 준비되었는지와 해당 데이터를 토대로 그려진 컴포저블의 크기가 계산되었는지 검사합니다.
+     * 계산되었다면 해당 아이템의 너비와 높이의 절반 값을 구합니다.
+     *
+     * 확대/축소 비율과 캔버스의 이동 오프셋을 고려해
+     * 화면 좌표(tapPositionOnScreen)를 캔버스 좌표계로 변환합니다.
+     * 이후 바텀바를 다시 표시합니다.
+     */
+    private fun handleTapCanvas(tapPositionOnScreen: Offset) {
+        val quote = _uiState.value.quoteToPlace ?: return
+        val sizeDp = _uiState.value.quoteItemSizePx ?: return
+
+        val centerItemPosition = Offset(
+            x = sizeDp.width / 2f,
+            y = sizeDp.height / 2f
+        )
+
+        val zoomScale = _uiState.value.zoomScale
+        val canvasViewOffset = _uiState.value.canvasViewOffset
+
+        val canvasPosition = Offset(
+            x = (tapPositionOnScreen.x - canvasViewOffset.x) / zoomScale - centerItemPosition.x,
+            y = (tapPositionOnScreen.y - canvasViewOffset.y) / zoomScale - centerItemPosition.y
+        )
+
+        val newQuote = MemoNode.QuoteNode(
+            id = UUID.randomUUID().toString(),
+            content = quote.content,
+            page = quote.page,
+            offset = canvasPosition
+        )
+
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes + (newQuote.id to newQuote.toUiModel()),
+                quoteToPlace = null,
+                quoteItemSizePx = null,
+                isBottomBarVisible = true
+            )
+        }
+    }
+
+    /**
+     * 바텀바의 표시 여부를 설정합니다.
+     */
     private fun setBottomBarVisible(visible: Boolean) {
         _uiState.update {
             it.copy(isBottomBarVisible = visible)
@@ -477,15 +660,14 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
-    private fun onSaveCanvasMemo(
-        userId: String,
-        bookId: String,
-        memoId: String
-    ) {
+    /**
+     * 캔버스에 있는 아이템 데이터들을 저장합니다.
+     */
+    private fun onSaveCanvasMemo() {
         viewModelScope.launch {
             try {
                 val graph = getCurrentGraph()
-                canvasMemoRepository.addCanvasMemo(
+                canvasMemoRepository.saveCanvasMemo(
                     userId = userId,
                     bookId = bookId,
                     memoId = memoId,
@@ -511,7 +693,8 @@ class CanvasMemoViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         nodes = graph.nodes.mapValues { it.value.toUiModel() },
-                        edges = graph.edges.map { it.toUiModel() }
+                        edges = graph.edges.map { it.toUiModel() },
+                        isLoading = false
                     )
                 }
             }
@@ -534,8 +717,92 @@ class CanvasMemoViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 Log.d("CanvasMemoViewModel", "onSaveCanvasMemo: $e")
-
             }
         }
+    }
+
+    /**
+     * `QuoteItem`의 onGloballyPositioned을 실행,
+     * 해당 컴포저블의 너비와 높이 값 IntSize를 가져옵니다.
+     */
+    private fun handleUpdateQuoteItemSize(action: CanvasMemoAction.UpdateQuoteItemSize) {
+        _uiState.update { it.copy(quoteItemSizePx = action.size) }
+    }
+
+    /**
+     * 두 손가락의 중심점을 기준으로 캔버스를 확대 또는 축소합니다.
+     * (캔버스 위치 - 두 손가락의 중심점) * 확대 or 축소 비율 + 두 손가락의 중심점 + 제스처 이동량
+     */
+    private fun handleZoomCanvasByGesture(
+        centroid: Offset,
+        moveOffset: Offset,
+        zoomChange: Float
+    ) {
+        _uiState.update {
+            val oldZoomScale = it.zoomScale
+            val newZoomScale = (oldZoomScale * zoomChange)
+                .coerceIn(
+                    minimumValue = CanvasZoomValues.MIN_ZOOM,
+                    maximumValue = CanvasZoomValues.MAX_ZOOM
+                )
+
+            val scaleRatio = newZoomScale / oldZoomScale
+
+            val newCanvasViewOffset = clampCanvasViewOffset(
+                (it.canvasViewOffset - centroid) * scaleRatio + centroid + moveOffset
+            )
+
+            it.copy(
+                zoomScale = newZoomScale,
+                canvasViewOffset = newCanvasViewOffset
+            )
+        }
+    }
+
+    /**
+     * 캔버스를 20% 확대합니다.
+     */
+    private fun handleZoomIn() {
+        _uiState.update {
+            it.copy(
+                zoomScale = (it.zoomScale + CanvasZoomValues.ZOOM_STEP)
+                    .coerceIn(
+                        CanvasZoomValues.MIN_ZOOM,
+                        CanvasZoomValues.MAX_ZOOM
+                    )
+            )
+        }
+    }
+
+    /**
+     * 캔버스를 20% 축소합니다.
+     */
+    private fun handleZoomOut() {
+        _uiState.update {
+            it.copy(
+                zoomScale = (it.zoomScale - CanvasZoomValues.ZOOM_STEP)
+                    .coerceIn(
+                        CanvasZoomValues.MIN_ZOOM,
+                        CanvasZoomValues.MAX_ZOOM
+                    )
+            )
+        }
+    }
+
+    /**
+     * 캔버스의 확대 축소 배율을 초기화합니다.
+     */
+    private fun handleResetZoom() {
+        _uiState.update { it.copy(zoomScale = 1f) }
+    }
+
+    private fun clampCanvasViewOffset(offset: Offset): Offset {
+        val max = CanvasZoomValues.MAX_MOVE_RANGE
+        val min = -CanvasZoomValues.MAX_MOVE_RANGE
+
+        return Offset(
+            x = offset.x.coerceIn(min, max),
+            y = offset.y.coerceIn(min, max)
+        )
     }
 }

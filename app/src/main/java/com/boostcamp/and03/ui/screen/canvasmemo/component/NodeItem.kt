@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.IconBadge
+import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
@@ -35,8 +37,7 @@ fun NodeItem(
     title: String,
     content: String,
     isHighlighted: Boolean,
-    modifier: Modifier = Modifier,
-    onMoreClick: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     val borderColor = if (isHighlighted) {
         And03Theme.colors.primary
@@ -56,16 +57,33 @@ fun NodeItem(
                 And03Theme.shapes.defaultCorner
             )
     ) {
-        IconButton(
-            onClick = onMoreClick,
-            modifier = Modifier.align(Alignment.TopEnd)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
-                contentDescription = stringResource(R.string.content_description_more_button),
-                modifier = Modifier.size(NodeItemValues.moreIconSize)
-            )
-        }
+        DropdownMenuContainer(
+            modifier = Modifier.align(Alignment.TopEnd),
+            trigger = { onClick ->
+                IconButton(onClick = onClick) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
+                        contentDescription = stringResource(R.string.content_description_more_button),
+                        modifier = Modifier.size(NodeItemValues.moreIconSize)
+                    )
+                }
+            },
+            menuContent = { closeMenu ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.more_vert_edit)) },
+                    onClick = {
+                        closeMenu()
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.more_vert_delete)) },
+                    onClick = {
+                        closeMenu()
+                    }
+                )
+            }
+        )
 
         Column(
             modifier = Modifier.padding(And03Padding.PADDING_M),

@@ -21,10 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
@@ -56,10 +58,8 @@ fun CharacterCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = And03Theme.colors.surface,
-                shape = RoundedCornerShape(And03Radius.RADIUS_S)
-            )
+            .background(color = And03Theme.colors.surface)
+            .clip(shape = RoundedCornerShape(And03Radius.RADIUS_S))
             .border(
                 width = 1.dp,
                 color = borderColor,
@@ -98,7 +98,9 @@ fun CharacterCard(
                 ) {
                     Text(
                         text = name,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     if (role.isNotEmpty()) {

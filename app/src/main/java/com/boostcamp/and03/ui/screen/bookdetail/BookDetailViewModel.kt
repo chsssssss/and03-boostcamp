@@ -130,8 +130,9 @@ class BookDetailViewModel @Inject constructor(
 
             is BookDetailAction.OnCanvasMemoClick -> _event.trySend(
                 BookDetailEvent.NavigateToCanvas(
-                    bookId = action.bookId,
-                    memoId = action.memoId
+                    action.bookId,
+                    action.memoId,
+                    action.totalPage
                 )
             )
         }
@@ -201,6 +202,7 @@ class BookDetailViewModel @Inject constructor(
                         it.copy(
                             quotes = result
                                 .map { quote -> quote.toUiModel() }
+                                .sortedBy { quote -> quote.page }
                                 .toPersistentList(),
                             quotesLoadState = LoadState.DONE
                         )

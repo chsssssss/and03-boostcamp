@@ -17,7 +17,7 @@ interface CanvasMemoRepository {
         memoId: String
     ): Flow<MemoGraph>
 
-    suspend fun addCanvasMemo(
+    suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,
