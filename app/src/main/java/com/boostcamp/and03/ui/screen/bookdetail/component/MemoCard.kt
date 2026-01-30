@@ -65,7 +65,8 @@ fun MemoCard(
             verticalAlignment = Alignment.Top
         ) {
             Row(
-                modifier = Modifier.padding(And03Padding.PADDING_2XL)
+                modifier = Modifier.padding(And03Padding.PADDING_2XL),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 MemoTypeChip(type = type)
 
@@ -74,6 +75,8 @@ fun MemoCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 

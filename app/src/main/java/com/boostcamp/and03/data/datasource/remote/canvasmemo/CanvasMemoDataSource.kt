@@ -4,9 +4,13 @@ import com.boostcamp.and03.data.model.request.GraphRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 
 interface CanvasMemoDataSource {
-    suspend fun getCanvasMemo(graphId: String): CanvasMemoResponse
+    suspend fun getCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): CanvasMemoResponse
 
-    suspend fun addCanvasMemo(
+    suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,

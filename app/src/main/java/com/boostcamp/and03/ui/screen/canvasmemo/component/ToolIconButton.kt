@@ -26,13 +26,11 @@ fun ToolIconButton(
     onClick: () -> Unit,
 ) {
     Surface(
+        onClick = onClick,
         shape = RoundedCornerShape(And03Radius.RADIUS_L),
         color = And03Theme.colors.surface,
         shadowElevation = And03Elevation.M,
-        modifier = Modifier
-            .size(And03ComponentSize.BUTTON_SIZE)
-            .clickable { onClick() }
-
+        modifier = Modifier.size(And03ComponentSize.BUTTON_SIZE)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),

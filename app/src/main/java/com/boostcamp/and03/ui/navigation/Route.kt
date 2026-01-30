@@ -21,7 +21,8 @@ sealed interface Route {
     @Serializable
     data class CanvasMemo(
         val bookId: String,
-        val memoId: String
+        val memoId: String,
+        val totalPage: Int
     ) : Route
 
     @Serializable

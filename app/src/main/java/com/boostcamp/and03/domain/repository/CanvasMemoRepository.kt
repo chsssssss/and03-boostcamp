@@ -4,9 +4,13 @@ import com.boostcamp.and03.domain.model.MemoGraph
 
 interface CanvasMemoRepository {
 
-    suspend fun loadCanvasMemo(graphId: String): MemoGraph
+    suspend fun loadCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): MemoGraph
 
-    suspend fun addCanvasMemo(
+    suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,

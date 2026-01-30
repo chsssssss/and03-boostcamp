@@ -69,7 +69,7 @@ fun BookDetailRoute(
     navigateToQuoteForm: (bookId: String, quoteId: String, totalPage: Int) -> Unit,
     navigateToTextMemoForm: (bookId: String, memoId: String, totalPage: Int) -> Unit,
     navigateToCanvasMemoForm: (bookId: String, memoId: String, totalPage: Int) -> Unit,
-    navigateToCanvas: (bookId: String, memoId: String) -> Unit,
+    navigateToCanvas: (bookId: String, memoId: String, totalPage: Int) -> Unit,
     viewModel: BookDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -112,7 +112,8 @@ fun BookDetailRoute(
             is BookDetailEvent.NavigateToCanvas -> {
                 navigateToCanvas(
                     event.bookId,
-                    event.memoId
+                    event.memoId,
+                    event.totalPage
                 )
             }
         }
@@ -285,8 +286,9 @@ private fun BookDetailScreen(
                                     if (memo.memoType == MemoType.CANVAS) {
                                         onAction(
                                             BookDetailAction.OnCanvasMemoClick(
-                                                bookId = uiState.bookId,
-                                                memoId = memo.id
+                                                uiState.bookId,
+                                                memo.id,
+                                                uiState.totalPage
                                             )
                                         )
                                     }

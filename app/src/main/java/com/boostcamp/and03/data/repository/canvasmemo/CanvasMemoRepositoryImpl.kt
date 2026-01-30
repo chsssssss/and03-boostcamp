@@ -10,19 +10,27 @@ import javax.inject.Inject
 class CanvasMemoRepositoryImpl @Inject constructor(
     private val canvasMemoDataSource: CanvasMemoDataSource
 ) : CanvasMemoRepository {
-    override suspend fun loadCanvasMemo(graphId: String): MemoGraph {
-        val response = canvasMemoDataSource.getCanvasMemo(graphId)
+    override suspend fun loadCanvasMemo(
+        userId: String,
+        bookId: String,
+        memoId: String
+    ): MemoGraph {
+        val response = canvasMemoDataSource.getCanvasMemo(
+            userId = userId,
+            bookId = bookId,
+            memoId = memoId
+        )
         return MemoGraphFactory.fromResponse(response)
     }
 
-    override suspend fun addCanvasMemo(
+    override suspend fun saveCanvasMemo(
         userId: String,
         bookId: String,
         memoId: String,
         graph: MemoGraph
     ) {
         val request = graph.toRequest()
-        return canvasMemoDataSource.addCanvasMemo(
+        return canvasMemoDataSource.saveCanvasMemo(
             userId = userId,
             bookId = bookId,
             memoId = memoId,
