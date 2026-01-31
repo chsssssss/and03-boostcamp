@@ -37,53 +37,6 @@ object MemoGraphFactory {
         )
     }
 
-    fun fromNodesAndEdges(
-        nodes: List<NodeResponse>,
-        edges: List<EdgeResponse>
-    ): MemoGraph {
-
-        val nodeMap: Map<String, MemoNode> = nodes.associate { node ->
-            val offset = Offset(node.x, node.y)
-
-            val memoNode = when (node.nodeType) {
-                "CHARACTER" -> MemoNode.CharacterNode(
-                    id = node.id,
-                    name = node.title,
-                    description = node.content,
-                    imageUrl = node.imageUrl,
-                    offset = offset
-                )
-
-                "QUOTE" -> MemoNode.QuoteNode(
-                    id = node.id,
-                    content = node.content,
-                    page = node.page,
-                    offset = offset
-                )
-
-                else -> throw IllegalArgumentException(
-                    "Unknown nodeType: ${node.nodeType}"
-                )
-            }
-
-            node.id to memoNode
-        }
-
-        val edgeList = edges.map {
-            Edge(
-                id = it.id,
-                fromId = it.fromNodeId,
-                toId = it.toNodeId,
-                name = it.relationText
-            )
-        }
-
-        return MemoGraph(
-            nodes = nodeMap,
-            edges = edgeList
-        )
-    }
-
     fun createSample(): MemoGraph {
         val node1 = MemoNode.CharacterNode(
             id = "1",
