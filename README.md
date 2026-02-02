@@ -40,24 +40,58 @@ _책을 읽으며 남긴 기록을 그래프로 엮어, 이야기의 흐름과 �
 
 _독서 기록 및 기록 시각화를 중심으로_
 
-- 책 저장하기 기능
-  - 책 제목 또는 ISBN(국제표준도서번호)를 검색하여 저장
-  - 또는 정보를 직접 입력
-    - 책 제목(필수)/저자/출판사/책 표지/ISBN/읽은 페이지
-- 독서 기록 기능
-  - 책과 관련한 정보를 메모할 수 있는 기능
-    - 등장인물 / 인상깊은 구절 / 메모 기능
-- 기록 그래프 시각화 기능
-  - 기록을 노드로 추가한 다음에 노드끼리의 관계를 정의, 추가하여 그래프로 시각화
-  - 페이지 범위에 따라 그래프를 그릴 수 있는 캔버스 메모 생성 가능
+<table style="border: none !important; border-collapse: collapse !important;">
+  <tr style="border: none !important;">
+  <td style="border: none !important; padding: 5px;">
+    <b>책 검색 및 저장 기능</b>
+    <ul>
+      <li>기록하고 싶은 책을 검색하고 저장할 수 있습니다.</li>
+      <li>책 제목 또는 ISBN(국제표준도서번호)를 검색하여 저장할 수 있습니다.</li>
+      <li>또는 정보를 직접 입력할 수 있습니다.</li>
+    </ul>
+  </td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/0f8c3581-423b-40e6-ac03-0391abb4d776" /></td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/e9b2df29-59f4-42ad-8113-2bd3e5c09028" /></td>
+  </tr>
+</table>
+
+<table style="border: none !important; border-collapse: collapse !important;">
+  <tr style="border: none !important;">
+  <td style="border: none !important; padding: 5px;">
+    <b>독서 기록 기능</b>
+    <ul>
+      <li>소설에 특화된 카테고리의 기록을 작성할 수 있습니다.</li>
+      <ul>
+        <li>등장인물</li>
+        <li>인상깊은 구절</li>
+        <li>텍스트/캔버스 메모</li>
+      </ul>
+    </ul>
+  </td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/efab7d1e-5900-4114-b238-600f16a4c265" /></td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/12b0a6d8-e4a2-4d29-aed9-9c5eb5758e82" /></td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/da48ebf0-6830-4dbc-ad8e-770be9221266" /></td>
+  </tr>
+</table>
+
+<table style="border: none !important; border-collapse: collapse !important;">
+  <tr style="border: none !important;">
+  <td style="border: none !important; padding: 5px;">
+    <b>그래프 시각화 기능</b>
+    <ul>
+      <li>등장인물과 구절을 아이템으로 시각화합니다.</li>
+      <li>등장인물끼리는 관계선을 연결하고 이름을 정의할 수 있습니다.</li>
+      <li>드라마의 인물 관계도처럼 인물의 관계를 정리하여<br>그래프 형태로 기록을 시각화할 수 있습니다.</li>
+    </ul>
+  </td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/eccc3ad6-3bba-45cb-b170-edc5700fdfdf" /></td>
+  </tr>
+</table>
 
 ### 부가 기능
 
 _독서 기록을 더 편리하게 할 수 있는 요소를 중심으로_
 
-- 바코드 스캔으로 책 저장하는 기능
-  - 책의 뒷 표지에 있는 바코드를 스캔하여 책의 정보를 불러와 저장하기
-  - 플래시 기능과 뒤로 가기/수동으로 책 등록하기 버튼 포함
 - 바코드 스캔으로 책 저장하는 기능
   - 책의 뒷 표지에 있는 바코드를 스캔하여 책의 정보를 불러와 저장하기
   - 플래시 기능과 뒤로 가기/수동으로 책 등록하기 버튼 포함
