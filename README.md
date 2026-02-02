@@ -46,8 +46,8 @@ _독서 기록 및 기록 시각화를 중심으로_
     <b>책 검색 및 저장 기능</b>
     <ul>
       <li>기록하고 싶은 책을 검색하고 저장할 수 있습니다.</li>
-      <li>책 제목 또는 ISBN(국제표준도서번호)를 검색하여 저장할 수 있습니다.</li>
-      <li>또는 정보를 직접 입력할 수 있습니다.</li>
+      <li>책명, 저자, 출판사 등을 입력하여 검색할 수 있습니다.</li>
+      <li>또는 책 정보를 직접 입력할 수 있습니다.</li>
     </ul>
   </td>
   <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/0f8c3581-423b-40e6-ac03-0391abb4d776" /></td>
