@@ -30,6 +30,8 @@ object And03IconSize {
     val ICON_SIZE_S = 24.dp
     val ICON_SIZE_M = 28.dp
     val ICON_SIZE_L = 48.dp
+
+    val ICON_SIZE_XL = 64.dp
 }
 
 object And03Radius {
