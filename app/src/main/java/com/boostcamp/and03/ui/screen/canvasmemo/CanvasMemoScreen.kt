@@ -274,12 +274,12 @@ private fun CanvasMemoScreen(
                         )
 
                         uiState.nodes.forEach { (_, uiModel) ->
+                            val isDraggable =
+                                uiState.relationAddStep == RelationAddStep.NONE &&
+                                        !uiState.isDeleteMode
+
                             when (uiModel) {
-
                                 is MemoNodeUiModel.CharacterNodeUiModel -> {
-                                    val isDraggable =
-                                        uiState.relationAddStep == RelationAddStep.NONE
-
                                     DraggableCanvasItem(
                                         nodeId = uiModel.node.id,
                                         worldOffset = uiModel.node.offset,
@@ -323,10 +323,12 @@ private fun CanvasMemoScreen(
                                         onSizeChanged = { size ->
                                             nodeSizes = nodeSizes + (uiModel.node.id to size)
                                         },
+                                        draggable = isDraggable,
                                         content = {
                                             QuoteItem(
                                                 quote = uiModel.node.content,
-                                                page = uiModel.node.page
+                                                page = uiModel.node.page,
+                                                isHighlighted = uiModel.isSelected
                                             )
                                         }
                                     )

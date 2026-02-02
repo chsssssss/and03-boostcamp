@@ -82,6 +82,8 @@ sealed interface CanvasMemoAction {
 
     data class AddNodeAtPosition(val positionOnScreen: Offset) : CanvasMemoAction
 
+    data object EnterDeleteMode : CanvasMemoAction
+
     data class SelectDeleteItem(val itemId: String) : CanvasMemoAction
 
     data object CancelDeleteMode : CanvasMemoAction

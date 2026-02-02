@@ -155,12 +155,7 @@ class CanvasMemoViewModel @Inject constructor(
 
             is CanvasMemoAction.MoveNode -> handleMoveNode(action)
 
-            is CanvasMemoAction.OnBottomBarClick -> {
-                handleBottomBarClick(action)
-                if (action.type == MainBottomBarType.RELATION) {
-                    onAction(CanvasMemoAction.HideBottomBar)
-                }
-            }
+            is CanvasMemoAction.OnBottomBarClick -> handleBottomBarClick(action)
 
             CanvasMemoAction.CancelPlaceItem -> handleCancelPlaceItem()
 
@@ -202,6 +197,8 @@ class CanvasMemoViewModel @Inject constructor(
             CanvasMemoAction.ZoomOut -> handleZoomOut()
 
             CanvasMemoAction.ResetZoom -> handleResetZoom()
+
+            CanvasMemoAction.EnterDeleteMode -> enterDeleteMode()
 
             is CanvasMemoAction.SelectDeleteItem -> handleSelectDeleteItem(action.itemId)
 
@@ -453,6 +450,9 @@ class CanvasMemoViewModel @Inject constructor(
 
         when (action.type) {
             MainBottomBarType.RELATION -> enterRelationMode()
+
+            MainBottomBarType.DELETE ->  enterDeleteMode()
+
             else -> {
                 _uiState.update {
                     it.copy(
@@ -793,29 +793,6 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
-     * 캔버스 메모 데이터에서 일부 노드 아이템을 제거합니다.
-     */
-    private fun deleteCanvasMemo(
-        userId: String,
-        bookId: String,
-        memoId: String,
-        nodeIds: List<String>
-    ) {
-        viewModelScope.launch {
-            try {
-                canvasMemoRepository.removeNode(
-                    userId = userId,
-                    bookId = bookId,
-                    memoId = memoId,
-                    nodeIds = nodeIds
-                )
-            } catch (e: Exception) {
-                Log.d("CanvasMemoViewModel", "onSaveCanvasMemo: $e")
-            }
-        }
-    }
-
-    /**
      * `QuoteItem`의 onGloballyPositioned을 실행,
      * 해당 컴포저블의 너비와 높이 값 IntSize를 가져옵니다.
      */
@@ -946,6 +923,16 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    private fun enterDeleteMode() {
+        _uiState.update {
+            it.copy(
+                isBottomBarVisible = false,
+                isDeleteMode = true,
+                selectedDeleteItemIds = persistentListOf()
+            )
+        }
+    }
+
     /**
      * 삭제할 아이템의 id를 리스트에 보관합니다.
      * 이미 리스트에 있을 경우 제거합니다.
@@ -979,12 +966,19 @@ class CanvasMemoViewModel @Inject constructor(
 
             _uiState.update {
                 it.copy(
+                    isDeleteMode = false,
                     selectedDeleteItemIds = persistentListOf(),
-                    hasUnsavedChanges = true
+                    hasUnsavedChanges = true,
+                    isSureDeleteDialogVisible = true
                 )
             }
         } catch (e: Exception) {
-            _uiState.update { it.copy(selectedDeleteItemIds = itemIds) }
+            _uiState.update {
+                it.copy(
+                    isDeleteMode = true,
+                    selectedDeleteItemIds = itemIds
+                )
+            }
             Log.e("CanvasMemoViewModel", "deleteCanvasMemo: ${e.message}")
         } finally {
             handleCloseSureDeleteDialog()
@@ -1006,7 +1000,8 @@ class CanvasMemoViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isDeleteMode = false,
-                selectedDeleteItemIds = persistentListOf()
+                selectedDeleteItemIds = persistentListOf(),
+                isBottomBarVisible = true
             )
         }
     }
