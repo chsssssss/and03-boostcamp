@@ -21,6 +21,8 @@ sealed interface CanvasMemoAction {
 
     data object CloseExitConfirmationDialog : CanvasMemoAction
 
+    data object CloseSureDeleteDialog : CanvasMemoAction
+
     data object CloseScreen : CanvasMemoAction
 
     data class PrepareQuotePlacement(val quote: QuoteUiModel) : CanvasMemoAction
@@ -76,6 +78,8 @@ sealed interface CanvasMemoAction {
     data object ResetZoom : CanvasMemoAction
 
     data class PrepareNodePlacement(val character: CharacterUiModel) : CanvasMemoAction
+
     data class AddNodeAtPosition(val positionOnScreen: Offset) : CanvasMemoAction
 
+    data class DeleteSelectedItems(val itemIds: List<String>) : CanvasMemoAction
 }

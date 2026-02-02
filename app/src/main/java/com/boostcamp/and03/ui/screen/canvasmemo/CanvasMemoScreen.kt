@@ -380,6 +380,50 @@ private fun CanvasMemoScreen(
                     )
                 }
 
+                if (uiState.isQuoteDialogVisible) {
+                    AddQuoteDialog(
+                        quoteState = uiState.quoteState,
+                        pageState = uiState.pageState,
+                        onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
+                        onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
+                        enabled = uiState.isQuoteSaveable && !uiState.isSaving,
+                        isSaving = uiState.isSaving,
+                        totalPage = uiState.totalPage
+                    )
+                }
+
+                if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
+                    And03Dialog(
+                        iconResId = R.drawable.ic_warning_filled,
+                        iconColor = And03Theme.colors.error,
+                        iconContentDescription = stringResource(id = R.string.content_description_caution),
+                        title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                        dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                        confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                        onDismiss = { onAction(CanvasMemoAction.CloseScreen) },
+                        onConfirm = { onAction(CanvasMemoAction.CloseExitConfirmationDialog) },
+                        description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                        dismissAction = DialogDismissAction.Confirm
+                    )
+                }
+
+                if (
+                    uiState.isSureDeleteDialogVisible &&
+                    uiState.selectedDeleteItemIds.isNotEmpty()
+                ) {
+                    And03Dialog(
+                        iconResId = R.drawable.ic_delete_outlined,
+                        iconColor = And03Theme.colors.error,
+                        iconContentDescription = stringResource(id = R.string.content_description_delete),
+                        title = stringResource(id = R.string.canvas_memo_sure_delete_dialog_title),
+                        dismissText = stringResource(id = R.string.common_cancel),
+                        confirmText = stringResource(id = R.string.common_delete),
+                        onDismiss = { onAction(CanvasMemoAction.CloseSureDeleteDialog) },
+                        onConfirm = { onAction(CanvasMemoAction.DeleteSelectedItems(uiState.selectedDeleteItemIds)) },
+                        dismissAction = DialogDismissAction.Confirm
+                    )
+                }
+
                 uiState.bottomSheetType?.let { sheetType ->
                     ModalBottomSheet(
                         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
@@ -455,33 +499,6 @@ private fun CanvasMemoScreen(
 //                    )
 //                }
 //            }
-
-                if (uiState.isQuoteDialogVisible) {
-                    AddQuoteDialog(
-                        quoteState = uiState.quoteState,
-                        pageState = uiState.pageState,
-                        onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
-                        onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
-                        enabled = uiState.isQuoteSaveable && !uiState.isSaving,
-                        isSaving = uiState.isSaving,
-                        totalPage = uiState.totalPage
-                    )
-                }
-
-                if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
-                    And03Dialog(
-                        iconResId = R.drawable.ic_warning_filled,
-                        iconColor = And03Theme.colors.error,
-                        iconContentDescription = stringResource(id = R.string.content_description_caution),
-                        title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
-                        dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
-                        confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
-                        onDismiss = { onAction(CanvasMemoAction.CloseScreen) },
-                        onConfirm = { onAction(CanvasMemoAction.CloseExitConfirmationDialog) },
-                        description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
-                        dismissAction = DialogDismissAction.Confirm
-                    )
-                }
 
                 ToolExpandableButton(
                     modifier = Modifier
