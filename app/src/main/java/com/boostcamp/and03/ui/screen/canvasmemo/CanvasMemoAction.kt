@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.IntSize
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
+import kotlinx.collections.immutable.ImmutableList
 
 
 sealed interface CanvasMemoAction {
@@ -81,5 +82,11 @@ sealed interface CanvasMemoAction {
 
     data class AddNodeAtPosition(val positionOnScreen: Offset) : CanvasMemoAction
 
-    data class DeleteSelectedItems(val itemIds: List<String>) : CanvasMemoAction
+    data class SelectDeleteItem(val itemId: String) : CanvasMemoAction
+
+    data object CancelDeleteMode : CanvasMemoAction
+
+    data object OpenSureDeleteDialog : CanvasMemoAction
+
+    data class DeleteSelectedItems(val itemIds: ImmutableList<String>) : CanvasMemoAction
 }

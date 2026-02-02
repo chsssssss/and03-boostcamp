@@ -20,6 +20,8 @@ import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.screen.canvasmemo.model.clearSelection
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -139,6 +141,8 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CloseExitConfirmationDialog -> handleCloseExitConfirmationDialog()
 
+            CanvasMemoAction.CloseSureDeleteDialog -> handleCloseSureDeleteDialog()
+
             CanvasMemoAction.CloseScreen -> handleCloseScreen()
 
             is CanvasMemoAction.PrepareQuotePlacement -> handlePrepareQuotePlacement(action.quote)
@@ -185,9 +189,6 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.AddNodeAtPosition ->
                 handleAddNodeAtPosition(action.positionOnScreen)
 
-
-
-
             is CanvasMemoAction.ZoomCanvasByGesture -> {
                 handleZoomCanvasByGesture(
                     action.centroid,
@@ -201,6 +202,14 @@ class CanvasMemoViewModel @Inject constructor(
             CanvasMemoAction.ZoomOut -> handleZoomOut()
 
             CanvasMemoAction.ResetZoom -> handleResetZoom()
+
+            is CanvasMemoAction.SelectDeleteItem -> handleSelectDeleteItem(action.itemId)
+
+            is CanvasMemoAction.DeleteSelectedItems -> handleDeleteSelectedItems(action.itemIds)
+
+            CanvasMemoAction.OpenSureDeleteDialog -> handleOpenSureDeleteDialog()
+
+            CanvasMemoAction.CancelDeleteMode -> handleCancelDeleteMode()
         }
     }
 
@@ -291,6 +300,21 @@ class CanvasMemoViewModel @Inject constructor(
      */
     private fun handleCloseExitConfirmationDialog() {
         _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+    }
+
+    /**
+     * 삭제 확인 다이얼로그를 닫습니다.
+     * 삭제 모드가 취소됩니다.
+     * 아이템의 선택 상태가 초기화됩니다.
+     */
+    private fun handleCloseSureDeleteDialog() {
+        _uiState.update {
+            it.copy(
+                isSureDeleteDialogVisible = false,
+                isDeleteMode = false,
+                selectedDeleteItemIds = persistentListOf()
+            )
+        }
     }
 
     /**
@@ -743,6 +767,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 캔버스 메모 데이터를 가져옵니다.
+     */
     private fun loadCanvasMemo(
         userId: String,
         bookId: String,
@@ -765,6 +792,9 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 캔버스 메모 데이터에서 일부 노드 아이템을 제거합니다.
+     */
     private fun deleteCanvasMemo(
         userId: String,
         bookId: String,
@@ -870,6 +900,10 @@ class CanvasMemoViewModel @Inject constructor(
         )
     }
 
+    /**
+     * 배치할 노드 uiModel을 준비합니다.
+     * 바텀 시트와 바텀 바를 숨기고 다음 행동을 알려주는 AlertMessageCard를 표시합니다.
+     */
     private fun handlePrepareNodePlacement(character: CharacterUiModel) {
         _uiState.update {
             it.copy(
@@ -879,6 +913,10 @@ class CanvasMemoViewModel @Inject constructor(
             )
         }
     }
+
+    /**
+     * 노드 아이템을 캔버스에 탭한 위치에 배치합니다.
+     */
     private fun handleAddNodeAtPosition(positionOnScreen: Offset) {
         val character = _uiState.value.nodeToPlace ?: return
 
@@ -908,7 +946,68 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 삭제할 아이템의 id를 리스트에 보관합니다.
+     * 이미 리스트에 있을 경우 제거합니다.
+     */
+    private fun handleSelectDeleteItem(itemId: String) {
+        _uiState.update {
+            it.copy(
+                selectedDeleteItemIds = if(itemId in _uiState.value.selectedDeleteItemIds) {
+                    (it.selectedDeleteItemIds - itemId).toImmutableList()
+                } else {
+                    (it.selectedDeleteItemIds + itemId).toImmutableList()
+                }
+            )
+        }
+    }
 
+    /**
+     * 삭제할 아이템의 id 값을 토대로 아이템을 삭제합니다.
+     * 에러 발생 시 아이템 선택 상태를 이전으로 복구합니다.
+     */
+    private fun handleDeleteSelectedItems(itemIds: ImmutableList<String>) {
+        try {
+            viewModelScope.launch {
+                canvasMemoRepository.removeNode(
+                    userId = userId,
+                    bookId = bookId,
+                    memoId = memoId,
+                    nodeIds = itemIds.toList()
+                )
+            }
 
+            _uiState.update {
+                it.copy(
+                    selectedDeleteItemIds = persistentListOf(),
+                    hasUnsavedChanges = true
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(selectedDeleteItemIds = itemIds) }
+            Log.e("CanvasMemoViewModel", "deleteCanvasMemo: ${e.message}")
+        } finally {
+            handleCloseSureDeleteDialog()
+        }
+    }
 
+    /**
+     * 삭제 확인 다이얼로그를 엽니다.
+     */
+    private fun handleOpenSureDeleteDialog() {
+        _uiState.update { it.copy(isSureDeleteDialogVisible = true) }
+    }
+
+    /**
+     * 삭제 모드를 종료합니다.
+     * 아이템의 선택 상태가 초기화됩니다.
+     */
+    private fun handleCancelDeleteMode() {
+        _uiState.update {
+            it.copy(
+                isDeleteMode = false,
+                selectedDeleteItemIds = persistentListOf()
+            )
+        }
+    }
 }

@@ -189,6 +189,32 @@ private fun CanvasMemoScreen(
                             )
                     )
                 }
+
+                uiState.isDeleteMode -> {
+                    AlertMessageCard(
+                        message = stringResource(R.string.canvas_memo_sure_select_delete_item),
+                        actions = listOf(
+                            AlertAction(
+                                text = stringResource(R.string.common_cancel),
+                                onClick = { onAction(CanvasMemoAction.CancelDeleteMode) }
+                            ),
+                            AlertAction(
+                                text = stringResource(R.string.common_delete),
+                                onClick = { onAction(CanvasMemoAction.CloseSureDeleteDialog) }
+                            )
+                        ),
+                        modifier = Modifier
+                            .padding(
+                                vertical = And03Padding.PADDING_L,
+                                horizontal = And03Padding.PADDING_XL
+                            )
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(
+                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                                )
+                            )
+                    )
+                }
             }
         }
     ) { innerPadding ->

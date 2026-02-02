@@ -58,7 +58,8 @@ data class CanvasMemoUiState(
 
     val hasUnsavedChanges: Boolean = false,
 
-    val selectedDeleteItemIds: List<String> = emptyList()
+    val isDeleteMode: Boolean = false,
+    val selectedDeleteItemIds: ImmutableList<String> = persistentListOf(),
 ) {
     val relationDialogUiState: RelationDialogUiState
         get() = toRelationDialogState()
