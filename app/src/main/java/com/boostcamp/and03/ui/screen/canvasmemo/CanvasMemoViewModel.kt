@@ -12,6 +12,7 @@ import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.domain.repository.CanvasMemoRepository
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
@@ -178,6 +179,14 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.UpdateQuoteItemSize -> {
                 handleUpdateQuoteItemSize(action)
             }
+            is CanvasMemoAction.PrepareNodePlacement ->
+                handlePrepareNodePlacement(action.character)
+
+            is CanvasMemoAction.AddNodeAtPosition ->
+                handleAddNodeAtPosition(action.positionOnScreen)
+
+
+
 
             is CanvasMemoAction.ZoomCanvasByGesture -> {
                 handleZoomCanvasByGesture(
@@ -860,4 +869,46 @@ class CanvasMemoViewModel @Inject constructor(
             y = offset.y.coerceIn(min, max)
         )
     }
+
+    private fun handlePrepareNodePlacement(character: CharacterUiModel) {
+        _uiState.update {
+            it.copy(
+                nodeToPlace = character,
+                bottomSheetType = null,
+                isBottomBarVisible = false
+            )
+        }
+    }
+    private fun handleAddNodeAtPosition(positionOnScreen: Offset) {
+        val character = _uiState.value.nodeToPlace ?: return
+
+        val zoomScale = _uiState.value.zoomScale
+        val canvasViewOffset = _uiState.value.canvasViewOffset
+
+        val canvasPosition = Offset(
+            x = (positionOnScreen.x - canvasViewOffset.x) / zoomScale,
+            y = (positionOnScreen.y - canvasViewOffset.y) / zoomScale
+        )
+
+        val newNode = MemoNode.CharacterNode(
+            id = UUID.randomUUID().toString(),
+            name = character.name,
+            description = character.description,
+            imageUrl = "",
+            offset = canvasPosition
+        )
+
+        _uiState.update {
+            it.copy(
+                nodes = it.nodes + (newNode.id to newNode.toUiModel()),
+                nodeToPlace = null,
+                isBottomBarVisible = true,
+                hasUnsavedChanges = true
+            )
+        }
+    }
+
+
+
+
 }

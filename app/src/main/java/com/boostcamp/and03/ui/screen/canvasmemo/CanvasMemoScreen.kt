@@ -256,6 +256,14 @@ private fun CanvasMemoScreen(
                                 )
                             }
                         }
+                        .pointerInput(uiState.nodeToPlace) {
+                            if (uiState.nodeToPlace != null) {
+                                detectTapGestures { tapOffset ->
+                                    onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
+                                }
+                            }
+                        }
+
                 ) {
                     Box(
                         modifier = Modifier
@@ -422,13 +430,18 @@ private fun CanvasMemoScreen(
                                     infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
                                     onSearch = { },
                                     onNewCharacterClick = { },
-                                    onAddClick = {
+                                    onAddClick = { character ->
+                                        if (character == null) return@AddNodeBottomSheet
+
                                         scope.launch {
                                             sheetState.hide()
-                                            // TODO: onAction(CanvasMemoAction.AddNodeItem) 구현 필요
+                                            onAction(
+                                                CanvasMemoAction.PrepareNodePlacement(character)
+                                            )
                                         }
                                     }
                                 )
+
                             }
 
                             CanvasMemoBottomSheetType.AddQuote -> {
