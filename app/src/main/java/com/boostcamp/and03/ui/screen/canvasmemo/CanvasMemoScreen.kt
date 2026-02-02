@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import android.R.attr.onClick
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -19,11 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FormatQuote
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,14 +70,12 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
-import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
-import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.coroutines.launch
 
@@ -162,40 +154,13 @@ private fun CanvasMemoScreen(
             when {
                 uiState.isBottomBarVisible -> {
                     MainBottomBar(
-                        modifier = Modifier
+                            modifier = Modifier
                             .fillMaxWidth()
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
                                 )
                             ),
-                        items = listOf(
-                            MainBottomBarItem(
-                                type = MainBottomBarType.NODE,
-                                label = stringResource(R.string.canvas_bottom_bar_node),
-                                icon = Icons.Default.PersonAdd,
-                                backgroundColor = CanvasMemoColors.Node
-                            ),
-                            MainBottomBarItem(
-                                type = MainBottomBarType.RELATION,
-                                label = stringResource(R.string.canvas_bottom_bar_relation),
-                                icon = Icons.Default.Link,
-                                backgroundColor = CanvasMemoColors.Relation
-                            ),
-                            MainBottomBarItem(
-                                type = MainBottomBarType.QUOTE,
-                                label = stringResource(R.string.canvas_bottom_bar_quote),
-                                icon = Icons.Default.FormatQuote,
-                                backgroundColor = CanvasMemoColors.Quote
-                            ),
-                            MainBottomBarItem(
-                                type = MainBottomBarType.DELETE,
-                                label = stringResource(R.string.canvas_bottom_bar_delete),
-                                icon = Icons.Default.Delete,
-                                backgroundColor = CanvasMemoColors.Delete
-                            )
-
-                        ),
                         selectedType = uiState.selectedBottomBarType,
                         onItemClick = { type ->
                             onAction(CanvasMemoAction.OnBottomBarClick(type))
