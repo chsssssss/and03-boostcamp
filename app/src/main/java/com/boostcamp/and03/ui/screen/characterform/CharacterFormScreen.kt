@@ -35,6 +35,7 @@ import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.PhotoPickerBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.PersonImagePlaceholder
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
@@ -116,7 +117,7 @@ private fun CharacterFormScreen(
 
             PersonImagePlaceholder(
                 imageUrl = null,
-                onClick = { onAction(CharacterFormAction.OnAddImageClick) }
+                onClick = { onAction(CharacterFormAction.OnOpenImagePickerBottomSheet) }
             )
 
             SingleLineInputSection(
@@ -137,6 +138,14 @@ private fun CharacterFormScreen(
                 description = uiState.description,
                 onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
             )
+
+            if (uiState.isVisibleBottomSheet) {
+                PhotoPickerBottomSheet(
+                    onDismiss = { onAction(CharacterFormAction.OnDismissImagePickerBottomSheet) },
+                    onCameraClick = { /* TODO: 카메라 촬영 기능 구현 */ },
+                    onGalleryClick = { }
+                )
+            }
         }
     }
 }

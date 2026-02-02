@@ -6,7 +6,9 @@ sealed interface CharacterFormAction {
 
     data object OnSaveClick: CharacterFormAction
 
-    data object OnAddImageClick: CharacterFormAction
+    data object OnOpenImagePickerBottomSheet: CharacterFormAction
+
+    data object OnDismissImagePickerBottomSheet: CharacterFormAction
 
     data class OnNameChange(val name: String): CharacterFormAction
 

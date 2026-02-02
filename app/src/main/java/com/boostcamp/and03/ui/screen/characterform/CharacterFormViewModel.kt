@@ -55,7 +55,13 @@ class CharacterFormViewModel @Inject constructor (
                 }
             }
 
-            CharacterFormAction.OnAddImageClick -> { /* TODO: 등장인물 사진 추가 동작 구현 */ }
+            CharacterFormAction.OnOpenImagePickerBottomSheet -> {
+                handleImgPickerBottomSheet(isVisible = true)
+            }
+
+            CharacterFormAction.OnDismissImagePickerBottomSheet -> {
+                handleImgPickerBottomSheet(isVisible = false)
+            }
 
             is CharacterFormAction.OnNameChange -> _uiState.update { it.copy(name = action.name) }
 
@@ -104,5 +110,9 @@ class CharacterFormViewModel @Inject constructor (
                 character = _uiState.value.toUiModel()
             )
         }
+    }
+
+    private fun handleImgPickerBottomSheet(isVisible: Boolean) {
+        _uiState.update { it.copy(isVisibleBottomSheet = isVisible) }
     }
 }
