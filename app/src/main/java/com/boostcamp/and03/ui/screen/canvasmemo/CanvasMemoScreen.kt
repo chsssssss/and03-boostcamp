@@ -291,7 +291,7 @@ private fun CanvasMemoScreen(
                                             if (uiState.isDeleteMode) {
                                                 onAction(CanvasMemoAction.SelectDeleteItem(nodeId))
                                             } else {
-                                                onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                                onAction(CanvasMemoAction.OnRelationNodeClick(nodeId))
                                             }
                                         },
                                         onSizeChanged = { size ->
@@ -328,7 +328,7 @@ private fun CanvasMemoScreen(
                                             if (uiState.isDeleteMode) {
                                                 onAction(CanvasMemoAction.SelectDeleteItem(nodeId))
                                             } else {
-                                                onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                                onAction(CanvasMemoAction.OnRelationNodeClick(nodeId))
                                             }
                                         },
                                         onSizeChanged = { size ->

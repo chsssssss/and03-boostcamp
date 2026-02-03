@@ -48,7 +48,7 @@ sealed interface CanvasMemoAction {
 
     data object ShowBottomBar : CanvasMemoAction
 
-    data class OnNodeClick(val nodeId: String) : CanvasMemoAction
+    data class OnRelationNodeClick(val nodeId: String) : CanvasMemoAction
 
     data class ConfirmRelation(
         val fromId: String,

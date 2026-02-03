@@ -164,7 +164,7 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.ShowBottomBar -> setBottomBarVisible(true)
 
-            is CanvasMemoAction.OnNodeClick -> handleNodeClick(action)
+            is CanvasMemoAction.OnRelationNodeClick -> handleRelationNodeClick(action)
 
             is CanvasMemoAction.ConfirmRelation -> {
                 handleConnectNodes(action)
@@ -562,7 +562,7 @@ class CanvasMemoViewModel @Inject constructor(
     /**
      * 관계를 추가할 때 클릭한 노드에 대한 처리를 진행합니다.
      */
-    private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
+    private fun handleRelationNodeClick(action: CanvasMemoAction.OnRelationNodeClick) {
         when (_uiState.value.relationAddStep) {
             RelationAddStep.READY ->
                 selectFrom(action.nodeId)
