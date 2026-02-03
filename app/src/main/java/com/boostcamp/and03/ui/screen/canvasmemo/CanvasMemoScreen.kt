@@ -108,33 +108,19 @@ private fun CanvasMemoScreen(
 
     BackHandler {
         when {
-            uiState.isExitConfirmationDialogVisible -> {
-                onAction(CanvasMemoAction.CloseExitConfirmationDialog)
-            }
+            uiState.isExitConfirmationDialogVisible -> onAction(CanvasMemoAction.CloseExitConfirmationDialog)
 
-            uiState.isSureDeleteDialogVisible -> {
-                onAction(CanvasMemoAction.CloseSureDeleteDialog)
-            }
+            uiState.isSureDeleteDialogVisible -> onAction(CanvasMemoAction.CloseSureDeleteDialog)
 
-            uiState.nodeToPlace != null -> {
-                onAction(CanvasMemoAction.CancelPlaceItem)
-            }
+            uiState.nodeToPlace != null -> onAction(CanvasMemoAction.CancelPlaceItem)
 
-            uiState.relationAddStep != RelationAddStep.NONE -> {
-                onAction(CanvasMemoAction.CancelRelationStep)
-            }
+            uiState.relationAddStep != RelationAddStep.NONE -> onAction(CanvasMemoAction.CancelRelationStep)
 
-            uiState.quoteToPlace != null -> {
-                onAction(CanvasMemoAction.CancelPlaceItem)
-            }
+            uiState.quoteToPlace != null -> onAction(CanvasMemoAction.CancelPlaceItem)
 
-            uiState.isDeleteMode -> {
-                onAction(CanvasMemoAction.CancelDeleteMode)
-            }
+            uiState.isDeleteMode -> onAction(CanvasMemoAction.CancelDeleteMode)
 
-            else -> {
-                onAction(CanvasMemoAction.ClickBack)
-            }
+            else -> onAction(CanvasMemoAction.ClickBack)
         }
     }
 
@@ -149,18 +135,14 @@ private fun CanvasMemoScreen(
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_save_filled),
-                        contentDescription = stringResource(
-                            id = R.string.content_description_save_button
-                        )
+                        contentDescription = stringResource(id = R.string.content_description_save_button)
                     )
                 }
 
                 IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert_filled),
-                        contentDescription = stringResource(
-                            id = R.string.content_description_more_button
-                        )
+                        contentDescription = stringResource(id = R.string.content_description_more_button)
                     )
                 }
             }
