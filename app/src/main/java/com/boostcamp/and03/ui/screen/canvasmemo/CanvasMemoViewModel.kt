@@ -207,6 +207,8 @@ class CanvasMemoViewModel @Inject constructor(
             CanvasMemoAction.OpenSureDeleteDialog -> handleOpenSureDeleteDialog()
 
             CanvasMemoAction.CancelDeleteMode -> handleCancelDeleteMode()
+
+            CanvasMemoAction.CancelRelationStep -> handleCancelRelationStep()
         }
     }
 
@@ -473,13 +475,14 @@ class CanvasMemoViewModel @Inject constructor(
     }
 
     /**
-     * 구절의 아이템을 배치하지 않고 취소합니다.
+     * 아이템을 배치하지 않고 취소합니다.
      * 바텀 바를 다시 표시합니다.
      */
     private fun handleCancelPlaceItem() {
         _uiState.update {
             it.copy(
                 quoteToPlace = null,
+                nodeToPlace = null,
                 isBottomBarVisible = true
             )
         }
@@ -962,11 +965,15 @@ class CanvasMemoViewModel @Inject constructor(
     private fun handleDeleteSelectedItems(itemIds: ImmutableList<String>) {
         _uiState.update {
             it.copy(
+                nodes = it.nodes.filterKeys { it !in itemIds },
+                edges = it.edges.filterNot {
+                    it.edge.fromId in itemIds || it.edge.toId in itemIds
+                },
                 isDeleteMode = false,
                 selectedDeleteItemIds = persistentListOf(),
-                hasUnsavedChanges = true,
                 isSureDeleteDialogVisible = false,
-                isBottomBarVisible = true
+                isBottomBarVisible = true,
+                hasUnsavedChanges = true
             )
         }
     }
@@ -1000,6 +1007,38 @@ class CanvasMemoViewModel @Inject constructor(
                 selectedDeleteItemIds = persistentListOf(),
                 isBottomBarVisible = true
             )
+        }
+    }
+
+    private fun handleCancelRelationStep() {
+        when (_uiState.value.relationAddStep) {
+            RelationAddStep.COMPLETE -> {
+                val selection = _uiState.value.relationSelection
+
+                val updatedSelection = selection.copy(toNodeId = null)
+
+                _uiState.update {
+                    it.copy(
+                        isRelationDialogVisible = false,
+                        relationSelection = updatedSelection,
+                        relationAddStep = RelationAddStep.FROM_ONLY
+                    )
+                }
+            }
+
+            RelationAddStep.FROM_ONLY -> {
+                _uiState.update {
+                    it.copy(
+                        relationSelection = RelationSelection.empty(),
+                        relationAddStep = RelationAddStep.READY
+                    )
+                }
+                updateNodeSelection(RelationSelection.empty())
+            }
+
+            RelationAddStep.READY -> resetRelation()
+
+            RelationAddStep.NONE -> Unit
         }
     }
 }

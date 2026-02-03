@@ -106,10 +106,34 @@ private fun CanvasMemoScreen(
     )
 
     BackHandler {
-        if (uiState.isExitConfirmationDialogVisible) {
-            onAction(CanvasMemoAction.CloseExitConfirmationDialog)
-        } else {
-            onAction(CanvasMemoAction.ClickBack)
+        when {
+            uiState.isExitConfirmationDialogVisible -> {
+                onAction(CanvasMemoAction.CloseExitConfirmationDialog)
+            }
+
+            uiState.isSureDeleteDialogVisible -> {
+                onAction(CanvasMemoAction.CloseSureDeleteDialog)
+            }
+
+            uiState.nodeToPlace != null -> {
+                onAction(CanvasMemoAction.CancelPlaceItem)
+            }
+
+            uiState.relationAddStep != RelationAddStep.NONE -> {
+                onAction(CanvasMemoAction.CancelRelationStep)
+            }
+
+            uiState.quoteToPlace != null -> {
+                onAction(CanvasMemoAction.CancelPlaceItem)
+            }
+
+            uiState.isDeleteMode -> {
+                onAction(CanvasMemoAction.CancelDeleteMode)
+            }
+
+            else -> {
+                onAction(CanvasMemoAction.ClickBack)
+            }
         }
     }
 
@@ -158,7 +182,7 @@ private fun CanvasMemoScreen(
                     )
                 }
 
-                uiState.quoteToPlace != null -> {
+                uiState.quoteToPlace != null || uiState.nodeToPlace != null -> {
                     AlertMessageCard(
                         message = stringResource(R.string.canvas_memo_place_item_message),
                         actions = listOf(

@@ -91,4 +91,6 @@ sealed interface CanvasMemoAction {
     data object OpenSureDeleteDialog : CanvasMemoAction
 
     data class DeleteSelectedItems(val itemIds: ImmutableList<String>) : CanvasMemoAction
+
+    data object CancelRelationStep : CanvasMemoAction
 }
