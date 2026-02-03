@@ -182,27 +182,6 @@ private fun CanvasMemoScreen(
                         }
                     )
                 }
-                uiState.nodeToPlace != null -> {
-                    AlertMessageCard(
-                        message = stringResource(R.string.canvas_memo_place_node_message),
-                        actions = listOf(
-                            AlertAction(
-                                text = stringResource(R.string.common_cancel),
-                                onClick = { onAction(CanvasMemoAction.CancelPlaceItem) }
-                            )
-                        ),
-                        modifier = Modifier
-                            .padding(
-                                vertical = And03Padding.PADDING_L,
-                                horizontal = And03Padding.PADDING_XL
-                            )
-                            .windowInsetsPadding(
-                                WindowInsets.safeDrawing.only(
-                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                                )
-                            )
-                    )
-                }
 
                 uiState.quoteToPlace != null || uiState.nodeToPlace != null -> {
                     AlertMessageCard(
