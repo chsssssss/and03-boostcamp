@@ -118,7 +118,9 @@ fun AddNodeBottomSheet(
                 CharacterCard(
                     name = character.name,
                     role = character.role,
-                    iconColor = character.iconColor,
+                    profileType = character.profileType,
+                    iconColor = character.profileColor,
+                    imageUri = character.imageUri,
                     description = character.description,
                     selected = isSelected,
                     onClick = {
@@ -177,7 +179,7 @@ private fun AddNodeBottomSheetPreview() {
                     name = "헤르미온느 그레인저",
                     role = "조연",
                     description = "뛰어난 마법 실력을 가진 해리의 친구",
-                    iconColor = Color(0xFF4CAF50)
+                    profileColor = Color(0xFF4CAF50)
                 )
             },
             infoTitle = "등장인물을 선택해 노드를 추가해주세요.",
