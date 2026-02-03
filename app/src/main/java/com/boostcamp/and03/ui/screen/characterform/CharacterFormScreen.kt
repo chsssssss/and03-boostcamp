@@ -1,5 +1,11 @@
 package com.boostcamp.and03.ui.screen.characterform
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,12 +28,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
@@ -72,6 +83,37 @@ private fun CharacterFormScreen(
     onAction: (CharacterFormAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    var preview by remember { mutableStateOf<Bitmap?>(null) }
+    var galleryImage by remember { mutableStateOf<Uri?>(null) }
+
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val requestCameraPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasCameraPermission = granted
+    }
+
+    val getTakePicturePreview =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.TakePicturePreview()
+        ) { bitmap ->
+            preview = bitmap
+        }
+
+    val getContentImage =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri ->
+            galleryImage = uri
+        }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -142,8 +184,12 @@ private fun CharacterFormScreen(
             if (uiState.isVisibleBottomSheet) {
                 PhotoPickerBottomSheet(
                     onDismiss = { onAction(CharacterFormAction.OnDismissImagePickerBottomSheet) },
-                    onCameraClick = { /* TODO: 카메라 촬영 기능 구현 */ },
-                    onGalleryClick = { }
+                    onCameraClick = {
+                        getTakePicturePreview.launch(null)
+                    },
+                    onGalleryClick = {
+                        getContentImage.launch("image/*")
+                    }
                 )
             }
         }
