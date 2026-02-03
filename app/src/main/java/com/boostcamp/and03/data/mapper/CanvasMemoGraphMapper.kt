@@ -19,10 +19,11 @@ fun NodeResponse.toDomain(): MemoNode =
             name = title,
             description = content,
             offset = Offset(x, y),
-            profileType = if (profileType == "COLOR")
+            profileType = if (profileType == "COLOR") {
                 ProfileType.COLOR
-            else
-                ProfileType.IMAGE,
+            } else {
+                ProfileType.IMAGE
+            },
             iconColor = iconColor,
             imageUrl = imageUrl
         )
