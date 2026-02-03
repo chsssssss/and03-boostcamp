@@ -26,51 +26,58 @@ import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
 import androidx.compose.ui.graphics.Color
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.ui.util.random
 
 @Composable
 fun PersonImagePlaceholder(
-    imageUrl: String? = "https://i.pinimg.com/736x/8f/20/41/8f2041520696507bc2bfd2f5648c8da3.jpg",
+    profileType: ProfileType,
+    imageUrl: String?,
+    iconColor: Color,
     onClick: (() -> Unit)?,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box {
-            if (imageUrl == null) {
-                IconBadge(
-                    modifier = Modifier
-                        .padding(top = And03Padding.PADDING_XL)
-                        .clip(CircleShape)
-                        .let {
-                            if (onClick == null) {
-                                it
-                            } else {
-                                it.clickable(onClick = onClick)
+            when (profileType) {
+                ProfileType.COLOR -> {
+                    IconBadge(
+                        modifier = Modifier
+                            .padding(top = And03Padding.PADDING_XL)
+                            .clip(CircleShape)
+                            .let {
+                                if (onClick == null) {
+                                    it
+                                } else {
+                                    it.clickable(onClick = onClick)
+                                }
+                            },
+                        iconResId = R.drawable.ic_person_filled,
+                        iconColor = iconColor,
+                        contentDescription = stringResource(
+                            id = R.string.content_description_character_basic_icon
+                        ),
+                        size = And03IconSize.ICON_SIZE_XL
+                    )
+                }
+                ProfileType.IMAGE -> {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = "인물 이미지",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(And03IconSize.ICON_SIZE_XL)
+                            .let {
+                                if (onClick == null) {
+                                    it
+                                } else {
+                                    it.clickable(onClick = onClick)
+                                }
                             }
-                        },
-                    iconResId = R.drawable.ic_person_filled,
-                    iconColor = Color.random(),
-                    contentDescription = stringResource(
-                        id = R.string.content_description_character_basic_icon
-                    ),
-                    size = And03IconSize.ICON_SIZE_XL
-                )
-            } else {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = "인물 이미지",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .let {
-                            if (onClick == null) {
-                                it
-                            } else {
-                                it.clickable(onClick = onClick)
-                            }
-                        }
-                )
+                    )
+                }
             }
             if (onClick != null) {
                 Box(
