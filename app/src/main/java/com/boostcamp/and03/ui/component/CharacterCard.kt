@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -24,24 +27,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.boostcamp.and03.R
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.util.random
 
 @Composable
 fun CharacterCard(
     name: String,
     role: String,
-    iconColor: Color,
+    profileType: ProfileType,
+    iconColor: Color?,
+    imageUri: String?,
     description: String,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -77,16 +87,33 @@ fun CharacterCard(
                 verticalAlignment = Alignment.Top
             ) {
                 // 프로필 아이콘
-                IconBadge(
-                    modifier = Modifier.padding(top = And03Padding.PADDING_XL),
-                    iconResId = R.drawable.ic_person_filled,
-                    iconColor = iconColor,
-                    contentDescription = stringResource(
-                        id = R.string.character_card_profile_icon_cd,
-                        name
-                    ),
-                    size = And03IconSize.ICON_SIZE_L
-                )
+                when (profileType) {
+                    ProfileType.COLOR -> {
+                        IconBadge(
+                            modifier = Modifier.padding(top = And03Padding.PADDING_XL),
+                            iconResId = R.drawable.ic_person_filled,
+                            iconColor = iconColor ?: Color.random(),
+                            contentDescription = stringResource(
+                                id = R.string.character_card_profile_icon_cd,
+                                name
+                            ),
+                            size = And03IconSize.ICON_SIZE_L
+                        )
+                    }
+
+                    ProfileType.IMAGE -> {
+                        AsyncImage(
+                            model = imageUri,
+                            contentDescription = "인물 이미지",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .padding(top = And03Padding.PADDING_XL)
+                                .clip(CircleShape)
+                                .size(And03IconSize.ICON_SIZE_L),
+                        )
+                    }
+                }
+
 
                 Spacer(modifier = Modifier.width(And03Spacing.SPACE_S))
 
@@ -168,7 +195,9 @@ fun CharacterCardPreview() {
     CharacterCard(
         name = "Character Name",
         role = "Character Role",
+        profileType = ProfileType.COLOR,
         iconColor = Color(0xFF1E88E5),
+        imageUri = "",
         description = "Character Description",
         onClick = {},
         onEditClick = {},
