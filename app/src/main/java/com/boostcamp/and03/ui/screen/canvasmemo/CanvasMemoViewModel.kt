@@ -309,7 +309,8 @@ class CanvasMemoViewModel @Inject constructor(
             it.copy(
                 isSureDeleteDialogVisible = false,
                 isDeleteMode = false,
-                selectedDeleteItemIds = persistentListOf()
+                selectedDeleteItemIds = persistentListOf(),
+                isBottomBarVisible = true
             )
         }
     }
@@ -923,11 +924,16 @@ class CanvasMemoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 삭제 모드로 진입합니다.
+     * 바텀바를 숨기고 AlertMessageCard를 표시합니다.
+     * 삭제할 아이템의 id를 보관할 리스트를 준비합니다.
+     */
     private fun enterDeleteMode() {
         _uiState.update {
             it.copy(
-                isBottomBarVisible = false,
                 isDeleteMode = true,
+                isBottomBarVisible = false,
                 selectedDeleteItemIds = persistentListOf()
             )
         }
@@ -954,42 +960,47 @@ class CanvasMemoViewModel @Inject constructor(
      * 에러 발생 시 아이템 선택 상태를 이전으로 복구합니다.
      */
     private fun handleDeleteSelectedItems(itemIds: ImmutableList<String>) {
-        try {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            try {
                 canvasMemoRepository.removeNode(
                     userId = userId,
                     bookId = bookId,
                     memoId = memoId,
-                    nodeIds = itemIds.toList()
+                    nodeIds = itemIds
                 )
-            }
 
-            _uiState.update {
-                it.copy(
-                    isDeleteMode = false,
-                    selectedDeleteItemIds = persistentListOf(),
-                    hasUnsavedChanges = true,
-                    isSureDeleteDialogVisible = true
-                )
+                _uiState.update {
+                    it.copy(
+                        isDeleteMode = false,
+                        selectedDeleteItemIds = persistentListOf(),
+                        hasUnsavedChanges = true,
+                        isSureDeleteDialogVisible = false,
+                        isBottomBarVisible = true
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isSureDeleteDialogVisible = false) }
+                Log.e("CanvasMemoViewModel", "deleteCanvasMemo: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(
-                    isDeleteMode = true,
-                    selectedDeleteItemIds = itemIds
-                )
-            }
-            Log.e("CanvasMemoViewModel", "deleteCanvasMemo: ${e.message}")
-        } finally {
-            handleCloseSureDeleteDialog()
         }
     }
 
     /**
      * 삭제 확인 다이얼로그를 엽니다.
+     * 선택한 아이템이 없을 경우 다이얼로그를 열지 않고 삭제 모드를 종료합니다.
      */
     private fun handleOpenSureDeleteDialog() {
-        _uiState.update { it.copy(isSureDeleteDialogVisible = true) }
+        _uiState.update{
+            if(it.selectedDeleteItemIds.isNotEmpty()) {
+                it.copy(isSureDeleteDialogVisible = true)
+            } else {
+                it.copy(
+                    isDeleteMode = false,
+                    selectedDeleteItemIds = persistentListOf(),
+                    isBottomBarVisible = true
+                )
+            }
+        }
     }
 
     /**

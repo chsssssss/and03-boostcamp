@@ -200,7 +200,7 @@ private fun CanvasMemoScreen(
                             ),
                             AlertAction(
                                 text = stringResource(R.string.common_delete),
-                                onClick = { onAction(CanvasMemoAction.CloseSureDeleteDialog) }
+                                onClick = { onAction(CanvasMemoAction.OpenSureDeleteDialog) }
                             )
                         ),
                         modifier = Modifier
@@ -292,7 +292,11 @@ private fun CanvasMemoScreen(
                                             )
                                         },
                                         onClick = { nodeId ->
-                                            onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                            if (uiState.isDeleteMode) {
+                                                onAction(CanvasMemoAction.SelectDeleteItem(nodeId))
+                                            } else {
+                                                onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                            }
                                         },
                                         onSizeChanged = { size ->
                                             nodeSizes = nodeSizes + (uiModel.node.id to size)
@@ -302,7 +306,11 @@ private fun CanvasMemoScreen(
                                             NodeItem(
                                                 title = uiModel.node.name,
                                                 content = uiModel.node.description,
-                                                isHighlighted = uiModel.isSelected
+                                                isHighlighted = if (uiState.isDeleteMode) {
+                                                    uiModel.node.id in uiState.selectedDeleteItemIds
+                                                } else {
+                                                    uiModel.isSelected
+                                                }
                                             )
                                         }
                                     )
@@ -320,6 +328,13 @@ private fun CanvasMemoScreen(
                                                 )
                                             )
                                         },
+                                        onClick = { nodeId ->
+                                            if (uiState.isDeleteMode) {
+                                                onAction(CanvasMemoAction.SelectDeleteItem(nodeId))
+                                            } else {
+                                                onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                            }
+                                        },
                                         onSizeChanged = { size ->
                                             nodeSizes = nodeSizes + (uiModel.node.id to size)
                                         },
@@ -328,7 +343,11 @@ private fun CanvasMemoScreen(
                                             QuoteItem(
                                                 quote = uiModel.node.content,
                                                 page = uiModel.node.page,
-                                                isHighlighted = uiModel.isSelected
+                                                isHighlighted = if (uiState.isDeleteMode) {
+                                                    uiModel.node.id in uiState.selectedDeleteItemIds
+                                                } else {
+                                                    uiModel.isSelected
+                                                }
                                             )
                                         }
                                     )
@@ -435,10 +454,7 @@ private fun CanvasMemoScreen(
                     )
                 }
 
-                if (
-                    uiState.isSureDeleteDialogVisible &&
-                    uiState.selectedDeleteItemIds.isNotEmpty()
-                ) {
+                if (uiState.isSureDeleteDialogVisible) {
                     And03Dialog(
                         iconResId = R.drawable.ic_delete_outlined,
                         iconColor = And03Theme.colors.error,
