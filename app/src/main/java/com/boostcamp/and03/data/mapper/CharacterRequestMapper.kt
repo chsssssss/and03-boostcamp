@@ -2,6 +2,7 @@ package com.boostcamp.and03.data.mapper
 
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.ProfileType
+import com.google.firebase.firestore.FieldValue
 
 fun CharacterRequest.toEntity(
     id: String,
@@ -17,6 +18,8 @@ fun CharacterRequest.toEntity(
 
     if (profileType == ProfileType.IMAGE && imageUrl != null) {
         map["imageUrl"] = imageUrl
+    } else {
+        map["imageUrl"] = FieldValue.delete()
     }
 
     if (profileType == ProfileType.COLOR && profileColor != null) {
