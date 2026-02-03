@@ -226,10 +226,17 @@ private fun CanvasMemoScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .pointerInput(uiState.quoteToPlace) {
-                            if (uiState.quoteToPlace != null) {
+                        .pointerInput(
+                            uiState.quoteToPlace,
+                            uiState.nodeToPlace
+                        ) {
+                            if (uiState.quoteToPlace != null || uiState.nodeToPlace != null) {
                                 detectTapGestures { tapOffset ->
-                                    onAction(CanvasMemoAction.TapCanvas(tapOffset))
+                                    uiState.quoteToPlace?.let {
+                                        onAction(CanvasMemoAction.TapCanvas(tapOffset))
+                                    } ?: uiState.nodeToPlace?.let {
+                                        onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
+                                    }
                                 }
                             }
                         }
@@ -242,13 +249,6 @@ private fun CanvasMemoScreen(
                                         zoomChange = zoom    // 확대/축소 비율
                                     )
                                 )
-                            }
-                        }
-                        .pointerInput(uiState.nodeToPlace) {
-                            if (uiState.nodeToPlace != null) {
-                                detectTapGestures { tapOffset ->
-                                    onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
-                                }
                             }
                         }
                 ) {
