@@ -98,7 +98,9 @@ fun NodeItem(
         )
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
                     top = And03Padding.PADDING_L,
                     start = And03Padding.PADDING_M,
                     end = And03Padding.PADDING_M,
