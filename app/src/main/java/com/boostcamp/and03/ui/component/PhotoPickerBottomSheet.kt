@@ -139,7 +139,7 @@ private fun OCRBottomSheetButton(
 @Composable
 private fun PhotoPickerBottomSheet() {
     And03Theme {
-        OCRBottomSheet(
+        PhotoPickerBottomSheet(
             onDismiss = {},
             onCameraClick = {},
             onGalleryClick = {}
