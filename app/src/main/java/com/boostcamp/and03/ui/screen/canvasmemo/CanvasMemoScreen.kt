@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import android.R.attr.onClick
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -577,6 +576,23 @@ private fun CanvasMemoScreen(
                         )
                     }
                 }
+                if (uiState.nodeToPlace != null && uiState.nodeItemSizePx == null) {
+                    Box(
+                        modifier = Modifier.alpha(0f)
+                    ) {
+                        NodeItem(
+                            title = uiState.nodeToPlace.name,
+                            content = uiState.nodeToPlace.description,
+                            isHighlighted = false,
+                            modifier = Modifier.onGloballyPositioned { coords ->
+                                onAction(
+                                    CanvasMemoAction.UpdateNodeItemSize(coords.size)
+                                )
+                            }
+                        )
+                    }
+                }
+
             }
         }
     }
