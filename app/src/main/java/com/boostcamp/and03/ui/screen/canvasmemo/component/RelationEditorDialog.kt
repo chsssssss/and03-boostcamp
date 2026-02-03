@@ -36,8 +36,8 @@ fun RelationEditorDialog(
 
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    onFromImageClick: () -> Unit,
-    onToImageClick: () -> Unit,
+//    onFromImageClick: () -> Unit,
+//    onToImageClick: () -> Unit,
 ) {
     And03ActionDialog(
         title = stringResource(R.string.relation_dialog_title),
@@ -54,7 +54,6 @@ fun RelationEditorDialog(
                     profileType = fromProfileType,
                     imageUrl = fromImageUrl,
                     iconColor = fromIconColor,
-                    onClick = onFromImageClick
                 )
 
                 Icon(
@@ -67,7 +66,6 @@ fun RelationEditorDialog(
                     profileType = toProfileType,
                     imageUrl = toImageUrl,
                     iconColor = toIconColor,
-                    onClick = onToImageClick
                 )
             }
 
@@ -105,7 +103,5 @@ fun RelationEditorDialogPreview() {
         toIconColor = Color(0xFF1E88E5),
         onDismiss = {},
         onConfirm = {},
-        onFromImageClick = {},
-        onToImageClick = {},
     )
 }
