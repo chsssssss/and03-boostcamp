@@ -35,11 +35,7 @@ fun DraggableCanvasItem(
             .then(
                 if (onClick != null) {
                     Modifier.pointerInput(nodeId) {
-                        detectTapGestures(
-                            onTap = {
-                                onClick(nodeId)
-                            }
-                        )
+                        detectTapGestures(onTap = { onClick(nodeId) })
                     }
                 } else {
                     Modifier
@@ -53,7 +49,9 @@ fun DraggableCanvasItem(
                             onMove(dragAmount)
                         }
                     }
-                } else Modifier
+                } else {
+                    Modifier
+                }
             )
     ) {
         content()
