@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.bookdetail.model
 
 import android.graphics.Color.parseColor
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.data.model.response.CharacterResponse
@@ -41,14 +42,12 @@ fun CharacterFormUiState.toUiModel(): CharacterUiModel {
 }
 
 fun CharacterFormUiState.toRequest(): CharacterRequest {
-    val isImage = imageUrl.isNotBlank()
-
     return CharacterRequest(
         name = name,
         role = role,
         description = description,
-        profileType = if (isImage) ProfileType.IMAGE else ProfileType.COLOR,
-        profileImgUri = if (isImage) imageUrl else null,
-        profileColor = if (!isImage) profileColor.value.toHexString() else null
+        profileType = if (profileType == ProfileType.IMAGE) ProfileType.IMAGE else ProfileType.COLOR,
+        profileImgUri = if (profileType == ProfileType.IMAGE) imageUrl else null,
+        profileColor = if (profileType == ProfileType.COLOR) String.format("#%08X", profileColor.toArgb()) else null
     )
 }
