@@ -960,28 +960,14 @@ class CanvasMemoViewModel @Inject constructor(
      * 에러 발생 시 아이템 선택 상태를 이전으로 복구합니다.
      */
     private fun handleDeleteSelectedItems(itemIds: ImmutableList<String>) {
-        viewModelScope.launch {
-            try {
-                canvasMemoRepository.removeNode(
-                    userId = userId,
-                    bookId = bookId,
-                    memoId = memoId,
-                    nodeIds = itemIds
-                )
-
-                _uiState.update {
-                    it.copy(
-                        isDeleteMode = false,
-                        selectedDeleteItemIds = persistentListOf(),
-                        hasUnsavedChanges = true,
-                        isSureDeleteDialogVisible = false,
-                        isBottomBarVisible = true
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isSureDeleteDialogVisible = false) }
-                Log.e("CanvasMemoViewModel", "deleteCanvasMemo: ${e.message}")
-            }
+        _uiState.update {
+            it.copy(
+                isDeleteMode = false,
+                selectedDeleteItemIds = persistentListOf(),
+                hasUnsavedChanges = true,
+                isSureDeleteDialogVisible = false,
+                isBottomBarVisible = true
+            )
         }
     }
 
