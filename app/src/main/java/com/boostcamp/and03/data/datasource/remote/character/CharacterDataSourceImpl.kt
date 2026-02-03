@@ -138,15 +138,26 @@ class CharacterDataSourceImpl @Inject constructor(
         characterId: String
     ) {
         try {
-            db.collection("user")
+            val characterRef = db.collection("user")
                 .document(userId)
                 .collection("book")
                 .document(bookId)
                 .collection("character")
                 .document(characterId)
-                .delete()
-                .await()
 
+            val snapshot = characterRef.get().await()
+            val imageUrl = snapshot.getString("imageUrl")
+
+            if (imageUrl != null) {
+                try {
+                    val imageRef = storage.getReferenceFromUrl(imageUrl)
+                    imageRef.delete().await()
+                } catch (e: Exception) {
+                    Log.e("CharacterDataSourceImpl", "Failed to delete image: ${e.message}")
+                }
+            }
+
+            characterRef.delete().await()
             Log.d("CharacterDataSourceImpl", "Character deleted: $characterId")
         } catch (e: Exception) {
             Log.e("CharacterDataSourceImpl", "Failed to delete character: ${e.message}")
