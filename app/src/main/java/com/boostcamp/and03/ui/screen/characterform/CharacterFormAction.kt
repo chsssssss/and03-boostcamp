@@ -1,5 +1,7 @@
 package com.boostcamp.and03.ui.screen.characterform
 
+import android.net.Uri
+
 sealed interface CharacterFormAction {
 
     data object OnBackClick: CharacterFormAction
@@ -19,4 +21,6 @@ sealed interface CharacterFormAction {
     data object CloseExitConfirmationDialog : CharacterFormAction
 
     data object CloseScreen : CharacterFormAction
+
+    data class OnImageSelected(val uri: Uri) : CharacterFormAction
 }

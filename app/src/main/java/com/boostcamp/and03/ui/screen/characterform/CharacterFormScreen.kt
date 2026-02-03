@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.BackHandler
@@ -56,6 +57,7 @@ import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
+import com.boostcamp.and03.ui.util.createTempImageUri
 
 private object DescriptionInputSectionValues {
     const val MAX_CHARACTER_COUNT = 500
@@ -88,7 +90,7 @@ private fun CharacterFormScreen(
 ) {
     val context = LocalContext.current
     var preview by remember { mutableStateOf<Bitmap?>(null) }
-    var galleryImage by remember { mutableStateOf<Uri?>(null) }
+    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -103,18 +105,27 @@ private fun CharacterFormScreen(
         hasCameraPermission = granted
     }
 
-    val getTakePicturePreview =
+    val getTakePicture =
         rememberLauncherForActivityResult(
-            ActivityResultContracts.TakePicturePreview()
-        ) { bitmap ->
-            preview = bitmap
+            ActivityResultContracts.TakePicture()
+        ) { success ->
+            if (success) {
+                tempImageUri?.let {
+                    onAction(CharacterFormAction.OnImageSelected(it))
+                }
+            }
+            Log.d("CharacterFormScreen", "getTakePicture: $success")
+
         }
 
     val getContentImage =
         rememberLauncherForActivityResult(
             ActivityResultContracts.GetContent()
         ) { uri ->
-            galleryImage = uri
+            uri?.let {
+                onAction(CharacterFormAction.OnImageSelected(it))
+            }
+            Log.d("CharacterFormScreen", "getContentImage: $uri")
         }
 
     BackHandler {
@@ -136,7 +147,7 @@ private fun CharacterFormScreen(
         },
         bottomBar = {
             And03Button(
-                text = if(!uiState.isSaving) {
+                text = if (!uiState.isSaving) {
                     stringResource(id = R.string.add_memo_save_button_text)
                 } else {
                     stringResource(id = R.string.add_memo_saving_button_text)
@@ -177,10 +188,12 @@ private fun CharacterFormScreen(
                     description = stringResource(R.string.info_section_character_description)
                 )
 
-            PersonImagePlaceholder(
-                imageUrl = null,
-                onClick = { onAction(CharacterFormAction.OnOpenImagePickerBottomSheet) }
-            )
+                PersonImagePlaceholder(
+                    iconColor = uiState.profileColor,
+                    imageUrl = uiState.imageUrl,
+                    profileType = uiState.profileType,
+                    onClick = { onAction(CharacterFormAction.OnOpenImagePickerBottomSheet) }
+                )
 
                 SingleLineInputSection(
                     value = uiState.name,
@@ -198,21 +211,32 @@ private fun CharacterFormScreen(
 
                 DescriptionInputSection(
                     description = uiState.description,
+                    onDescriptionChange = {
+                        onAction(
+                            CharacterFormAction.OnDescriptionChange(
+                                description = it
+                            )
+                        )
+                    }
+                )
+                DescriptionInputSection(
+                    description = uiState.description,
                     onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
                 )
             }
-            DescriptionInputSection(
-                description = uiState.description,
-                onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
-            )
+
 
             if (uiState.isVisibleBottomSheet) {
                 PhotoPickerBottomSheet(
                     onDismiss = { onAction(CharacterFormAction.OnDismissImagePickerBottomSheet) },
                     onCameraClick = {
-                        getTakePicturePreview.launch(null)
+                        val uri = createTempImageUri(context)
+                        tempImageUri = uri
+                        getTakePicture.launch(uri)
                     },
                     onGalleryClick = {
+                        val uri = createTempImageUri(context)
+                        tempImageUri = uri
                         getContentImage.launch("image/*")
                     }
                 )
@@ -285,7 +309,11 @@ private fun DescriptionInputSection(
 
         OutlinedTextField(
             value = description,
-            onValueChange = { if (it.length <= DescriptionInputSectionValues.MAX_CHARACTER_COUNT) onDescriptionChange(it) },
+            onValueChange = {
+                if (it.length <= DescriptionInputSectionValues.MAX_CHARACTER_COUNT) onDescriptionChange(
+                    it
+                )
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L),
