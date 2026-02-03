@@ -5,8 +5,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.boostcamp.and03.R
@@ -28,8 +32,15 @@ import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 
 private object NodeItemValues {
+    val width = 180.dp
+    val height = 240.dp
+
     val borderWidth = 2.dp
     val moreIconSize = 20.dp
+    val iconAreaHeight = 48.dp
+
+    const val TITLE_MAX_LINES = 1
+    const val CONTENT_MAX_LINES = 6
 }
 
 @Composable
@@ -47,6 +58,7 @@ fun NodeItem(
 
     Box(
         modifier = modifier
+            .size(NodeItemValues.width, NodeItemValues.height)
             .background(
                 And03Theme.colors.surface,
                 And03Theme.shapes.defaultCorner
@@ -86,32 +98,52 @@ fun NodeItem(
         )
 
         Column(
-            modifier = Modifier.padding(And03Padding.PADDING_M),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_S)
+            modifier = Modifier.fillMaxWidth().padding(
+                    top = And03Padding.PADDING_L,
+                    start = And03Padding.PADDING_M,
+                    end = And03Padding.PADDING_M,
+                    bottom = And03Padding.PADDING_M
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconBadge(
-                iconResId = R.drawable.ic_person_filled,
-                iconColor = And03Theme.colors.primary,
-                contentDescription = stringResource(R.string.content_description_node_item_icon)
-            )
+            Box(
+                modifier = Modifier
+                    .height(NodeItemValues.iconAreaHeight),
+                contentAlignment = Alignment.Center
+            ) {
+                IconBadge(
+                    iconResId = R.drawable.ic_person_filled,
+                    iconColor = And03Theme.colors.primary,
+                    contentDescription = stringResource(R.string.content_description_node_item_icon)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
 
             Text(
                 text = title,
-                style = And03Theme.typography.titleMedium
+                style = And03Theme.typography.titleMedium,
+                maxLines = NodeItemValues.TITLE_MAX_LINES,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
             )
 
+            Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
+
             Text(
+                modifier = Modifier.weight(1f),
                 text = content,
                 style = And03Theme.typography.bodyMedium,
                 color = And03Theme.colors.onSurfaceVariant,
+                maxLines = NodeItemValues.CONTENT_MAX_LINES,
+                overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center
             )
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun NodeItemPreview() {
     Column(
@@ -120,22 +152,17 @@ private fun NodeItemPreview() {
     ) {
         NodeItem(
             title = "노드 제목",
-            content = """
-                일반적인 노드의 내용입니다.
-                연속적으로
-                줄바꿈을
-                해봅시다.
-                어떤가요?
-                잘......      나오나요?
-            """.trimIndent(),
+            content = "짧은 내용",
             isHighlighted = false
         )
 
         NodeItem(
-            title = "선택된 노드 제목",
+            title = "노드 제목",
             content = """
-                선택된 노드의 내용입니다.
-                테두리의 색깔이 primary 색상으로 바뀌었습니다.
+                가나다라가나다라가나다라가나다라가나다라가나다라가
+                나다라가나다라가나다라가나다라가나
+                다라가나다라가나다라가나다라가나다라가
+                나다라가나다라가나다라
             """.trimIndent(),
             isHighlighted = true
         )
