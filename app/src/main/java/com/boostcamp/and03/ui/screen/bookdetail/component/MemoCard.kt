@@ -124,8 +124,7 @@ fun MemoCard(
 
             MemoType.TEXT -> {
                 Text(
-                    modifier = Modifier
-                        .padding(horizontal = And03Padding.PADDING_2XL),
+                    modifier = Modifier.padding(horizontal = And03Padding.PADDING_2XL),
                     text = contentPreview,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 3,
