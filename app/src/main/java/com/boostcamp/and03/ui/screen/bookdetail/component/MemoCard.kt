@@ -113,7 +113,14 @@ fun MemoCard(
 
         /** 본문 영역 */
         when (type) {
-            MemoType.CANVAS -> {}
+            MemoType.CANVAS -> {
+                Text(
+                    text = stringResource(R.string.click_canvas_item),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = And03Theme.colors.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
 
             MemoType.TEXT -> {
                 Text(
