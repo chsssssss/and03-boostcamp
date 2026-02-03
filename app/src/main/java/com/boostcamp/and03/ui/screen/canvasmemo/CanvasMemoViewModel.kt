@@ -185,6 +185,10 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.AddNodeAtPosition ->
                 handleAddNodeAtPosition(action.positionOnScreen)
 
+            is CanvasMemoAction.UpdateNodeItemSize -> {
+                _uiState.update { it.copy(nodeItemSizePx = action.size) }
+            }
+
 
 
 
@@ -879,31 +883,38 @@ class CanvasMemoViewModel @Inject constructor(
             )
         }
     }
-    private fun handleAddNodeAtPosition(positionOnScreen: Offset) {
+    private fun handleAddNodeAtPosition(tapPositionOnScreen: Offset) {
         val character = _uiState.value.nodeToPlace ?: return
+        val size = _uiState.value.nodeItemSizePx ?: return
+
+        val centerOffset = Offset(
+            size.width / 2f,
+            size.height / 2f
+        )
 
         val zoomScale = _uiState.value.zoomScale
         val canvasViewOffset = _uiState.value.canvasViewOffset
 
         val canvasPosition = Offset(
-            x = (positionOnScreen.x - canvasViewOffset.x) / zoomScale,
-            y = (positionOnScreen.y - canvasViewOffset.y) / zoomScale
+            x = (tapPositionOnScreen.x - canvasViewOffset.x) / zoomScale - centerOffset.x,
+            y = (tapPositionOnScreen.y - canvasViewOffset.y) / zoomScale - centerOffset.y
         )
 
         val newNode = MemoNode.CharacterNode(
             id = UUID.randomUUID().toString(),
             name = character.name,
             description = character.description,
+            offset = canvasPosition,
             imageUrl = character.imageUri,
             iconColor = character.profileColor.toString(),
             profileType = character.profileType,
-            offset = canvasPosition
         )
 
         _uiState.update {
             it.copy(
                 nodes = it.nodes + (newNode.id to newNode.toUiModel()),
                 nodeToPlace = null,
+                nodeItemSizePx = null,
                 isBottomBarVisible = true,
                 hasUnsavedChanges = true
             )
