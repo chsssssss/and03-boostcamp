@@ -1,6 +1,7 @@
 package com.boostcamp.and03.domain.model
 
 import androidx.compose.ui.geometry.Offset
+import com.boostcamp.and03.data.model.request.ProfileType
 
 sealed class MemoNode {
     abstract val id: String
@@ -10,7 +11,9 @@ sealed class MemoNode {
         override val id: String,
         val name: String,
         val description: String,
-        val imageUrl: String,
+        val profileType: ProfileType?,
+        val imageUrl: String?,
+        val iconColor: String?,
         override val offset: Offset,
     ) : MemoNode()
 

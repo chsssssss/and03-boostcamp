@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.mapper
 
 import androidx.compose.ui.geometry.Offset
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.EdgeResponse
 import com.boostcamp.and03.data.model.response.memo.GraphResponse
@@ -18,6 +19,11 @@ fun NodeResponse.toDomain(): MemoNode =
             name = title,
             description = content,
             offset = Offset(x, y),
+            profileType = if (profileType == "COLOR")
+                ProfileType.COLOR
+            else
+                ProfileType.IMAGE,
+            iconColor = iconColor,
             imageUrl = imageUrl
         )
 
