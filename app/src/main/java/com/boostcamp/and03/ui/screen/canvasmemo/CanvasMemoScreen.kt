@@ -412,8 +412,6 @@ private fun CanvasMemoScreen(
                                 )
                             )
                         },
-                        onFromImageClick = { /* 인물 선택 로직 */ },
-                        onToImageClick = { /* 인물 선택 로직 */ }
                     )
                 }
 
