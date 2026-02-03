@@ -81,15 +81,7 @@ fun QuoteItem(
     ) {
         DropdownMenuContainer(
             modifier = Modifier.align(Alignment.TopEnd),
-            trigger = { onMenuClick ->
-                IconButton(onClick = onMenuClick) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_filled),
-                        contentDescription = stringResource(R.string.content_description_more_button),
-                        modifier = Modifier.size(QuoteItemValues.MORE_ICON_SIZE)
-                    )
-                }
-            },
+            trigger = {},
             menuContent = { closeMenu ->
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.more_vert_edit)) },
