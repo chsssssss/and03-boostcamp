@@ -376,8 +376,12 @@ private fun CanvasMemoScreen(
                         relationNameState = uiState.relationNameState,
                         fromName = relationDialogState.fromName,
                         toName = relationDialogState.toName,
+                        fromProfileType = relationDialogState.fromProfileType,
+                        toProfileType = relationDialogState.toProfileType,
                         fromImageUrl = relationDialogState.fromImageUrl,
                         toImageUrl = relationDialogState.toImageUrl,
+                        fromIconColor = relationDialogState.fromIconColor,
+                        toIconColor = relationDialogState.toIconColor,
                         onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
                         onConfirm = {
                             onAction(

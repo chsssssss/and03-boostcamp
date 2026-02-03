@@ -894,7 +894,9 @@ class CanvasMemoViewModel @Inject constructor(
             id = UUID.randomUUID().toString(),
             name = character.name,
             description = character.description,
-            imageUrl = "",
+            imageUrl = character.imageUri,
+            iconColor = character.profileColor.toString(),
+            profileType = character.profileType,
             offset = canvasPosition
         )
 
