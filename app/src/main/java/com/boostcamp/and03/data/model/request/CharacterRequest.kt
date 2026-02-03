@@ -1,5 +1,6 @@
 package com.boostcamp.and03.data.model.request
 
+import androidx.compose.ui.graphics.toArgb
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import kotlinx.serialization.Serializable
 
@@ -13,8 +14,12 @@ data class CharacterRequest(
     val profileColor: String? = null,
     val profileImgUri: String? = null
 )
+
 fun CharacterUiModel.toRequest() = CharacterRequest(
     role = role,
     description = description,
     name = name,
+    profileType = profileType,
+    profileImgUri = imageUri,
+    profileColor = profileColor?.let { String.format("#%08X", it.toArgb()) }
 )
