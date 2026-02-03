@@ -36,7 +36,7 @@ class CharacterFormViewModel @Inject constructor (
 
     fun onAction(action: CharacterFormAction) {
         when (action) {
-            CharacterFormAction.OnBackClick -> _event.trySend(CharacterFormEvent.NavigateBack)
+            CharacterFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
 
             CharacterFormAction.OnSaveClick -> {
                 viewModelScope.launch {
@@ -68,12 +68,21 @@ class CharacterFormViewModel @Inject constructor (
             is CharacterFormAction.OnRoleChange -> _uiState.update { it.copy(role = action.role) }
 
             is CharacterFormAction.OnDescriptionChange -> _uiState.update { it.copy(description = action.description) }
+
+            CharacterFormAction.CloseExitConfirmationDialog -> _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+
+            CharacterFormAction.CloseScreen -> {
+                _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+                _event.trySend(CharacterFormEvent.NavigateBack)
+            }
         }
     }
 
     init {
-        viewModelScope.launch {
-            loadCharacter()
+        _uiState.update { it.copy(isLoading = characterId.isNotBlank()) }
+
+        if (characterId.isNotBlank()) {
+            viewModelScope.launch { loadCharacter() }
         }
     }
 
@@ -90,7 +99,11 @@ class CharacterFormViewModel @Inject constructor (
             it.copy(
                 name = result.name,
                 role = result.role,
-                description = result.description
+                description = result.description,
+                originalName = result.name,
+                originalRole = result.role,
+                originalDescription = result.description,
+                isLoading = false
             )
         }
     }

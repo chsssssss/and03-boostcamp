@@ -36,7 +36,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
             val canvasMemoSnapshot = memoRef.get().await()
 
             if (!canvasMemoSnapshot.exists()) {
-                throw Exception("Canvas memo not found: $memoId")
+                throw NoSuchElementException("Canvas memo not found: $memoId")
             }
 
             val data = canvasMemoSnapshot.data

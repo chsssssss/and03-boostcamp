@@ -1,5 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
+import android.R.attr.onClick
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -62,6 +64,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
+import com.boostcamp.and03.ui.component.And03Dialog
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddNodeBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
@@ -120,6 +124,14 @@ private fun CanvasMemoScreen(
         skipPartiallyExpanded = true
     )
 
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(CanvasMemoAction.CloseExitConfirmationDialog)
+        } else {
+            onAction(CanvasMemoAction.ClickBack)
+        }
+    }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -127,6 +139,7 @@ private fun CanvasMemoScreen(
                 onBackClick = { onAction(CanvasMemoAction.ClickBack) }
             ) {
                 IconButton(
+                    enabled = uiState.hasUnsavedChanges,
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_save_filled),
@@ -245,6 +258,14 @@ private fun CanvasMemoScreen(
                                 )
                             }
                         }
+                        .pointerInput(uiState.nodeToPlace) {
+                            if (uiState.nodeToPlace != null) {
+                                detectTapGestures { tapOffset ->
+                                    onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
+                                }
+                            }
+                        }
+
                 ) {
                     Box(
                         modifier = Modifier
@@ -411,13 +432,18 @@ private fun CanvasMemoScreen(
                                     infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
                                     onSearch = { },
                                     onNewCharacterClick = { },
-                                    onAddClick = {
+                                    onAddClick = { character ->
+                                        if (character == null) return@AddNodeBottomSheet
+
                                         scope.launch {
                                             sheetState.hide()
-                                            // TODO: onAction(CanvasMemoAction.AddNodeItem) 구현 필요
+                                            onAction(
+                                                CanvasMemoAction.PrepareNodePlacement(character)
+                                            )
                                         }
                                     }
                                 )
+
                             }
 
                             CanvasMemoBottomSheetType.AddQuote -> {
@@ -476,6 +502,21 @@ private fun CanvasMemoScreen(
                         enabled = uiState.isQuoteSaveable && !uiState.isSaving,
                         isSaving = uiState.isSaving,
                         totalPage = uiState.totalPage
+                    )
+                }
+
+                if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
+                    And03Dialog(
+                        iconResId = R.drawable.ic_warning_filled,
+                        iconColor = And03Theme.colors.error,
+                        iconContentDescription = stringResource(id = R.string.content_description_caution),
+                        title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                        dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                        confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                        onDismiss = { onAction(CanvasMemoAction.CloseScreen) },
+                        onConfirm = { onAction(CanvasMemoAction.CloseExitConfirmationDialog) },
+                        description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                        dismissAction = DialogDismissAction.Confirm
                     )
                 }
 

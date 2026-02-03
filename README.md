@@ -1,24 +1,103 @@
 <div align="center">
 
-# and03-boostcamp
+# 책결: 당신의 독서 기록을 하나의 결로
 
-_책을 읽으며 남긴 메모를 연결해, 이야기의 흐름과 생각의 구조를 이해하도록 돕는 서비스_
+_책을 읽으며 남긴 기록을 그래프로 엮어, 이야기의 흐름과 생각이 하나의 결로 맺히도록 돕는 서비스_
 
 </div>
 
 ## 프로젝트 소개
 
+본 프로젝트는 소설이나 서사가 복잡한 책을 읽을 때 발생하는 독서 경험 중의 불편함을 해소하기 위해 시작되었습니다.
+
+등장인물이 많거나 사건과 장소가 복잡하게 얽힌 작품을 읽다 보면,<br>
+독자는 흐름을 놓치지 않기 위해 이전 페이지를 다시 넘기거나<br>
+등장인물과 사건을 따로 정리하며 독서를 병행해야 하는 불편함을 겪게 됩니다.
+
+이러한 독서 경험을 기록과 시각화를 통해 보완하는 독서 기록 서비스를 목표로 하였습니다.
+
 ### 서비스로 해결하고자 하는 문제
 
-> "줄거리가 길고 등장인물이 많으면 책을 계속 여러 번 확인해야 해서 불편해요"
+소설이나 장편 서사를 읽는 과정에서 다음의 불편함이 발생하는 것을 확인했습니다.
 
-- 읽는 중에 등장인물이 많아 헷갈려 다시 확인해야 하는 독서 경험
-  - 책에 담긴 등장인물과 장소 등의 요소를 기억하기 어려움
+- 등장인물이 많아질수록 인물 간 관계를 기억하기 어려움
+- 줄거리와 관련된 사건·장소를 한눈에 정리하기 어려움
+- 모르는 어휘나 책에서만 사용되는 개념적 단어의 의미가 정리되지 않아 어려움
+
+결과적으로 독자는 이야기에 몰입하는 도중에 내용을 다시 확인하는 경험을 하게 됩니다.
 
 ### 서비스 대상
 
-- 앱을 활용하여 독서 기록을 편리하게 하고 싶은 사람
-- <b>소설에 특화된 메모 기능(메모끼리의 관계도 관리)</b>를 통해 기록을 시각화하여 줄거리와 인물 간 관계를 정리하고 싶은 사람
+- 소설을 자주 읽는 사람
+- 독서 기록 앱을 사용하거나, 메모를 통해 독서를 정리하고자 하는 사람
+- 등장인물, 사건, 장소 등의 관계를 구조적으로 정리하고 싶은 사람
+
+위와 같이 소설이나 장편의 독서 경험을 체계적으로 정리하고 싶은 사람들을 서비스 대상으로 설정했습니다.
+
+## 기능 소개
+
+### 핵심 기능
+
+_독서 기록 및 기록 시각화를 중심으로_
+
+<table style="border: none !important; border-collapse: collapse !important;">
+  <tr style="border: none !important;">
+  <td style="border: none !important; padding: 5px;">
+    <b>책 검색 및 저장 기능</b>
+    <ul>
+      <li>기록하고 싶은 책을 검색하고 저장할 수 있습니다.</li>
+      <li>책명, 저자, 출판사 등을 입력하여 검색할 수 있습니다.</li>
+      <li>또는 책 정보를 직접 입력할 수 있습니다.</li>
+    </ul>
+  </td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/0f8c3581-423b-40e6-ac03-0391abb4d776" /></td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/e9b2df29-59f4-42ad-8113-2bd3e5c09028" /></td>
+  </tr>
+</table>
+
+<table style="border: none !important; border-collapse: collapse !important;">
+  <tr style="border: none !important;">
+  <td style="border: none !important; padding: 5px;">
+    <b>독서 기록 기능</b>
+    <ul>
+      <li>소설에 특화된 카테고리의 기록을 작성할 수 있습니다.</li>
+      <ul>
+        <li>등장인물</li>
+        <li>인상깊은 구절</li>
+        <li>텍스트/캔버스 메모</li>
+      </ul>
+    </ul>
+  </td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/efab7d1e-5900-4114-b238-600f16a4c265" /></td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/12b0a6d8-e4a2-4d29-aed9-9c5eb5758e82" /></td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/da48ebf0-6830-4dbc-ad8e-770be9221266" /></td>
+  </tr>
+</table>
+
+<table style="border: none !important; border-collapse: collapse !important;">
+  <tr style="border: none !important;">
+  <td style="border: none !important; padding: 5px;">
+    <b>그래프 시각화 기능</b>
+    <ul>
+      <li>캔버스 메모를 눌러 그래프를 만들 수 있는 캔버스를 사용할 수 있습니다.</li>
+      <li>등장인물과 구절을 아이템으로 시각화합니다.</li>
+      <li>등장인물끼리는 관계선을 연결하고 이름을 정의할 수 있습니다.</li>
+      <li>드라마의 인물 관계도처럼 인물의 관계를 정리하여<br>그래프 형태로 기록을 시각화할 수 있습니다.</li>
+    </ul>
+  </td>
+  <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/eccc3ad6-3bba-45cb-b170-edc5700fdfdf" /></td>
+  </tr>
+</table>
+
+### 부가 기능
+
+_독서 기록을 더 편리하게 할 수 있는 요소를 중심으로_
+
+- 바코드 스캔으로 책 저장하는 기능
+  - 책의 뒷 표지에 있는 바코드를 스캔하여 책의 정보를 불러와 저장하기
+  - 플래시 기능과 뒤로 가기/수동으로 책 등록하기 버튼 포함
+- 책의 텍스트를 촬영하거나, 또는 그런 이미지로부터 텍스트를 추출하는 기능
+  - 일일이 타이핑하지 않아도 텍스트를 기록할 수 있음
 
 ## 팀원 소개
 

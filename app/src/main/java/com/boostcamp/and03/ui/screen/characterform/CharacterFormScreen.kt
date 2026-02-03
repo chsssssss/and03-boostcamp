@@ -6,16 +6,16 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,9 +45,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
 import com.boostcamp.and03.ui.component.PhotoPickerBottomSheet
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.PersonImagePlaceholder
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
@@ -114,6 +117,16 @@ private fun CharacterFormScreen(
             galleryImage = uri
         }
 
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(CharacterFormAction.CloseExitConfirmationDialog)
+        } else if (uiState.isEdited) {
+            onAction(CharacterFormAction.OnBackClick)
+        } else {
+            onAction(CharacterFormAction.CloseScreen)
+        }
+    }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -143,39 +156,51 @@ private fun CharacterFormScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(And03Padding.PADDING_L)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            And03InfoSection(
-                title = stringResource(R.string.info_section_character_title),
-                description = stringResource(R.string.info_section_character_description)
-            )
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.Center)
+                )
+            }
+        } else {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                And03InfoSection(
+                    title = stringResource(R.string.info_section_character_title),
+                    description = stringResource(R.string.info_section_character_description)
+                )
 
             PersonImagePlaceholder(
                 imageUrl = null,
                 onClick = { onAction(CharacterFormAction.OnOpenImagePickerBottomSheet) }
             )
 
-            SingleLineInputSection(
-                value = uiState.name,
-                onValueChange = { onAction(CharacterFormAction.OnNameChange(name = it)) },
-                labelStringRes = R.string.character_form_name,
-                placeholderStringRes = R.string.character_form_enter_name_placeholder
-            )
+                SingleLineInputSection(
+                    value = uiState.name,
+                    onValueChange = { onAction(CharacterFormAction.OnNameChange(name = it)) },
+                    labelStringRes = R.string.character_form_name,
+                    placeholderStringRes = R.string.character_form_enter_name_placeholder
+                )
 
-            SingleLineInputSection(
-                value = uiState.role,
-                onValueChange = { onAction(CharacterFormAction.OnRoleChange(role = it)) },
-                labelStringRes = R.string.character_form_role,
-                placeholderStringRes = R.string.character_form_enter_role_placeholder
-            )
+                SingleLineInputSection(
+                    value = uiState.role,
+                    onValueChange = { onAction(CharacterFormAction.OnRoleChange(role = it)) },
+                    labelStringRes = R.string.character_form_role,
+                    placeholderStringRes = R.string.character_form_enter_role_placeholder
+                )
 
+                DescriptionInputSection(
+                    description = uiState.description,
+                    onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
+                )
+            }
             DescriptionInputSection(
                 description = uiState.description,
                 onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
@@ -192,6 +217,21 @@ private fun CharacterFormScreen(
                     }
                 )
             }
+        }
+
+        if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {
+            And03Dialog(
+                iconResId = R.drawable.ic_warning_filled,
+                iconColor = And03Theme.colors.error,
+                iconContentDescription = stringResource(id = R.string.content_description_caution),
+                title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                onDismiss = { onAction(CharacterFormAction.CloseScreen) },
+                onConfirm = { onAction(CharacterFormAction.CloseExitConfirmationDialog) },
+                description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                dismissAction = DialogDismissAction.Confirm
+            )
         }
     }
 }

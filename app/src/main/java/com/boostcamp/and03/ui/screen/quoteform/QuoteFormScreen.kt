@@ -1,6 +1,8 @@
 package com.boostcamp.and03.ui.screen.quoteform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,10 +39,11 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.AddTextByImageButton
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
+import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.component.OCRBottomSheet
-import com.boostcamp.and03.ui.component.PageInputSection
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -76,6 +80,16 @@ private fun QuoteFormScreen(
 ) {
     var isOCRBottomSheetVisible by remember { mutableStateOf(false) }
 
+    BackHandler {
+        if (uiState.isExitConfirmationDialogVisible) {
+            onAction(QuoteFormAction.CloseExitConfirmationDialog)
+        } else if (uiState.isEdited) {
+            onAction(QuoteFormAction.OnBackClick)
+        } else {
+            onAction(QuoteFormAction.CloseScreen)
+        }
+    }
+
     Scaffold(
         topBar = {
             And03AppBar(
@@ -105,38 +119,61 @@ private fun QuoteFormScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(And03Padding.PADDING_L)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            And03InfoSection(
-                title = stringResource(R.string.add_quote_info_title),
-                description = stringResource(R.string.add_quote_info_description)
-            )
-
-            QuoteInputSection(
-                quote = uiState.quote,
-                onQuoteChange = { onAction(QuoteFormAction.OnQuoteChange(quote = it)) },
-                onAddByImageClick = { isOCRBottomSheetVisible = true }
-            )
-
-            if (isOCRBottomSheetVisible) {
-                OCRBottomSheet(
-                    onDismiss = { isOCRBottomSheetVisible = false },
-                    onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
-                    onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.Center)
                 )
             }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(And03Padding.PADDING_L)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(And03Spacing.SPACE_L),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                And03InfoSection(
+                    title = stringResource(R.string.add_quote_info_title),
+                    description = stringResource(R.string.add_quote_info_description)
+                )
 
-            PageInputSection(
-                page = uiState.page,
-                onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
-                totalPage = uiState.totalPage
+                QuoteInputSection(
+                    quote = uiState.quote,
+                    onQuoteChange = { onAction(QuoteFormAction.OnQuoteChange(quote = it)) },
+                    onAddByImageClick = { isOCRBottomSheetVisible = true }
+                )
+
+                if (isOCRBottomSheetVisible) {
+                    OCRBottomSheet(
+                        onDismiss = { isOCRBottomSheetVisible = false },
+                        onCameraClick = { /* TODO: 텍스트 가져오기 기능 구현 */ },
+                        onGalleryClick = { /* TODO: 사진 촬영 기능 구현 */ }
+                    )
+                }
+
+                PageInputSection(
+                    page = uiState.page,
+                    onPageChange = { onAction(QuoteFormAction.OnPageChange(page = it)) },
+                    totalPage = uiState.totalPage
+                )
+            }
+        }
+
+        if (uiState.isEdited && uiState.isExitConfirmationDialogVisible) {
+            And03Dialog(
+                iconResId = R.drawable.ic_warning_filled,
+                iconColor = And03Theme.colors.error,
+                iconContentDescription = stringResource(id = R.string.content_description_caution),
+                title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                onDismiss = { onAction(QuoteFormAction.CloseScreen) },
+                onConfirm = { onAction(QuoteFormAction.CloseExitConfirmationDialog) },
+                description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                dismissAction = DialogDismissAction.Confirm
             )
         }
     }

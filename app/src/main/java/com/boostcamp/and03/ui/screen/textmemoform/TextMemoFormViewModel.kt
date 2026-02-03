@@ -36,13 +36,21 @@ class TextMemoFormViewModel @Inject constructor(
     private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     init {
-        _uiState.update { it.copy(totalPage = totalPage) }
-        viewModelScope.launch { loadTextMemo() }
+        _uiState.update {
+            it.copy(
+                totalPage = totalPage,
+                isLoading = memoId.isNotBlank()
+            )
+        }
+
+        if (memoId.isNotBlank()) {
+            viewModelScope.launch { loadTextMemo() }
+        }
     }
 
     fun onAction(action: TextMemoFormAction) {
         when (action) {
-            TextMemoFormAction.OnBackClick -> _event.trySend(TextMemoFormEvent.NavigateBack)
+            TextMemoFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
 
             TextMemoFormAction.OnSaveClick -> {
                 viewModelScope.launch {
@@ -68,12 +76,17 @@ class TextMemoFormViewModel @Inject constructor(
             is TextMemoFormAction.OnStartPageChange -> _uiState.update { it.copy(startPage = action.startPage) }
 
             is TextMemoFormAction.OnEndPageChange -> _uiState.update { it.copy(endPage = action.endPage) }
+
+            TextMemoFormAction.CloseExitConfirmationDialog -> _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+
+            TextMemoFormAction.CloseScreen -> {
+                _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+                _event.trySend(TextMemoFormEvent.NavigateBack)
+            }
         }
     }
 
     private suspend fun loadTextMemo() {
-        if (memoId.isBlank()) return
-
         val result = bookStorageRepository.getTextMemo(
             userId = userId,
             bookId = bookId,
@@ -87,7 +100,12 @@ class TextMemoFormViewModel @Inject constructor(
                 title = result.title,
                 content = result.content,
                 startPage = result.startPage.toString(),
-                endPage = if (isSamePage) "" else result.endPage.toString()
+                endPage = if (isSamePage) "" else result.endPage.toString(),
+                originalTitle = result.title,
+                originalContent = result.content,
+                originalStartPage = result.startPage.toString(),
+                originalEndPage = if (isSamePage) "" else result.endPage.toString(),
+                isLoading = false
             )
         }
     }

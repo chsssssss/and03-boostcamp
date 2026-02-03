@@ -15,4 +15,8 @@ sealed interface CharacterFormAction {
     data class OnRoleChange(val role: String): CharacterFormAction
 
     data class OnDescriptionChange(val description: String): CharacterFormAction
+
+    data object CloseExitConfirmationDialog : CharacterFormAction
+
+    data object CloseScreen : CharacterFormAction
 }

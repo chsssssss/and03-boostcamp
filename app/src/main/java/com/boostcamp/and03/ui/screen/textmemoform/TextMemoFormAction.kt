@@ -13,4 +13,8 @@ sealed interface TextMemoFormAction {
     data class OnStartPageChange(val startPage: String) : TextMemoFormAction
 
     data class OnEndPageChange(val endPage: String) : TextMemoFormAction
+
+    data object CloseExitConfirmationDialog : TextMemoFormAction
+
+    data object CloseScreen : TextMemoFormAction
 }
