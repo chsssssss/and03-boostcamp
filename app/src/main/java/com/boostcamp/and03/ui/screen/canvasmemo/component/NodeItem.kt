@@ -69,25 +69,7 @@ fun NodeItem(
                 And03Theme.shapes.defaultCorner
             )
     ) {
-        DropdownMenuContainer(
-            modifier = Modifier.align(Alignment.TopEnd),
-            trigger = {},
-            menuContent = { closeMenu ->
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.more_vert_edit)) },
-                    onClick = {
-                        closeMenu()
-                    }
-                )
 
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.more_vert_delete)) },
-                    onClick = {
-                        closeMenu()
-                    }
-                )
-            }
-        )
 
         Column(
             modifier = Modifier

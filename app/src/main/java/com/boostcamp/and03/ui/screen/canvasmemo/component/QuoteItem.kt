@@ -79,27 +79,7 @@ fun QuoteItem(
                 )
             }
     ) {
-        DropdownMenuContainer(
-            modifier = Modifier.align(Alignment.TopEnd),
-            trigger = {},
-            menuContent = { closeMenu ->
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.more_vert_edit)) },
-                    onClick = {
-                        closeMenu()
-                        // onEditClick()
-                    }
-                )
 
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.more_vert_delete)) },
-                    onClick = {
-                        closeMenu()
-                        // onDeleteClick()
-                    }
-                )
-            }
-        )
 
         Row(
             modifier = Modifier.padding(And03Spacing.SPACE_L),
