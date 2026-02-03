@@ -34,7 +34,7 @@ fun PersonImagePlaceholder(
     profileType: ProfileType,
     imageUrl: String?,
     iconColor: Color,
-    onClick: (() -> Unit)?,
+    onClick: (() -> Unit)? = null,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
