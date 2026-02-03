@@ -84,7 +84,7 @@ class CharacterDataSourceImpl @Inject constructor(
                 role = data["role"] as? String ?: "",
                 description = data["description"] as? String ?: "",
                 name = data["name"] as? String ?: "",
-                profileImgUri = data["profileImgUri"] as? String,
+                profileImgUri = data["imageUrl"] as? String,
                 profileType = data["profileType"] as? String ?: "",
                 profileColor = data["profileColor"] as? String,
             )
