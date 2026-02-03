@@ -233,7 +233,7 @@ private fun CanvasMemoScreen(
                             if (uiState.quoteToPlace != null || uiState.nodeToPlace != null) {
                                 detectTapGestures { tapOffset ->
                                     uiState.quoteToPlace?.let {
-                                        onAction(CanvasMemoAction.TapCanvas(tapOffset))
+                                        onAction(CanvasMemoAction.AddQuoteAtPosition(tapOffset))
                                     } ?: uiState.nodeToPlace?.let {
                                         onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
                                     }

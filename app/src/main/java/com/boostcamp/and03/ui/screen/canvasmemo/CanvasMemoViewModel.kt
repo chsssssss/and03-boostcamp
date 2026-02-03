@@ -1,6 +1,5 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
-import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.SavedStateHandle
@@ -159,7 +158,7 @@ class CanvasMemoViewModel @Inject constructor(
 
             CanvasMemoAction.CancelPlaceItem -> handleCancelPlaceItem()
 
-            is CanvasMemoAction.TapCanvas -> handleTapCanvas(action.tapPositionOnScreen)
+            is CanvasMemoAction.AddQuoteAtPosition -> handleAddQuoteAtPosition(action.tapPositionOnScreen)
 
             CanvasMemoAction.HideBottomBar -> setBottomBarVisible(false)
 
@@ -502,7 +501,7 @@ class CanvasMemoViewModel @Inject constructor(
      * 화면 좌표(tapPositionOnScreen)를 캔버스 좌표계로 변환합니다.
      * 이후 바텀바를 다시 표시합니다.
      */
-    private fun handleTapCanvas(tapPositionOnScreen: Offset) {
+    private fun handleAddQuoteAtPosition(tapPositionOnScreen: Offset) {
         val quote = _uiState.value.quoteToPlace ?: return
         val sizeDp = _uiState.value.quoteItemSizePx ?: return
 
