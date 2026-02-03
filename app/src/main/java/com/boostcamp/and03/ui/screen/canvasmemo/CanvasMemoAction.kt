@@ -81,6 +81,7 @@ sealed interface CanvasMemoAction {
     data class PrepareNodePlacement(val character: CharacterUiModel) : CanvasMemoAction
 
     data class AddNodeAtPosition(val positionOnScreen: Offset) : CanvasMemoAction
+    data class UpdateNodeItemSize(val size: IntSize) : CanvasMemoAction
 
     data object EnterDeleteMode : CanvasMemoAction
 

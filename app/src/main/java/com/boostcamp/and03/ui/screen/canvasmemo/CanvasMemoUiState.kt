@@ -55,6 +55,7 @@ data class CanvasMemoUiState(
     val quoteToPlace: QuoteUiModel? = null,
     val quoteItemSizePx: IntSize? = null,
     val nodeToPlace: CharacterUiModel? = null,
+    val nodeItemSizePx: IntSize? = null,
 
     val hasUnsavedChanges: Boolean = false,
 

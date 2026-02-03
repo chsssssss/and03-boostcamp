@@ -162,6 +162,8 @@
     <string name="character_form_enter_role_placeholder">등장인물의 역할을 입력하세요</string>
     <string name="character_form_description">설명</string>
     <string name="character_form_enter_description_placeholder">등장인물을 설명해주세요</string>
+    <string name="canvas_memo_place_node_message">노드를 추가할 위치를 선택해주세요.</string>
+
 
     <!-- InfoSection -->
     <string name="info_section_character_title">등장인물을 새로 추가해보세요.</string>

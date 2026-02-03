@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -179,6 +180,27 @@ private fun CanvasMemoScreen(
                         onItemClick = { type ->
                             onAction(CanvasMemoAction.OnBottomBarClick(type))
                         }
+                    )
+                }
+                uiState.nodeToPlace != null -> {
+                    AlertMessageCard(
+                        message = stringResource(R.string.canvas_memo_place_node_message),
+                        actions = listOf(
+                            AlertAction(
+                                text = stringResource(R.string.common_cancel),
+                                onClick = { onAction(CanvasMemoAction.CancelPlaceItem) }
+                            )
+                        ),
+                        modifier = Modifier
+                            .padding(
+                                vertical = And03Padding.PADDING_L,
+                                horizontal = And03Padding.PADDING_XL
+                            )
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(
+                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                                )
+                            )
                     )
                 }
 
@@ -595,6 +617,23 @@ private fun CanvasMemoScreen(
                         )
                     }
                 }
+                if (uiState.nodeToPlace != null && uiState.nodeItemSizePx == null) {
+                    Box(
+                        modifier = Modifier.alpha(0f)
+                    ) {
+                        NodeItem(
+                            title = uiState.nodeToPlace.name,
+                            content = uiState.nodeToPlace.description,
+                            isHighlighted = false,
+                            modifier = Modifier.onGloballyPositioned { coords ->
+                                onAction(
+                                    CanvasMemoAction.UpdateNodeItemSize(coords.size)
+                                )
+                            }
+                        )
+                    }
+                }
+
             }
         }
     }
