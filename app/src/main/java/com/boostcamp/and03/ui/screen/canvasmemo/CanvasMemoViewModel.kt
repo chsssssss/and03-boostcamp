@@ -1019,16 +1019,17 @@ class CanvasMemoViewModel @Inject constructor(
                 )
             )
 
-            // 저장 후 다이얼로그 닫기
             _uiState.update {
                 it.copy(
                     isAddCharacterDialogVisible = false,
+                    bottomSheetType = CanvasMemoBottomSheetType.AddCharacter,
                     characterNameState = TextFieldState(),
                     characterDescState = TextFieldState()
                 )
             }
         }
     }
+
 
 
 
