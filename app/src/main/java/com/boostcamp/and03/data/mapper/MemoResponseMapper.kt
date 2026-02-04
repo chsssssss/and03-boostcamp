@@ -56,9 +56,11 @@ object MemoResponseMapper {
                 content = it["content"] as? String ?: "",
                 nodeType = it["nodeType"] as? String ?: "",
                 page = (it["page"] as? Long)?.toInt() ?: 0,
-                imageUrl = it["imageUrl"] as? String ?: "",
+                imageUrl = it["imageUrl"] as? String,
                 x = (it["x"] as? Double)?.toFloat() ?: 0f,
                 y = (it["y"] as? Double)?.toFloat() ?: 0f,
+                profileType = it["profileType"] as? String,
+                iconColor = it["iconColor"] as? String,
             )
         }
 
@@ -87,9 +89,11 @@ object MemoNodeMapper {
             content = data["content"] as? String ?: "",
             nodeType = data["nodeType"] as? String ?: "",
             page = (data["page"] as? Long)?.toInt() ?: 0,
-            imageUrl = data["imageUrl"] as? String ?: "",
+            imageUrl = data["imageUrl"] as? String,
             x = (data["x"] as? Double)?.toFloat() ?: 0f,
-            y = (data["y"] as? Double)?.toFloat() ?: 0f
+            y = (data["y"] as? Double)?.toFloat() ?: 0f,
+            profileType = data["profileType"] as? String,
+            iconColor = data["iconColor"] as? String,
         )
 }
 

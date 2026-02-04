@@ -2,6 +2,7 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -177,6 +178,7 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.UpdateQuoteItemSize -> {
                 handleUpdateQuoteItemSize(action)
             }
+
             is CanvasMemoAction.PrepareNodePlacement ->
                 handlePrepareNodePlacement(action.character)
 
@@ -656,73 +658,6 @@ class CanvasMemoViewModel @Inject constructor(
         updateNodeSelection(RelationSelection.empty())
     }
 
-//    private fun handleNodeClick(action: CanvasMemoAction.OnNodeClick) {
-//        val selection = _uiState.value.relationSelection
-//
-//        when {
-//            // from이 아직 없을 때
-//            selection.fromNodeId == null -> {
-//                val updated = selection.copy(fromNodeId = action.nodeId)
-//
-//                _uiState.update {
-//                    it.copy(relationSelection = updated)
-//                }
-//                updateNodeSelection(updated)
-//            }
-//
-//            // from은 있는데 같은 노드를 다시 클릭한 경우
-//            action.nodeId == selection.fromNodeId && selection.toNodeId == null -> {
-//                val updated = selection.copy(fromNodeId = null)
-//
-//                _uiState.update {
-//                    it.copy(relationSelection = updated)
-//                }
-//                updateNodeSelection(updated)
-//            }
-//
-//            // to가 아직 없을 때 + from과 다른 노드
-//            selection.toNodeId == null -> {
-//                val updated = selection.copy(toNodeId = action.nodeId)
-//
-//                _uiState.update {
-//                    it.copy(
-//                        relationSelection = updated,
-//                        isRelationDialogVisible = updated.isComplete,
-//                        relationNameState = TextFieldState()
-//                    )
-//                }
-//
-//                updateNodeSelection(updated)
-//            }
-//
-//            // 둘 다 선택되었고 to와 같은 노드를 클릭한 경우
-//            action.nodeId == selection.toNodeId -> {
-//                val updated = selection.copy(toNodeId = null)
-//
-//                _uiState.update {
-//                    it.copy(
-//                        relationSelection = updated,
-//                    )
-//                }
-//                updateNodeSelection(updated)
-//            }
-//
-//            // 둘 다 선택되었고 from과 같은 노드를 클릭한 경우
-//            action.nodeId == selection.fromNodeId -> {
-//                val updated = selection.copy(fromNodeId = selection.toNodeId, toNodeId = null)
-//
-//                _uiState.update {
-//                    it.copy(
-//                        relationSelection = updated,
-//                    )
-//                }
-//                updateNodeSelection(updated)
-//            }
-//
-//        }
-//        Log.d("CanvasMemoViewModel", "handleNodeClick: ${_uiState.value.relationSelection}")
-//    }
-
     /**
      * 관계 추가 시 지정했던 Id 데이터를 토대로 MemoNodeUiModel을 생성합니다.
      */
@@ -914,7 +849,9 @@ class CanvasMemoViewModel @Inject constructor(
             name = character.name,
             description = character.description,
             offset = canvasPosition,
-            imageUrl = ""
+            imageUrl = character.imageUri,
+            iconColor = character.profileColor?.toArgb()?.let { String.format("#%08X", it) },
+            profileType = character.profileType,
         )
 
         _uiState.update {

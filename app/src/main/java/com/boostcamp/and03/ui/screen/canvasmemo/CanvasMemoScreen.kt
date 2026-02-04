@@ -34,6 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -62,11 +67,14 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
+import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
+import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.coroutines.launch
 
@@ -151,7 +159,7 @@ private fun CanvasMemoScreen(
             when {
                 uiState.isBottomBarVisible -> {
                     MainBottomBar(
-                            modifier = Modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
@@ -219,6 +227,7 @@ private fun CanvasMemoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .clipToBounds()
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -382,8 +391,12 @@ private fun CanvasMemoScreen(
                         relationNameState = uiState.relationNameState,
                         fromName = relationDialogState.fromName,
                         toName = relationDialogState.toName,
+                        fromProfileType = relationDialogState.fromProfileType,
+                        toProfileType = relationDialogState.toProfileType,
                         fromImageUrl = relationDialogState.fromImageUrl,
                         toImageUrl = relationDialogState.toImageUrl,
+                        fromIconColor = relationDialogState.fromIconColor,
+                        toIconColor = relationDialogState.toIconColor,
                         onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
                         onConfirm = {
                             onAction(
@@ -394,8 +407,6 @@ private fun CanvasMemoScreen(
                                 )
                             )
                         },
-                        onFromImageClick = { /* 인물 선택 로직 */ },
-                        onToImageClick = { /* 인물 선택 로직 */ }
                     )
                 }
 
@@ -514,31 +525,6 @@ private fun CanvasMemoScreen(
                         }
                     }
                 }
-
-                // Dialog 표시
-//                if (uiState.isRelationDialogVisible) {
-//                    RelationEditorDialog(
-//                        relationNameState = uiState.relationNameState,
-//                        fromName = uiState.fromCharacterName,
-//                        toName = uiState.toCharacterName,
-//                        onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
-//                        onConfirm = { /* 관계 저장 로직 */ },
-//                        onFromImageClick = { /* 인물 선택 로직 */ },
-//                        onToImageClick = { /* 인물 선택 로직 */ }
-//                    )
-//                }
-//
-//                if (uiState.isAddCharacterDialogVisible) {
-//                    AddCharacterDialog(
-//                        nameState = uiState.characterNameState,
-//                        descState = uiState.characterDescState,
-//                        enabled = uiState.characterNameState.text.isNotBlank(),
-//                        onDismiss = { onAction(CanvasMemoAction.CloseAddCharacterDialog) },
-//                        onConfirm = { /* 캐릭터 저장 */ },
-//                        onClickAddImage = { /* 이미지 추가 */ }
-//                    )
-//                }
-//            }
 
                 ToolExpandableButton(
                     modifier = Modifier

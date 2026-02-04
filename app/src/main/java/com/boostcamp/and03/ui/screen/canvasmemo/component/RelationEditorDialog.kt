@@ -1,5 +1,6 @@
 package com.boostcamp.and03.ui.screen.canvasmemo.component
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.input.TextFieldState
@@ -12,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.boostcamp.and03.R
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.ui.component.And03ActionDialog
 import com.boostcamp.and03.ui.component.EditableTextField
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -20,14 +22,22 @@ import com.boostcamp.and03.ui.theme.And03Theme
 @Composable
 fun RelationEditorDialog(
     relationNameState: TextFieldState,
+
     fromName: String,
     toName: String,
+
+    fromProfileType: ProfileType,
     fromImageUrl: String,
+    fromIconColor: Color,
+
+    toProfileType: ProfileType,
     toImageUrl: String,
+    toIconColor: Color,
+
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    onFromImageClick: () -> Unit,
-    onToImageClick: () -> Unit,
+//    onFromImageClick: () -> Unit,
+//    onToImageClick: () -> Unit,
 ) {
     And03ActionDialog(
         title = stringResource(R.string.relation_dialog_title),
@@ -41,8 +51,9 @@ fun RelationEditorDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PersonImagePlaceholder(
+                    profileType = fromProfileType,
                     imageUrl = fromImageUrl,
-                    onClick = onFromImageClick
+                    iconColor = fromIconColor,
                 )
 
                 Icon(
@@ -52,8 +63,9 @@ fun RelationEditorDialog(
                 )
 
                 PersonImagePlaceholder(
+                    profileType = toProfileType,
                     imageUrl = toImageUrl,
-                    onClick = onToImageClick
+                    iconColor = toIconColor,
                 )
             }
 
@@ -86,9 +98,11 @@ fun RelationEditorDialogPreview() {
         toName = "이름2",
         fromImageUrl = "",
         toImageUrl = "",
+        fromProfileType = ProfileType.COLOR,
+        toProfileType = ProfileType.COLOR,
+        fromIconColor = Color(0xFF1E88E5),
+        toIconColor = Color(0xFF1E88E5),
         onDismiss = {},
         onConfirm = {},
-        onFromImageClick = {},
-        onToImageClick = {},
     )
 }
