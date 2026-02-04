@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.domain.model.MemoGraph
 import com.boostcamp.and03.domain.model.MemoNode
@@ -214,6 +215,11 @@ class CanvasMemoViewModel @Inject constructor(
             CanvasMemoAction.CancelDeleteMode -> handleCancelDeleteMode()
 
             CanvasMemoAction.CancelRelationStep -> handleCancelRelationStep()
+
+            CanvasMemoAction.OpenAddCharacterDialog -> handleOpenAddCharacterDialog()
+
+            CanvasMemoAction.SaveCharacter ->  handleSaveCharacter()
+
         }
     }
 
@@ -269,6 +275,21 @@ class CanvasMemoViewModel @Inject constructor(
                     fromNodeId = action.fromNodeId,
                     toNodeId = action.toNodeId
                 )
+            )
+        }
+    }
+
+    /**
+     * 등장인물 추가 다이얼로그를 엽니다.
+     * 바텀시트는 닫고 Dialog만 띄웁니다.
+     */
+    private fun handleOpenAddCharacterDialog() {
+        _uiState.update {
+            it.copy(
+                bottomSheetType = null,
+                isAddCharacterDialogVisible = true,
+                characterNameState = TextFieldState(),
+                characterDescState = TextFieldState()
             )
         }
     }
@@ -441,6 +462,7 @@ class CanvasMemoViewModel @Inject constructor(
      * 등장인물과 구절의 경우 바텀 시트 상태를 활성화합니다.
      */
     private fun handleBottomBarClick(action: CanvasMemoAction.OnBottomBarClick) {
+
         val sheetType = when (action.type) {
             MainBottomBarType.NODE -> CanvasMemoBottomSheetType.AddCharacter
             MainBottomBarType.QUOTE -> CanvasMemoBottomSheetType.AddQuote
@@ -448,9 +470,14 @@ class CanvasMemoViewModel @Inject constructor(
         }
 
         when (action.type) {
-            MainBottomBarType.RELATION -> enterRelationMode()
 
-            MainBottomBarType.DELETE ->  enterDeleteMode()
+            MainBottomBarType.RELATION -> {
+                enterRelationMode()
+            }
+
+            MainBottomBarType.DELETE -> {
+                enterDeleteMode()
+            }
 
             else -> {
                 _uiState.update {
@@ -461,14 +488,8 @@ class CanvasMemoViewModel @Inject constructor(
                 }
             }
         }
-
-        _uiState.update {
-            it.copy(
-                selectedBottomBarType = action.type,
-                bottomSheetType = sheetType
-            )
-        }
     }
+
 
     /**
      * 아이템을 배치하지 않고 취소합니다.
@@ -887,7 +908,7 @@ class CanvasMemoViewModel @Inject constructor(
     private fun handleSelectDeleteItem(itemId: String) {
         _uiState.update {
             it.copy(
-                selectedDeleteItemIds = if(itemId in _uiState.value.selectedDeleteItemIds) {
+                selectedDeleteItemIds = if (itemId in _uiState.value.selectedDeleteItemIds) {
                     (it.selectedDeleteItemIds - itemId).toImmutableList()
                 } else {
                     (it.selectedDeleteItemIds + itemId).toImmutableList()
@@ -921,8 +942,8 @@ class CanvasMemoViewModel @Inject constructor(
      * 선택한 아이템이 없을 경우 다이얼로그를 열지 않고 삭제 모드를 종료합니다.
      */
     private fun handleOpenSureDeleteDialog() {
-        _uiState.update{
-            if(it.selectedDeleteItemIds.isNotEmpty()) {
+        _uiState.update {
+            if (it.selectedDeleteItemIds.isNotEmpty()) {
                 it.copy(isSureDeleteDialogVisible = true)
             } else {
                 it.copy(
@@ -947,6 +968,7 @@ class CanvasMemoViewModel @Inject constructor(
             )
         }
     }
+
 
     private fun handleCancelRelationStep() {
         when (_uiState.value.relationAddStep) {
@@ -979,4 +1001,35 @@ class CanvasMemoViewModel @Inject constructor(
             RelationAddStep.NONE -> Unit
         }
     }
+
+
+    private fun handleSaveCharacter() {
+        val name = _uiState.value.characterNameState.text.toString()
+        val desc = _uiState.value.characterDescState.text.toString()
+
+        if (name.isBlank()) return
+
+        viewModelScope.launch {
+            bookStorageRepository.addCharacter(
+                userId = userId,
+                bookId = bookId,
+                character = CharacterRequest(
+                    name = name,
+                    description = desc
+                )
+            )
+
+            // 저장 후 다이얼로그 닫기
+            _uiState.update {
+                it.copy(
+                    isAddCharacterDialogVisible = false,
+                    characterNameState = TextFieldState(),
+                    characterDescState = TextFieldState()
+                )
+            }
+        }
+    }
+
+
+
 }
