@@ -1,17 +1,25 @@
 package com.boostcamp.and03.data.datasource.remote.character
 
+import android.net.Uri
 import android.util.Log
+import com.boostcamp.and03.data.mapper.toEntity
 import com.boostcamp.and03.data.model.request.CharacterRequest
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.data.model.response.CharacterResponse
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import jakarta.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.io.File
+import java.util.UUID
+import androidx.core.net.toUri
 
 class CharacterDataSourceImpl @Inject constructor(
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage,
 ) : CharacterDataSource {
     override fun getCharacters(
         userId: String,
@@ -36,6 +44,9 @@ class CharacterDataSourceImpl @Inject constructor(
                                 role = data["role"] as? String ?: "",
                                 description = data["description"] as? String ?: "",
                                 name = data["name"] as? String ?: "",
+                                profileImgUri = data["imageUrl"] as? String,
+                                profileType = data["profileType"] as? String ?: "",
+                                profileColor = data["profileColor"] as? String,
                             )
                         }
                     }
@@ -73,6 +84,9 @@ class CharacterDataSourceImpl @Inject constructor(
                 role = data["role"] as? String ?: "",
                 description = data["description"] as? String ?: "",
                 name = data["name"] as? String ?: "",
+                profileImgUri = data["imageUrl"] as? String,
+                profileType = data["profileType"] as? String ?: "",
+                profileColor = data["profileColor"] as? String,
             )
 
         } catch (e: Exception) {
@@ -95,7 +109,21 @@ class CharacterDataSourceImpl @Inject constructor(
                 .collection("character")
 
             val newDocRef = collectionRef.document()
-            newDocRef.set(character).await()
+            val characterId = newDocRef.id
+
+            val imageUrl = character.profileImgUri?.let { uri ->
+                val imageRef = storage.reference.child("characters/${UUID.randomUUID()}.jpg")
+
+                imageRef.putFile(uri.toUri()).await()
+                imageRef.downloadUrl.await().toString()
+            }
+
+            val entity = character.toEntity(
+                id = characterId,
+                imageUrl = imageUrl
+            )
+
+            newDocRef.set(entity).await()
 
             Log.d("CharacterDataSourceImpl", "Character added: ${newDocRef.id}")
         } catch (e: Exception) {
@@ -110,15 +138,26 @@ class CharacterDataSourceImpl @Inject constructor(
         characterId: String
     ) {
         try {
-            db.collection("user")
+            val characterRef = db.collection("user")
                 .document(userId)
                 .collection("book")
                 .document(bookId)
                 .collection("character")
                 .document(characterId)
-                .delete()
-                .await()
 
+            val snapshot = characterRef.get().await()
+            val imageUrl = snapshot.getString("imageUrl")
+
+            if (imageUrl != null) {
+                try {
+                    val imageRef = storage.getReferenceFromUrl(imageUrl)
+                    imageRef.delete().await()
+                } catch (e: Exception) {
+                    Log.e("CharacterDataSourceImpl", "Failed to delete image: ${e.message}")
+                }
+            }
+
+            characterRef.delete().await()
             Log.d("CharacterDataSourceImpl", "Character deleted: $characterId")
         } catch (e: Exception) {
             Log.e("CharacterDataSourceImpl", "Failed to delete character: ${e.message}")

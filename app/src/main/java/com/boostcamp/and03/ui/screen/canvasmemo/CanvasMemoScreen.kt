@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -251,6 +252,7 @@ private fun CanvasMemoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .clipToBounds()
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -394,8 +396,12 @@ private fun CanvasMemoScreen(
                         relationNameState = uiState.relationNameState,
                         fromName = relationDialogState.fromName,
                         toName = relationDialogState.toName,
+                        fromProfileType = relationDialogState.fromProfileType,
+                        toProfileType = relationDialogState.toProfileType,
                         fromImageUrl = relationDialogState.fromImageUrl,
                         toImageUrl = relationDialogState.toImageUrl,
+                        fromIconColor = relationDialogState.fromIconColor,
+                        toIconColor = relationDialogState.toIconColor,
                         onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
                         onConfirm = {
                             onAction(
@@ -406,8 +412,6 @@ private fun CanvasMemoScreen(
                                 )
                             )
                         },
-                        onFromImageClick = { /* 인물 선택 로직 */ },
-                        onToImageClick = { /* 인물 선택 로직 */ }
                     )
                 }
 

@@ -1,6 +1,7 @@
 package com.boostcamp.and03.data.repository.bookstorage
 
 import com.boostcamp.and03.data.model.request.BookStorageRequest
+import com.boostcamp.and03.data.model.request.CharacterRequest
 import com.boostcamp.and03.data.model.response.BookDetailResponse
 import com.boostcamp.and03.data.model.response.BookStorageResponse
 import com.boostcamp.and03.data.model.response.CharacterResponse
@@ -41,7 +42,7 @@ interface BookStorageRepository {
     suspend fun addCharacter(
         userId: String,
         bookId: String,
-        character: CharacterUiModel
+        character: CharacterRequest
     )
 
     suspend fun deleteCharacter(

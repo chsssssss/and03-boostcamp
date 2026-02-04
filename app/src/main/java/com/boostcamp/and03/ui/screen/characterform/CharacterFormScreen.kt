@@ -1,5 +1,12 @@
 package com.boostcamp.and03.ui.screen.characterform
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +30,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
@@ -37,6 +49,7 @@ import com.boostcamp.and03.ui.component.And03Button
 import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.And03InfoSection
 import com.boostcamp.and03.ui.component.ButtonVariant
+import com.boostcamp.and03.ui.component.PhotoPickerBottomSheet
 import com.boostcamp.and03.ui.component.DialogDismissAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.PersonImagePlaceholder
 import com.boostcamp.and03.ui.theme.And03ComponentSize
@@ -44,6 +57,7 @@ import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
+import com.boostcamp.and03.ui.util.createTempImageUri
 
 private object DescriptionInputSectionValues {
     const val MAX_CHARACTER_COUNT = 500
@@ -74,6 +88,46 @@ private fun CharacterFormScreen(
     onAction: (CharacterFormAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    var preview by remember { mutableStateOf<Bitmap?>(null) }
+    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val requestCameraPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasCameraPermission = granted
+    }
+
+    val getTakePicture =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) { success ->
+            if (success) {
+                tempImageUri?.let {
+                    onAction(CharacterFormAction.OnImageSelected(it))
+                }
+            }
+            Log.d("CharacterFormScreen", "getTakePicture: $success")
+
+        }
+
+    val getContentImage =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri ->
+            uri?.let {
+                onAction(CharacterFormAction.OnImageSelected(it))
+            }
+            Log.d("CharacterFormScreen", "getContentImage: $uri")
+        }
+
     BackHandler {
         if (uiState.isExitConfirmationDialogVisible) {
             onAction(CharacterFormAction.CloseExitConfirmationDialog)
@@ -93,7 +147,7 @@ private fun CharacterFormScreen(
         },
         bottomBar = {
             And03Button(
-                text = if(!uiState.isSaving) {
+                text = if (!uiState.isSaving) {
                     stringResource(id = R.string.add_memo_save_button_text)
                 } else {
                     stringResource(id = R.string.add_memo_saving_button_text)
@@ -135,8 +189,10 @@ private fun CharacterFormScreen(
                 )
 
                 PersonImagePlaceholder(
-                    imageUrl = null,
-                    onClick = { onAction(CharacterFormAction.OnAddImageClick) }
+                    iconColor = uiState.profileColor,
+                    imageUrl = uiState.imageUrl,
+                    profileType = uiState.profileType,
+                    onClick = { onAction(CharacterFormAction.OnOpenImagePickerBottomSheet) }
                 )
 
                 SingleLineInputSection(
@@ -155,7 +211,36 @@ private fun CharacterFormScreen(
 
                 DescriptionInputSection(
                     description = uiState.description,
-                    onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
+                    onDescriptionChange = {
+                        onAction(
+                            CharacterFormAction.OnDescriptionChange(
+                                description = it
+                            )
+                        )
+                    }
+                )
+            }
+
+            if (uiState.isVisibleBottomSheet) {
+                PhotoPickerBottomSheet(
+                    onDismiss = { onAction(CharacterFormAction.OnDismissImagePickerBottomSheet) },
+                    onCameraClick = {
+                        if (hasCameraPermission) {
+                            val uri = createTempImageUri(context)
+                            tempImageUri = uri
+                            getTakePicture.launch(uri)
+                        } else {
+                            requestCameraPermission.launch(Manifest.permission.CAMERA)
+                        }
+                        onAction(CharacterFormAction.OnDismissImagePickerBottomSheet)
+                    },
+                    onGalleryClick = {
+                        val uri = createTempImageUri(context)
+                        tempImageUri = uri
+                        getContentImage.launch("image/*")
+
+                        onAction(CharacterFormAction.OnDismissImagePickerBottomSheet)
+                    }
                 )
             }
         }
@@ -226,7 +311,11 @@ private fun DescriptionInputSection(
 
         OutlinedTextField(
             value = description,
-            onValueChange = { if (it.length <= DescriptionInputSectionValues.MAX_CHARACTER_COUNT) onDescriptionChange(it) },
+            onValueChange = {
+                if (it.length <= DescriptionInputSectionValues.MAX_CHARACTER_COUNT) onDescriptionChange(
+                    it
+                )
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .height(And03ComponentSize.TEXT_FIELD_HEIGHT_L),

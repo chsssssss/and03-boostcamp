@@ -237,11 +237,13 @@ class CanvasMemoDataSourceImpl @Inject constructor(
                 id = document.id,
                 title = nodeData["title"] as? String ?: "",
                 content = nodeData["content"] as? String ?: "",
-                imageUrl = nodeData["imageUrl"] as? String ?: "",
+                imageUrl = nodeData["imageUrl"] as? String,
                 nodeType = nodeData["nodeType"] as? String ?: "",
                 page = (nodeData["page"] as? Long)?.toInt() ?: 0,
                 x = (nodeData["x"] as? Double)?.toFloat() ?: 0f,
-                y = (nodeData["y"] as? Double)?.toFloat() ?: 0f
+                y = (nodeData["y"] as? Double)?.toFloat() ?: 0f,
+                profileType = nodeData["profileType"] as? String,
+                iconColor = nodeData["iconColor"] as? String,
             )
         }
     }

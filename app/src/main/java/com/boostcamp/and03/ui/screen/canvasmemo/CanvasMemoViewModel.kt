@@ -3,6 +3,7 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -179,6 +180,7 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.UpdateQuoteItemSize -> {
                 handleUpdateQuoteItemSize(action)
             }
+
             is CanvasMemoAction.PrepareNodePlacement ->
                 handlePrepareNodePlacement(action.character)
 
@@ -188,8 +190,6 @@ class CanvasMemoViewModel @Inject constructor(
             is CanvasMemoAction.UpdateNodeItemSize -> {
                 _uiState.update { it.copy(nodeItemSizePx = action.size) }
             }
-
-
 
 
             is CanvasMemoAction.ZoomCanvasByGesture -> {
@@ -883,6 +883,7 @@ class CanvasMemoViewModel @Inject constructor(
             )
         }
     }
+
     private fun handleAddNodeAtPosition(tapPositionOnScreen: Offset) {
         val character = _uiState.value.nodeToPlace ?: return
         val size = _uiState.value.nodeItemSizePx ?: return
@@ -905,7 +906,9 @@ class CanvasMemoViewModel @Inject constructor(
             name = character.name,
             description = character.description,
             offset = canvasPosition,
-            imageUrl = ""
+            imageUrl = character.imageUri,
+            iconColor = character.profileColor?.toArgb()?.let { String.format("#%08X", it) },
+            profileType = character.profileType,
         )
 
         _uiState.update {
@@ -918,9 +921,6 @@ class CanvasMemoViewModel @Inject constructor(
             )
         }
     }
-
-
-
 
 
 }

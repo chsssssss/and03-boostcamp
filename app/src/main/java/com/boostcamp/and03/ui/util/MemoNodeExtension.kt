@@ -1,5 +1,7 @@
 package com.boostcamp.and03.ui.util
 
+import androidx.compose.ui.graphics.Color
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.domain.model.MemoNode
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 
@@ -19,7 +21,14 @@ fun Map<String, MemoNodeUiModel>.getCharacterName(id: String?): String? =
     getNodeProperty<MemoNode.CharacterNode, String>(id) { it.name }
 
 fun Map<String, MemoNodeUiModel>.getCharacterImage(id: String?): String? =
-    getNodeProperty<MemoNode.CharacterNode, String>(id) { it.imageUrl }
+    getNodeProperty<MemoNode.CharacterNode, String>(id) { it.imageUrl?: "" }
+
+fun Map<String, MemoNodeUiModel>.getIconColor(id: String?): Color? =
+    getNodeProperty<MemoNode.CharacterNode, String>(id) { it.iconColor ?: "" }
+        ?.toColorOrNull()
+
+fun Map<String, MemoNodeUiModel>.getProfileType(id: String?): ProfileType? =
+    getNodeProperty<MemoNode.CharacterNode, ProfileType>(id) { it.profileType ?: ProfileType.COLOR }
 
 fun Map<String, MemoNodeUiModel>.getQuoteContent(id: String?): String? =
     getNodeProperty<MemoNode.QuoteNode, String>(id) { it.content }

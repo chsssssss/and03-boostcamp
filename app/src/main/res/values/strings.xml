@@ -41,6 +41,12 @@
     <string name="ocr_bottom_sheet_select_image">이미지에서 가져오기</string>
     <string name="ocr_bottom_sheet_select_image_description">기기에 저장된 사진을 선택합니다</string>
 
+    <!-- 이미지 추가 바텀 시트 문자열 -->
+    <string name="img_picker_bottom_sheet_take_a_photo">촬영하기</string>
+    <string name="img_picker_sheet_take_a_photo_description">등장인물 프로필 사진을 직접 촬영합니다</string>
+    <string name="img_picker_sheet_select_image">갤러리에서 가져오기</string>
+    <string name="img_picker_sheet_select_image_description">기기에 저장된 사진을 선택합니다</string>
+
     <!-- 책 목록 화면 -->
     <string name="book_list_title">책 목록</string>
     <string name="book_list_empty_book">저장된 책이 없어요.</string>
@@ -114,6 +120,7 @@
     <string name="content_description_confirm">확인</string>
     <string name="content_description_add_book_button">책을 검색하거나 입력하여 책을 추가합니다</string>
     <string name="content_description_save_button">저장하기</string>
+    <string name="content_description_character_basic_icon">등장인물 기본 아이콘</string>
     <string name="content_description_caution">경고</string>
 
     <!-- Add Quote -->

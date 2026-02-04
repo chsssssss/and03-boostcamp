@@ -1,11 +1,14 @@
 package com.boostcamp.and03.ui.screen.characterform
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.bookdetail.model.toRequest
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,10 +21,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharacterFormViewModel @Inject constructor (
+class CharacterFormViewModel @Inject constructor(
     private val bookStorageRepository: BookStorageRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
     private val characterFormRoute = savedStateHandle.toRoute<Route.CharacterForm>()
     private val bookId = characterFormRoute.bookId
     private val characterId = characterFormRoute.characterId
@@ -36,7 +39,11 @@ class CharacterFormViewModel @Inject constructor (
 
     fun onAction(action: CharacterFormAction) {
         when (action) {
-            CharacterFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+            CharacterFormAction.OnBackClick -> _uiState.update {
+                it.copy(
+                    isExitConfirmationDialogVisible = true
+                )
+            }
 
             CharacterFormAction.OnSaveClick -> {
                 viewModelScope.launch {
@@ -55,7 +62,13 @@ class CharacterFormViewModel @Inject constructor (
                 }
             }
 
-            CharacterFormAction.OnAddImageClick -> { /* TODO: 등장인물 사진 추가 동작 구현 */ }
+            CharacterFormAction.OnOpenImagePickerBottomSheet -> {
+                handleImgPickerBottomSheet(isVisible = true)
+            }
+
+            CharacterFormAction.OnDismissImagePickerBottomSheet -> {
+                handleImgPickerBottomSheet(isVisible = false)
+            }
 
             is CharacterFormAction.OnNameChange -> _uiState.update { it.copy(name = action.name) }
 
@@ -63,12 +76,18 @@ class CharacterFormViewModel @Inject constructor (
 
             is CharacterFormAction.OnDescriptionChange -> _uiState.update { it.copy(description = action.description) }
 
-            CharacterFormAction.CloseExitConfirmationDialog -> _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
+            CharacterFormAction.CloseExitConfirmationDialog -> _uiState.update {
+                it.copy(
+                    isExitConfirmationDialogVisible = false
+                )
+            }
 
             CharacterFormAction.CloseScreen -> {
                 _uiState.update { it.copy(isExitConfirmationDialogVisible = false) }
                 _event.trySend(CharacterFormEvent.NavigateBack)
             }
+
+            is CharacterFormAction.OnImageSelected -> handleImageSelected(action.uri)
         }
     }
 
@@ -107,7 +126,7 @@ class CharacterFormViewModel @Inject constructor (
             bookStorageRepository.addCharacter(
                 userId = userId,
                 bookId = bookId,
-                character = _uiState.value.toUiModel()
+                character = _uiState.value.toRequest()
             )
         } else {
             bookStorageRepository.updateCharacter(
@@ -118,4 +137,18 @@ class CharacterFormViewModel @Inject constructor (
             )
         }
     }
+
+    private fun handleImgPickerBottomSheet(isVisible: Boolean) {
+        _uiState.update { it.copy(isVisibleBottomSheet = isVisible) }
+    }
+
+    private fun handleImageSelected(uri: Uri) {
+        _uiState.update {
+            it.copy(
+                imageUrl = uri.toString(),
+                profileType = ProfileType.IMAGE
+            )
+        }
+    }
+
 }
