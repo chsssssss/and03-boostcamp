@@ -23,7 +23,11 @@ sealed class NodeRequest {
         val content: String,
         override val x: Float,
         override val y: Float,
-        override val nodeType: String = "CHARACTER"
+        override val nodeType: String = "CHARACTER",
+        val profileType: String,
+        val profileColor: String?,
+        val imageUrl: String?,
+
     ) : NodeRequest()
 
     @Serializable
