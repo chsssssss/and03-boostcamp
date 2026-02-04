@@ -232,16 +232,14 @@ private fun CharacterFormScreen(
                         } else {
                             requestCameraPermission.launch(Manifest.permission.CAMERA)
                         }
-
+                        onAction(CharacterFormAction.OnDismissImagePickerBottomSheet)
                     },
                     onGalleryClick = {
-                        if (hasCameraPermission) {
-                            val uri = createTempImageUri(context)
-                            tempImageUri = uri
-                            getContentImage.launch("image/*")
-                        } else {
-                            requestCameraPermission.launch(Manifest.permission.CAMERA)
-                        }
+                        val uri = createTempImageUri(context)
+                        tempImageUri = uri
+                        getContentImage.launch("image/*")
+
+                        onAction(CharacterFormAction.OnDismissImagePickerBottomSheet)
                     }
                 )
             }
