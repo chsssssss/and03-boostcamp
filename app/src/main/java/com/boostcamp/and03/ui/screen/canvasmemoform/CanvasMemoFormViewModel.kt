@@ -52,7 +52,13 @@ class CanvasMemoFormViewModel @Inject constructor(
 
     fun onAction(action: CanvasMemoFormAction) {
         when (action) {
-            CanvasMemoFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+            CanvasMemoFormAction.OnBackClick -> {
+                if (_uiState.value.isEdited) {
+                    _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+                } else {
+                    _event.trySend(CanvasMemoFormEvent.NavigateBack)
+                }
+            }
 
             CanvasMemoFormAction.OnSaveClick -> {
                 viewModelScope.launch {

@@ -144,6 +144,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
         graph: GraphRequest
     ) {
         try {
+            // memo 문서 참조
             val collectionRef = db
                 .collection("user")
                 .document(userId)
@@ -154,15 +155,48 @@ class CanvasMemoDataSourceImpl @Inject constructor(
 
             val batch = db.batch()
 
-            val nodeCollection = collectionRef.collection("node")
-            val edgeCollection = collectionRef.collection("edge")
-
             batch.set(
                 collectionRef,
                 mapOf("updatedTime" to FieldValue.serverTimestamp()),
                 SetOptions.merge()
             )
 
+            val nodeCollection = collectionRef.collection("node")
+            val edgeCollection = collectionRef.collection("edge")
+
+            // 기존 DB 상태 조회
+            val existingNodeIds = nodeCollection
+                .get()
+                .await()
+                .documents
+                .map { it.id }
+                .toSet()
+
+            val existingEdgeIds = edgeCollection
+                .get()
+                .await()
+                .documents
+                .map { it.id }
+                .toSet()
+
+            // 현재 graph에 포함된 ID 목록
+            val graphNodeIds = graph.nodes.map { it.id }.toSet()
+            val graphEdgeIds = graph.edges.map { it.id }.toSet()
+
+            // 삭제 대상 계산
+            val nodesToDelete = existingNodeIds - graphNodeIds
+            val edgesToDelete = existingEdgeIds - graphEdgeIds
+
+            // 삭제 반영
+            nodesToDelete.forEach { nodeId ->
+                batch.delete(nodeCollection.document(nodeId))
+            }
+
+            edgesToDelete.forEach { edgeId ->
+                batch.delete(edgeCollection.document(edgeId))
+            }
+
+            // graph 기준 업데이트
             graph.nodes.forEach { node ->
                 val newNodeRef = nodeCollection.document(node.id)
                 batch.set(newNodeRef, node)
@@ -173,6 +207,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
                 batch.set(newEdgeRef, edge)
             }
 
+            // 커밋
             batch.commit().await()
 
             Log.d("CanvasMemoDataSourceImpl", "CanvasMemo added: ${collectionRef.id}")

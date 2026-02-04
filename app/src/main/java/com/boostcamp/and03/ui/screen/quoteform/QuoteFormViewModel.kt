@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
+import com.boostcamp.and03.ui.screen.canvasmemoform.CanvasMemoFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -37,7 +38,13 @@ class QuoteFormViewModel @Inject constructor(
 
     fun onAction(action: QuoteFormAction) {
         when (action) {
-            QuoteFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+            QuoteFormAction.OnBackClick -> {
+                if (_uiState.value.isEdited) {
+                    _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+                } else {
+                    _event.trySend(QuoteFormEvent.NavigateBack)
+                }
+            }
 
             QuoteFormAction.OnSaveClick -> {
                 viewModelScope.launch {

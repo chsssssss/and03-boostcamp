@@ -7,10 +7,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -28,14 +33,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.boostcamp.and03.R
+import com.boostcamp.and03.ui.screen.canvasmemo.CanvasMemoAction
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
+import com.boostcamp.and03.ui.theme.CanvasMemoColors
 
 @Composable
 fun MainBottomBar(
@@ -58,6 +67,68 @@ fun MainBottomBar(
                 onClick = { onItemClick(item.type) }
             )
         }
+    }
+}
+
+/**
+ * MainBottomBarButton을 직접 가져와 사용하는 컴포저블입니다.
+ */
+@Composable
+fun MainBottomBar(
+    selectedType: MainBottomBarType,
+    onItemClick: (MainBottomBarType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = And03Theme.colors.background)
+            .padding(vertical = And03Padding.PADDING_M),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        MainBottomBarButton(
+            item = MainBottomBarItem(
+                type = MainBottomBarType.NODE,
+                label = stringResource(R.string.canvas_bottom_bar_node),
+                icon = Icons.Default.PersonAdd,
+                backgroundColor = CanvasMemoColors.Node,
+            ),
+            isSelected = selectedType == MainBottomBarType.NODE,
+            onClick = { onItemClick(MainBottomBarType.NODE) }
+        )
+
+        MainBottomBarButton(
+            item = MainBottomBarItem(
+                type = MainBottomBarType.RELATION,
+                label = stringResource(R.string.canvas_bottom_bar_relation),
+                icon = Icons.Default.Link,
+                backgroundColor = CanvasMemoColors.Relation
+            ),
+            isSelected = selectedType == MainBottomBarType.RELATION,
+            onClick = { onItemClick(MainBottomBarType.RELATION) }
+        )
+
+        MainBottomBarButton(
+            item = MainBottomBarItem(
+                type = MainBottomBarType.QUOTE,
+                label = stringResource(R.string.canvas_bottom_bar_quote),
+                icon = Icons.Default.FormatQuote,
+                backgroundColor = CanvasMemoColors.Quote
+            ),
+            isSelected = selectedType == MainBottomBarType.QUOTE,
+            onClick = { onItemClick(MainBottomBarType.QUOTE) }
+        )
+
+        MainBottomBarButton(
+            item = MainBottomBarItem(
+                type = MainBottomBarType.DELETE,
+                label = stringResource(R.string.canvas_bottom_bar_delete),
+                icon = Icons.Default.Delete,
+                backgroundColor = CanvasMemoColors.Delete
+            ),
+            isSelected = selectedType == MainBottomBarType.DELETE,
+            onClick = { onItemClick(MainBottomBarType.DELETE) }
+        )
     }
 }
 

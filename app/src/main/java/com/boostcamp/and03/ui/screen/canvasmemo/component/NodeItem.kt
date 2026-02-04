@@ -1,30 +1,26 @@
 package com.boostcamp.and03.ui.screen.canvasmemo.component
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +29,6 @@ import coil.compose.AsyncImage
 import com.boostcamp.and03.R
 import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.ui.component.IconBadge
-import com.boostcamp.and03.ui.screen.bookdetail.component.DropdownMenuContainer
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
@@ -69,7 +64,8 @@ fun NodeItem(
 
     Box(
         modifier = modifier
-            .size(NodeItemValues.width, NodeItemValues.height)
+            .heightIn(max = NodeItemValues.height)
+            .widthIn(max = NodeItemValues.width)
             .background(
                 And03Theme.colors.surface,
                 And03Theme.shapes.defaultCorner
@@ -138,7 +134,6 @@ fun NodeItem(
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
 
             Text(
-                modifier = Modifier.weight(1f),
                 text = content,
                 style = And03Theme.typography.bodyMedium,
                 color = And03Theme.colors.onSurfaceVariant,

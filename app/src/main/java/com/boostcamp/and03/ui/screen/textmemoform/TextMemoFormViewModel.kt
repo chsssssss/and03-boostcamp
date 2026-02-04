@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
+import com.boostcamp.and03.ui.screen.canvasmemoform.CanvasMemoFormEvent
 import com.boostcamp.and03.ui.screen.textmemoform.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -50,7 +51,13 @@ class TextMemoFormViewModel @Inject constructor(
 
     fun onAction(action: TextMemoFormAction) {
         when (action) {
-            TextMemoFormAction.OnBackClick -> _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+            TextMemoFormAction.OnBackClick -> {
+                if (_uiState.value.isEdited) {
+                    _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+                } else {
+                    _event.trySend(TextMemoFormEvent.NavigateBack)
+                }
+            }
 
             TextMemoFormAction.OnSaveClick -> {
                 viewModelScope.launch {

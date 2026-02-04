@@ -1,28 +1,22 @@
 package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FormatQuote
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,14 +42,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -73,6 +64,8 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.CanvasStatusCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.EdgeRenderer
+import com.boostcamp.and03.ui.screen.canvasmemo.component.Arrows
+import com.boostcamp.and03.ui.screen.canvasmemo.component.DraggableCanvasItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.QuoteItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
@@ -127,10 +120,20 @@ private fun CanvasMemoScreen(
     )
 
     BackHandler {
-        if (uiState.isExitConfirmationDialogVisible) {
-            onAction(CanvasMemoAction.CloseExitConfirmationDialog)
-        } else {
-            onAction(CanvasMemoAction.ClickBack)
+        when {
+            uiState.isExitConfirmationDialogVisible -> onAction(CanvasMemoAction.CloseExitConfirmationDialog)
+
+            uiState.isSureDeleteDialogVisible -> onAction(CanvasMemoAction.CloseSureDeleteDialog)
+
+            uiState.nodeToPlace != null -> onAction(CanvasMemoAction.CancelPlaceItem)
+
+            uiState.relationAddStep != RelationAddStep.NONE -> onAction(CanvasMemoAction.CancelRelationStep)
+
+            uiState.quoteToPlace != null -> onAction(CanvasMemoAction.CancelPlaceItem)
+
+            uiState.isDeleteMode -> onAction(CanvasMemoAction.CancelDeleteMode)
+
+            else -> onAction(CanvasMemoAction.ClickBack)
         }
     }
 
@@ -144,18 +147,14 @@ private fun CanvasMemoScreen(
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_save_filled),
-                        contentDescription = stringResource(
-                            id = R.string.content_description_save_button
-                        )
+                        contentDescription = stringResource(id = R.string.content_description_save_button)
                     )
                 }
 
                 IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert_filled),
-                        contentDescription = stringResource(
-                            id = R.string.content_description_more_button
-                        )
+                        contentDescription = stringResource(id = R.string.content_description_more_button)
                     )
                 }
             }
@@ -171,33 +170,6 @@ private fun CanvasMemoScreen(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
                                 )
                             ),
-                        items = listOf(
-                            MainBottomBarItem(
-                                type = MainBottomBarType.NODE,
-                                label = stringResource(R.string.canvas_bottom_bar_node),
-                                icon = Icons.Default.PersonAdd,
-                                backgroundColor = CanvasMemoColors.Node
-                            ),
-                            MainBottomBarItem(
-                                type = MainBottomBarType.RELATION,
-                                label = stringResource(R.string.canvas_bottom_bar_relation),
-                                icon = Icons.Default.Link,
-                                backgroundColor = CanvasMemoColors.Relation
-                            ),
-                            MainBottomBarItem(
-                                type = MainBottomBarType.QUOTE,
-                                label = stringResource(R.string.canvas_bottom_bar_quote),
-                                icon = Icons.Default.FormatQuote,
-                                backgroundColor = CanvasMemoColors.Quote
-                            ),
-                            MainBottomBarItem(
-                                type = MainBottomBarType.DELETE,
-                                label = stringResource(R.string.canvas_bottom_bar_delete),
-                                icon = Icons.Default.Delete,
-                                backgroundColor = CanvasMemoColors.Delete
-                            )
-
-                        ),
                         selectedType = uiState.selectedBottomBarType,
                         onItemClick = { type ->
                             onAction(CanvasMemoAction.OnBottomBarClick(type))
@@ -205,9 +177,9 @@ private fun CanvasMemoScreen(
                     )
                 }
 
-                uiState.nodeToPlace != null -> {
+                uiState.quoteToPlace != null || uiState.nodeToPlace != null -> {
                     AlertMessageCard(
-                        message = stringResource(R.string.canvas_memo_place_node_message),
+                        message = stringResource(R.string.canvas_memo_place_item_message),
                         actions = listOf(
                             AlertAction(
                                 text = stringResource(R.string.common_cancel),
@@ -227,13 +199,17 @@ private fun CanvasMemoScreen(
                     )
                 }
 
-                uiState.quoteToPlace != null -> {
+                uiState.isDeleteMode -> {
                     AlertMessageCard(
-                        message = stringResource(R.string.canvas_memo_place_item_message),
+                        message = stringResource(R.string.canvas_memo_sure_select_delete_item),
                         actions = listOf(
                             AlertAction(
                                 text = stringResource(R.string.common_cancel),
-                                onClick = { onAction(CanvasMemoAction.CancelPlaceItem) }
+                                onClick = { onAction(CanvasMemoAction.CancelDeleteMode) }
+                            ),
+                            AlertAction(
+                                text = stringResource(R.string.common_delete),
+                                onClick = { onAction(CanvasMemoAction.OpenSureDeleteDialog) }
                             )
                         ),
                         modifier = Modifier
@@ -263,10 +239,17 @@ private fun CanvasMemoScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .pointerInput(uiState.quoteToPlace) {
-                            if (uiState.quoteToPlace != null) {
+                        .pointerInput(
+                            uiState.quoteToPlace,
+                            uiState.nodeToPlace
+                        ) {
+                            if (uiState.quoteToPlace != null || uiState.nodeToPlace != null) {
                                 detectTapGestures { tapOffset ->
-                                    onAction(CanvasMemoAction.TapCanvas(tapOffset))
+                                    uiState.quoteToPlace?.let {
+                                        onAction(CanvasMemoAction.AddQuoteAtPosition(tapOffset))
+                                    } ?: uiState.nodeToPlace?.let {
+                                        onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
+                                    }
                                 }
                             }
                         }
@@ -281,14 +264,6 @@ private fun CanvasMemoScreen(
                                 )
                             }
                         }
-                        .pointerInput(uiState.nodeToPlace) {
-                            if (uiState.nodeToPlace != null) {
-                                detectTapGestures { tapOffset ->
-                                    onAction(CanvasMemoAction.AddNodeAtPosition(tapOffset))
-                                }
-                            }
-                        }
-
                 ) {
                     Box(
                         modifier = Modifier
@@ -308,13 +283,12 @@ private fun CanvasMemoScreen(
                         )
 
                         uiState.nodes.forEach { (_, uiModel) ->
+                            val isDraggable =
+                                uiState.relationAddStep == RelationAddStep.NONE &&
+                                        !uiState.isDeleteMode
+
                             when (uiModel) {
-
-
                                 is MemoNodeUiModel.CharacterNodeUiModel -> {
-                                    val isDraggable =
-                                        uiState.relationAddStep == RelationAddStep.NONE
-
                                     DraggableCanvasItem(
                                         nodeId = uiModel.node.id,
                                         worldOffset = uiModel.node.offset,
@@ -327,7 +301,11 @@ private fun CanvasMemoScreen(
                                             )
                                         },
                                         onClick = { nodeId ->
-                                            onAction(CanvasMemoAction.OnNodeClick(nodeId))
+                                            if (uiState.isDeleteMode) {
+                                                onAction(CanvasMemoAction.SelectDeleteItem(nodeId))
+                                            } else {
+                                                onAction(CanvasMemoAction.OnRelationNodeClick(nodeId))
+                                            }
                                         },
                                         onSizeChanged = { size ->
                                             nodeSizes = nodeSizes + (uiModel.node.id to size)
@@ -340,7 +318,11 @@ private fun CanvasMemoScreen(
                                                 imageUri = uiModel.node.imageUrl,
                                                 title = uiModel.node.name,
                                                 content = uiModel.node.description,
-                                                isHighlighted = uiModel.isSelected
+                                                isHighlighted = if (uiState.isDeleteMode) {
+                                                    uiModel.node.id in uiState.selectedDeleteItemIds
+                                                } else {
+                                                    uiModel.isSelected
+                                                }
                                             )
                                         }
                                     )
@@ -358,13 +340,26 @@ private fun CanvasMemoScreen(
                                                 )
                                             )
                                         },
+                                        onClick = { nodeId ->
+                                            if (uiState.isDeleteMode) {
+                                                onAction(CanvasMemoAction.SelectDeleteItem(nodeId))
+                                            } else {
+                                                onAction(CanvasMemoAction.OnRelationNodeClick(nodeId))
+                                            }
+                                        },
                                         onSizeChanged = { size ->
                                             nodeSizes = nodeSizes + (uiModel.node.id to size)
                                         },
+                                        draggable = isDraggable,
                                         content = {
                                             QuoteItem(
                                                 quote = uiModel.node.content,
-                                                page = uiModel.node.page
+                                                page = uiModel.node.page,
+                                                isHighlighted = if (uiState.isDeleteMode) {
+                                                    uiModel.node.id in uiState.selectedDeleteItemIds
+                                                } else {
+                                                    uiModel.isSelected
+                                                }
                                             )
                                         }
                                     )
@@ -434,6 +429,47 @@ private fun CanvasMemoScreen(
                     )
                 }
 
+                if (uiState.isQuoteDialogVisible) {
+                    AddQuoteDialog(
+                        quoteState = uiState.quoteState,
+                        pageState = uiState.pageState,
+                        onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
+                        onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
+                        enabled = uiState.isQuoteSaveable && !uiState.isSaving,
+                        isSaving = uiState.isSaving,
+                        totalPage = uiState.totalPage
+                    )
+                }
+
+                if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
+                    And03Dialog(
+                        iconResId = R.drawable.ic_warning_filled,
+                        iconColor = And03Theme.colors.error,
+                        iconContentDescription = stringResource(id = R.string.content_description_caution),
+                        title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
+                        dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
+                        confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
+                        onDismiss = { onAction(CanvasMemoAction.CloseScreen) },
+                        onConfirm = { onAction(CanvasMemoAction.CloseExitConfirmationDialog) },
+                        description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
+                        dismissAction = DialogDismissAction.Confirm
+                    )
+                }
+
+                if (uiState.isSureDeleteDialogVisible) {
+                    And03Dialog(
+                        iconResId = R.drawable.ic_delete_outlined,
+                        iconColor = And03Theme.colors.error,
+                        iconContentDescription = stringResource(id = R.string.content_description_delete),
+                        title = stringResource(id = R.string.canvas_memo_sure_delete_dialog_title),
+                        dismissText = stringResource(id = R.string.common_cancel),
+                        confirmText = stringResource(id = R.string.common_delete),
+                        onDismiss = { onAction(CanvasMemoAction.CloseSureDeleteDialog) },
+                        onConfirm = { onAction(CanvasMemoAction.DeleteSelectedItems(uiState.selectedDeleteItemIds)) },
+                        dismissAction = DialogDismissAction.Confirm
+                    )
+                }
+
                 uiState.bottomSheetType?.let { sheetType ->
                     ModalBottomSheet(
                         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
@@ -483,58 +519,6 @@ private fun CanvasMemoScreen(
                             }
                         }
                     }
-                }
-
-                // Dialog 표시
-//                if (uiState.isRelationDialogVisible) {
-//                    RelationEditorDialog(
-//                        relationNameState = uiState.relationNameState,
-//                        fromName = uiState.fromCharacterName,
-//                        toName = uiState.toCharacterName,
-//                        onDismiss = { onAction(CanvasMemoAction.CloseRelationDialog) },
-//                        onConfirm = { /* 관계 저장 로직 */ },
-//                        onFromImageClick = { /* 인물 선택 로직 */ },
-//                        onToImageClick = { /* 인물 선택 로직 */ }
-//                    )
-//                }
-//
-//                if (uiState.isAddCharacterDialogVisible) {
-//                    AddCharacterDialog(
-//                        nameState = uiState.characterNameState,
-//                        descState = uiState.characterDescState,
-//                        enabled = uiState.characterNameState.text.isNotBlank(),
-//                        onDismiss = { onAction(CanvasMemoAction.CloseAddCharacterDialog) },
-//                        onConfirm = { /* 캐릭터 저장 */ },
-//                        onClickAddImage = { /* 이미지 추가 */ }
-//                    )
-//                }
-//            }
-
-                if (uiState.isQuoteDialogVisible) {
-                    AddQuoteDialog(
-                        quoteState = uiState.quoteState,
-                        pageState = uiState.pageState,
-                        onDismiss = { onAction(CanvasMemoAction.CloseQuoteDialog) },
-                        onConfirm = { onAction(CanvasMemoAction.SaveQuote) },
-                        enabled = uiState.isQuoteSaveable && !uiState.isSaving,
-                        isSaving = uiState.isSaving,
-                        totalPage = uiState.totalPage
-                    )
-                }
-
-                if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
-                    And03Dialog(
-                        iconResId = R.drawable.ic_warning_filled,
-                        iconColor = And03Theme.colors.error,
-                        iconContentDescription = stringResource(id = R.string.content_description_caution),
-                        title = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_title),
-                        dismissText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_dismiss_text),
-                        confirmText = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_confirm_text),
-                        onDismiss = { onAction(CanvasMemoAction.CloseScreen) },
-                        onConfirm = { onAction(CanvasMemoAction.CloseExitConfirmationDialog) },
-                        description = stringResource(id = R.string.canvas_memo_exit_confirmation_dialog_description),
-                        dismissAction = DialogDismissAction.Confirm
-                    )
                 }
 
                 ToolExpandableButton(
