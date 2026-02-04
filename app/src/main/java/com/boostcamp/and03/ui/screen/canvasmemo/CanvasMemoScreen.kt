@@ -70,6 +70,7 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.EdgeRenderer
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.QuoteItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
@@ -298,7 +299,7 @@ private fun CanvasMemoScreen(
                                 transformOrigin = TransformOrigin(0f, 0f)
                             }
                     ) {
-                        Arrows(
+                        EdgeRenderer(
                             arrows = uiState.edges,
                             items = uiState.nodes,
                             nodeSizes = nodeSizes
@@ -647,207 +648,6 @@ fun DraggableCanvasItem(
             )
     ) {
         content()
-    }
-}
-
-@Composable
-fun Arrows(
-    arrows: List<EdgeUiModel>,
-    items: Map<String, MemoNodeUiModel>,
-    nodeSizes: Map<String, IntSize>,
-) {
-    val textMeasurer = rememberTextMeasurer()
-
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        arrows.forEach { edge ->
-
-            val fromNode = items[edge.edge.fromId]
-            val toNode = items[edge.edge.toId]
-            val fromSize = nodeSizes[edge.edge.fromId] ?: IntSize.Zero
-            val toSize = nodeSizes[edge.edge.toId] ?: IntSize.Zero
-
-            if (fromNode != null && toNode != null) {
-                val hasReverse = arrows.any {
-                    it.edge.fromId == edge.edge.toId && it.edge.toId == edge.edge.fromId
-                }
-
-// 노드의 중심점 계산
-                val fromCenter = fromNode.node.offset + Offset(
-                    fromSize.width / 2f,
-                    fromSize.height / 2f
-                )
-                val toCenter = toNode.node.offset + Offset(
-                    toSize.width / 2f,
-                    toSize.height / 2f
-                )
-
-                // 두 노드의 상대적 위치 계산
-                val dx = toCenter.x - fromCenter.x
-                val dy = toCenter.y - fromCenter.y
-
-                // 연결점 비율 계산 (양방향인 경우 1/3, 2/3 사용)
-                val ratio = if (hasReverse) {
-                    if (edge.edge.fromId < edge.edge.toId) 1f / 3f else 2f / 3f
-                } else {
-                    0.5f
-                }
-
-                // fromNode의 연결점 계산
-                val start = if (kotlin.math.abs(dx) > kotlin.math.abs(dy)) {
-                    // 수평 방향이 더 큼
-                    if (dx > 0) {
-                        // toNode가 오른쪽에 있음 - fromNode의 오른쪽 면
-                        fromNode.node.offset + Offset(
-                            fromSize.width.toFloat(),
-                            fromSize.height * ratio
-                        )
-                    } else {
-                        // toNode가 왼쪽에 있음 - fromNode의 왼쪽 면
-                        fromNode.node.offset + Offset(
-                            0f,
-                            fromSize.height * ratio
-                        )
-                    }
-                } else {
-                    // 수직 방향이 더 큼
-                    if (dy > 0) {
-                        // toNode가 아래쪽에 있음 - fromNode의 아래 면
-                        fromNode.node.offset + Offset(
-                            fromSize.width * ratio,
-                            fromSize.height.toFloat()
-                        )
-                    } else {
-                        // toNode가 위쪽에 있음 - fromNode의 위 면
-                        fromNode.node.offset + Offset(
-                            fromSize.width * ratio,
-                            0f
-                        )
-                    }
-                }
-
-                // toNode의 연결점 계산
-                val end = if (kotlin.math.abs(dx) > kotlin.math.abs(dy)) {
-                    // 수평 방향이 더 큼
-                    if (dx > 0) {
-                        // fromNode가 왼쪽에 있음 - toNode의 왼쪽 면
-                        toNode.node.offset + Offset(
-                            0f,
-                            toSize.height * ratio
-                        )
-                    } else {
-                        // fromNode가 오른쪽에 있음 - toNode의 오른쪽 면
-                        toNode.node.offset + Offset(
-                            toSize.width.toFloat(),
-                            toSize.height * ratio
-                        )
-                    }
-                } else {
-                    // 수직 방향이 더 큼
-                    if (dy > 0) {
-                        // fromNode가 위쪽에 있음 - toNode의 위 면
-                        toNode.node.offset + Offset(
-                            toSize.width * ratio,
-                            0f
-                        )
-                    } else {
-                        // fromNode가 아래쪽에 있음 - toNode의 아래 면
-                        toNode.node.offset + Offset(
-                            toSize.width * ratio,
-                            toSize.height.toFloat()
-                        )
-                    }
-                }
-
-                // 경로 방향에 따라 중간점 계산
-                val isHorizontalDominant = kotlin.math.abs(dx) > kotlin.math.abs(dy)
-
-                val path = Path().apply {
-                    moveTo(start.x, start.y)
-                    if (isHorizontalDominant) {
-                        // 수평 우선 경로
-                        val midX = (start.x + end.x) / 2
-                        lineTo(midX, start.y)
-                        lineTo(midX, end.y)
-                    } else {
-                        // 수직 우선 경로
-                        val midY = (start.y + end.y) / 2
-                        lineTo(start.x, midY)
-                        lineTo(end.x, midY)
-                    }
-                    lineTo(end.x, end.y)
-                }
-
-                drawPath(
-                    path = path,
-                    color = Color.Black,
-                    style = Stroke(width = 4f)
-                )
-
-                // 화살표 그리기
-
-                val arrowHeadSize = 20f
-                val arrowAngle = Math.PI / 6
-
-                val lastSegmentStart = if (isHorizontalDominant) {
-                    val midX = (start.x + end.x) / 2
-                    Offset(midX, end.y)
-                } else {
-                    val midY = (start.y + end.y) / 2
-                    Offset(end.x, midY)
-                }
-
-                val arrowDx = end.x - lastSegmentStart.x
-                val arrowDy = end.y - lastSegmentStart.y
-                val angle = kotlin.math.atan2(arrowDy.toDouble(), arrowDx.toDouble()).toFloat()
-
-                val arrowPoint1 = Offset(
-                    (end.x - arrowHeadSize * kotlin.math.cos(angle - arrowAngle)).toFloat(),
-                    (end.y - arrowHeadSize * kotlin.math.sin(angle - arrowAngle)).toFloat()
-                )
-
-                val arrowPoint2 = Offset(
-                    (end.x - arrowHeadSize * kotlin.math.cos(angle + arrowAngle)).toFloat(),
-                    (end.y - arrowHeadSize * kotlin.math.sin(angle + arrowAngle)).toFloat()
-                )
-
-                val arrowPath = Path().apply {
-                    moveTo(end.x, end.y)
-                    lineTo(arrowPoint1.x, arrowPoint1.y)
-                    lineTo(arrowPoint2.x, arrowPoint2.y)
-                    close()
-                }
-
-                drawPath(
-                    path = arrowPath,
-                    color = Color.Black
-                )
-
-                // 텍스트 그리기
-                val label = edge.edge.name
-
-                if (label.isNotEmpty()) {
-                    val textLayoutResult = textMeasurer.measure(label)
-                    val textWidth = textLayoutResult.size.width
-                    val textHeight = textLayoutResult.size.height
-
-                    val textPos = Offset(
-                        x = (start.x + end.x) / 2 - textWidth / 2,
-                        y = (start.y + end.y) / 2 - textHeight / 2
-                    )
-
-                    drawRect(
-                        color = Color.White,
-                        topLeft = textPos,
-                        size = Size(textWidth.toFloat(), textHeight.toFloat())
-                    )
-
-                    drawText(
-                        textLayoutResult = textLayoutResult,
-                        topLeft = textPos
-                    )
-                }
-            }
-        }
     }
 }
 
