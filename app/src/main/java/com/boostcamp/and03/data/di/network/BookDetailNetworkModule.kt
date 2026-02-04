@@ -48,7 +48,6 @@ object BookDetailNetworkModule {
     @Provides
     @Singleton
     fun provideBookDetailRetrofit(
-        json: Json,
         @BookDetailOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()

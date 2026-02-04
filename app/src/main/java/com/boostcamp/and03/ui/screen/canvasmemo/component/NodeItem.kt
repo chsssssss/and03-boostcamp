@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,7 +60,8 @@ fun NodeItem(
 
     Box(
         modifier = modifier
-            .size(NodeItemValues.width, NodeItemValues.height)
+            .heightIn(max = NodeItemValues.height)
+            .widthIn(max = NodeItemValues.width)
             .background(
                 And03Theme.colors.surface,
                 And03Theme.shapes.defaultCorner
@@ -107,7 +110,6 @@ fun NodeItem(
             Spacer(modifier = Modifier.height(And03Spacing.SPACE_S))
 
             Text(
-                modifier = Modifier.weight(1f),
                 text = content,
                 style = And03Theme.typography.bodyMedium,
                 color = And03Theme.colors.onSurfaceVariant,

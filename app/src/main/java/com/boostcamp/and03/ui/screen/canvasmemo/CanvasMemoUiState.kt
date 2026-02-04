@@ -20,7 +20,7 @@ data class CanvasMemoUiState(
     val nodes: Map<String, MemoNodeUiModel> = emptyMap(),
     val edges: List<EdgeUiModel> = emptyList(),
 
-    val zoomScale: Float = 1f,
+    val zoomScale: Float = 0.6f,
     val canvasViewOffset: Offset = Offset.Zero, // 손가락으로 화면을 드래그했을 때 캔버스가 이동한 거리
 
     val relationSelection: RelationSelection = RelationSelection.empty(),
@@ -35,6 +35,7 @@ data class CanvasMemoUiState(
     val isRelationDialogVisible: Boolean = false,
     val isQuoteDialogVisible: Boolean = false,
     val isExitConfirmationDialogVisible: Boolean = false,
+    val isSureDeleteDialogVisible: Boolean = false,
 
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),
@@ -56,7 +57,10 @@ data class CanvasMemoUiState(
     val nodeToPlace: CharacterUiModel? = null,
     val nodeItemSizePx: IntSize? = null,
 
-    val hasUnsavedChanges: Boolean = false
+    val hasUnsavedChanges: Boolean = false,
+
+    val isDeleteMode: Boolean = false,
+    val selectedDeleteItemIds: ImmutableList<String> = persistentListOf(),
 ) {
     val relationDialogUiState: RelationDialogUiState
         get() = toRelationDialogState()

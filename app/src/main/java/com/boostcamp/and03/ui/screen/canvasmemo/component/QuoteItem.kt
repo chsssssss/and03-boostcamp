@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.canvasmemo.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,8 +44,10 @@ import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Radius
 import com.boostcamp.and03.ui.theme.And03Spacing
+import com.boostcamp.and03.ui.theme.And03Theme
 
 private object QuoteItemValues {
+    val borderWidth = 2.dp
     val MORE_ICON_SIZE = 20.dp
 }
 
@@ -53,15 +56,27 @@ fun QuoteItem(
     quote: String,
     page: Int,
     modifier: Modifier = Modifier,
+    isHighlighted: Boolean = false,
     onClick: (() -> Unit)? = null,
     onEditClick: (() -> Unit)? = null,
     onDeleteClick: (() -> Unit)? = null,
     onSizeChanged: ((IntSize) -> Unit)? = null
 ) {
+    val borderColor = if (isHighlighted) {
+        And03Theme.colors.primary
+    } else {
+        Color.Transparent
+    }
+
     Box(
         modifier = modifier
             .widthIn(max = And03ComponentSize.QUOTE_ITEM_MAX_WIDTH)
             .clip(shape = RoundedCornerShape(And03Radius.RADIUS_L))
+            .border(
+                QuoteItemValues.borderWidth,
+                borderColor,
+                RoundedCornerShape(And03Radius.RADIUS_L)
+            )
             .background(color = Color(0xFFFFFAE8))
             .then(
                 if (onClick != null) {

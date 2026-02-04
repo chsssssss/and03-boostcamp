@@ -82,7 +82,8 @@ fun RelationEditorDialog(
             EditableTextField(
                 state = relationNameState,
                 onSubmit = onConfirm,
-                placeholderRes = R.string.relation_name_placeholder
+                placeholderRes = R.string.relation_name_placeholder,
+                maxCharacterCount = 30
             )
         }
     )

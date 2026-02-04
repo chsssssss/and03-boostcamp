@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.IntSize
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
+import kotlinx.collections.immutable.ImmutableList
 
 
 sealed interface CanvasMemoAction {
@@ -20,6 +21,8 @@ sealed interface CanvasMemoAction {
     data object CloseQuoteDialog : CanvasMemoAction
 
     data object CloseExitConfirmationDialog : CanvasMemoAction
+
+    data object CloseSureDeleteDialog : CanvasMemoAction
 
     data object CloseScreen : CanvasMemoAction
 
@@ -45,7 +48,7 @@ sealed interface CanvasMemoAction {
 
     data object ShowBottomBar : CanvasMemoAction
 
-    data class OnNodeClick(val nodeId: String) : CanvasMemoAction
+    data class OnRelationNodeClick(val nodeId: String) : CanvasMemoAction
 
     data class ConfirmRelation(
         val fromId: String,
@@ -59,7 +62,7 @@ sealed interface CanvasMemoAction {
 
     data object CancelPlaceItem : CanvasMemoAction
 
-    data class TapCanvas(val tapPositionOnScreen: Offset) : CanvasMemoAction
+    data class AddQuoteAtPosition(val tapPositionOnScreen: Offset) : CanvasMemoAction
 
     data class UpdateQuoteItemSize(val size: IntSize) : CanvasMemoAction
 
@@ -76,7 +79,19 @@ sealed interface CanvasMemoAction {
     data object ResetZoom : CanvasMemoAction
 
     data class PrepareNodePlacement(val character: CharacterUiModel) : CanvasMemoAction
+
     data class AddNodeAtPosition(val positionOnScreen: Offset) : CanvasMemoAction
     data class UpdateNodeItemSize(val size: IntSize) : CanvasMemoAction
 
+    data object EnterDeleteMode : CanvasMemoAction
+
+    data class SelectDeleteItem(val itemId: String) : CanvasMemoAction
+
+    data object CancelDeleteMode : CanvasMemoAction
+
+    data object OpenSureDeleteDialog : CanvasMemoAction
+
+    data class DeleteSelectedItems(val itemIds: ImmutableList<String>) : CanvasMemoAction
+
+    data object CancelRelationStep : CanvasMemoAction
 }
