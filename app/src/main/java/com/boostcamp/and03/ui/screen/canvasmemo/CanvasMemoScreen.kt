@@ -71,6 +71,7 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.CanvasStatusCard
 import com.boostcamp.and03.ui.screen.canvasmemo.component.EdgeRenderer
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.QuoteItem
@@ -137,8 +138,7 @@ private fun CanvasMemoScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(R.string.canvas_memo_top_bar_title),
-                onBackClick = { onAction(CanvasMemoAction.ClickBack) }
-            ) {
+                onBackClick = { onAction(CanvasMemoAction.ClickBack) }) {
                 IconButton(
                     enabled = uiState.hasUnsavedChanges,
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
@@ -373,25 +373,13 @@ private fun CanvasMemoScreen(
                         }
                     }
 
-                    Card(
+                    CanvasStatusCard(
+                        canvasViewOffset = uiState.canvasViewOffset,
+                        zoomScale = uiState.zoomScale,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(And03Padding.PADDING_L)
-                            .background(And03Theme.colors.surfaceVariant),
-                    ) {
-                        Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
-                            Text(
-                                text = "Offset: (${uiState.canvasViewOffset.x.toInt()}, ${uiState.canvasViewOffset.y.toInt()})",
-                                color = And03Theme.colors.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            Text(
-                                text = "Scale: ${(uiState.zoomScale * 100).toInt()}%",
-                                color = And03Theme.colors.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    }
+                            .padding(And03Padding.PADDING_M)
+                    )
                 }
 
                 if (uiState.isRelationDialogVisible &&
