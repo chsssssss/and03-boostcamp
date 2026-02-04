@@ -17,6 +17,10 @@ import kotlinx.collections.immutable.persistentListOf
 data class CanvasMemoUiState(
     val isLoading: Boolean = true,
 
+    val title: String = "",
+    val startPage: Int = 1,
+    val endPage: Int = 1,
+
     val nodes: Map<String, MemoNodeUiModel> = emptyMap(),
     val edges: List<EdgeUiModel> = emptyList(),
 
