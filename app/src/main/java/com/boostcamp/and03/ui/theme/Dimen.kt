@@ -44,6 +44,7 @@ object And03Radius {
 object And03ComponentSize {
     val APP_BAR_HEIGHT = 56.dp
     val BOTTOM_BAR_ITEM_SIZE = 56.dp
+    val CANVAS_MEMO_BOTTOM_BAR_HEIGHT = 98.dp
 
     val BUTTON_SIZE = 56.dp
     val QUOTE_LEFT_BAR_HEIGHT = 48.dp

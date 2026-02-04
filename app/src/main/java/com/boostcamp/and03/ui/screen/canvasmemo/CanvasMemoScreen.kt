@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -72,6 +73,7 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBa
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
+import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.theme.CanvasMemoColors
@@ -187,6 +189,7 @@ private fun CanvasMemoScreen(
                                 vertical = And03Padding.PADDING_L,
                                 horizontal = And03Padding.PADDING_XL
                             )
+                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
@@ -213,6 +216,41 @@ private fun CanvasMemoScreen(
                                 vertical = And03Padding.PADDING_L,
                                 horizontal = And03Padding.PADDING_XL
                             )
+                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(
+                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                                )
+                            )
+                    )
+                }
+
+                uiState.relationAddStep == RelationAddStep.READY -> {
+                    AlertMessageCard(
+                        message = stringResource(id = R.string.add_relation_select_from_node),
+                        modifier = Modifier
+                            .padding(
+                                vertical = And03Padding.PADDING_L,
+                                horizontal = And03Padding.PADDING_XL
+                            )
+                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(
+                                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                                )
+                            )
+                    )
+                }
+
+                uiState.relationAddStep == RelationAddStep.FROM_ONLY -> {
+                    AlertMessageCard(
+                        message = stringResource(id = R.string.add_relation_select_to_node),
+                        modifier = Modifier
+                            .padding(
+                                vertical = And03Padding.PADDING_L,
+                                horizontal = And03Padding.PADDING_XL
+                            )
+                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
@@ -407,30 +445,6 @@ private fun CanvasMemoScreen(
                                 )
                             )
                         },
-                    )
-                }
-
-                if (uiState.relationAddStep == RelationAddStep.READY) {
-                    AlertMessageCard(
-                        message = stringResource(id = R.string.add_relation_select_from_node),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(
-                                vertical = And03Padding.PADDING_XL,
-                                horizontal = And03Padding.PADDING_L
-                            )
-                    )
-                }
-
-                if (uiState.relationAddStep == RelationAddStep.FROM_ONLY) {
-                    AlertMessageCard(
-                        message = stringResource(id = R.string.add_relation_select_to_node),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(
-                                vertical = And03Padding.PADDING_XL,
-                                horizontal = And03Padding.PADDING_L
-                            )
                     )
                 }
 
