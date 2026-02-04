@@ -10,6 +10,7 @@ import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
 import com.boostcamp.and03.ui.navigation.Route
 import com.boostcamp.and03.ui.screen.bookdetail.model.toRequest
 import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
+import com.boostcamp.and03.ui.screen.canvasmemoform.CanvasMemoFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -39,10 +40,12 @@ class CharacterFormViewModel @Inject constructor(
 
     fun onAction(action: CharacterFormAction) {
         when (action) {
-            CharacterFormAction.OnBackClick -> _uiState.update {
-                it.copy(
-                    isExitConfirmationDialogVisible = true
-                )
+            CharacterFormAction.OnBackClick -> {
+                if (_uiState.value.isEdited) {
+                    _uiState.update { it.copy(isExitConfirmationDialogVisible = true) }
+                } else {
+                    _event.trySend(CharacterFormEvent.NavigateBack)
+                }
             }
 
             CharacterFormAction.OnSaveClick -> {
