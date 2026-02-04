@@ -412,7 +412,7 @@ private fun CanvasMemoScreen(
 
                 if (uiState.relationAddStep == RelationAddStep.READY) {
                     AlertMessageCard(
-                        message = "관계를 시작할 인물을 선택해 주세요.",
+                        message = stringResource(id = R.string.add_relation_select_from_node),
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(
@@ -424,7 +424,7 @@ private fun CanvasMemoScreen(
 
                 if (uiState.relationAddStep == RelationAddStep.FROM_ONLY) {
                     AlertMessageCard(
-                        message = "연결할 다른 인물을 선택해 주세요.",
+                        message = stringResource(id = R.string.add_relation_select_to_node),
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(
