@@ -219,25 +219,29 @@ private fun CharacterFormScreen(
                         )
                     }
                 )
-                DescriptionInputSection(
-                    description = uiState.description,
-                    onDescriptionChange = { onAction(CharacterFormAction.OnDescriptionChange(description = it)) }
-                )
             }
-
 
             if (uiState.isVisibleBottomSheet) {
                 PhotoPickerBottomSheet(
                     onDismiss = { onAction(CharacterFormAction.OnDismissImagePickerBottomSheet) },
                     onCameraClick = {
-                        val uri = createTempImageUri(context)
-                        tempImageUri = uri
-                        getTakePicture.launch(uri)
+                        if (hasCameraPermission) {
+                            val uri = createTempImageUri(context)
+                            tempImageUri = uri
+                            getTakePicture.launch(uri)
+                        } else {
+                            requestCameraPermission.launch(Manifest.permission.CAMERA)
+                        }
+
                     },
                     onGalleryClick = {
-                        val uri = createTempImageUri(context)
-                        tempImageUri = uri
-                        getContentImage.launch("image/*")
+                        if (hasCameraPermission) {
+                            val uri = createTempImageUri(context)
+                            tempImageUri = uri
+                            getContentImage.launch("image/*")
+                        } else {
+                            requestCameraPermission.launch(Manifest.permission.CAMERA)
+                        }
                     }
                 )
             }
