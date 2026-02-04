@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 private object CanvasZoomValues {
     const val ZOOM_STEP = 0.2f
-    const val MIN_ZOOM = 0.5f
+    const val MIN_ZOOM = 0.1f
     const val MAX_ZOOM = 2.0f
     const val MAX_MOVE_RANGE = 1000f
 }
