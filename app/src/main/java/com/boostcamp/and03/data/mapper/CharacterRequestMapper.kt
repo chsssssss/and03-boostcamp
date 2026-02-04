@@ -18,8 +18,6 @@ fun CharacterRequest.toEntity(
 
     if (profileType == ProfileType.IMAGE && imageUrl != null) {
         map["imageUrl"] = imageUrl
-    } else {
-        map["imageUrl"] = FieldValue.delete()
     }
 
     if (profileType == ProfileType.COLOR && profileColor != null) {
