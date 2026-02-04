@@ -59,6 +59,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
@@ -203,6 +204,7 @@ private fun CanvasMemoScreen(
                         }
                     )
                 }
+
                 uiState.nodeToPlace != null -> {
                     AlertMessageCard(
                         message = stringResource(R.string.canvas_memo_place_node_message),
@@ -308,6 +310,7 @@ private fun CanvasMemoScreen(
                         uiState.nodes.forEach { (_, uiModel) ->
                             when (uiModel) {
 
+
                                 is MemoNodeUiModel.CharacterNodeUiModel -> {
                                     val isDraggable =
                                         uiState.relationAddStep == RelationAddStep.NONE
@@ -332,6 +335,9 @@ private fun CanvasMemoScreen(
                                         draggable = isDraggable,
                                         content = {
                                             NodeItem(
+                                                profileType = uiModel.node.profileType,
+                                                iconColor = uiModel.node.iconColor?.let { Color(it.toColorInt()) },
+                                                imageUri = uiModel.node.imageUrl,
                                                 title = uiModel.node.name,
                                                 content = uiModel.node.description,
                                                 isHighlighted = uiModel.isSelected
@@ -586,6 +592,9 @@ private fun CanvasMemoScreen(
                         modifier = Modifier.alpha(0f)
                     ) {
                         NodeItem(
+                            profileType = uiState.nodeToPlace.profileType,
+                            iconColor = uiState.nodeToPlace.profileColor,
+                            imageUri = uiState.nodeToPlace.imageUri,
                             title = uiState.nodeToPlace.name,
                             content = uiState.nodeToPlace.description,
                             isHighlighted = false,
