@@ -61,6 +61,8 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
+        _uiState.update { it.copy(totalPage = totalPage) }
+
         loadCanvasMemo(
             userId = userId,
             bookId = bookId,
