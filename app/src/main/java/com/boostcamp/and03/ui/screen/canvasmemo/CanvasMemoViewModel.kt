@@ -306,18 +306,9 @@ class CanvasMemoViewModel @Inject constructor(
 
     /**
      * 삭제 확인 다이얼로그를 닫습니다.
-     * 삭제 모드가 취소됩니다.
-     * 아이템의 선택 상태가 초기화됩니다.
      */
     private fun handleCloseSureDeleteDialog() {
-        _uiState.update {
-            it.copy(
-                isSureDeleteDialogVisible = false,
-                isDeleteMode = false,
-                selectedDeleteItemIds = persistentListOf(),
-                isBottomBarVisible = true
-            )
-        }
+        _uiState.update { it.copy(isSureDeleteDialogVisible = false) }
     }
 
     /**

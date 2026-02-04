@@ -20,7 +20,7 @@ data class CanvasMemoUiState(
     val nodes: Map<String, MemoNodeUiModel> = emptyMap(),
     val edges: List<EdgeUiModel> = emptyList(),
 
-    val zoomScale: Float = 1f,
+    val zoomScale: Float = 0.6f,
     val canvasViewOffset: Offset = Offset.Zero, // 손가락으로 화면을 드래그했을 때 캔버스가 이동한 거리
 
     val relationSelection: RelationSelection = RelationSelection.empty(),
