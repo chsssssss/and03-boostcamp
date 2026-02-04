@@ -1,6 +1,7 @@
 package com.boostcamp.and03.ui.screen.characterform
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -89,21 +91,7 @@ private fun CharacterFormScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    var preview by remember { mutableStateOf<Bitmap?>(null) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    var hasCameraPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED
-        )
-    }
-
-    val requestCameraPermission = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        hasCameraPermission = granted
-    }
 
     val getTakePicture =
         rememberLauncherForActivityResult(
@@ -114,8 +102,6 @@ private fun CharacterFormScreen(
                     onAction(CharacterFormAction.OnImageSelected(it))
                 }
             }
-            Log.d("CharacterFormScreen", "getTakePicture: $success")
-
         }
 
     val getContentImage =
@@ -125,7 +111,6 @@ private fun CharacterFormScreen(
             uri?.let {
                 onAction(CharacterFormAction.OnImageSelected(it))
             }
-            Log.d("CharacterFormScreen", "getContentImage: $uri")
         }
 
     BackHandler {
@@ -225,14 +210,12 @@ private fun CharacterFormScreen(
                 PhotoPickerBottomSheet(
                     onDismiss = { onAction(CharacterFormAction.OnDismissImagePickerBottomSheet) },
                     onCameraClick = {
-                        if (hasCameraPermission) {
-                            val uri = createTempImageUri(context)
-                            tempImageUri = uri
-                            getTakePicture.launch(uri)
-                        } else {
-                            requestCameraPermission.launch(Manifest.permission.CAMERA)
-                        }
+                        val uri = createTempImageUri(context)
+                        tempImageUri = uri
+                        getTakePicture.launch(uri)
+
                         onAction(CharacterFormAction.OnDismissImagePickerBottomSheet)
+
                     },
                     onGalleryClick = {
                         val uri = createTempImageUri(context)
