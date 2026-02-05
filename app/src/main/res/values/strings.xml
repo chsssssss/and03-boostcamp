@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">and03</string>
+    <string name="app_name">책결</string>
 
     <!--  common  -->
     <string name="cd_more_options">더보기 옵션</string>
@@ -12,6 +12,8 @@
     <string name="common_error_text">에러가 발생했어요.</string>
     <string name="common_network_disconnected_text">네트워크 연결이 끊어졌어요.</string>
     <string name="common_delete">삭제</string>
+    <string name="percentage_value">%1$d%%</string>
+
 
     <!--  component  -->
     <string name="search_text_field_hint">검색어를 입력하세요.</string>
@@ -115,6 +117,7 @@
     <string name="canvas_memo_sure_delete_dialog_title">정말 삭제하시겠습니까?</string>
     <string name="add_relation_select_from_node">관계를 시작할 인물을 선택해 주세요.</string>
     <string name="add_relation_select_to_node">연결할 다른 인물을 선택해 주세요.</string>
+    <string name="canvas_offset_format">(%1$d, %2$d)</string>
 
     <!-- Content Description -->
     <string name="content_description_go_back">뒤로 가기</string>
@@ -129,6 +132,8 @@
     <string name="content_description_character_basic_icon">등장인물 기본 아이콘</string>
     <string name="content_description_caution">경고</string>
     <string name="content_description_delete">삭제</string>
+    <string name="content_description_current_coordinate">현재 좌표</string>
+    <string name="content_description_zoom_scale">확대 비율</string>
 
     <!-- Add Quote -->
     <string name="add_quote_title">인상 깊은 구절 추가</string>

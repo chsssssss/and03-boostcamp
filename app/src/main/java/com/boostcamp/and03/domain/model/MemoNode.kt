@@ -11,7 +11,7 @@ sealed class MemoNode {
         override val id: String,
         val name: String,
         val description: String,
-        val profileType: ProfileType?,
+        val profileType: ProfileType,
         val imageUrl: String?,
         val iconColor: String?,
         override val offset: Offset,

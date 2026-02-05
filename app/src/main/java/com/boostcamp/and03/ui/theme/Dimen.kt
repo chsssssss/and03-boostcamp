@@ -27,6 +27,7 @@ object And03Padding {
 }
 
 object And03IconSize {
+    val ICON_SIZE_XS = 16.dp
     val ICON_SIZE_S = 24.dp
     val ICON_SIZE_M = 28.dp
     val ICON_SIZE_L = 48.dp

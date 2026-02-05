@@ -15,7 +15,7 @@ fun CharacterRequest.toEntity(
         "description" to description,
         "profileType" to profileType.name
     )
-
+ // 이미지가 없으면 필드없이 보내기.
     if (profileType == ProfileType.IMAGE && imageUrl != null) {
         map["imageUrl"] = imageUrl
     }

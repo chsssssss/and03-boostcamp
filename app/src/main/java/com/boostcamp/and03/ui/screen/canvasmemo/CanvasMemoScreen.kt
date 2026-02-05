@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -49,17 +51,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.DialogDismissAction
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddCharacterDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddNodeBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.CanvasStatusCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.EdgeRenderer
 import com.boostcamp.and03.ui.screen.canvasmemo.component.Arrows
 import com.boostcamp.and03.ui.screen.canvasmemo.component.DraggableCanvasItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
@@ -68,15 +74,12 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
-import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
-import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.theme.And03ComponentSize
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
-import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.coroutines.launch
 
@@ -138,8 +141,7 @@ private fun CanvasMemoScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(R.string.canvas_memo_top_bar_title),
-                onBackClick = { onAction(CanvasMemoAction.ClickBack) }
-            ) {
+                onBackClick = { onAction(CanvasMemoAction.ClickBack) }) {
                 IconButton(
                     enabled = uiState.hasUnsavedChanges,
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
@@ -306,7 +308,7 @@ private fun CanvasMemoScreen(
                                 transformOrigin = TransformOrigin(0f, 0f)
                             }
                     ) {
-                        Arrows(
+                        EdgeRenderer(
                             arrows = uiState.edges,
                             items = uiState.nodes,
                             nodeSizes = nodeSizes
@@ -343,6 +345,9 @@ private fun CanvasMemoScreen(
                                         draggable = isDraggable,
                                         content = {
                                             NodeItem(
+                                                profileType = uiModel.node.profileType,
+                                                iconColor = uiModel.node.iconColor?.let { Color(it.toColorInt()) },
+                                                imageUri = uiModel.node.imageUrl,
                                                 title = uiModel.node.name,
                                                 content = uiModel.node.description,
                                                 isHighlighted = if (uiState.isDeleteMode) {
@@ -395,25 +400,13 @@ private fun CanvasMemoScreen(
                         }
                     }
 
-                    Card(
+                    CanvasStatusCard(
+                        canvasViewOffset = uiState.canvasViewOffset,
+                        zoomScale = uiState.zoomScale,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(And03Padding.PADDING_L)
-                            .background(And03Theme.colors.surfaceVariant),
-                    ) {
-                        Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
-                            Text(
-                                text = "Offset: (${uiState.canvasViewOffset.x.toInt()}, ${uiState.canvasViewOffset.y.toInt()})",
-                                color = And03Theme.colors.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            Text(
-                                text = "Scale: ${(uiState.zoomScale * 100).toInt()}%",
-                                color = And03Theme.colors.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    }
+                            .padding(And03Padding.PADDING_M)
+                    )
                 }
 
                 if (uiState.isRelationDialogVisible &&
@@ -455,6 +448,27 @@ private fun CanvasMemoScreen(
                         totalPage = uiState.totalPage
                     )
                 }
+                if (uiState.isAddCharacterDialogVisible) {
+                    AddCharacterDialog(
+                        nameState = uiState.characterNameState,
+                        descState = uiState.characterDescState,
+                        profileType = uiState.characterProfileType,
+                        imageUrl = uiState.characterImageUrl,
+                        iconColor = uiState.characterIconColor,
+                        enabled = uiState.isCharacterSaveable && !uiState.isSaving,
+                        onDismiss = {
+                            onAction(CanvasMemoAction.CloseAddCharacterDialog)
+                        },
+                        onConfirm = {
+                            onAction(CanvasMemoAction.SaveCharacter)
+                        },
+                        onClickAddImage = { // 이미지 추가 처리 필요
+                        }
+                    )
+                }
+
+
+
 
                 if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
                     And03Dialog(
@@ -499,7 +513,12 @@ private fun CanvasMemoScreen(
                                     infoTitle = stringResource(R.string.add_node_bottom_sheet_info_title),
                                     infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
                                     onSearch = { },
-                                    onNewCharacterClick = { },
+                                    onNewCharacterClick = {
+                                        scope.launch {
+                                            onAction(CanvasMemoAction.OpenAddCharacterDialog)
+                                            sheetState.hide()
+                                        }
+                                    },
                                     onAddClick = { character ->
                                         if (character == null) return@AddNodeBottomSheet
 
@@ -579,6 +598,9 @@ private fun CanvasMemoScreen(
                         modifier = Modifier.alpha(0f)
                     ) {
                         NodeItem(
+                            profileType = uiState.nodeToPlace.profileType,
+                            iconColor = uiState.nodeToPlace.profileColor,
+                            imageUri = uiState.nodeToPlace.imageUri,
                             title = uiState.nodeToPlace.name,
                             content = uiState.nodeToPlace.description,
                             isHighlighted = false,
@@ -593,6 +615,54 @@ private fun CanvasMemoScreen(
 
             }
         }
+    }
+}
+
+@Composable
+fun DraggableCanvasItem(
+    nodeId: String,
+    worldOffset: Offset,
+    onMove: (Offset) -> Unit,
+    onSizeChanged: (IntSize) -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit,
+    onClick: ((String) -> Unit)? = null,
+    draggable: Boolean = true,
+) {
+    Box(
+        modifier = modifier
+            .graphicsLayer {
+                translationX = worldOffset.x
+                translationY = worldOffset.y
+            }
+            .onGloballyPositioned { coords ->
+                onSizeChanged(coords.size)
+            }
+            .then(
+                if (onClick != null) {
+                    Modifier.pointerInput(nodeId) {
+                        detectTapGestures(
+                            onTap = {
+                                onClick(nodeId)
+                            }
+                        )
+                    }
+                } else {
+                    Modifier
+                }
+            )
+            .then(
+                if (draggable) {
+                    Modifier.pointerInput(nodeId) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            onMove(dragAmount)
+                        }
+                    }
+                } else Modifier
+            )
+    ) {
+        content()
     }
 }
 
