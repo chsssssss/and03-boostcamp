@@ -153,7 +153,7 @@ private fun BookSearchScreen(
 
                 isConnected.not() -> {
                     BookSearchResultEmptySection(
-                        message = stringResource(R.string.common_error_text),
+                        message = stringResource(R.string.common_network_disconnected_text),
                         buttonText = "",
                         onButtonClick = {}
                     )
