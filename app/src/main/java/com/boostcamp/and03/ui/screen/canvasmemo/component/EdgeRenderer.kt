@@ -18,6 +18,20 @@ import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import kotlin.math.abs
 
+private object EdgeRendererValues {
+    // 서로 반대 방향 간선이 존재할 때, 경로를 옆으로 오프셋할 거리
+    const val REVERSE_EDGE_PATH_OFFSET = 100f
+
+    // 간선 두께
+    const val EDGE_STROKE_WIDTH = 4f
+
+    // 화살표 크기
+    const val ARROW_HEAD_SIZE = 20f
+
+    // 화살표 각도 (radian)
+    const val ARROW_ANGLE = Math.PI / 6
+}
+
 @Composable
 fun EdgeRenderer(
     arrows: List<EdgeUiModel>,
@@ -45,7 +59,8 @@ fun EdgeRenderer(
 
             val pathOffset =
                 if (hasReverse) {
-                    if (edge.edge.fromId > edge.edge.toId) 100f else -100f
+                    if (edge.edge.fromId > edge.edge.toId) EdgeRendererValues.REVERSE_EDGE_PATH_OFFSET
+                    else -EdgeRendererValues.REVERSE_EDGE_PATH_OFFSET
                 } else 0f
 
             // 중심점 계산
@@ -88,7 +103,6 @@ fun EdgeRenderer(
                 isStart = false
             )
 
-            // 1) Edge Path
             val path = drawEdgePath(
                 start = start,
                 end = end,
@@ -97,7 +111,6 @@ fun EdgeRenderer(
                 drawScope = this
             )
 
-            // 2) Arrow Head
             drawArrowHead(
                 path = path,
                 end = end,
@@ -148,7 +161,7 @@ private fun drawEdgePath(
     drawScope.drawPath(
         path = path,
         color = Color.Black,
-        style = Stroke(width = 4f)
+        style = Stroke(width = EdgeRendererValues.EDGE_STROKE_WIDTH)
     )
 
     return path
@@ -162,8 +175,8 @@ private fun drawArrowHead(
     isHorizontalDominant: Boolean,
     drawScope: DrawScope
 ) {
-    val arrowHeadSize = 20f
-    val arrowAngle = Math.PI / 6
+    val arrowHeadSize = EdgeRendererValues.ARROW_HEAD_SIZE
+    val arrowAngle = EdgeRendererValues.ARROW_ANGLE
 
     // 마지막 segment 방향 계산
     val lastSegmentStart =
