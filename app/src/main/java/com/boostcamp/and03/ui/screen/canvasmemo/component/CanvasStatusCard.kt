@@ -18,8 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.theme.And03Elevation
 import com.boostcamp.and03.ui.theme.And03IconSize
 import com.boostcamp.and03.ui.theme.And03Padding
@@ -53,20 +55,24 @@ fun CanvasStatusCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.MyLocation,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.content_description_current_coordinate),
                     tint = And03Theme.colors.primary,
                     modifier = Modifier.size(And03IconSize.ICON_SIZE_XS)
                 )
 
                 Text(
-                    text = "현재 위치",
+                    text = stringResource(R.string.content_description_current_coordinate),
                     style = MaterialTheme.typography.labelSmall,
                     color = And03Theme.colors.onSurfaceVariant
                 )
 
 
                 Text(
-                    text = "(${canvasViewOffset.x.toInt()}, ${canvasViewOffset.y.toInt()})",
+                    text = stringResource(
+                        R.string.canvas_offset_format,
+                        canvasViewOffset.x,
+                        canvasViewOffset.y
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = And03Theme.colors.onSurface
                 )
@@ -78,19 +84,22 @@ fun CanvasStatusCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.ZoomIn,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.content_description_zoom_scale),
                     tint = And03Theme.colors.primary,
                     modifier = Modifier.size(And03IconSize.ICON_SIZE_XS)
                 )
 
                 Text(
-                    text = "확대",
+                    text = stringResource(R.string.content_description_zoom_scale),
                     style = MaterialTheme.typography.labelSmall,
                     color = And03Theme.colors.onSurfaceVariant
                 )
 
                 Text(
-                    text = "${(zoomScale * 100).toInt()}%",
+                    text = stringResource(
+                        R.string.percentage_value,
+                        (zoomScale * 100).toInt()
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.SemiBold,
                     color = And03Theme.colors.onSurface
