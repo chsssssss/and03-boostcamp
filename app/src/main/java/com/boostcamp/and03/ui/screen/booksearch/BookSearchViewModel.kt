@@ -169,7 +169,7 @@ class BookSearchViewModel @Inject constructor(
 
     private fun observerNetworkConnection() {
         viewModelScope.launch {
-            networkManager.isConnected.collectLatest { isConnected ->
+            networkManager.isConnected.collect { isConnected ->
                 _isConnected.update { isConnected }
             }
         }
