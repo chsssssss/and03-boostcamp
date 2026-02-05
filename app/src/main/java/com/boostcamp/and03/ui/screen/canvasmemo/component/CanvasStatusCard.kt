@@ -70,8 +70,8 @@ fun CanvasStatusCard(
                 Text(
                     text = stringResource(
                         R.string.canvas_offset_format,
-                        canvasViewOffset.x,
-                        canvasViewOffset.y
+                        canvasViewOffset.x.toInt(),
+                        canvasViewOffset.y.toInt()
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = And03Theme.colors.onSurface
