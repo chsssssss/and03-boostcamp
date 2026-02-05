@@ -78,9 +78,10 @@ _독서 기록 및 기록 시각화를 중심으로_
 |<img width="150" alt="image" src="https://github.com/user-attachments/assets/c4118c28-ce01-42ee-b680-4639ae47e00f" />|<img width="150" alt="198b80a0a5b2357e" src="https://github.com/user-attachments/assets/6e248562-7dcd-4872-aa89-90cbcfa85a99" />|<img width="150" alt="image" src="https://github.com/user-attachments/assets/03424eb8-5341-4227-b99e-8faff41f8293" />|
 |**[@1chanhue1](https://github.com/1chanhue1)**|**[@JangMuho](https://github.com/JangMuho)**|**[@chsssssss](https://github.com/chsssssss)**|
 
+<br>
 <div align="center">
 
-## 자세한 정보는 [Wiki](https://github.com/boostcampwm2025/and03-chaekgyeol/wiki) 페이지를 참고하세요.
+## 자세한 정보는 [Wiki](https://github.com/boostcampwm2025/and03-chaekgyeol/wiki) 페이지를 참고하세요!
 
 </div>
 
