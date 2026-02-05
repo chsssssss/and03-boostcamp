@@ -6,12 +6,14 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -48,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.and03.R
@@ -60,6 +63,8 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AlertMessageCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.CanvasStatusCard
+import com.boostcamp.and03.ui.screen.canvasmemo.component.EdgeRenderer
 import com.boostcamp.and03.ui.screen.canvasmemo.component.Arrows
 import com.boostcamp.and03.ui.screen.canvasmemo.component.DraggableCanvasItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.NodeItem
@@ -134,8 +139,7 @@ private fun CanvasMemoScreen(
         topBar = {
             And03AppBar(
                 title = stringResource(R.string.canvas_memo_top_bar_title),
-                onBackClick = { onAction(CanvasMemoAction.ClickBack) }
-            ) {
+                onBackClick = { onAction(CanvasMemoAction.ClickBack) }) {
                 IconButton(
                     enabled = uiState.hasUnsavedChanges,
                     onClick = { onAction(CanvasMemoAction.OnClickSave) }) {
@@ -270,7 +274,7 @@ private fun CanvasMemoScreen(
                                 transformOrigin = TransformOrigin(0f, 0f)
                             }
                     ) {
-                        Arrows(
+                        EdgeRenderer(
                             arrows = uiState.edges,
                             items = uiState.nodes,
                             nodeSizes = nodeSizes
@@ -307,6 +311,9 @@ private fun CanvasMemoScreen(
                                         draggable = isDraggable,
                                         content = {
                                             NodeItem(
+                                                profileType = uiModel.node.profileType,
+                                                iconColor = uiModel.node.iconColor?.let { Color(it.toColorInt()) },
+                                                imageUri = uiModel.node.imageUrl,
                                                 title = uiModel.node.name,
                                                 content = uiModel.node.description,
                                                 isHighlighted = if (uiState.isDeleteMode) {
@@ -359,25 +366,13 @@ private fun CanvasMemoScreen(
                         }
                     }
 
-                    Card(
+                    CanvasStatusCard(
+                        canvasViewOffset = uiState.canvasViewOffset,
+                        zoomScale = uiState.zoomScale,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(And03Padding.PADDING_L)
-                            .background(And03Theme.colors.surfaceVariant),
-                    ) {
-                        Column(modifier = Modifier.padding(And03Padding.PADDING_M)) {
-                            Text(
-                                text = "Offset: (${uiState.canvasViewOffset.x.toInt()}, ${uiState.canvasViewOffset.y.toInt()})",
-                                color = And03Theme.colors.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            Text(
-                                text = "Scale: ${(uiState.zoomScale * 100).toInt()}%",
-                                color = And03Theme.colors.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    }
+                            .padding(And03Padding.PADDING_M)
+                    )
                 }
 
                 if (uiState.isRelationDialogVisible &&
@@ -593,6 +588,9 @@ private fun CanvasMemoScreen(
                         modifier = Modifier.alpha(0f)
                     ) {
                         NodeItem(
+                            profileType = uiState.nodeToPlace.profileType,
+                            iconColor = uiState.nodeToPlace.profileColor,
+                            imageUri = uiState.nodeToPlace.imageUri,
                             title = uiState.nodeToPlace.name,
                             content = uiState.nodeToPlace.description,
                             isHighlighted = false,
@@ -607,6 +605,54 @@ private fun CanvasMemoScreen(
 
             }
         }
+    }
+}
+
+@Composable
+fun DraggableCanvasItem(
+    nodeId: String,
+    worldOffset: Offset,
+    onMove: (Offset) -> Unit,
+    onSizeChanged: (IntSize) -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit,
+    onClick: ((String) -> Unit)? = null,
+    draggable: Boolean = true,
+) {
+    Box(
+        modifier = modifier
+            .graphicsLayer {
+                translationX = worldOffset.x
+                translationY = worldOffset.y
+            }
+            .onGloballyPositioned { coords ->
+                onSizeChanged(coords.size)
+            }
+            .then(
+                if (onClick != null) {
+                    Modifier.pointerInput(nodeId) {
+                        detectTapGestures(
+                            onTap = {
+                                onClick(nodeId)
+                            }
+                        )
+                    }
+                } else {
+                    Modifier
+                }
+            )
+            .then(
+                if (draggable) {
+                    Modifier.pointerInput(nodeId) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            onMove(dragAmount)
+                        }
+                    }
+                } else Modifier
+            )
+    ) {
+        content()
     }
 }
 
