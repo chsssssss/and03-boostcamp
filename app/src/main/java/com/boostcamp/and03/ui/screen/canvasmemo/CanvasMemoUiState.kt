@@ -2,7 +2,9 @@ package com.boostcamp.and03.ui.screen.canvasmemo
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
+import com.boostcamp.and03.data.model.request.ProfileType
 import com.boostcamp.and03.ui.screen.bookdetail.model.CharacterUiModel
 import com.boostcamp.and03.ui.screen.bookdetail.model.QuoteUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
@@ -36,6 +38,11 @@ data class CanvasMemoUiState(
     val isQuoteDialogVisible: Boolean = false,
     val isExitConfirmationDialogVisible: Boolean = false,
     val isSureDeleteDialogVisible: Boolean = false,
+
+    val characterProfileType: ProfileType = ProfileType.COLOR,
+    val characterImageUrl: String? = null,
+    val characterIconColor: Color = Color(0xFF1E88E5), // 임시 컬러 적용
+    val isCharacterSaveable: Boolean = true,
 
     val characterNameState: TextFieldState = TextFieldState(),
     val characterDescState: TextFieldState = TextFieldState(),

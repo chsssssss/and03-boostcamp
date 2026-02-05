@@ -94,4 +94,11 @@ sealed interface CanvasMemoAction {
     data class DeleteSelectedItems(val itemIds: ImmutableList<String>) : CanvasMemoAction
 
     data object CancelRelationStep : CanvasMemoAction
+
+    data object OpenAddCharacterDialog : CanvasMemoAction
+
+    data object SaveCharacter : CanvasMemoAction
+
+
+
 }

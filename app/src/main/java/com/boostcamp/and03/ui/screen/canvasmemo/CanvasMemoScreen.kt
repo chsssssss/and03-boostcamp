@@ -54,6 +54,7 @@ import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Dialog
 import com.boostcamp.and03.ui.component.DialogDismissAction
+import com.boostcamp.and03.ui.screen.canvasmemo.component.AddCharacterDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddNodeBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteBottomSheet
 import com.boostcamp.and03.ui.screen.canvasmemo.component.AddQuoteDialog
@@ -67,14 +68,11 @@ import com.boostcamp.and03.ui.screen.canvasmemo.component.RelationEditorDialog
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolAction
 import com.boostcamp.and03.ui.screen.canvasmemo.component.ToolExpandableButton
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBar
-import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarItem
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
-import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Theme
-import com.boostcamp.and03.ui.theme.CanvasMemoColors
 import com.boostcamp.and03.ui.util.collectWithLifecycle
 import kotlinx.coroutines.launch
 
@@ -445,6 +443,27 @@ private fun CanvasMemoScreen(
                         totalPage = uiState.totalPage
                     )
                 }
+                if (uiState.isAddCharacterDialogVisible) {
+                    AddCharacterDialog(
+                        nameState = uiState.characterNameState,
+                        descState = uiState.characterDescState,
+                        profileType = uiState.characterProfileType,
+                        imageUrl = uiState.characterImageUrl,
+                        iconColor = uiState.characterIconColor,
+                        enabled = uiState.isCharacterSaveable && !uiState.isSaving,
+                        onDismiss = {
+                            onAction(CanvasMemoAction.CloseAddCharacterDialog)
+                        },
+                        onConfirm = {
+                            onAction(CanvasMemoAction.SaveCharacter)
+                        },
+                        onClickAddImage = { // 이미지 추가 처리 필요
+                        }
+                    )
+                }
+
+
+
 
                 if (uiState.isExitConfirmationDialogVisible && uiState.hasUnsavedChanges) {
                     And03Dialog(
@@ -489,7 +508,12 @@ private fun CanvasMemoScreen(
                                     infoTitle = stringResource(R.string.add_node_bottom_sheet_info_title),
                                     infoDescription = stringResource(R.string.add_node_bottom_sheet_info_description),
                                     onSearch = { },
-                                    onNewCharacterClick = { },
+                                    onNewCharacterClick = {
+                                        scope.launch {
+                                            onAction(CanvasMemoAction.OpenAddCharacterDialog)
+                                            sheetState.hide()
+                                        }
+                                    },
                                     onAddClick = { character ->
                                         if (character == null) return@AddNodeBottomSheet
 
