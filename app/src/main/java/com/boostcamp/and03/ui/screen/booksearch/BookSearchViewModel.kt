@@ -54,6 +54,8 @@ class BookSearchViewModel @Inject constructor(
 
     init{
         networkManager.registerNetworkCallback()
+
+        observerNetworkConnection()
     }
 
     fun onAction(action: BookSearchAction) {
