@@ -19,6 +19,7 @@ import com.boostcamp.and03.ui.screen.bookdetail.model.toUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.component.bottombar.MainBottomBarType
 import com.boostcamp.and03.ui.screen.canvasmemo.model.RelationAddStep
 import com.boostcamp.and03.ui.screen.canvasmemo.model.clearSelection
+import com.boostcamp.and03.ui.screen.canvasmemo.model.getMetaData
 import com.boostcamp.and03.ui.screen.canvasmemo.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -52,8 +53,8 @@ class CanvasMemoViewModel @Inject constructor(
     private val canvasMemoRoute = savedStateHandle.toRoute<Route.CanvasMemo>()
     private val bookId = canvasMemoRoute.bookId
     private val memoId = canvasMemoRoute.memoId
-    private val userId: String = "O12OmGoVY8FPYFElNjKN"
     private val totalPage = canvasMemoRoute.totalPage
+    private val userId: String = "O12OmGoVY8FPYFElNjKN"
 
     private val _uiState = MutableStateFlow(CanvasMemoUiState())
     val uiState: StateFlow<CanvasMemoUiState> = _uiState.asStateFlow()
@@ -62,6 +63,8 @@ class CanvasMemoViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     init {
+        _uiState.update { it.copy(totalPage = totalPage) }
+
         loadCanvasMemo(
             userId = userId,
             bookId = bookId,
@@ -742,6 +745,21 @@ class CanvasMemoViewModel @Inject constructor(
                         isLoading = false
                     )
                 }
+            }
+
+            val canvasMemoMetaData = bookStorageRepository.getCanvasMemo(
+                userId = userId,
+                bookId = bookId,
+                memoId = memoId
+            )
+            .getMetaData()
+
+            _uiState.update {
+                it.copy(
+                    title = canvasMemoMetaData.title,
+                    startPage = canvasMemoMetaData.startPage,
+                    endPage = canvasMemoMetaData.endPage
+                )
             }
         }
     }

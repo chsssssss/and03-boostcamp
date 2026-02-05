@@ -39,14 +39,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.boostcamp.and03.R
 import com.boostcamp.and03.ui.component.And03AppBar
 import com.boostcamp.and03.ui.component.And03Button
-import com.boostcamp.and03.ui.screen.booksearch.component.SearchResultItem
 import com.boostcamp.and03.ui.component.SearchTextField
+import com.boostcamp.and03.ui.screen.booksearch.component.SearchResultItem
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.theme.And03Padding
 import com.boostcamp.and03.ui.theme.And03Spacing
 import com.boostcamp.and03.ui.theme.And03Theme
 import com.boostcamp.and03.ui.util.collectWithLifecycle
-import com.google.common.collect.Multimaps.index
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 
@@ -58,6 +57,7 @@ fun BookSearchRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchResults = viewModel.pagingBooksFlow.collectAsLazyPagingItems()
     val totalResultCount by viewModel.totalResultCountFlow.collectAsStateWithLifecycle(0)
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
 
     viewModel.event.collectWithLifecycle { event ->
         when (event) {
@@ -69,6 +69,7 @@ fun BookSearchRoute(
 
     BookSearchScreen(
         uiState = uiState,
+        isConnected = isConnected,
         searchResults = searchResults,
         totalResultCount = totalResultCount,
         onAction = viewModel::onAction
@@ -78,6 +79,7 @@ fun BookSearchRoute(
 @Composable
 private fun BookSearchScreen(
     uiState: BookSearchUiState,
+    isConnected: Boolean,
     searchResults: LazyPagingItems<BookSearchResultUiModel>,
     totalResultCount: Int,
     onAction: (BookSearchAction) -> Unit,
@@ -146,6 +148,14 @@ private fun BookSearchScreen(
                         message = stringResource(R.string.book_search_empty_before_query),
                         buttonText = stringResource(R.string.book_search_button_text),
                         onButtonClick = { onAction(BookSearchAction.OnManualAddClick) }
+                    )
+                }
+
+                isConnected.not() -> {
+                    BookSearchResultEmptySection(
+                        message = stringResource(R.string.common_network_disconnected_text),
+                        buttonText = "",
+                        onButtonClick = {}
                     )
                 }
 
@@ -247,9 +257,9 @@ private fun BookSearchResultEmptySection(
                 color = And03Theme.colors.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
-
             if (buttonText.isNotBlank()) {
+                Spacer(modifier = Modifier.height(And03Spacing.SPACE_L))
+
                 And03Button(
                     text = buttonText,
                     onClick = onButtonClick
@@ -318,6 +328,7 @@ private fun BookSearchScreenPreview() {
     And03Theme {
         BookSearchScreen(
             uiState = uiState,
+            isConnected = true,
             searchResults = pagingItems,
             totalResultCount = 2,
             onAction = {}
@@ -340,6 +351,7 @@ private fun BookSearchScreenEmptyBeforeQueryPreview() {
     And03Theme {
         BookSearchScreen(
             uiState = uiState,
+            isConnected = true,
             searchResults = pagingItems,
             totalResultCount = 0,
             onAction = {}

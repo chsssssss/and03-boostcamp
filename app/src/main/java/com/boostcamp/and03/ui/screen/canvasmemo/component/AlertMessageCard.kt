@@ -47,6 +47,7 @@ fun AlertMessageCard(
         Text(
             text = message,
             color = And03Theme.colors.onSurfaceVariant,
+            style = And03Theme.typography.labelLarge
         )
 
         if (actions.isNotEmpty()) {
@@ -59,7 +60,8 @@ fun AlertMessageCard(
                     TextButton(onClick = action.onClick) {
                         Text(
                             text = action.text,
-                            color = And03Theme.colors.primary
+                            color = And03Theme.colors.primary,
+                            style = And03Theme.typography.labelLarge
                         )
                     }
                 }
