@@ -9,7 +9,7 @@ import javax.inject.Inject
 class NetworkManager @Inject constructor(
     private val connectivityManager: ConnectivityManager
 ) {
-    private val _isConnected = MutableStateFlow(false)
+    private val _isConnected = MutableStateFlow(true)
     val isConnected = _isConnected.asStateFlow()
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
