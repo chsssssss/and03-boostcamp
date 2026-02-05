@@ -48,7 +48,7 @@ class BookSearchViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     private val _isConnected = MutableStateFlow(false)
-    val isConnected: StateFlow<Boolean> = _isConnected
+    val isConnected = _isConnected.asStateFlow()
 
     private val userId = "O12OmGoVY8FPYFElNjKN"
 

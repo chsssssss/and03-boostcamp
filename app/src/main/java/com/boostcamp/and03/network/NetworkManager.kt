@@ -3,13 +3,14 @@ package com.boostcamp.and03.network
 import android.net.ConnectivityManager
 import android.net.Network
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class NetworkManager @Inject constructor(
     private val connectivityManager: ConnectivityManager
 ) {
     private val _isConnected = MutableStateFlow(false)
-    val isConnected = _isConnected
+    val isConnected = _isConnected.asStateFlow()
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
