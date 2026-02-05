@@ -189,7 +189,6 @@ private fun CanvasMemoScreen(
                                 vertical = And03Padding.PADDING_L,
                                 horizontal = And03Padding.PADDING_XL
                             )
-                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
@@ -216,7 +215,6 @@ private fun CanvasMemoScreen(
                                 vertical = And03Padding.PADDING_L,
                                 horizontal = And03Padding.PADDING_XL
                             )
-                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
@@ -233,7 +231,6 @@ private fun CanvasMemoScreen(
                                 vertical = And03Padding.PADDING_L,
                                 horizontal = And03Padding.PADDING_XL
                             )
-                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
@@ -250,7 +247,6 @@ private fun CanvasMemoScreen(
                                 vertical = And03Padding.PADDING_L,
                                 horizontal = And03Padding.PADDING_XL
                             )
-                            .height(And03ComponentSize.CANVAS_MEMO_BOTTOM_BAR_HEIGHT)
                             .windowInsetsPadding(
                                 WindowInsets.safeDrawing.only(
                                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom

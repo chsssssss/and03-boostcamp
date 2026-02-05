@@ -9,6 +9,7 @@ import androidx.paging.map
 import com.boostcamp.and03.data.model.request.toRequest
 import com.boostcamp.and03.data.repository.booksearch.BookSearchRepository
 import com.boostcamp.and03.data.repository.bookstorage.BookStorageRepository
+import com.boostcamp.and03.network.NetworkManager
 import com.boostcamp.and03.ui.screen.booksearch.model.BookSearchResultUiModel
 import com.boostcamp.and03.ui.screen.booksearch.model.SaveFailureReason
 import com.boostcamp.and03.ui.screen.booksearch.model.toUiModel
@@ -19,7 +20,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -34,7 +38,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BookSearchViewModel @Inject constructor(
     private val bookSearchRepository: BookSearchRepository,
-    private val bookStorageRepository: BookStorageRepository
+    private val bookStorageRepository: BookStorageRepository,
+    private val networkManager: NetworkManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookSearchUiState())
     val uiState = _uiState.asStateFlow()
@@ -42,7 +47,14 @@ class BookSearchViewModel @Inject constructor(
     private val _event: Channel<BookSearchEvent> = Channel(BUFFERED)
     val event = _event.receiveAsFlow()
 
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected: StateFlow<Boolean> = _isConnected
+
     private val userId = "O12OmGoVY8FPYFElNjKN"
+
+    init{
+        networkManager.registerNetworkCallback()
+    }
 
     fun onAction(action: BookSearchAction) {
         when (action) {
@@ -88,7 +100,11 @@ class BookSearchViewModel @Inject constructor(
     val pagingBooksFlow: Flow<PagingData<BookSearchResultUiModel>> =
         queryFlow
             .filter { it.isNotBlank() }
-            .flatMapLatest { query ->
+            .combine(isConnected) { query, connected ->
+                query to connected
+            }
+            .filter { (_, connected) -> connected }
+            .flatMapLatest { (query, _) ->
                 bookSearchRepository.loadSearchResults(query)
                     .map { pagingData ->
                         pagingData.map { it.toUiModel() }
@@ -100,14 +116,24 @@ class BookSearchViewModel @Inject constructor(
     val totalResultCountFlow: Flow<Int> =
         queryFlow
             .filter { it.isNotBlank() }
-            .flatMapLatest { query ->
-                flow { emit(bookSearchRepository.loadTotalSearchResultCount(query)) }
+            .combine(isConnected) { query, connected ->
+                query to connected
+            }
+            .filter { (_, connected) -> connected }
+            .flatMapLatest { (query, _) ->
+                flow {
+                    emit(bookSearchRepository.loadTotalSearchResultCount(query))
+                }
             }
 
     private fun saveItem(
         selectedSearchResult: BookSearchResultUiModel,
         userId: String
     ) {
+        if (!isConnected.value) {
+            return
+        }
+
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
 
@@ -137,5 +163,18 @@ class BookSearchViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun observerNetworkConnection() {
+        viewModelScope.launch {
+            networkManager.isConnected.collectLatest { isConnected ->
+                _isConnected.update { isConnected }
+            }
+        }
+    }
+
+    override fun onCleared(){
+        super.onCleared()
+        networkManager.unRegisterNetworkCallback()
     }
 }

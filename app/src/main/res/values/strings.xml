@@ -10,6 +10,7 @@
     <string name="common_save">저장</string>
     <string name="common_saving">저장 중...</string>
     <string name="common_error_text">에러가 발생했어요.</string>
+    <string name="common_network_disconnected_text">네트워크 연결이 끊어졌어요.</string>
     <string name="common_delete">삭제</string>
 
     <!--  component  -->
