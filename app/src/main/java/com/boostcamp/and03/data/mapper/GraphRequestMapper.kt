@@ -45,7 +45,7 @@ fun NodeRequest.toFirestoreMap(): Map<String, Any?> {
             map["title"] = title
             map["content"] = content
             map["profileType"] = profileType
-            map["profileColor"] = profileColor
+            map["iconColor"] = profileColor
             map["imageUrl"] = imageUrl
         }
 
