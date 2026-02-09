@@ -34,28 +34,27 @@ fun MemoNode.toRequest(): NodeRequest {
 }
 
 fun NodeRequest.toFirestoreMap(): Map<String, Any?> {
-    return when (this) {
-        is NodeRequest.Character -> mapOf(
-            "id" to id,
-            "nodeType" to nodeType,
-            "x" to x,
-            "y" to y,
-            "title" to title,
-            "content" to content,
-            "profileType" to profileType,
-            "profileColor" to profileColor,
-            "imageUrl" to imageUrl,
-        )
+    val map = mutableMapOf<String, Any?>(
+        "id" to id,
+        "nodeType" to nodeType,
+        "x" to x,
+        "y" to y
+    )
+    when (this) {
+        is NodeRequest.Character -> {
+            map["title"] = title
+            map["content"] = content
+            map["profileType"] = profileType
+            map["profileColor"] = profileColor
+            map["imageUrl"] = imageUrl
+        }
 
-        is NodeRequest.Quote -> mapOf(
-            "id" to id,
-            "nodeType" to nodeType,
-            "x" to x,
-            "y" to y,
-            "content" to content,
-            "page" to page,
-        )
+        is NodeRequest.Quote -> {
+            map["content"] = content
+            map["page"] = page
+        }
     }
+    return map
 }
 
 fun Edge.toRequest(): EdgeRequest {
