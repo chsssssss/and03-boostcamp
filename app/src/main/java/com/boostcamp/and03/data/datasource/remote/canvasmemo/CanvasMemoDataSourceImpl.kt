@@ -3,6 +3,7 @@ package com.boostcamp.and03.data.datasource.remote.canvasmemo
 import android.util.Log
 import com.boostcamp.and03.data.mapper.MemoEdgeMapper
 import com.boostcamp.and03.data.mapper.MemoNodeMapper
+import com.boostcamp.and03.data.mapper.toFirestoreMap
 import com.boostcamp.and03.data.model.request.GraphRequest
 import com.boostcamp.and03.data.model.response.memo.CanvasMemoResponse
 import com.boostcamp.and03.data.model.response.memo.EdgeResponse
@@ -199,7 +200,7 @@ class CanvasMemoDataSourceImpl @Inject constructor(
             // graph 기준 업데이트
             graph.nodes.forEach { node ->
                 val newNodeRef = nodeCollection.document(node.id)
-                batch.set(newNodeRef, node)
+                batch.set(newNodeRef, node.toFirestoreMap())
             }
 
             graph.edges.forEach { edge ->
