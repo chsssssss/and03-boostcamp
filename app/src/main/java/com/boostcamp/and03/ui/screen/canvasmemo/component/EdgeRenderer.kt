@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.IntSize
 import com.boostcamp.and03.ui.screen.canvasmemo.model.EdgeUiModel
 import com.boostcamp.and03.ui.screen.canvasmemo.model.MemoNodeUiModel
 import kotlin.math.abs
+import kotlin.math.atan2
 
 private object EdgeRendererValues {
     // 서로 반대 방향 간선이 존재할 때, 경로를 옆으로 오프셋할 거리
@@ -191,8 +192,7 @@ private fun drawArrowHead(
     val arrowDx = end.x - lastSegmentStart.x
     val arrowDy = end.y - lastSegmentStart.y
 
-    val angle =
-        kotlin.math.atan2(arrowDy.toDouble(), arrowDx.toDouble()).toFloat()
+    val angle = atan2(arrowDy.toDouble(), arrowDx.toDouble()).toFloat()
 
     val arrowPoint1 = Offset(
         (end.x - arrowHeadSize * kotlin.math.cos(angle - arrowAngle)).toFloat(),

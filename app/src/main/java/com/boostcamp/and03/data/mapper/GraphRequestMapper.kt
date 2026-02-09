@@ -33,6 +33,31 @@ fun MemoNode.toRequest(): NodeRequest {
     }
 }
 
+fun NodeRequest.toFirestoreMap(): Map<String, Any?> {
+    return when (this) {
+        is NodeRequest.Character -> mapOf(
+            "id" to id,
+            "nodeType" to nodeType,
+            "x" to x,
+            "y" to y,
+            "title" to title,
+            "content" to content,
+            "profileType" to profileType,
+            "profileColor" to profileColor,
+            "imageUrl" to imageUrl,
+        )
+
+        is NodeRequest.Quote -> mapOf(
+            "id" to id,
+            "nodeType" to nodeType,
+            "x" to x,
+            "y" to y,
+            "content" to content,
+            "page" to page,
+        )
+    }
+}
+
 fun Edge.toRequest(): EdgeRequest {
     return EdgeRequest(
         id = this.id,
