@@ -69,6 +69,14 @@ _독서 기록 및 기록 시각화를 중심으로_
   </td>
   <td style="border: none !important; padding: 5px;"><img width="400" alt="image" src="https://github.com/user-attachments/assets/eccc3ad6-3bba-45cb-b170-edc5700fdfdf" /></td>
   </tr>
+
+
+
+https://github.com/user-attachments/assets/e0e7cff7-7372-4a81-a417-e171cadf3b5f
+
+
+
+
 </table>
 
 ## 팀원 소개
